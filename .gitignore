@@ -4,3 +4,4 @@
 *.o
 *.dll
 /data-raw/excel_files/
+.Rproj.user

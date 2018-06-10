@@ -12,12 +12,11 @@ dat <- list(L = as.numeric(landings$landings),
             I_year = index$year - min(landings$year),
             I_survey = as.numeric(factor(index$survey)) - 1)
 par <- list(log_B = rep(0, nrow(landings)),
-            log_sd_B = 0.,
+            log_sd_B = 0,
             log_K = 0,
             log_r = 0,
             log_q = rep(0, length(unique(index$survey))),
-            log_sd_I = rep(0, length(unique(index$survey))),
-            log_sd_L = 0)
+            log_sd_I = rep(0, length(unique(index$survey))))
 map <- list()
 
 obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "MSP")
@@ -36,7 +35,7 @@ index$pred_upr <- exp(upr$log_pred_I)
 index %>%
     plot_ly(x = ~year, color = ~survey) %>%
     add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr) %>%
-    add_markers(y = ~I) %>%
+    add_markers(y = ~index) %>%
     add_lines(y = ~pred)
 
 biomass <- data.frame(year = landings$year, B = exp(est$log_B),
