@@ -15,22 +15,25 @@ Type objective_function<Type>::operator() ()
     DATA_VECTOR(I);
     DATA_IVECTOR(I_survey);
     DATA_IVECTOR(I_year);
+    DATA_INTEGER(temporal_r);
 
     // Parameters
     PARAMETER_VECTOR(log_B);
     PARAMETER(log_sd_B);
     PARAMETER(log_K);
-    PARAMETER(log_r);
+    PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_sd_I);
+    PARAMETER(log_sd_r);
 
     // Transformations
     vector<Type> log_I = log(I);
     vector<Type> B = exp(log_B);
     Type sd_B = exp(log_sd_B);
     Type K = exp(log_K);
-    Type r = exp(log_r);
+    vector<Type> r = exp(log_r);
     vector<Type> sd_I = exp(log_sd_I);
+    Type sd_r = exp(log_sd_r);
 
     // Process equation
     Type pen = Type(0);
@@ -40,9 +43,12 @@ Type objective_function<Type>::operator() ()
     vector<Type> pred_L(n_years);
     vector<Type> pred_B(n_years);
     for (int i = 1; i < n_years; i++){
-        pred_B(i) = B(i - 1) + r * B(i - 1) * (Type(1) - B(i - 1) / K) - L(i - 1);
+        pred_B(i) = B(i - 1) + r(i - 1) * B(i - 1) * (Type(1) - B(i - 1) / K) - L(i - 1);
         pred_B(i) = posfun(pred_B(i), Type(1.0e-6), pen);
         nll -= dnorm(log_B(i), log(pred_B(i)), sd_B, true);
+        if (temporal_r == 1) {
+            nll -= dnorm(log_r(i), log_r(i - 1), sd_r, true);
+        }
     }
     vector<Type> log_pred_B = log(pred_B);
     vector<Type> log_res_B = log_B - log_pred_B;
@@ -64,6 +70,7 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_B);
     ADREPORT(log_pred_B);
     ADREPORT(log_res_B);
+    ADREPORT(log_r);
     REPORT(pen);
 
     return nll;

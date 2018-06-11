@@ -13,19 +13,23 @@ plot_ly() %>%
 dat <- list(L = as.numeric(landings$landings),
             I = as.numeric(index$index),
             I_year = index$year - min(landings$year),
-            I_survey = as.numeric(factor(index$survey)) - 1)
+            I_survey = as.numeric(factor(index$survey)) - 1,
+            temporal_r = 0)
 par <- list(log_B = rep(5, nrow(landings)),
             log_sd_B = 0,
             log_K = 5,
-            log_r = 0,
+            log_r = rep(0, nrow(landings)),
             log_q = rep(0, length(unique(index$survey))),
-            log_sd_I = rep(0, length(unique(index$survey))))
+            log_sd_I = rep(0, length(unique(index$survey))),
+            log_sd_r = 0)
 
 ## Assuming that biomass is the same in the first two years often helps with
 ## convergence. Probably a safer assumption than starting biomass == K
-map <- list(log_B = factor(c(rep(1, 1), seq(nrow(landings) - 1))))
+map <- list(log_B = factor(c(rep(1, 1), seq(nrow(landings) - 1))),
+            log_r = factor(rep(1, nrow(landings))),
+            log_sd_r = factor(NA))
 
-obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "MSP")
+obj <- MakeADFun(dat, par, map = map, random = c("log_B", "log_r"), DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr, control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
 
