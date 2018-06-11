@@ -46,8 +46,14 @@ Type objective_function<Type>::operator() ()
         pred_B(i) = B(i - 1) + r(i - 1) * B(i - 1) * (Type(1) - B(i - 1) / K) - L(i - 1);
         pred_B(i) = posfun(pred_B(i), Type(1.0e-6), pen);
         nll -= dnorm(log_B(i), log(pred_B(i)), sd_B, true);
+        SIMULATE {
+            log_B(i) = rnorm(log(pred_B(i)), sd_B);
+        }
         if (temporal_r == 1) {
             nll -= dnorm(log_r(i), log_r(i - 1), sd_r, true);
+            SIMULATE {
+                log_r(i) = rnorm(log_r(i - 1), sd_r);
+            }
         }
     }
     vector<Type> log_pred_B = log(pred_B);
@@ -59,6 +65,9 @@ Type objective_function<Type>::operator() ()
     for (int i = 0; i < n_obs; i++){
         log_pred_I(i) = log_q(I_survey(i)) + log_B(I_year(i));
         nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
+        SIMULATE {
+            log_I(i) = rnorm(log_pred_I(i), sd_I(I_survey(i)));
+        }
     }
     vector<Type> log_res_I = log_I - log_pred_I;
 
@@ -72,6 +81,17 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_res_B);
     ADREPORT(log_r);
     REPORT(pen);
+
+    SIMULATE {
+        REPORT(log_B);
+        REPORT(log_I);
+    }
+
+    if (temporal_r == 1) {
+        SIMULATE {
+            REPORT(log_r);
+        }
+    }
 
     return nll;
 
