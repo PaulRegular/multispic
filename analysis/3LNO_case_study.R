@@ -51,3 +51,14 @@ biomass %>%
     plot_ly(x = ~year) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, color = I("grey"), name = "95% CI") %>%
     add_lines(y = ~B, color = I("darkgrey"), name = "Est")
+
+
+pe <- data.frame(year = landings$year, pe = exp(est$log_res_B),
+                 pe_lwr = exp(lwr$log_res_B),
+                 pe_upr = exp(upr$log_res_B))
+pe %>%
+    plot_ly(x = ~year) %>%
+    add_ribbons(ymin = ~pe_lwr, ymax = ~pe_upr, color = I("grey"), name = "95% CI") %>%
+    add_lines(y = ~pe, color = I("darkgrey"), name = "Est")
+
+
