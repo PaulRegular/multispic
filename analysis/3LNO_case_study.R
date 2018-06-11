@@ -2,8 +2,8 @@
 library(plotly)
 library(TMB)
 
-landings <- MSP::landings#[MSP::landings$year > 1980, ]
-index <- MSP::index#[MSP::index$year > 1980, ]
+landings <- MSP::landings[MSP::landings$species == "Yellowtail", ]
+index <- MSP::index[MSP::index$species == "Yellowtail", ]
 
 plot_ly() %>%
     add_lines(data = landings, x = ~year, y = ~landings, name = "landings") %>%

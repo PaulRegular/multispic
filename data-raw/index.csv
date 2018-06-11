@@ -1,104 +1,164 @@
-Year,Survey,Index (kt)
-1984,Spring,217.7
-1985,Spring,146.8
-1986,Spring,138.2
-1987,Spring,124.6
-1988,Spring,81
-1989,Spring,103.8
-1990,Spring,103.1
-1991,Spring,93.4
-1992,Spring,61.4
-1993,Spring,93.3
-1994,Spring,55.6
-1995,Spring,70.6
-1996,Spring,175.6
-1997,Spring,174.9
-1998,Spring,202.2
-1999,Spring,365.7
-2000,Spring,287.5
-2001,Spring,366
-2002,Spring,199.5
-2003,Spring,386.5
-2004,Spring,307.9
-2005,Spring,388.8
-2007,Spring,443
-2008,Spring,456.9
-2009,Spring,271.2
-2010,Spring,394.7
-2011,Spring,422.9
-2012,Spring,489.4
-2013,Spring,397.3
-2014,Spring,332.1
-2015,Spring,220.15
-2016,Spring,133.42
-2017,Spring,214.08
-1971,Yankee,96.9
-1972,Yankee,79.2
-1973,Yankee,51.7
-1974,Yankee,40.3
-1975,Yankee,37.4
-1976,Yankee,41.7
-1977,Yankee,65
-1978,Yankee,44.3
-1979,Yankee,38.5
-1980,Yankee,51.4
-1981,Yankee,45
-1982,Yankee,43.1
-1995,Spanish,9.3
-1996,Spanish,43.3
-1997,Spanish,38.7
-1998,Spanish,122.6
-1999,Spanish,197
-2000,Spanish,144.7
-2001,Spanish,182.7
-2002,Spanish,148.5
-2003,Spanish,136.8
-2004,Spanish,170
-2005,Spanish,156.48
-2006,Spanish,160.1
-2007,Spanish,160.7
-2008,Spanish,160.1
-2009,Spanish,183.4
-2010,Spanish,189.7
-2011,Spanish,203.8
-2012,Spanish,195.6
-2013,Spanish,187.97
-2014,Spanish,136.48
-2015,Spanish,140.8
-2016,Spanish,153.7
-2017,Spanish,95.91
-1990,Fall,65.8
-1991,Fall,82.4
-1992,Fall,64.5
-1993,Fall,112.8
-1994,Fall,106.4
-1995,Fall,129.8
-1996,Fall,134.3
-1997,Fall,222.9
-1998,Fall,231.6
-1999,Fall,249.9
-2000,Fall,335
-2001,Fall,475.8
-2002,Fall,339.7
-2003,Fall,368.3
-2004,Fall,374.7
-2005,Fall,342.7
-2006,Fall,305.5
-2007,Fall,482.4
-2008,Fall,322
-2009,Fall,237.8
-2010,Fall,417.2
-2011,Fall,310.4
-2012,Fall,357.4
-2013,Fall,346.1
-2015,Fall,307.42
-2016,Fall,286.66
-2017,Fall,322.19
-1984,Russian,132
-1985,Russian,85
-1986,Russian,42
-1987,Russian,30
-1988,Russian,23
-1989,Russian,44
-1990,Russian,27
-1991,Russian,27.5
+Species,Stock,Survey,Year,Index (kt)
+Yellowtail,3LNO,Spring,1984,217.7
+Yellowtail,3LNO,Spring,1985,146.8
+Yellowtail,3LNO,Spring,1986,138.2
+Yellowtail,3LNO,Spring,1987,124.6
+Yellowtail,3LNO,Spring,1988,81
+Yellowtail,3LNO,Spring,1989,103.8
+Yellowtail,3LNO,Spring,1990,103.1
+Yellowtail,3LNO,Spring,1991,93.4
+Yellowtail,3LNO,Spring,1992,61.4
+Yellowtail,3LNO,Spring,1993,93.3
+Yellowtail,3LNO,Spring,1994,55.6
+Yellowtail,3LNO,Spring,1995,70.6
+Yellowtail,3LNO,Spring,1996,175.6
+Yellowtail,3LNO,Spring,1997,174.9
+Yellowtail,3LNO,Spring,1998,202.2
+Yellowtail,3LNO,Spring,1999,365.7
+Yellowtail,3LNO,Spring,2000,287.5
+Yellowtail,3LNO,Spring,2001,366
+Yellowtail,3LNO,Spring,2002,199.5
+Yellowtail,3LNO,Spring,2003,386.5
+Yellowtail,3LNO,Spring,2004,307.9
+Yellowtail,3LNO,Spring,2005,388.8
+Yellowtail,3LNO,Spring,2007,443
+Yellowtail,3LNO,Spring,2008,456.9
+Yellowtail,3LNO,Spring,2009,271.2
+Yellowtail,3LNO,Spring,2010,394.7
+Yellowtail,3LNO,Spring,2011,422.9
+Yellowtail,3LNO,Spring,2012,489.4
+Yellowtail,3LNO,Spring,2013,397.3
+Yellowtail,3LNO,Spring,2014,332.1
+Yellowtail,3LNO,Spring,2015,220.15
+Yellowtail,3LNO,Spring,2016,133.42
+Yellowtail,3LNO,Spring,2017,214.08
+Yellowtail,3LNO,Yankee,1971,96.9
+Yellowtail,3LNO,Yankee,1972,79.2
+Yellowtail,3LNO,Yankee,1973,51.7
+Yellowtail,3LNO,Yankee,1974,40.3
+Yellowtail,3LNO,Yankee,1975,37.4
+Yellowtail,3LNO,Yankee,1976,41.7
+Yellowtail,3LNO,Yankee,1977,65
+Yellowtail,3LNO,Yankee,1978,44.3
+Yellowtail,3LNO,Yankee,1979,38.5
+Yellowtail,3LNO,Yankee,1980,51.4
+Yellowtail,3LNO,Yankee,1981,45
+Yellowtail,3LNO,Yankee,1982,43.1
+Yellowtail,3LNO,Spanish,1995,9.3
+Yellowtail,3LNO,Spanish,1996,43.3
+Yellowtail,3LNO,Spanish,1997,38.7
+Yellowtail,3LNO,Spanish,1998,122.6
+Yellowtail,3LNO,Spanish,1999,197
+Yellowtail,3LNO,Spanish,2000,144.7
+Yellowtail,3LNO,Spanish,2001,182.7
+Yellowtail,3LNO,Spanish,2002,148.5
+Yellowtail,3LNO,Spanish,2003,136.8
+Yellowtail,3LNO,Spanish,2004,170
+Yellowtail,3LNO,Spanish,2005,156.48
+Yellowtail,3LNO,Spanish,2006,160.1
+Yellowtail,3LNO,Spanish,2007,160.7
+Yellowtail,3LNO,Spanish,2008,160.1
+Yellowtail,3LNO,Spanish,2009,183.4
+Yellowtail,3LNO,Spanish,2010,189.7
+Yellowtail,3LNO,Spanish,2011,203.8
+Yellowtail,3LNO,Spanish,2012,195.6
+Yellowtail,3LNO,Spanish,2013,187.97
+Yellowtail,3LNO,Spanish,2014,136.48
+Yellowtail,3LNO,Spanish,2015,140.8
+Yellowtail,3LNO,Spanish,2016,153.7
+Yellowtail,3LNO,Spanish,2017,95.91
+Yellowtail,3LNO,Fall,1990,65.8
+Yellowtail,3LNO,Fall,1991,82.4
+Yellowtail,3LNO,Fall,1992,64.5
+Yellowtail,3LNO,Fall,1993,112.8
+Yellowtail,3LNO,Fall,1994,106.4
+Yellowtail,3LNO,Fall,1995,129.8
+Yellowtail,3LNO,Fall,1996,134.3
+Yellowtail,3LNO,Fall,1997,222.9
+Yellowtail,3LNO,Fall,1998,231.6
+Yellowtail,3LNO,Fall,1999,249.9
+Yellowtail,3LNO,Fall,2000,335
+Yellowtail,3LNO,Fall,2001,475.8
+Yellowtail,3LNO,Fall,2002,339.7
+Yellowtail,3LNO,Fall,2003,368.3
+Yellowtail,3LNO,Fall,2004,374.7
+Yellowtail,3LNO,Fall,2005,342.7
+Yellowtail,3LNO,Fall,2006,305.5
+Yellowtail,3LNO,Fall,2007,482.4
+Yellowtail,3LNO,Fall,2008,322
+Yellowtail,3LNO,Fall,2009,237.8
+Yellowtail,3LNO,Fall,2010,417.2
+Yellowtail,3LNO,Fall,2011,310.4
+Yellowtail,3LNO,Fall,2012,357.4
+Yellowtail,3LNO,Fall,2013,346.1
+Yellowtail,3LNO,Fall,2015,307.42
+Yellowtail,3LNO,Fall,2016,286.66
+Yellowtail,3LNO,Fall,2017,322.19
+Yellowtail,3LNO,Russian,1984,132
+Yellowtail,3LNO,Russian,1985,85
+Yellowtail,3LNO,Russian,1986,42
+Yellowtail,3LNO,Russian,1987,30
+Yellowtail,3LNO,Russian,1988,23
+Yellowtail,3LNO,Russian,1989,44
+Yellowtail,3LNO,Russian,1990,27
+Yellowtail,3LNO,Russian,1991,27.5
+Witch,3LN,Spring late,1991,7.07
+Witch,3LN,Spring late,1992,8.217
+Witch,3LN,Spring late,1993,4.226
+Witch,3LN,Spring late,1994,16.279
+Witch,3LN,Spring late,1995,4.057
+Witch,3LN,Spring late,1996,4.085
+Witch,3LN,Spring late,1997,7.133
+Witch,3LN,Spring late,1998,2.688
+Witch,3LN,Spring late,1999,8.936
+Witch,3LN,Spring late,2000,5.49
+Witch,3LN,Spring late,2001,9.418
+Witch,3LN,Spring late,2002,7.562
+Witch,3LN,Spring late,2003,15.855
+Witch,3LN,Spring late,2004,11.825
+Witch,3LN,Spring late,2005,6.865
+Witch,3LN,Spring late,2007,7.189
+Witch,3LN,Spring late,2008,8.825
+Witch,3LN,Spring late,2009,9.179
+Witch,3LN,Spring late,2010,6.639
+Witch,3LN,Spring late,2011,9.746
+Witch,3LN,Spring late,2012,12.844
+Witch,3LN,Spring late,2013,24.396
+Witch,3LN,Spring late,2014,10.702
+Witch,3LN,Spring late,2015,4.927
+Witch,3LN,Spring late,2016,7.134
+Witch,3LN,Spring late,2017,9.054
+Witch,3LN,Fall,1990,15.368
+Witch,3LN,Fall,1991,5.477
+Witch,3LN,Fall,1992,9.118
+Witch,3LN,Fall,1993,9.474
+Witch,3LN,Fall,1994,7.821
+Witch,3LN,Fall,1995,11.743
+Witch,3LN,Fall,1996,12.278
+Witch,3LN,Fall,1997,4.691
+Witch,3LN,Fall,1998,6.689
+Witch,3LN,Fall,1999,13.33
+Witch,3LN,Fall,2000,7.64
+Witch,3LN,Fall,2001,7.021
+Witch,3LN,Fall,2002,11.13
+Witch,3LN,Fall,2003,10.315
+Witch,3LN,Fall,2004,18.632
+Witch,3LN,Fall,2005,18.132
+Witch,3LN,Fall,2006,14.605
+Witch,3LN,Fall,2007,7.715
+Witch,3LN,Fall,2008,22.739
+Witch,3LN,Fall,2009,37.708
+Witch,3LN,Fall,2010,27.039
+Witch,3LN,Fall,2011,17.939
+Witch,3LN,Fall,2012,27.033
+Witch,3LN,Fall,2013,17.668
+Witch,3LN,Fall,2015,10.101
+Witch,3LN,Fall,2016,7.869
+Witch,3LN,Fall,2017,9.478
+Witch,3LN,Spring early,1984,14.313
+Witch,3LN,Spring early,1985,24.581
+Witch,3LN,Spring early,1986,9.214
+Witch,3LN,Spring early,1987,11.199
+Witch,3LN,Spring early,1988,24.655
+Witch,3LN,Spring early,1989,8.988
+Witch,3LN,Spring early,1990,10.759
