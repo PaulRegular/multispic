@@ -1,36 +1,34 @@
 
+library(units)
 library(plotly)
 library(TMB)
+
+unique(MSP::landings$species)
 
 landings <- MSP::landings[MSP::landings$species == "Yellowtail", ]
 index <- MSP::index[MSP::index$species == "Yellowtail", ]
 
 plot_ly() %>%
-    add_lines(data = landings, x = ~year, y = ~landings, name = "landings") %>%
+    add_lines(data = landings, x = ~year, y = ~landings, name = "Landings") %>%
     add_lines(data = index, x = ~year, y = ~index, color = ~survey) %>%
     layout(yaxis = list(title = "inputs"))
 
 dat <- list(L = as.numeric(landings$landings),
             I = as.numeric(index$index),
             I_year = index$year - min(landings$year),
-            I_survey = as.numeric(factor(index$survey)) - 1,
-            temporal_r = 0)
-par <- list(log_B = rep(5, nrow(landings)),
-            log_sd_B = 0,
+            I_survey = as.numeric(factor(index$survey)) - 1)
+par <- list(log_P = rep(0, nrow(landings)),
+            log_sd_P = 0,
             log_K = 5,
-            log_r = rep(0, nrow(landings)),
+            log_r = 0,
+            log_m = log(2),
             log_q = rep(0, length(unique(index$survey))),
-            log_sd_I = rep(0, length(unique(index$survey))),
-            log_sd_r = 0)
+            log_sd_I = rep(0, length(unique(index$survey))))
+map <- list()
 
-## Assuming that biomass is the same in the first two years often helps with
-## convergence. Probably a safer assumption than starting biomass == K
-map <- list(log_B = factor(c(rep(1, 1), seq(nrow(landings) - 1))),
-            log_r = factor(rep(1, nrow(landings))),
-            log_sd_r = factor(NA))
-
-obj <- MakeADFun(dat, par, map = map, random = c("log_B", "log_r"), DLL = "MSP")
-opt <- nlminb(obj$par, obj$fn, obj$gr, control = list(eval.max = 1000, iter.max = 1000))
+obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
+opt <- nlminb(obj$par, obj$fn, obj$gr,
+              control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
 
 est <- split(unname(sd_rep$value), names(sd_rep$value))
@@ -57,9 +55,10 @@ biomass %>%
     add_lines(y = ~B, color = I("darkgrey"), name = "Est")
 
 
-pe <- data.frame(year = landings$year, pe = exp(est$log_res_B),
-                 pe_lwr = exp(lwr$log_res_B),
-                 pe_upr = exp(upr$log_res_B))
+pe <- data.frame(year = landings$year,
+                 pe = exp(est$log_res_P),
+                 pe_lwr = exp(lwr$log_res_P),
+                 pe_upr = exp(upr$log_res_P))
 pe %>%
     plot_ly(x = ~year) %>%
     add_ribbons(ymin = ~pe_lwr, ymax = ~pe_upr, color = I("grey"), name = "95% CI") %>%
