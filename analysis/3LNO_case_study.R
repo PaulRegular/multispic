@@ -2,6 +2,9 @@
 library(plotly)
 library(TMB)
 
+landings <- MSP::landings#[MSP::landings$year > 1980, ]
+index <- MSP::index#[MSP::index$year > 1980, ]
+
 plot_ly() %>%
     add_lines(data = landings, x = ~year, y = ~landings, name = "landings") %>%
     add_lines(data = index, x = ~year, y = ~index, color = ~survey) %>%
@@ -11,14 +14,16 @@ dat <- list(L = as.numeric(landings$landings),
             I = as.numeric(index$index),
             I_year = index$year - min(landings$year),
             I_survey = as.numeric(factor(index$survey)) - 1)
-par <- list(log_B0 = 5,
-            log_B = rep(5, nrow(landings)),
+par <- list(log_B = rep(5, nrow(landings)),
             log_sd_B = 0,
             log_K = 5,
             log_r = 0,
             log_q = rep(0, length(unique(index$survey))),
             log_sd_I = rep(0, length(unique(index$survey))))
-map <- list()
+
+## Assuming that biomass is the same in the first two years often helps with
+## convergence. Probably a safer assumption than starting biomass == K
+map <- list(log_B = factor(c(rep(1, 1), seq(nrow(landings) - 1))))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr, control = list(eval.max = 1000, iter.max = 1000))

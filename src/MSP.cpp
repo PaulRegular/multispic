@@ -17,7 +17,6 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_year);
 
     // Parameters
-    PARAMETER(log_B0);
     PARAMETER_VECTOR(log_B);
     PARAMETER(log_sd_B);
     PARAMETER(log_K);
@@ -36,8 +35,6 @@ Type objective_function<Type>::operator() ()
     // Process equation
     Type pen = Type(0);
     Type nll = Type(0);
-
-    nll -= dnorm(log_B(0), log_B0, sd_B, true);
 
     int n_years = L.size();
     vector<Type> pred_L(n_years);
