@@ -10,8 +10,8 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
     if (!is.null(ymin)) {
         p <- p %>% add_ribbons(p, x = x, ymin = ymin, ymax = ymax, ..., 
                                data = data, inherit = TRUE,
-                               line = list(width = 0), opacity = 0.4, 
-                               name = "95%", showlegend = FALSE) 
+                               line = list(width = 0), opacity = 0.4,
+                               showlegend = FALSE) 
     }
     if (!is.null(yline)) {
         p <- p %>% add_lines(x = x, y = yline, z = NULL, ..., 
@@ -19,8 +19,9 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
     }
     if (!is.null(ymarker)) {
         p <- p %>% add_markers(p, x = x, y = ymarker, z = NULL, ..., 
-                               data = data, inherit = TRUE, 
+                               data = data, inherit = TRUE,
                                showlegend = FALSE)
     }
     p
 }
+

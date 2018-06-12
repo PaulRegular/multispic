@@ -24,12 +24,10 @@ index$ss <- factor(paste0(index$species, "-", index$survey))
 index$species <- factor(index$species)
 
 index %>%
-    group_by(ss) %>%
-    mutate(scaled_index = scale(index)) %>%
     plot_ly() %>%
-    add_lines(x = ~year, y = ~scaled_index, color = ~ss,
+    add_lines(x = ~year, y = ~index, color = ~ss,
               colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(title = "Scaled index"))
+    layout(yaxis = list(type = "log", title = "index"))
 
 landings %>%
     plot_ly() %>%
@@ -72,12 +70,16 @@ index$pred <- exp(est$log_pred_I)
 index$pred_lwr <- exp(lwr$log_pred_I)
 index$pred_upr <- exp(upr$log_pred_I)
 
-index %>%
-    plot_ly(x = ~year, color = ~ss, legendgroup = ~ss,
-            colors = viridis::viridis(100)) %>%
-    add_fit(ymin = ~pred_lwr, ymax = ~pred_upr,
-            ymarker = ~index, yline = ~pred) %>%
-    layout(yaxis = list(type = "log", title = "index"))
+p <- plot_ly()
+for (nm in levels(index$ss)) {
+    p <- p %>% add_fit(data = index[index$ss == nm, ],
+                       x = ~year, color = ~ss, colors = viridis::viridis(100),
+                       ymin = ~pred_lwr, ymax = ~pred_upr,
+                       ymarker = ~index, yline = ~pred,
+                       legendgroup = ~ss) %>%
+        layout(yaxis = list(type = "log", title = "index"))
+}
+p
 
 
 biomass <- data.frame(year = landings$year,
@@ -85,10 +87,15 @@ biomass <- data.frame(year = landings$year,
                       B = exp(est$log_B),
                       B_lwr = exp(lwr$log_B),
                       B_upr = exp(upr$log_B))
-biomass %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            split = ~species, legendgroup = ~species) %>%
-    add_fit(yline = ~B, ymin = ~B_lwr, ymax = ~B_upr)
+
+p <- plot_ly()
+for (nm in unique(biomass$species)) {
+    p <- p %>% add_fit(data = biomass[biomass$species == nm, ],
+                       x = ~year, color = ~species, colors = viridis::viridis(100),
+                       yline = ~B, ymin = ~B_lwr, ymax = ~B_upr,
+                       legendgroup = ~species)
+}
+p
 
 
 pe <- data.frame(year = landings$year,
@@ -96,8 +103,14 @@ pe <- data.frame(year = landings$year,
                  pe = exp(est$log_res_P),
                  pe_lwr = exp(lwr$log_res_P),
                  pe_upr = exp(upr$log_res_P))
-pe %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100)) %>%
-    add_fit(yline = ~pe, ymin = ~pe_lwr, ymax = ~pe_upr)
+
+p <- plot_ly()
+for (nm in unique(pe$species)) {
+    p <- p %>% add_fit(data = pe[pe$species == nm, ],
+                       x = ~year, color = ~species, colors = viridis::viridis(100),
+                       yline = ~pe, ymin = ~pe_lwr, ymax = ~pe_upr,
+                       legendgroup = ~species)
+}
+p
 
 
