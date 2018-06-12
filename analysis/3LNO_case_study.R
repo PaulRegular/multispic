@@ -5,29 +5,55 @@ library(TMB)
 
 unique(MSP::landings$species)
 
-index <- MSP::index[MSP::index$species == "Witch", ]
-landings <- MSP::landings[MSP::landings$species == "Witch" &
-                              MSP::landings$year >= min(index$year), ]
+index <- MSP::index
+landings <- MSP::landings
 
-plot_ly() %>%
-    add_lines(data = landings, x = ~year, y = ~landings, name = "Landings") %>%
-    add_lines(data = index, x = ~year, y = ~index, color = ~survey) %>%
-    layout(yaxis = list(title = "inputs"))
+## Subset the data
+# landings <- landings[landings$year >= min(index$year), ]
+start_year <- 1975
+index <- index[index$year >= start_year, ]
+landings <- landings[landings$year >= start_year, ]
+
+## Set-up indices for TMB
+landings$species <- factor(landings$species)
+landings$y <- factor(landings$year)
+landings$sy <- factor(paste0(landings$species, "-", landings$year))
+landings <- landings[order(landings$sy), ]
+index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
+index$ss <- factor(paste0(index$species, "-", index$survey))
+index$species <- factor(index$species)
+
+index %>%
+    group_by(ss) %>%
+    mutate(scaled_index = scale(index)) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~scaled_index, color = ~ss,
+              colors = viridis::viridis(100)) %>%
+    layout(yaxis = list(title = "Scaled index"))
+
+landings %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~landings, color = ~species,
+              colors = viridis::viridis(100)) %>%
+    layout(yaxis = list(title = "Landings"))
+
 
 dat <- list(L = as.numeric(landings$landings),
+            L_species = as.numeric(landings$species) - 1,
+            L_year = as.numeric(landings$y) - 1,
             I = as.numeric(index$index),
-            I_year = index$year - min(landings$year),
-            I_survey = as.numeric(factor(index$survey)) - 1,
+            I_species = as.numeric(index$species) - 1,
+            I_survey = as.numeric(index$ss) - 1,
+            I_sy = as.numeric(index$sy) - 1,
             min_P = 0.0001)
 par <- list(log_P = rep(0, nrow(landings)),
-            log_sd_P = 0,
-            log_K = 5,
-            log_r = 0,
-            log_m = log(2),
-            log_q = rep(0, length(unique(index$survey))),
-            log_sd_I = rep(0, length(unique(index$survey))))
-map <- list(log_P = factor(c(0, seq(nrow(landings) - 1))),
-            log_m = factor(NA))
+            log_sd_P = rep(0, nlevels(landings$species)),
+            log_K = rep(5, nlevels(landings$species)),
+            log_r = rep(0, nlevels(landings$species)),
+            log_m = rep(log(2), nlevels(landings$species)),
+            log_q = rep(0, nlevels(index$ss)),
+            log_sd_I = rep(0, nlevels(index$ss)))
+map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
@@ -47,28 +73,31 @@ index$pred_lwr <- exp(lwr$log_pred_I)
 index$pred_upr <- exp(upr$log_pred_I)
 
 index %>%
-    plot_ly(x = ~year, color = ~survey) %>%
-    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr) %>%
-    add_markers(y = ~index) %>%
-    add_lines(y = ~pred) %>%
-    layout(yaxis = list(type = "log"))
+    plot_ly(x = ~year, color = ~ss, legendgroup = ~ss,
+            colors = viridis::viridis(100)) %>%
+    add_fit(ymin = ~pred_lwr, ymax = ~pred_upr,
+            ymarker = ~index, yline = ~pred) %>%
+    layout(yaxis = list(type = "log", title = "index"))
 
-biomass <- data.frame(year = landings$year, B = exp(est$log_B),
+
+biomass <- data.frame(year = landings$year,
+                      species = landings$species,
+                      B = exp(est$log_B),
                       B_lwr = exp(lwr$log_B),
                       B_upr = exp(upr$log_B))
 biomass %>%
-    plot_ly(x = ~year) %>%
-    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, color = I("grey"), name = "95% CI") %>%
-    add_lines(y = ~B, color = I("darkgrey"), name = "Est")
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            split = ~species, legendgroup = ~species) %>%
+    add_fit(yline = ~B, ymin = ~B_lwr, ymax = ~B_upr)
 
 
 pe <- data.frame(year = landings$year,
+                 species = landings$species,
                  pe = exp(est$log_res_P),
                  pe_lwr = exp(lwr$log_res_P),
                  pe_upr = exp(upr$log_res_P))
 pe %>%
-    plot_ly(x = ~year) %>%
-    add_ribbons(ymin = ~pe_lwr, ymax = ~pe_upr, color = I("grey"), name = "95% CI") %>%
-    add_lines(y = ~pe, color = I("darkgrey"), name = "Est")
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100)) %>%
+    add_fit(yline = ~pe, ymin = ~pe_lwr, ymax = ~pe_upr)
 
 
