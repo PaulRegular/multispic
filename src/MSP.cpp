@@ -15,6 +15,7 @@ Type objective_function<Type>::operator() ()
     DATA_VECTOR(I);
     DATA_IVECTOR(I_survey);
     DATA_IVECTOR(I_year);
+    DATA_SCALAR(min_P);
 
     // Parameters
     PARAMETER_VECTOR(log_P);
@@ -53,7 +54,7 @@ Type objective_function<Type>::operator() ()
     nll -= dnorm(log_P(0), Type(0), sd_P, true);
     for (int i = 1; i < n_years; i++){
         pred_P(i) = P(i - 1) + (r / (m - 1)) * (Type(1) - pow(P(i - 1), m - Type(1))) - (L(i - 1) / K);
-        pred_P(i) = posfun(pred_P(i), Type(1.0e-4), pen);
+        pred_P(i) = posfun(pred_P(i), min_P, pen);
         nll -= dnorm(log_P(i), log(pred_P(i)), sd_P, true);
         SIMULATE {
             log_P(i) = rnorm(log(pred_P(i)), sd_P);
