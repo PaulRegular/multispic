@@ -10,12 +10,9 @@ landings <- MSP::landings
 
 ## Subset the data
 # landings <- landings[landings$year >= min(index$year), ]
-start_year <- 1985
+start_year <- 1975
 index <- index[index$year >= start_year, ]
 landings <- landings[landings$year >= start_year, ]
-sub_sp <- c("Cod", "Yellowtail", "Witch", "Plaice")
-index <- index[index$species %in% sub_sp, ]
-landings <- landings[landings$species %in% sub_sp, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -50,22 +47,27 @@ dat <- list(L = as.numeric(landings$landings),
 par <- list(log_P = rep(0, nrow(landings)),
             log_sd_P = rep(0, nlevels(landings$species)),
             log_K = rep(5, nlevels(landings$species)),
-            log_mu_r = rep(log(0.5), nlevels(landings$species)),
-            log_sd_r = 0,
-            log_res_r = rep(0, nrow(landings)),
+            log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
+            log_gamma = rep(0, nrow(landings)),
+            log_sd_gamma = 0,
             log_q = rep(0, nlevels(index$ss)),
             log_sd_I = rep(0, nlevels(index$ss)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
-            log_res_r = landings$y)
+            log_gamma = landings$y)
+map$log_gamma[!map$log_gamma %in% 2014] <- NA
 
-obj <- MakeADFun(dat, par, map = map, random = c("log_P", "log_res_r"), DLL = "MSP")
+obj <- MakeADFun(dat, par, map = map, random = c("log_P", "log_gamma"), DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
 obj$report()
 exp(opt$par)
 sd_rep
+
+plot_ly(x = landings$year, y = exp(obj$simulate()$log_P), color = landings$species) %>%
+    add_lines() %>%
+    layout(title = "Simulation", xaxis = list(title = "year"), yaxis = list(title = "P"))
 
 est <- split(unname(sd_rep$value), names(sd_rep$value))
 sd <- split(sd_rep$sd, names(sd_rep$value))
@@ -115,22 +117,6 @@ for (nm in unique(pe$species)) {
     p <- p %>% add_fit(data = pe[pe$species == nm, ],
                        x = ~year, color = ~species, colors = viridis::viridis(100),
                        yline = ~pe, ymin = ~pe_lwr, ymax = ~pe_upr,
-                       legendgroup = ~species)
-}
-p
-
-
-
-r <- data.frame(year = landings$year,
-                 species = landings$species,
-                 r = exp(est$log_r),
-                 r_lwr = exp(lwr$log_r),
-                 r_upr = exp(upr$log_r))
-p <- plot_ly()
-for (nm in unique(r$species)) {
-    p <- p %>% add_fit(data = r[r$species == nm, ],
-                       x = ~year, color = ~species, colors = viridis::viridis(100),
-                       yline = ~r, ymin = ~r_lwr, ymax = ~r_upr,
                        legendgroup = ~species)
 }
 p
