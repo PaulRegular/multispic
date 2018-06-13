@@ -49,6 +49,7 @@ Type objective_function<Type>::operator() ()
     int nI = I.size();
     vector<Type> log_pred_I(nI);
     vector<Type> log_res_I(nI);
+    vector<Type> std_res_I(nI);
 
     // Initalize nll
     Type pen = Type(0);
@@ -79,6 +80,8 @@ Type objective_function<Type>::operator() ()
     for (int i = 0; i < nI; i++){
         log_pred_I(i) = log_q(I_survey(i)) + log_P(I_sy(i)) + log_K(I_species(i));
         nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
+        log_res_I(i) = log_I(i) - log_pred_I(i);
+        std_res_I(i) = log_res_I(i) / sd_I(I_survey(i));
         SIMULATE {
             log_I(i) = rnorm(log_pred_I(i), sd_I(I_survey(i)));
         }
@@ -87,10 +90,7 @@ Type objective_function<Type>::operator() ()
     // More transformations
     log_B = log(B);
     log_pred_P = log(pred_P);
-
-    // Residuals
     log_res_P = log_P - log_pred_P;
-    log_res_I = log_I - log_pred_I;
 
     // AD report values
     ADREPORT(log_P);
@@ -99,6 +99,7 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_B);
     ADREPORT(log_pred_I);
     ADREPORT(log_res_I);
+    ADREPORT(std_res_I);
 
     // Report simulated values
     SIMULATE {

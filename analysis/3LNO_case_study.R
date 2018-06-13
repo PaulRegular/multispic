@@ -1,6 +1,11 @@
 
 ## TODO:
 ## - Get Rstrap calls from DE's and run yourself in data-raw
+## - Make year 0 species specific, and start model when landings start
+## - Look into calculating one-step ahead residuals
+## - Continue to think of ways to share information across species
+
+## - Something is messed up with the process error
 
 library(units)
 library(plotly)
@@ -12,10 +17,10 @@ index <- MSP::index
 landings <- MSP::landings
 
 ## Subset the data
-# landings <- landings[landings$year >= min(index$year), ]
+sub_sp <- unique(MSP::landings$species)
 start_year <- 1985 # restricted by hake and skate landings
-index <- index[index$year >= start_year, ]
-landings <- landings[landings$year >= start_year, ]
+index <- index[index$year >= start_year & index$species %in% sub_sp, ]
+landings <- landings[landings$year >= start_year & landings$species %in% sub_sp, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -64,14 +69,51 @@ obj$report()
 exp(opt$par)
 sd_rep
 
+## Extract some estimates
 est <- split(unname(sd_rep$value), names(sd_rep$value))
 sd <- split(sd_rep$sd, names(sd_rep$value))
 lwr <- split(unname(sd_rep$value) - 1.96 * sd_rep$sd, names(sd_rep$val))
 upr <- split(unname(sd_rep$value) + 1.96 * sd_rep$sd, names(sd_rep$val))
-
 index$pred <- exp(est$log_pred_I)
 index$pred_lwr <- exp(lwr$log_pred_I)
 index$pred_upr <- exp(upr$log_pred_I)
+index$std_res <- est$std_res_I
+
+## Explore parameter correlations
+dsd <- sqrt(diag(sd_rep$cov.fixed))
+cor_mat <- diag(1 / dsd) %*% sd_rep$cov.fixed %*% diag(1 / dsd)
+rownames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
+colnames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
+cor_tab <- as.data.frame.table(cor_mat)
+names(cor_tab) <- c("x", "y", "z")
+cor_tab %>%
+    plot_ly(x = ~x, y = ~y, z = ~z, text = ~text,
+            colors = c("#B2182B", "white", "#2166AC")) %>%
+    add_heatmap() %>%
+    layout(xaxis = list(title = "", showticklabels = FALSE),
+           yaxis = list(title = "", showticklabels = FALSE))
+
+## Index residuals
+head(index)
+p <- index %>% plot_ly(color = ~ss, colors = viridis::viridis(100))
+p %>% add_markers(x = ~year, y = ~std_res)
+p %>% add_markers(x = ~log(pred), y = ~std_res)
+
+## Process error residuals
+pe <- data.frame(year = landings$year,
+                 species = landings$species,
+                 pe = est$log_res_P,
+                 pe_lwr = lwr$log_res_P,
+                 pe_upr = upr$log_res_P)
+p <- plot_ly()
+for (nm in unique(pe$species)) {
+    p <- p %>% add_fit(data = pe[pe$species == nm, ],
+                       x = ~year, color = ~species, colors = viridis::viridis(100),
+                       yline = ~pe,
+                       legendgroup = ~species)
+}
+p
+
 
 p <- plot_ly()
 for (nm in levels(index$ss)) {
@@ -98,6 +140,7 @@ for (nm in unique(biomass$species)) {
                        yline = ~B, ymin = ~B_lwr, ymax = ~B_upr,
                        legendgroup = ~species)
 }
+p
 p %>% layout(yaxis = list(type = "log"))
 
 
@@ -115,20 +158,7 @@ for (nm in unique(prop$species)) {
                        legendgroup = ~species)
 }
 p
+p %>% layout(yaxis = list(type = "log"))
 
 
-pe <- data.frame(year = landings$year,
-                 species = landings$species,
-                 pe = exp(est$log_res_P),
-                 pe_lwr = exp(lwr$log_res_P),
-                 pe_upr = exp(upr$log_res_P))
-
-p <- plot_ly()
-for (nm in unique(pe$species)) {
-    p <- p %>% add_fit(data = pe[pe$species == nm, ],
-                       x = ~year, color = ~species, colors = viridis::viridis(100),
-                       yline = ~pe,
-                       legendgroup = ~species)
-}
-p
 
