@@ -10,9 +10,12 @@ landings <- MSP::landings
 
 ## Subset the data
 # landings <- landings[landings$year >= min(index$year), ]
-start_year <- 1975
+start_year <- 1985
 index <- index[index$year >= start_year, ]
 landings <- landings[landings$year >= start_year, ]
+sub_sp <- c("Cod", "Yellowtail", "Witch", "Plaice")
+index <- index[index$species %in% sub_sp, ]
+landings <- landings[landings$species %in% sub_sp, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -47,13 +50,16 @@ dat <- list(L = as.numeric(landings$landings),
 par <- list(log_P = rep(0, nrow(landings)),
             log_sd_P = rep(0, nlevels(landings$species)),
             log_K = rep(5, nlevels(landings$species)),
-            log_r = rep(0, nlevels(landings$species)),
+            log_mu_r = rep(log(0.5), nlevels(landings$species)),
+            log_sd_r = 0,
+            log_res_r = rep(0, nrow(landings)),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(0, nlevels(index$ss)),
             log_sd_I = rep(0, nlevels(index$ss)))
-map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
+map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
+            log_res_r = landings$y)
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
+obj <- MakeADFun(dat, par, map = map, random = c("log_P", "log_res_r"), DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
@@ -113,4 +119,19 @@ for (nm in unique(pe$species)) {
 }
 p
 
+
+
+r <- data.frame(year = landings$year,
+                 species = landings$species,
+                 r = exp(est$log_r),
+                 r_lwr = exp(lwr$log_r),
+                 r_upr = exp(upr$log_r))
+p <- plot_ly()
+for (nm in unique(r$species)) {
+    p <- p %>% add_fit(data = r[r$species == nm, ],
+                       x = ~year, color = ~species, colors = viridis::viridis(100),
+                       yline = ~r, ymin = ~r_lwr, ymax = ~r_upr,
+                       legendgroup = ~species)
+}
+p
 

@@ -25,7 +25,9 @@ Type objective_function<Type>::operator() ()
     PARAMETER_VECTOR(log_P);
     PARAMETER_VECTOR(log_sd_P);
     PARAMETER_VECTOR(log_K);
-    PARAMETER_VECTOR(log_r);
+    PARAMETER_VECTOR(log_mu_r);
+    PARAMETER(log_sd_r);
+    PARAMETER_VECTOR(log_res_r);
     PARAMETER_VECTOR(log_m);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_sd_I);
@@ -35,7 +37,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> P = exp(log_P);
     vector<Type> sd_P = exp(log_sd_P);
     vector<Type> K = exp(log_K);
-    vector<Type> r = exp(log_r);
+    Type sd_r = exp(log_sd_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
 
@@ -44,8 +46,11 @@ Type objective_function<Type>::operator() ()
     vector<Type> pred_P(nL);
     vector<Type> log_pred_P(nL);
     vector<Type> log_res_P(nL);
+    vector<Type> log_pred_r(nL);
     vector<Type> B(nL);
     vector<Type> log_B(nL);
+    vector<Type> log_r(nL);
+    vector<Type> r(nL);
     int nI = I.size();
     vector<Type> log_pred_I(nI);
     vector<Type> log_res_I(nI);
@@ -57,18 +62,27 @@ Type objective_function<Type>::operator() ()
     // Process equation
     for (int i = 0; i < nL; i++){
         if (L_year(i) == 0) {
+            log_r(i) = log_mu_r(L_species(i)) + log_res_r(i);
+            r(i) = exp(log_r(i));
+            nll -= dnorm(log_res_r(i), Type(0), sd_r, true);
             nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
             SIMULATE {
+                log_res_r(i) = rnorm(Type(0), sd_r);
                 log_P(i) = rnorm(Type(0), sd_P(L_species(i)));
             }
         } else {
+            nll -= dnorm(log_res_r(i), log_res_r(i - 1), sd_r, true);
+            log_r(i) = log_mu_r(L_species(i)) + log_res_r(i);
+            r(i) = exp(log_r(i));
             pred_P(i) = P(i - 1) +
-                (r(L_species(i)) / (m(L_species(i)) - 1)) *
+                (r(i - 1) / (m(L_species(i)) - 1)) *
                 (Type(1) - pow(P(i - 1), m(L_species(i)) - Type(1))) -
                 (L(i - 1) / K(L_species(i)));
             pred_P(i) = pos_fun(pred_P(i), min_P, pen);
             nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
+            log_r(i) = log_mu_r(L_species(i)) + log_r(i - 1);
             SIMULATE {
+                log_res_r(i) = rnorm(log_res_r(i - 1), sd_r);
                 log_P(i) = rnorm(log(pred_P(i)), sd_P(L_species(i)));
             }
         }
@@ -93,6 +107,8 @@ Type objective_function<Type>::operator() ()
     log_res_I = log_I - log_pred_I;
 
     // AD report values
+    ADREPORT(log_r);
+    ADREPORT(log_res_r);
     ADREPORT(log_P);
     ADREPORT(log_pred_P);
     ADREPORT(log_res_P);
@@ -102,6 +118,7 @@ Type objective_function<Type>::operator() ()
 
     // Report simulated values
     SIMULATE {
+        REPORT(log_res_r);
         REPORT(log_P);
         REPORT(log_I);
     }
