@@ -1,4 +1,7 @@
 
+## TODO:
+## - Get Rstrap calls from DE's and run yourself in data-raw
+
 library(units)
 library(plotly)
 library(TMB)
@@ -10,7 +13,7 @@ landings <- MSP::landings
 
 ## Subset the data
 # landings <- landings[landings$year >= min(index$year), ]
-start_year <- 1975
+start_year <- 1985 # restricted by hake and skate landings
 index <- index[index$year >= start_year, ]
 landings <- landings[landings$year >= start_year, ]
 
@@ -33,7 +36,7 @@ landings %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~landings, color = ~species,
               colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(title = "Landings"))
+    layout(yaxis = list(type = "log", title = "Landings"))
 
 
 dat <- list(L = as.numeric(landings$landings),
@@ -95,6 +98,22 @@ for (nm in unique(biomass$species)) {
                        yline = ~B, ymin = ~B_lwr, ymax = ~B_upr,
                        legendgroup = ~species)
 }
+p %>% layout(yaxis = list(type = "log"))
+
+
+prop <- data.frame(year = landings$year,
+                   species = landings$species,
+                   P = exp(est$log_P),
+                   P_lwr = exp(lwr$log_P),
+                   P_upr = exp(upr$log_P))
+
+p <- plot_ly()
+for (nm in unique(prop$species)) {
+    p <- p %>% add_fit(data = prop[prop$species == nm, ],
+                       x = ~year, color = ~species, colors = viridis::viridis(100),
+                       yline = ~P, ymin = ~P_lwr, ymax = ~P_upr,
+                       legendgroup = ~species)
+}
 p
 
 
@@ -108,7 +127,7 @@ p <- plot_ly()
 for (nm in unique(pe$species)) {
     p <- p %>% add_fit(data = pe[pe$species == nm, ],
                        x = ~year, color = ~species, colors = viridis::viridis(100),
-                       yline = ~pe, ymin = ~pe_lwr, ymax = ~pe_upr,
+                       yline = ~pe,
                        legendgroup = ~species)
 }
 p
