@@ -10,10 +10,10 @@ landings <- MSP::landings
 
 ## Subset the data
 # landings <- landings[landings$year >= min(index$year), ]
-start_year <- 1985
+start_year <- 1990
 index <- index[index$year >= start_year, ]
 landings <- landings[landings$year >= start_year, ]
-sub_sp <- c("Cod", "Yellowtail", "Witch", "Plaice")
+sub_sp <- c("Cod", "Yellowtail", "Witch")
 index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$species %in% sub_sp, ]
 
