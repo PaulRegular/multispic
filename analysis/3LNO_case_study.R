@@ -5,8 +5,6 @@
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
 
-## - Something is messed up with the process error
-
 library(units)
 library(plotly)
 library(TMB)
@@ -114,6 +112,16 @@ for (nm in unique(pe$species)) {
 }
 p
 
+## Correlation in pe
+pe_wide <- tidyr::spread(pe[, c("year", "species", "pe")], species, pe)
+pe_wide$year <- NULL
+plot(pe_wide)
+pe_wide <- as.matrix(pe_wide)
+pe_wide[is.infinite(pe_wide)] <- NA
+cor_mat <- cor(pe_wide, use = "na.or.complete")
+plot_ly(x = rownames(cor_mat), y = rownames(cor_mat), z = ~cor_mat) %>%
+    add_heatmap()
+corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 
 p <- plot_ly()
 for (nm in levels(index$ss)) {
@@ -160,5 +168,10 @@ for (nm in unique(prop$species)) {
 p
 p %>% layout(yaxis = list(type = "log"))
 
+
+par_est <- split(opt$par, names(opt$par))
+lapply(names(par_est), function(nm) hist(exp(par_est[[nm]]), xlab = nm, main = nm))
+## consider random effect on process error, observation error
+## and q (especially when you replace mwpt with total estimates)
 
 
