@@ -1,5 +1,7 @@
 #include <TMB.hpp>
 
+using namespace density;
+
 // Function for keeping values positive
 template<class Type>
 Type pos_fun(Type x, Type eps, Type &pen){
@@ -20,10 +22,12 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_survey);  // note: survey factor is species specific
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_P);
+    DATA_IMATRIX(cor_ind);   // indexing for the correlation matrix
 
     // Parameters
     PARAMETER_VECTOR(log_P);
     PARAMETER_VECTOR(log_sd_P);
+    PARAMETER_VECTOR(logit_cor);
     PARAMETER_VECTOR(log_K);
     PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_m);
@@ -34,12 +38,21 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_I = log(I);
     vector<Type> P = exp(log_P);
     vector<Type> sd_P = exp(log_sd_P);
+    vector<Type> cor = invlogit(logit_cor);
     vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
 
     // Containers
+    int nC = cor.size();    // number of correlation parameters
+    int nS = sd_P.size();   // number of species
+    matrix<Type> cor_mat(nS, nS);
+    cor_mat.setZero();
+    matrix<Type> sd_mat(nS, nS);
+    sd_mat.setZero();
+    matrix<Type> Sigma(nS, nS);
+    Sigma.setZero();
     int nL = L.size();
     vector<Type> pred_P(nL);
     vector<Type> log_pred_P(nL);
@@ -54,6 +67,23 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+
+    // Set-up covariance matrix
+    for (int i = 0; i < nS; i++) {
+        for (int j = 0; j < nS; j++) {
+            if (j == i) {
+                cor_mat(i, j) = Type(1);
+            }
+        }
+    }
+    for (int i = 0; i < nC; i++) {
+        cor_mat(cor_ind(i, 0), cor_ind(i, 1)) = cor(i);
+        cor_mat(cor_ind(i, 1), cor_ind(i, 0)) = cor(i);
+    }
+    for (int i = 0; i < nS; i++) {
+        sd_mat(i, i) = sd_P(i);
+    }
+    Sigma = sd_mat * cor_mat * sd_mat;
 
     // Process equation
     for (int i = 0; i < nL; i++){
@@ -107,6 +137,9 @@ Type objective_function<Type>::operator() ()
         REPORT(log_I);
     }
 
+    REPORT(cor_mat);
+    REPORT(sd_mat);
+    REPORT(Sigma);
     REPORT(pen);
     nll += pen;
     return nll;

@@ -42,6 +42,10 @@ landings %>%
     layout(yaxis = list(type = "log", title = "Landings"))
 
 
+## Set up correlations to estimate
+cor_nms <- t(combn(levels(landings$species), 2))
+cor_ind <- t(combn(seq(nlevels(landings$species)) - 1, 2))
+
 dat <- list(L = as.numeric(landings$landings),
             L_species = as.numeric(landings$species) - 1,
             L_year = as.numeric(landings$y) - 1,
@@ -49,15 +53,18 @@ dat <- list(L = as.numeric(landings$landings),
             I_species = as.numeric(index$species) - 1,
             I_survey = as.numeric(index$ss) - 1,
             I_sy = as.numeric(index$sy) - 1,
-            min_P = 0.0001)
+            min_P = 0.0001,
+            cor_ind = cor_ind)
 par <- list(log_P = rep(0, nrow(landings)),
             log_sd_P = rep(0, nlevels(landings$species)),
+            logit_cor = rnorm(nrow(cor_ind)), # rep(0, nrow(cor_ind)),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(0, nlevels(index$ss)),
             log_sd_I = rep(0, nlevels(index$ss)))
-map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
+map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
+            logit_cor = factor(rep(NA, length(par$logit_cor))))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
