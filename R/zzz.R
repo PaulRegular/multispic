@@ -1,7 +1,7 @@
 
 #' @import TMB
-#' @useDynLib MSP
+#' @useDynLib multispic
 
 .onUnload <- function(lib) {
-    library.dynam.unload("MSP", lib)
+    library.dynam.unload("multispic", lib)
 }

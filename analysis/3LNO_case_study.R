@@ -9,13 +9,13 @@ library(units)
 library(plotly)
 library(TMB)
 
-unique(MSP::landings$species)
+unique(multispic::landings$species)
 
-index <- MSP::index
-landings <- MSP::landings
+index <- multispic::index
+landings <- multispic::landings
 
 ## Subset the data
-sub_sp <- unique(MSP::landings$species)
+sub_sp <- unique(multispic::landings$species)
 start_year <- 1985 # restricted by hake and skate landings
 index <- index[index$year >= start_year & index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$species %in% sub_sp, ]
@@ -66,7 +66,7 @@ par <- list(log_P = rep(0, nrow(landings)),
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(NA, length(par$logit_cor))))
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
+obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
