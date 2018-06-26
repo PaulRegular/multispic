@@ -5,6 +5,9 @@
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
 
+## - Transform correlations from -Inf to Inf to -1 and 1
+## - Should P be a parameter matrix?
+
 library(units)
 library(plotly)
 library(TMB)
@@ -17,8 +20,11 @@ landings <- multispic::landings
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 start_year <- 1985 # restricted by hake and skate landings
-index <- index[index$year >= start_year & index$species %in% sub_sp, ]
-landings <- landings[landings$year >= start_year & landings$species %in% sub_sp, ]
+end_year <- 2016
+index <- index[index$year >= start_year & index$year <= end_year &
+                   index$species %in% sub_sp, ]
+landings <- landings[landings$year >= start_year & landings$year <= end_year &
+                         landings$species %in% sub_sp, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -54,10 +60,11 @@ dat <- list(L = as.numeric(landings$landings),
             I_survey = as.numeric(index$ss) - 1,
             I_sy = as.numeric(index$sy) - 1,
             min_P = 0.0001,
-            cor_ind = cor_ind)
+            cor_ind = cor_ind,
+            nY = max(as.numeric(landings$y)))
 par <- list(log_P = rep(0, nrow(landings)),
             log_sd_P = rep(0, nlevels(landings$species)),
-            logit_cor = rnorm(nrow(cor_ind)), # rep(0, nrow(cor_ind)),
+            logit_cor = rep(-Inf, nrow(cor_ind)),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
