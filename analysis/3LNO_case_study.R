@@ -7,10 +7,13 @@
 
 ## - Transform correlations from -Inf to Inf to -1 and 1
 ## - Should P be a parameter matrix?
+## - Figure out how to simulate using MVNORM
+## - study https://kaskr.github.io/adcomp/mvrw_8cpp-example.html more
 
 library(units)
 library(plotly)
 library(TMB)
+library(multispic)
 
 unique(multispic::landings$species)
 
@@ -61,10 +64,12 @@ dat <- list(L = as.numeric(landings$landings),
             I_sy = as.numeric(index$sy) - 1,
             min_P = 0.0001,
             cor_ind = cor_ind,
-            nY = max(as.numeric(landings$y)))
-par <- list(log_P = rep(0, nrow(landings)),
+            nY = max(as.numeric(landings$y)),
+            nS = max(as.numeric(landings$species)))
+par <- list(log_P = matrix(0, nrow = length(unique(landings$year)),
+                           ncol = length(unique(landings$species))),
             log_sd_P = rep(0, nlevels(landings$species)),
-            logit_cor = rep(-Inf, nrow(cor_ind)),
+            logit_cor = rep(2, nrow(cor_ind)),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
@@ -77,6 +82,14 @@ obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
+
+par <- as.list(sd_rep, "Est")
+map$logit_cor <- NULL
+obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
+opt <- nlminb(obj$par, obj$fn, obj$gr,
+              control = list(eval.max = 1000, iter.max = 1000))
+sd_rep <- sdreport(obj)
+
 obj$report()
 exp(opt$par)
 sd_rep

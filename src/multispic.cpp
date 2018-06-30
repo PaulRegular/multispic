@@ -37,7 +37,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_I = log(I);
     vector<Type> P = exp(log_P);
     vector<Type> sd_P = exp(log_sd_P);
-    vector<Type> cor = invlogit(logit_cor);
+    vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
     vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
@@ -94,7 +94,7 @@ Type objective_function<Type>::operator() ()
     for (int i = 0; i < nL; i++){
         if (L_year(i) == 0) {
             epislon_P(L_year(i), L_species(i)) = log_P(i) - Type(0);
-            nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
+            // nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
             dnorm_nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
             SIMULATE {
                 log_P(i) = rnorm(Type(0), sd_P(L_species(i)));
@@ -106,7 +106,7 @@ Type objective_function<Type>::operator() ()
                 (L(i - 1) / K(L_species(i)));
             pred_P(i) = pos_fun(pred_P(i), min_P, pen);
             epislon_P(L_year(i), L_species(i)) = log_P(i) - log(pred_P(i));
-            nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
+            // nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
             dnorm_nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
             SIMULATE {
                 log_P(i) = rnorm(log(pred_P(i)), sd_P(L_species(i)));
@@ -116,11 +116,9 @@ Type objective_function<Type>::operator() ()
     }
 
     for (int i = 0; i < nY; i++) {
+        nll += dmvnorm(epislon_P.row(i));
         dmvnorm_nll += dmvnorm(epislon_P.row(i));
     }
-
-
-
 
     // Observation equations
     for (int i = 0; i < nI; i++){
