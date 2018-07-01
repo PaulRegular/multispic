@@ -116,7 +116,8 @@ Type objective_function<Type>::operator() ()
     }
 
     for (int i = 0; i < nY; i++) {
-        nll += dmvnorm(epislon_P.row(i));
+        nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_P)(epislon_P.row(i));
+        // nll += dmvnorm(epislon_P.row(i));
         dmvnorm_nll += dmvnorm(epislon_P.row(i));
     }
 
