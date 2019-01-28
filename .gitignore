@@ -4,4 +4,5 @@
 *.o
 *.dll
 /data-raw/excel_files/
+/data-raw/nafo_scr/
 .Rproj.user
