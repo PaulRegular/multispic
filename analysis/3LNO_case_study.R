@@ -4,7 +4,6 @@
 ## - Make year 0 species specific, and start model when landings start
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
-
 ## - Transform correlations from -Inf to Inf to -1 and 1
 ## - Should P be a parameter matrix?
 ## - Figure out how to simulate using MVNORM
@@ -25,8 +24,10 @@ landings <- multispic::landings
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
-start_year <- 1985 # restricted by hake and skate landings
-end_year <- 2016
+sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
+# sub_sp <- c("Plaice", "Cod")
+start_year <- 1970 # restricted to 1985 if using hake and skate landings
+end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
@@ -81,6 +82,7 @@ par <- list(log_P = matrix(0, nrow = length(unique(landings$year)),
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(NA, length(par$logit_cor))))
 map$logit_cor <- NULL
+# map <- NULL
 
 obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
@@ -89,6 +91,13 @@ sd_rep <- sdreport(obj)
 obj$report()
 exp(opt$par)
 sd_rep
+
+par_est <- as.list(sd_rep, "Est")
+par_se <- as.list(sd_rep, "Std. Error")
+knitr::kable(data.frame(cor_nms,
+                        cor = plogis(par_est$logit_cor),
+                        cv = par_se$logit_cor),
+             digits = 3)
 
 ## Extract some estimates
 est <- split(unname(sd_rep$value), names(sd_rep$value))
@@ -193,7 +202,8 @@ p %>% layout(yaxis = list(type = "log"))
 
 
 par_est <- split(opt$par, names(opt$par))
-lapply(names(par_est), function(nm) hist(exp(par_est[[nm]]), xlab = nm, main = nm))
+lapply(names(par_est), function(nm) hist(exp(par_est[[nm]]),
+                                         xlab = nm, main = nm, breaks = 15))
 ## consider random effect on process error, observation error
 ## and q (especially when you replace mwpt with total estimates)
 

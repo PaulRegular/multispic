@@ -44,14 +44,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> sd_I = exp(log_sd_I);
 
     // Containers
-    int nC = cor.size();          // number of correlation parameters
     int nS = sd_P.size();         // number of species
-    matrix<Type> cor_mat(nS, nS);
-    cor_mat.setZero();
-    matrix<Type> sd_mat(nS, nS);
-    sd_mat.setZero();
-    matrix<Type> cov_mat(nS, nS);
-    cov_mat.setZero();
     matrix<Type> epislon_P(nY, nS);
     int nL = L.size();
     vector<Type> pred_P(nL);
@@ -67,38 +60,11 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
-    Type dnorm_nll = Type(0);
-    Type dmvnorm_nll = Type(0);
-
-    // Set-up covariance matrix
-    for (int i = 0; i < nS; i++) {
-        for (int j = 0; j < nS; j++) {
-            if (j == i) {
-                cor_mat(i, j) = Type(1);
-            }
-        }
-    }
-    for (int i = 0; i < nC; i++) {
-        cor_mat(cor_ind(i, 0), cor_ind(i, 1)) = cor(i);
-        cor_mat(cor_ind(i, 1), cor_ind(i, 0)) = cor(i);
-    }
-    for (int i = 0; i < nS; i++) {
-        sd_mat(i, i) = sd_P(i);
-    }
-    cov_mat = sd_mat * cor_mat * sd_mat;
-
-    using namespace density;
-    MVNORM_t<Type> dmvnorm(cov_mat);
 
     // Process equation
     for (int i = 0; i < nL; i++){
         if (L_year(i) == 0) {
             epislon_P(L_year(i), L_species(i)) = log_P(i) - Type(0);
-            // nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
-            dnorm_nll -= dnorm(log_P(i), Type(0), sd_P(L_species(i)), true);
-            SIMULATE {
-                log_P(i) = rnorm(Type(0), sd_P(L_species(i)));
-            }
         } else {
             pred_P(i) = P(i - 1) +
                 (r(L_species(i)) / (m(L_species(i)) - 1)) *
@@ -106,19 +72,13 @@ Type objective_function<Type>::operator() ()
                 (L(i - 1) / K(L_species(i)));
             pred_P(i) = pos_fun(pred_P(i), min_P, pen);
             epislon_P(L_year(i), L_species(i)) = log_P(i) - log(pred_P(i));
-            // nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
-            dnorm_nll -= dnorm(log_P(i), log(pred_P(i)), sd_P(L_species(i)), true);
-            SIMULATE {
-                log_P(i) = rnorm(log(pred_P(i)), sd_P(L_species(i)));
-            }
         }
         B(i) = P(i) * K(L_species(i));
     }
 
+    using namespace density;
     for (int i = 0; i < nY; i++) {
         nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_P)(epislon_P.row(i));
-        // nll += dmvnorm(epislon_P.row(i));
-        dmvnorm_nll += dmvnorm(epislon_P.row(i));
     }
 
     // Observation equations
@@ -127,9 +87,6 @@ Type objective_function<Type>::operator() ()
         nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
         log_res_I(i) = log_I(i) - log_pred_I(i);
         std_res_I(i) = log_res_I(i) / sd_I(I_survey(i));
-        SIMULATE {
-            log_I(i) = rnorm(log_pred_I(i), sd_I(I_survey(i)));
-        }
     }
 
     // More transformations
@@ -146,17 +103,6 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_res_I);
     ADREPORT(std_res_I);
 
-    // Report simulated values
-    SIMULATE {
-        REPORT(log_P);
-        REPORT(log_I);
-    }
-
-    REPORT(cor_mat);
-    REPORT(sd_mat);
-    REPORT(cov_mat);
-    REPORT(dnorm_nll);
-    REPORT(dmvnorm_nll);
     REPORT(pen);
     nll += pen;
     return nll;
