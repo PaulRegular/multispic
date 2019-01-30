@@ -4,13 +4,17 @@
 ## - Make year 0 species specific, and start model when landings start
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
-## - Transform correlations from -Inf to Inf to -1 and 1
 ## - Should P be a parameter matrix?
 ## - Figure out how to simulate using MVNORM
 ## - Study https://kaskr.github.io/adcomp/mvrw_8cpp-example.html more
 ## - Study Albertsen paper and code more to try and figure out the percision
 ##   matrix calculations
 ## - Study https://kaskr.github.io/adcomp/_book/Densities.html more
+
+## - Continue to clean up this code. Make the process error matrix the random
+##   effect. Calculate nY and nS inside TMB. Estimate P0 as a fixed effect.
+##   All other P values should follow.
+
 
 library(units)
 library(plotly)
@@ -24,9 +28,9 @@ landings <- multispic::landings
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
-sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
+# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
 # sub_sp <- c("Plaice", "Cod")
-start_year <- 1970 # restricted to 1985 if using hake and skate landings
+start_year <- 1985 # restricted to 1985 if using hake and skate landings
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -70,9 +74,10 @@ dat <- list(L = as.numeric(landings$landings),
             cor_ind = cor_ind,
             nY = max(as.numeric(landings$y)),
             nS = max(as.numeric(landings$species)))
-par <- list(log_P = matrix(0, nrow = length(unique(landings$year)),
-                           ncol = length(unique(landings$species))),
-            log_sd_P = rep(0, nlevels(landings$species)),
+par <- list(pe = matrix(0, nrow = length(unique(landings$year)),
+                        ncol = length(unique(landings$species))),
+            logit_P0 = rep(5, nlevels(landings$species)),
+            log_sd_pe = rep(0, nlevels(landings$species)),
             logit_cor = rep(0, nrow(cor_ind)),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
@@ -81,10 +86,10 @@ par <- list(log_P = matrix(0, nrow = length(unique(landings$year)),
             log_sd_I = rep(0, nlevels(index$ss)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(NA, length(par$logit_cor))))
-map$logit_cor <- NULL
+# map$logit_cor <- NULL
 # map <- NULL
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
+obj <- MakeADFun(dat, par, map = map, random = "pe", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
