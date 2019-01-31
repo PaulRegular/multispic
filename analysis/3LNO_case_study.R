@@ -4,17 +4,13 @@
 ## - Make year 0 species specific, and start model when landings start
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
+## - Transform correlations from -Inf to Inf to -1 and 1
 ## - Should P be a parameter matrix?
 ## - Figure out how to simulate using MVNORM
 ## - Study https://kaskr.github.io/adcomp/mvrw_8cpp-example.html more
 ## - Study Albertsen paper and code more to try and figure out the percision
 ##   matrix calculations
 ## - Study https://kaskr.github.io/adcomp/_book/Densities.html more
-
-## - Continue to clean up this code. Make the process error matrix the random
-##   effect. Calculate nY and nS inside TMB. Estimate P0 as a fixed effect.
-##   All other P values should follow.
-
 
 library(units)
 library(plotly)
@@ -29,7 +25,7 @@ landings <- multispic::landings
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
-# sub_sp <- c("Plaice", "Cod")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail")
 start_year <- 1985 # restricted to 1985 if using hake and skate landings
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -46,23 +42,22 @@ index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landi
 index$ss <- factor(paste0(index$species, "-", index$survey))
 index$species <- factor(index$species)
 
-index %>%
+p <- index %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~index, color = ~ss,
-              colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(type = "log", title = "index"))
+              colors = viridis::viridis(100))
+p
+p %>% layout(yaxis = list(type = "log"))
 
-landings %>%
+p <- landings %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~landings, color = ~species,
-              colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(type = "log", title = "Landings"))
+              colors = viridis::viridis(100))
+p
+p %>% layout(yaxis = list(type = "log"))
 
-
-## Set up correlations to estimate
-cor_nms <- t(combn(levels(landings$species), 2))
-cor_ind <- t(combn(seq(nlevels(landings$species)) - 1, 2))
-
+n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
+                              ncol = nlevels(landings$species))))
 dat <- list(L = as.numeric(landings$landings),
             L_species = as.numeric(landings$species) - 1,
             L_year = as.numeric(landings$y) - 1,
@@ -71,38 +66,30 @@ dat <- list(L = as.numeric(landings$landings),
             I_survey = as.numeric(index$ss) - 1,
             I_sy = as.numeric(index$sy) - 1,
             min_P = 0.0001,
-            cor_ind = cor_ind,
             nY = max(as.numeric(landings$y)),
             nS = max(as.numeric(landings$species)))
-par <- list(pe = matrix(0, nrow = length(unique(landings$year)),
-                        ncol = length(unique(landings$species))),
-            logit_P0 = rep(5, nlevels(landings$species)),
-            log_sd_pe = rep(0, nlevels(landings$species)),
-            logit_cor = rep(0, nrow(cor_ind)),
+par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
+            log_P0 = rep(0, nlevels(landings$species)),
+            log_sd_P = rep(0, nlevels(landings$species)),
+            logit_cor = rep(0, n_cor),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(0, nlevels(index$ss)),
-            log_sd_I = rep(0, nlevels(index$ss)))
+            log_sd_I = rep(-2, nlevels(index$ss)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
-            logit_cor = factor(rep(NA, length(par$logit_cor))))
+            logit_cor = factor(rep(1, length(par$logit_cor))),
+            log_P0 = factor(rep(NA, nlevels(landings$species))))
 # map$logit_cor <- NULL
 # map <- NULL
 
-obj <- MakeADFun(dat, par, map = map, random = "pe", DLL = "multispic")
+obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
 obj$report()
 exp(opt$par)
 sd_rep
-
-par_est <- as.list(sd_rep, "Est")
-par_se <- as.list(sd_rep, "Std. Error")
-knitr::kable(data.frame(cor_nms,
-                        cor = plogis(par_est$logit_cor),
-                        cv = par_se$logit_cor),
-             digits = 3)
 
 ## Extract some estimates
 est <- split(unname(sd_rep$value), names(sd_rep$value))
@@ -174,9 +161,9 @@ p
 
 biomass <- data.frame(year = landings$year,
                       species = landings$species,
-                      B = exp(est$log_B),
-                      B_lwr = exp(lwr$log_B),
-                      B_upr = exp(upr$log_B))
+                      B = exp(est$log_B_vec),
+                      B_lwr = exp(lwr$log_B_vec),
+                      B_upr = exp(upr$log_B_vec))
 
 p <- plot_ly()
 for (nm in unique(biomass$species)) {
@@ -191,9 +178,9 @@ p %>% layout(yaxis = list(type = "log"))
 
 prop <- data.frame(year = landings$year,
                    species = landings$species,
-                   P = exp(est$log_P),
-                   P_lwr = exp(lwr$log_P),
-                   P_upr = exp(upr$log_P))
+                   P = exp(est$log_P_vec),
+                   P_lwr = exp(lwr$log_P_vec),
+                   P_upr = exp(upr$log_P_vec))
 
 p <- plot_ly()
 for (nm in unique(prop$species)) {
