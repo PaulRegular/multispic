@@ -25,7 +25,7 @@ landings <- multispic::landings
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
-# sub_sp <- c("Cod", "Plaice", "Yellowtail")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Hake", "Skate")
 start_year <- 1985 # restricted to 1985 if using hake and skate landings
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -124,9 +124,9 @@ p %>% add_markers(x = ~log(pred), y = ~std_res)
 ## Process error residuals
 pe <- data.frame(year = landings$year,
                  species = landings$species,
-                 pe = est$log_res_P,
-                 pe_lwr = lwr$log_res_P,
-                 pe_upr = upr$log_res_P)
+                 pe = est$log_P_res,
+                 pe_lwr = lwr$log_P_res,
+                 pe_upr = upr$log_P_res)
 p <- plot_ly()
 for (nm in unique(pe$species)) {
     p <- p %>% add_fit(data = pe[pe$species == nm, ],

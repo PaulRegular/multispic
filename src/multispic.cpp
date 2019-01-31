@@ -44,6 +44,7 @@ Type objective_function<Type>::operator() ()
     matrix<Type> log_pred_P(nY, nS);
     vector<Type> P_vec(nL);
     vector<Type> log_P_vec(nL);
+    vector<Type> log_P_res(nL);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
     vector<Type> log_pred_I(nI);
@@ -102,8 +103,14 @@ Type objective_function<Type>::operator() ()
     }
 
 
+    // Calculate residuals
+    for (int i = 0; i < nL; i++) {
+        log_P_res(i) = log_P(L_year(i), L_species(i)) - log_pred_P(L_year(i), L_species(i));
+    }
+
     // AD report values
     ADREPORT(log_P_vec);
+    ADREPORT(log_P_res);
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
     ADREPORT(log_res_I);
