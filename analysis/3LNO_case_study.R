@@ -4,23 +4,34 @@
 ## - Make year 0 species specific, and start model when landings start
 ## - Look into calculating one-step ahead residuals
 ## - Continue to think of ways to share information across species
-
-## - Something is messed up with the process error
+## - Transform correlations from -Inf to Inf to -1 and 1
+## - Should P be a parameter matrix?
+## - Figure out how to simulate using MVNORM
+## - Study https://kaskr.github.io/adcomp/mvrw_8cpp-example.html more
+## - Study Albertsen paper and code more to try and figure out the percision
+##   matrix calculations
+## - Study https://kaskr.github.io/adcomp/_book/Densities.html more
 
 library(units)
 library(plotly)
 library(TMB)
+library(multispic)
 
-unique(MSP::landings$species)
+unique(multispic::landings$species)
 
-index <- MSP::index
-landings <- MSP::landings
+index <- multispic::index
+landings <- multispic::landings
 
 ## Subset the data
-sub_sp <- unique(MSP::landings$species)
-start_year <- 1985 # restricted by hake and skate landings
-index <- index[index$year >= start_year & index$species %in% sub_sp, ]
-landings <- landings[landings$year >= start_year & landings$species %in% sub_sp, ]
+sub_sp <- unique(multispic::landings$species)
+# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Hake", "Skate")
+start_year <- 1985 # restricted to 1985 if using hake and skate landings
+end_year <- 2017
+index <- index[index$year >= start_year & index$year <= end_year &
+                   index$species %in% sub_sp, ]
+landings <- landings[landings$year >= start_year & landings$year <= end_year &
+                         landings$species %in% sub_sp, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -31,19 +42,22 @@ index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landi
 index$ss <- factor(paste0(index$species, "-", index$survey))
 index$species <- factor(index$species)
 
-index %>%
+p <- index %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~index, color = ~ss,
-              colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(type = "log", title = "index"))
+              colors = viridis::viridis(100))
+p
+p %>% layout(yaxis = list(type = "log"))
 
-landings %>%
+p <- landings %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~landings, color = ~species,
-              colors = viridis::viridis(100)) %>%
-    layout(yaxis = list(type = "log", title = "Landings"))
+              colors = viridis::viridis(100))
+p
+p %>% layout(yaxis = list(type = "log"))
 
-
+n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
+                              ncol = nlevels(landings$species))))
 dat <- list(L = as.numeric(landings$landings),
             L_species = as.numeric(landings$species) - 1,
             L_year = as.numeric(landings$y) - 1,
@@ -51,17 +65,25 @@ dat <- list(L = as.numeric(landings$landings),
             I_species = as.numeric(index$species) - 1,
             I_survey = as.numeric(index$ss) - 1,
             I_sy = as.numeric(index$sy) - 1,
-            min_P = 0.0001)
-par <- list(log_P = rep(0, nrow(landings)),
+            min_P = 0.0001,
+            nY = max(as.numeric(landings$y)),
+            nS = max(as.numeric(landings$species)))
+par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
+            log_P0 = rep(0, nlevels(landings$species)),
             log_sd_P = rep(0, nlevels(landings$species)),
+            logit_cor = rep(0, n_cor),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(0, nlevels(index$ss)),
-            log_sd_I = rep(0, nlevels(index$ss)))
-map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
+            log_sd_I = rep(-2, nlevels(index$ss)))
+map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
+            logit_cor = factor(rep(1, length(par$logit_cor))),
+            log_P0 = factor(rep(NA, nlevels(landings$species))))
+# map$logit_cor <- NULL
+# map <- NULL
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "MSP")
+obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
@@ -102,9 +124,9 @@ p %>% add_markers(x = ~log(pred), y = ~std_res)
 ## Process error residuals
 pe <- data.frame(year = landings$year,
                  species = landings$species,
-                 pe = est$log_res_P,
-                 pe_lwr = lwr$log_res_P,
-                 pe_upr = upr$log_res_P)
+                 pe = est$log_P_res,
+                 pe_lwr = lwr$log_P_res,
+                 pe_upr = upr$log_P_res)
 p <- plot_ly()
 for (nm in unique(pe$species)) {
     p <- p %>% add_fit(data = pe[pe$species == nm, ],
@@ -114,6 +136,16 @@ for (nm in unique(pe$species)) {
 }
 p
 
+## Correlation in pe
+pe_wide <- tidyr::spread(pe[, c("year", "species", "pe")], species, pe)
+pe_wide$year <- NULL
+plot(pe_wide)
+pe_wide <- as.matrix(pe_wide)
+pe_wide[is.infinite(pe_wide)] <- NA
+cor_mat <- cor(pe_wide, use = "na.or.complete")
+plot_ly(x = rownames(cor_mat), y = rownames(cor_mat), z = ~cor_mat) %>%
+    add_heatmap()
+corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 
 p <- plot_ly()
 for (nm in levels(index$ss)) {
@@ -129,9 +161,9 @@ p
 
 biomass <- data.frame(year = landings$year,
                       species = landings$species,
-                      B = exp(est$log_B),
-                      B_lwr = exp(lwr$log_B),
-                      B_upr = exp(upr$log_B))
+                      B = exp(est$log_B_vec),
+                      B_lwr = exp(lwr$log_B_vec),
+                      B_upr = exp(upr$log_B_vec))
 
 p <- plot_ly()
 for (nm in unique(biomass$species)) {
@@ -146,9 +178,9 @@ p %>% layout(yaxis = list(type = "log"))
 
 prop <- data.frame(year = landings$year,
                    species = landings$species,
-                   P = exp(est$log_P),
-                   P_lwr = exp(lwr$log_P),
-                   P_upr = exp(upr$log_P))
+                   P = exp(est$log_P_vec),
+                   P_lwr = exp(lwr$log_P_vec),
+                   P_upr = exp(upr$log_P_vec))
 
 p <- plot_ly()
 for (nm in unique(prop$species)) {
@@ -160,5 +192,11 @@ for (nm in unique(prop$species)) {
 p
 p %>% layout(yaxis = list(type = "log"))
 
+
+par_est <- split(opt$par, names(opt$par))
+lapply(names(par_est), function(nm) hist(exp(par_est[[nm]]),
+                                         xlab = nm, main = nm, breaks = 15))
+## consider random effect on process error, observation error
+## and q (especially when you replace mwpt with total estimates)
 
 

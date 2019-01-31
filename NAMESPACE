@@ -2,4 +2,4 @@
 
 export(add_fit)
 import(TMB)
-useDynLib(MSP)
+useDynLib(multispic)

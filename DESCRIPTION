@@ -1,5 +1,5 @@
-Package: MSP
-Title: Multispecies Surplus Production (MSP) Model
+Package: multispic
+Title: Multispecies production model incorporating covariance
 Version: 0.0.0.9000
 Authors@R: person("Paul", "Regular", email = "Paul.Regular@dfo-mpo.gc.ca", role = c("aut", "cre"))
 Description: This is a research compendium for explorations of a multispecies surplus production model.
@@ -9,4 +9,4 @@ Encoding: UTF-8
 LazyData: true
 LinkingTo: TMB, RcppEigen
 Imports: plotly, units
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
