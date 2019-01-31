@@ -28,6 +28,8 @@ Type objective_function<Type>::operator() ()
     PARAMETER_VECTOR(logit_cor);
     PARAMETER_VECTOR(log_K);
     PARAMETER_VECTOR(log_r);
+    PARAMETER(log_r_mu);
+    PARAMETER(log_r_sd);
     PARAMETER_VECTOR(log_m);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_sd_I);
@@ -59,6 +61,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
     vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
+    Type r_sd = exp(log_r_sd);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
 
@@ -74,6 +77,9 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+
+    // Random effects
+    nll -= sum(dnorm(log_r, log_r_mu, r_sd));
 
     // Process equation
     using namespace density;

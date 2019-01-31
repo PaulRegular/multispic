@@ -74,6 +74,7 @@ par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
             logit_cor = rep(0, n_cor),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
+            log_r_mu = 0, log_r_sd = 0,
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(0, nlevels(index$ss)),
             log_sd_I = rep(-2, nlevels(index$ss)))
@@ -83,7 +84,8 @@ map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
 # map$logit_cor <- NULL
 # map <- NULL
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
+obj <- MakeADFun(dat, par, map = map, random = c("log_P", "log_r"),
+                 DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
