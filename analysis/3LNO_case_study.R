@@ -25,7 +25,7 @@ landings <- multispic::landings
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
-# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Hake", "Skate")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 start_year <- 1985 # restricted to 1985 if using hake and skate landings
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -79,7 +79,9 @@ par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
             log_sd_I = rep(-2, nlevels(index$ss)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(1, length(par$logit_cor))),
-            log_P0 = factor(rep(NA, nlevels(landings$species))))
+            log_P0 = factor(rep(NA, nlevels(landings$species))),
+            log_sd_P = factor(rep(1, nlevels(landings$species))),
+            log_q = factor(rep(1, nlevels(index$ss))))
 # map$logit_cor <- NULL
 # map <- NULL
 
