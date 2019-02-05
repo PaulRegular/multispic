@@ -1,16 +1,10 @@
 
 ## TODO:
 ## - Get Rstrap calls from DE's and run yourself in data-raw
-## - Make year 0 species specific, and start model when landings start
-## - Look into calculating one-step ahead residuals
-## - Continue to think of ways to share information across species
-## - Transform correlations from -Inf to Inf to -1 and 1
-## - Should P be a parameter matrix?
-## - Figure out how to simulate using MVNORM
-## - Study https://kaskr.github.io/adcomp/mvrw_8cpp-example.html more
-## - Study Albertsen paper and code more to try and figure out the percision
-##   matrix calculations
-## - Study https://kaskr.github.io/adcomp/_book/Densities.html more
+## - Calculate one-step ahead residuals
+## - Test q ~ season * gear * species (note: full model may not be possible)
+## - Use covariates to estimate time varrying K or r?
+## - Get hake landings for 2017
 
 library(units)
 library(plotly)
@@ -24,9 +18,9 @@ landings <- multispic::landings
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
-# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish")
+sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-start_year <- 1985 # restricted to 1985 if using hake and skate landings
+start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
