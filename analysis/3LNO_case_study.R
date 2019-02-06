@@ -1,6 +1,6 @@
 
 ## TODO:
-## - Get Rstrap calls from DE's and run yourself in data-raw
+## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Test q ~ season * gear * species (note: full model may not be possible)
 ## - Use covariates to estimate time varrying K or r?
@@ -18,7 +18,7 @@ landings <- multispic::landings
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
-sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
+# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 start_year <- 1975
 end_year <- 2017
@@ -27,23 +27,38 @@ index <- index[index$year >= start_year & index$year <= end_year &
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
 
+## Drop low estimate for redfish (problem year for redfish??)
+index <- index[index$species == "Redfish" & index$index < 0.005, ]
+
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
+landings$stock <- factor(paste(landings$stock, landings$species))
 landings$y <- factor(landings$year)
 landings$sy <- factor(paste0(landings$species, "-", landings$year))
 landings <- landings[order(landings$sy), ]
 index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
-index$ss <- factor(paste0(index$species, "-", index$survey))
+index$stock <- factor(paste(index$stock, index$species))
+index$survey <- factor(paste0(index$species, "-", index$stock, "-", index$season, "-", index$gear))
 index$species <- factor(index$species)
 
 p <- index %>%
+    group_by(survey) %>%
     plot_ly() %>%
-    add_lines(x = ~year, y = ~index, color = ~ss,
+    add_lines(x = ~year, y = ~index, color = ~species,
               colors = viridis::viridis(100))
 p
 p %>% layout(yaxis = list(type = "log"))
 
+
+index %>%
+    group_by(survey) %>%
+    mutate(scaled_index = scale(index)) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~scaled_index, color = ~species,
+              colors = viridis::viridis(100))
+
 p <- landings %>%
+    group_by(stock) %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~landings, color = ~species,
               colors = viridis::viridis(100))

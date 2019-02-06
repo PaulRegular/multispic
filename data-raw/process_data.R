@@ -2,7 +2,6 @@
 library(units)
 
 index <- read.csv("data-raw/index.csv")
-names(index) <- c("species", "stock", "survey", "year", "index")
 index$index <- set_units(index$index, "kt")
 save(index, file = "data/index.RData")
 
