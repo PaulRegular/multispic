@@ -39,12 +39,11 @@ yellowtail <- stack_strat(c("3L", "3N", "3O"), 891, "Yellowtail")
 witch <- stack_strat(c("3N", "3O"), 890, "Witch")
 cod <- stack_strat(c("3N", "3O"), 438, "Cod")
 plaice <- stack_strat(c("3L", "3N", "3O"), 889, "Plaice")
-redfish1 <- stack_strat(c("3L", "3N"), 794, "Redfish")
-redfish2 <- stack_strat(c("3O"), 794, "Redfish")
+redfish <- stack_strat(c("3L", "3N", "3O"), 794, "Redfish")
 skate <- stack_strat(c("3L", "3N", "3O"), 90, "Skate")
 hake <- stack_strat(c("3L", "3N", "3O"), 447, "Hake")
 
-index <- rbind(yellowtail, witch, cod, plaice, redfish1, redfish2, skate, hake)
+index <- rbind(yellowtail, witch, cod, plaice, redfish, skate, hake)
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 

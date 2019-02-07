@@ -17,7 +17,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(L_year);
     DATA_VECTOR(I);
     DATA_IVECTOR(I_species);
-    DATA_IVECTOR(I_survey);  // note: survey factor is species specific
+    DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_P);
 

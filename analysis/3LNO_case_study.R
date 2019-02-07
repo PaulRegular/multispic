@@ -1,6 +1,8 @@
 
 ## TODO:
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
+## - Landings data for yellowtail back to 1960?
+## - Should redfish be combined into 3LNO?
 ## - Calculate one-step ahead residuals
 ## - Test q ~ season * gear * species (note: full model may not be possible)
 ## - Use covariates to estimate time varrying K or r?
@@ -20,25 +22,21 @@ landings <- multispic::landings
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-start_year <- 1975
+start_year <- 1965
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
 
-## Drop low estimate for redfish (problem year for redfish??)
-index <- index[index$species == "Redfish" & index$index < 0.005, ]
-
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
-landings$stock <- factor(paste(landings$stock, landings$species))
 landings$y <- factor(landings$year)
 landings$sy <- factor(paste0(landings$species, "-", landings$year))
 landings <- landings[order(landings$sy), ]
 index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
-index$stock <- factor(paste(index$stock, index$species))
-index$survey <- factor(paste0(index$species, "-", index$stock, "-", index$season, "-", index$gear))
+index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
+index$gear_season <- factor(paste0(index$gear, "-", index$season))
 index$species <- factor(index$species)
 
 p <- index %>%
@@ -72,7 +70,7 @@ dat <- list(L = as.numeric(landings$landings),
             L_year = as.numeric(landings$y) - 1,
             I = as.numeric(index$index),
             I_species = as.numeric(index$species) - 1,
-            I_survey = as.numeric(index$ss) - 1,
+            I_survey = as.numeric(index$gear) - 1,
             I_sy = as.numeric(index$sy) - 1,
             min_P = 0.0001,
             nY = max(as.numeric(landings$y)),
@@ -84,15 +82,13 @@ par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
             log_K = rep(5, nlevels(landings$species)),
             log_r = rep(0, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
-            log_q = rep(0, nlevels(index$ss)),
-            log_sd_I = rep(-2, nlevels(index$ss)))
+            log_q = rep(0, nlevels(index$gear)),
+            log_sd_I = rep(-2, nlevels(index$gear)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(1, length(par$logit_cor))),
             log_P0 = factor(rep(NA, nlevels(landings$species))),
             log_sd_P = factor(rep(1, nlevels(landings$species))),
-            log_q = factor(rep(1, nlevels(index$ss))))
-# map$logit_cor <- NULL
-# map <- NULL
+            log_sd_I = factor(rep(1, nlevels(index$gear))))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
@@ -101,6 +97,9 @@ sd_rep <- sdreport(obj)
 obj$report()
 exp(opt$par)
 sd_rep
+
+## Parameter estimates
+lapply(as.list(sd_rep, "Est"), exp)
 
 ## Extract some estimates
 est <- split(unname(sd_rep$value), names(sd_rep$value))
@@ -127,14 +126,16 @@ cor_tab %>%
            yaxis = list(title = "", showticklabels = FALSE))
 
 ## Index residuals
-head(index)
-p <- index %>% plot_ly(color = ~ss, colors = viridis::viridis(100))
+p <- index %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
+p %>% add_markers(x = ~survey, y = ~std_res)
 
 ## Process error residuals
 pe <- data.frame(year = landings$year,
                  species = landings$species,
+                 stock = landings$stock,
                  pe = est$log_P_res,
                  pe_lwr = lwr$log_P_res,
                  pe_upr = upr$log_P_res)
@@ -159,12 +160,12 @@ plot_ly(x = rownames(cor_mat), y = rownames(cor_mat), z = ~cor_mat) %>%
 corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 
 p <- plot_ly()
-for (nm in levels(index$ss)) {
-    p <- p %>% add_fit(data = index[index$ss == nm, ],
-                       x = ~year, color = ~ss, colors = viridis::viridis(100),
+for (nm in levels(index$survey)) {
+    p <- p %>% add_fit(data = index[index$survey == nm, ],
+                       x = ~year, color = ~survey, colors = viridis::viridis(100),
                        ymin = ~pred_lwr, ymax = ~pred_upr,
                        ymarker = ~index, yline = ~pred,
-                       legendgroup = ~ss) %>%
+                       legendgroup = ~species) %>%
         layout(yaxis = list(type = "log", title = "index"))
 }
 p
@@ -172,6 +173,7 @@ p
 
 biomass <- data.frame(year = landings$year,
                       species = landings$species,
+                      stock = landings$stock,
                       B = exp(est$log_B_vec),
                       B_lwr = exp(lwr$log_B_vec),
                       B_upr = exp(upr$log_B_vec))
