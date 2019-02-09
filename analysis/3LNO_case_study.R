@@ -1,8 +1,7 @@
 
 ## TODO:
+## - Think more about one K (write out equation)
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
-## - Landings data for yellowtail back to 1960?
-## - Should redfish be combined into 3LNO?
 ## - Calculate one-step ahead residuals
 ## - Test q ~ season * gear * species (note: full model may not be possible)
 ## - Use covariates to estimate time varrying K or r?
@@ -22,7 +21,7 @@ landings <- multispic::landings
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-start_year <- 1965
+start_year <- 1960
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -72,23 +71,21 @@ dat <- list(L = as.numeric(landings$landings),
             I_species = as.numeric(index$species) - 1,
             I_survey = as.numeric(index$gear) - 1,
             I_sy = as.numeric(index$sy) - 1,
-            min_P = 0.0001,
+            min_P = 0.001,
             nY = max(as.numeric(landings$y)),
             nS = max(as.numeric(landings$species)))
 par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
             log_P0 = rep(0, nlevels(landings$species)),
-            log_sd_P = rep(0, nlevels(landings$species)),
+            log_sd_P = rep(-1, nlevels(landings$species)),
             logit_cor = rep(0, n_cor),
             log_K = rep(5, nlevels(landings$species)),
-            log_r = rep(0, nlevels(landings$species)),
+            log_r = rep(-1, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
-            log_q = rep(0, nlevels(index$gear)),
-            log_sd_I = rep(-2, nlevels(index$gear)))
+            log_q = rep(-1, nlevels(index$gear)),
+            log_sd_I = rep(-1, nlevels(index$gear)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
             logit_cor = factor(rep(1, length(par$logit_cor))),
-            log_P0 = factor(rep(NA, nlevels(landings$species))),
-            log_sd_P = factor(rep(1, nlevels(landings$species))),
-            log_sd_I = factor(rep(1, nlevels(index$gear))))
+            log_P0 = factor(rep(NA, nlevels(landings$species))))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
