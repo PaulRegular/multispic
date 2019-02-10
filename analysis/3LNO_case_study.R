@@ -1,9 +1,7 @@
 
 ## TODO:
-## - Think more about one K (write out equation)
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
-## - Test q ~ season * gear * species (note: full model may not be possible)
 ## - Use covariates to estimate time varrying K or r?
 ## - Get hake landings for 2017
 
@@ -17,11 +15,16 @@ unique(multispic::landings$species)
 index <- multispic::index
 landings <- multispic::landings
 
+## Scale index and landings
+index$index <- index$index / 100
+landings$landings <- landings$landings / 100
+
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-start_year <- 1960
+sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
+start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -62,6 +65,13 @@ p <- landings %>%
 p
 p %>% layout(yaxis = list(type = "log"))
 
+landings %>%
+    group_by(year) %>%
+    summarise(total_landings = sum(landings)) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~total_landings)
+
+
 n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
                               ncol = nlevels(landings$species))))
 dat <- list(L = as.numeric(landings$landings),
@@ -71,23 +81,21 @@ dat <- list(L = as.numeric(landings$landings),
             I_species = as.numeric(index$species) - 1,
             I_survey = as.numeric(index$gear) - 1,
             I_sy = as.numeric(index$sy) - 1,
-            min_P = 0.001,
+            min_B = 0.001,
             nY = max(as.numeric(landings$y)),
             nS = max(as.numeric(landings$species)))
-par <- list(log_P = matrix(0, nrow = dat$nY, ncol = dat$nS),
-            log_P0 = rep(0, nlevels(landings$species)),
-            log_sd_P = rep(-1, nlevels(landings$species)),
+par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
+            log_sd_B = rep(-1, nlevels(landings$species)),
             logit_cor = rep(0, n_cor),
-            log_K = rep(5, nlevels(landings$species)),
+            log_K = 0,
             log_r = rep(-1, nlevels(landings$species)),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(-1, nlevels(index$gear)),
             log_sd_I = rep(-1, nlevels(index$gear)))
 map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
-            logit_cor = factor(rep(1, length(par$logit_cor))),
-            log_P0 = factor(rep(NA, nlevels(landings$species))))
+            logit_cor = factor(rep(1, length(par$logit_cor))))
 
-obj <- MakeADFun(dat, par, map = map, random = "log_P", DLL = "multispic")
+obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
               control = list(eval.max = 1000, iter.max = 1000))
 sd_rep <- sdreport(obj)
@@ -133,9 +141,9 @@ p %>% add_markers(x = ~survey, y = ~std_res)
 pe <- data.frame(year = landings$year,
                  species = landings$species,
                  stock = landings$stock,
-                 pe = est$log_P_res,
-                 pe_lwr = lwr$log_P_res,
-                 pe_upr = upr$log_P_res)
+                 pe = est$log_B_res,
+                 pe_lwr = lwr$log_B_res,
+                 pe_upr = upr$log_B_res)
 p <- plot_ly()
 for (nm in unique(pe$species)) {
     p <- p %>% add_fit(data = pe[pe$species == nm, ],
@@ -186,27 +194,5 @@ p
 p %>% layout(yaxis = list(type = "log"))
 
 
-prop <- data.frame(year = landings$year,
-                   species = landings$species,
-                   P = exp(est$log_P_vec),
-                   P_lwr = exp(lwr$log_P_vec),
-                   P_upr = exp(upr$log_P_vec))
-
-p <- plot_ly()
-for (nm in unique(prop$species)) {
-    p <- p %>% add_fit(data = prop[prop$species == nm, ],
-                       x = ~year, color = ~species, colors = viridis::viridis(100),
-                       yline = ~P, ymin = ~P_lwr, ymax = ~P_upr,
-                       legendgroup = ~species)
-}
-p
-p %>% layout(yaxis = list(type = "log"))
-
-
-par_est <- split(opt$par, names(opt$par))
-lapply(names(par_est), function(nm) hist(exp(par_est[[nm]]),
-                                         xlab = nm, main = nm, breaks = 15))
-## consider random effect on process error, observation error
-## and q (especially when you replace mwpt with total estimates)
 
 
