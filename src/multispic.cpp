@@ -44,9 +44,10 @@ Type objective_function<Type>::operator() ()
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
     vector<Type> log_B_res(nL);
+    vector<Type> log_B_std_res(nL);
     vector<Type> log_pred_I(nI);
-    vector<Type> log_res_I(nI);
-    vector<Type> std_res_I(nI);
+    vector<Type> log_I_res(nI);
+    vector<Type> log_I_std_res(nI);
     matrix<Type> L_mat(nY, nS);
 
     // Transformations
@@ -89,22 +90,25 @@ Type objective_function<Type>::operator() ()
     for (int i = 0; i < nI; i++){
         log_pred_I(i) = log_q(I_survey(i)) + log_B_vec(I_sy(i));
         nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
-        log_res_I(i) = log_I(i) - log_pred_I(i);
-        std_res_I(i) = log_res_I(i) / sd_I(I_survey(i));
+        log_I_res(i) = log_I(i) - log_pred_I(i);
+        log_I_std_res(i) = log_I_res(i) / sd_I(I_survey(i));
     }
 
 
     // Calculate residuals
     for (int i = 0; i < nL; i++) {
         log_B_res(i) = log_B(L_year(i), L_species(i)) - log_pred_B(L_year(i), L_species(i));
+        log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));
     }
 
     // AD report values
     ADREPORT(log_B_vec);
-    ADREPORT(log_B_res);
     ADREPORT(log_pred_I);
-    ADREPORT(log_res_I);
-    ADREPORT(std_res_I);
+
+    REPORT(log_B_res);
+    REPORT(log_B_std_res);
+    REPORT(log_I_res);
+    REPORT(log_I_std_res);
 
     REPORT(pen);
 
