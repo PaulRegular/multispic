@@ -1,5 +1,6 @@
 
 ## TODO:
+## - Start comparing parameter estimates to those in the assessments
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
@@ -24,7 +25,7 @@ landings$landings <- landings$landings / scaler
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
+# sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -93,8 +94,8 @@ par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
             log_m = rep(log(2), nlevels(landings$species)),
             log_q = rep(-1, nlevels(index$gear_season)),
             log_sd_I = rep(-1, nlevels(index$gear_season)))
-map <- list(log_m = factor(rep(NA, nlevels(landings$species))),
-            logit_cor = factor(rep(1, length(par$logit_cor))))
+map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
+# map$logit_cor <- factor(rep(1, length(par$logit_cor)))
 
 obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "multispic")
 opt <- nlminb(obj$par, obj$fn, obj$gr,
@@ -166,10 +167,10 @@ for (nm in levels(index$survey)) {
                        x = ~year, color = ~survey, colors = viridis::viridis(100),
                        ymin = ~pred_lwr, ymax = ~pred_upr,
                        ymarker = ~index, yline = ~pred,
-                       legendgroup = ~species) %>%
-        layout(yaxis = list(type = "log", title = "index"))
+                       legendgroup = ~species)
 }
-p
+p %>% layout(yaxis = list(title = "index"))
+p %>% layout(yaxis = list(type = "log", title = "index"))
 
 
 biomass <- data.frame(year = landings$year,
