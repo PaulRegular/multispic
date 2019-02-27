@@ -1,0 +1,169 @@
+---
+title: Explorations of a multispecies surplus production model for Grand Bank groundfish
+  stocks
+author: Paul M Regular
+output: html_document
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      out.width = "100%")
+
+library(plotly)
+library(TMB)
+library(multispic)
+
+```
+
+## Multispecies surplus production model
+
+Here I present initial results from of a standard surplus production model which has been modified to fit to multiple species:
+
+$$B_{t, s} = \left ( \frac{r_s}{m - 1} B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ]^{m - 1} \right ) - L_{t-1, s} \right ) e^{u_{s}}$$
+where
+
+$$ u \sim N(0, \Sigma_s)$$
+
+The key difference here from a standard generalized surplus production model is that biomass is indexed by species, $s$, and the ratio of biomass over carrying capacity is based on the total biomass of the species included in the model. Note that intrinsic growth rates, $r_s$, are species specific while only one carrying capacity $K$ parameter is estimated. Therefore, as the population in the system increases towards $K$, year-over-year growth of all species slows. The concept is that the species included in the model are limited by the finite amount of energy in the system. Another difference is the way the process error is modeled. Because multiple species are included, covariance between the species can be estimated. Here I model process error using the multivariate normal distribution and estimate standard deviation parameters for each species as well as the correlation in the errors across species. If these species are affected by similar drivers, then correlations will be positive. Alternatively, negative correlations may occur if there is competition or predator-prey interactions between two species.
+
+The observation portion of this state-space model is
+
+$$I_{t,s,g} = q_{s,g} ~ B_{t,s} ~ e^{\nu}$$
+where
+
+$$\nu \sim N(0, \sigma^2_{s,g})$$
+Here $g$ can be either gear, season or a combination of the two. Convergence was often an issue when catchability parameters $q$ were both species and gear/season specific and, as such, I couple the $q$ and $\sigma$ parameters across species.
+
+As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): Yellowtail, Witch, Cod, Plaice, Skate, Hake, Redfish. Below I have included some exploratory plots of the data and the model fits.
+
+
+```{r include=FALSE}
+
+index <- multispic::index
+landings <- multispic::landings
+
+## Subset the data
+sub_sp <- unique(multispic::landings$species)
+# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
+# sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
+start_year <- 1975
+end_year <- 2017
+index <- index[index$year >= start_year & index$year <= end_year &
+                   index$species %in% sub_sp, ]
+landings <- landings[landings$year >= start_year & landings$year <= end_year &
+                         landings$species %in% sub_sp, ]
+
+## Set-up indices for TMB
+landings$species <- factor(landings$species)
+landings$y <- factor(landings$year)
+landings$sy <- factor(paste0(landings$species, "-", landings$year))
+landings <- landings[order(landings$sy), ]
+index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
+index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
+index$gear_season <- factor(paste0(index$gear, "-", index$season))
+index$species <- factor(index$species)
+
+## Run model
+inputs <- list(landings = landings, index = index)
+fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "one")
+fit$opt$message
+
+```
+
+### Survey data
+
+```{r}
+
+p <- index %>%
+    group_by(survey) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~index, color = ~species,
+              colors = viridis::viridis(100))
+p
+
+p %>% layout(yaxis = list(type = "log", title = "log(index)"))
+
+index %>%
+    group_by(survey) %>%
+    mutate(scaled_index = scale(index)) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~scaled_index, color = ~species,
+              colors = viridis::viridis(100))
+
+```
+
+### Landings
+
+```{r}
+
+
+p <- landings %>%
+    group_by(stock) %>%
+    plot_ly() %>%
+    add_lines(x = ~year, y = ~landings, color = ~species,
+              colors = viridis::viridis(100))
+p
+p %>% layout(yaxis = list(type = "log"))
+
+```
+
+### Index residuals
+
+```{r}
+
+p <- fit$index %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_markers(x = ~year, y = ~std_res)
+p %>% add_markers(x = ~log(pred), y = ~std_res)
+p %>% add_markers(x = ~survey, y = ~std_res)
+
+```
+
+
+### Fit to the index
+
+```{r}
+p <- fit$index %>%
+    group_by(survey) %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE)
+p
+p %>% layout(yaxis = list(type = "log"))
+```
+
+
+### Trend in process error
+
+```{r}
+
+p <- fit$pe %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_lines(x = ~year, y = ~pe)
+
+```
+
+### Biomass trends
+
+```{r}
+p <- fit$biomass %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~B)
+p
+p %>% layout(yaxis = list(type = "log"))
+
+```
+
+
+Though this model has some problems, coupling catchability across species may be the biggest, key features of note are the parallel trends in the process error from 1984-1992 and 2012-2016. Also note that the correlation across species is estimated to be `r round(plogis(fit$opt$par["logit_cor"]), 2)`. Again, this is a shared parameter across species, but it indicates that there is a shared driver underlying the process error.
+

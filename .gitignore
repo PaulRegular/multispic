@@ -3,6 +3,7 @@
 *.RData
 *.o
 *.dll
+*.html
 /data-raw/excel_files/
 /data-raw/nafo_scr/
 .Rproj.user
