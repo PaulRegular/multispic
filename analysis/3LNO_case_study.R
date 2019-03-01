@@ -76,6 +76,16 @@ inputs <- list(landings = landings, index = index)
 fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "one")
 fit$opt$message
 
+
+## Visually assess par
+par <- as.list(fit$sd_rep, "Est")
+q <- exp(par$log_q)
+names(q) <- levels(index$gear_season)
+round(q, 2)
+r <- exp(par$log_r)
+names(r) <- levels(index$species)
+round(r, 2)
+
 ## Explore parameter correlations
 sd_rep <- fit$sd_rep
 dsd <- sqrt(diag(sd_rep$cov.fixed))
