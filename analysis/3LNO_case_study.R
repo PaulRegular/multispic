@@ -1,7 +1,8 @@
 
-## WARNING: Origin changed for some reason to multispic to MSP??
-
 ## TODO:
+## - Return to converted data for species you can
+## - Restrict range of q and r in nlminb?
+## - Fix q of Campelen-Fall to 1? For cod...maybe?
 ## - Start comparing parameter estimates to those in the assessments
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
@@ -23,6 +24,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
+# sub_sp <- c("Cod", "Yellowtail", "Witch", "Plaice")
 start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -38,7 +40,9 @@ landings <- landings[order(landings$sy), ]
 index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
 index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
 index$gear_season <- factor(paste0(index$gear, "-", index$season))
+index$gear_species <- factor(paste0(index$gear, "-", index$species))
 index$species <- factor(index$species)
+index$null <- factor(rep("null", nrow(index)))
 
 p <- index %>%
     group_by(survey) %>%
@@ -73,12 +77,13 @@ landings %>%
 
 ## Run model
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "one")
+fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "none")
 fit$opt$message
-
+fit$sd_rep
 
 ## Visually assess par
 par <- as.list(fit$sd_rep, "Est")
+hist(unlist(par), breaks = 30)
 q <- exp(par$log_q)
 names(q) <- levels(index$gear_season)
 round(q, 2)

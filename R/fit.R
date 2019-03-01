@@ -3,24 +3,26 @@
 
 #' Fit a multispecies surplus production model
 #'
-#' @param inputs   List that includes landings and index data
-#' @param q_groups Name of column in the index data to group the q parameter estimates by
-#' @param cor_str  Correlation structure across species. "none" will not estimate
-#'                 correlations across species, "one" will estimate one shared correlation
-#'                 parameter across species, and "all" will estimate correlation parameters
-#'                 across all combinations of species.
+#' @param inputs        List that includes landings and index data
+#' @param q_groups      Name of column in the index data to group the q parameter estimates by
+#' @param cor_str       Correlation structure across species. "none" will not estimate
+#'                      correlations across species, "one" will estimate one shared correlation
+#'                      parameter across species, and "all" will estimate correlation parameters
+#'                      across all combinations of species.
 #'
 #' @return
 #' @export
 #'
 
-fit_model <- function(inputs, q_groups = "gear_season", cor_str = "one") {
+fit_model <- function(inputs,
+                      q_groups = "gear_season",
+                      cor_str = "one") {
 
     landings <- inputs$landings
     index <- inputs$index
 
     ## Scale index and landings to aid convergence
-    scaler <- mean(index$index)
+    scaler <- sd(index$index)
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
@@ -50,7 +52,6 @@ fit_model <- function(inputs, q_groups = "gear_season", cor_str = "one") {
     }
     if (cor_str == "none") {
         map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
-        par$logit_cor <- rep(-11, n_cor)
     }
 
     ## Fit model
