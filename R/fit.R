@@ -5,6 +5,9 @@
 #'
 #' @param inputs        List that includes landings and index data
 #' @param q_groups      Name of column in the index data to group the q parameter estimates by
+#' @param q_option      Vector of three: a mean value of log q, an sd value of log q, and a value
+#'                      of 0, 1 or 2. The last value toggles whether the first two values are
+#'                      ignored (0), used as starting values (1), or priors (2).
 #' @param cor_str       Correlation structure across species. "none" will not estimate
 #'                      correlations across species, "one" will estimate one shared correlation
 #'                      parameter across species, and "all" will estimate correlation parameters
@@ -16,6 +19,7 @@
 
 fit_model <- function(inputs,
                       q_groups = "gear_season",
+                      q_option = c(mu_log_q = 0, sd_log_q = 1, option = 0),
                       cor_str = "one") {
 
     landings <- inputs$landings
@@ -37,15 +41,19 @@ fit_model <- function(inputs,
                 I_sy = as.numeric(index$sy) - 1,
                 min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
-                nS = max(as.numeric(landings$species)))
+                nS = max(as.numeric(landings$species)),
+                q_option = as.integer(q_option[3]))
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 log_sd_B = rep(-1, nlevels(landings$species)),
                 logit_cor = rep(0, n_cor),
                 log_K = 2,
                 log_r = rep(-1, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
+                mu_log_q = q_option[1],
+                log_sd_log_q = log(q_option[2]),
                 log_q = rep(-1, nlevels(index[, q_groups])),
                 log_sd_I = rep(-1, nlevels(index[, q_groups])))
+
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
     if (cor_str == "one") {
         map$logit_cor <- factor(rep(1, length(par$logit_cor)))
@@ -53,9 +61,17 @@ fit_model <- function(inputs,
     if (cor_str == "none") {
         map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
     }
+    if (q_option[3] %in% c(0, 2)) {
+        map$mu_log_q <- map$log_sd_log_q <- factor(NA)
+    }
+
+    random <- "log_B"
+    if (q_option[3] == 1) {
+        random <- c(random, "log_q")
+    }
 
     ## Fit model
-    obj <- MakeADFun(dat, par, map = map, random = "log_B", DLL = "multispic")
+    obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic")
     opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
     sd_rep <- sdreport(obj)

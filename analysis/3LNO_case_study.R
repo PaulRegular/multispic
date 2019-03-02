@@ -19,6 +19,9 @@ unique(multispic::landings$species)
 index <- multispic::index
 landings <- multispic::landings
 
+
+## Setup the data --------------------------------------------------------------
+
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
@@ -75,9 +78,11 @@ landings %>%
     add_lines(x = ~year, y = ~total_landings)
 
 
-## Run model
+## Run model -------------------------------------------------------------------
+
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "none")
+fit <- fit_model(inputs, q_groups = "survey", cor_str = "one",
+                 q_option = c(0, 0.1, 2))
 fit$opt$message
 fit$sd_rep
 
@@ -85,7 +90,7 @@ fit$sd_rep
 par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 q <- exp(par$log_q)
-names(q) <- levels(index$gear_season)
+names(q) <- levels(index$survey)
 round(q, 2)
 r <- exp(par$log_r)
 names(r) <- levels(index$species)

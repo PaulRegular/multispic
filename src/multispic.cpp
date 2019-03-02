@@ -20,6 +20,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
+    DATA_INTEGER(q_option);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -28,6 +29,8 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_K);
     PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_m);
+    PARAMETER(mu_log_q);
+    PARAMETER(log_sd_log_q);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_sd_I);
 
@@ -58,6 +61,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
+    Type sd_log_q = exp(log_sd_log_q);
 
     // Set-up a landings matrix and vector of B
     for (int i = 0; i < nL; i++) {
@@ -69,6 +73,13 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+
+    // Priors / random effects
+    if (q_option > 0) {
+        for(int i = 0; i < log_q.size(); i++) {
+            nll -= dnorm(log_q(i), mu_log_q, sd_log_q, true);
+        }
+    }
 
     // Process equation
     using namespace density;

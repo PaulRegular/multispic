@@ -4,12 +4,17 @@
 \alias{fit_model}
 \title{Fit a multispecies surplus production model}
 \usage{
-fit_model(inputs, q_groups = "gear_season", cor_str = "one")
+fit_model(inputs, q_groups = "gear_season", q_option = c(mu_log_q = 0,
+  sd_log_q = 1, option = 0), cor_str = "one")
 }
 \arguments{
 \item{inputs}{List that includes landings and index data}
 
 \item{q_groups}{Name of column in the index data to group the q parameter estimates by}
+
+\item{q_option}{Vector of three: a mean value of log q, an sd value of log q, and a value
+of 0, 1 or 2. The last value toggles whether the first two values are
+ignored (0), used as starting values (1), or priors (2).}
 
 \item{cor_str}{Correlation structure across species. "none" will not estimate
 correlations across species, "one" will estimate one shared correlation
