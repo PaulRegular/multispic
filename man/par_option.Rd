@@ -9,10 +9,10 @@ par_option(option = "fixed", mean = 0, sd = 1)
 \arguments{
 \item{option}{Should the parameter be estimated freely ("fixed") or revolve
 around an estimated mean and sd ("random"), a fixed mean
-("prior_mu") or a fixed mean and sd ("prior").}
+("prior_mean") or a fixed mean and sd ("prior").}
 
 \item{mean}{Mean value of the parameter. Treated as a starting value if
-option is "random" or as a prior if option is "prior_mu" or
+option is "random" or as a prior if option is "prior_mean" or
 option is "prior". Ignored if option is "fixed".}
 
 \item{sd}{SD value of the parameter. Treated as a starting value is

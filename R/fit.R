@@ -5,9 +5,9 @@
 #'
 #' @param option    Should the parameter be estimated freely ("fixed") or revolve
 #'                  around an estimated mean and sd ("random"), a fixed mean
-#'                  ("prior_mu") or a fixed mean and sd ("prior").
+#'                  ("prior_mean") or a fixed mean and sd ("prior").
 #' @param mean      Mean value of the parameter. Treated as a starting value if
-#'                  option is "random" or as a prior if option is "prior_mu" or
+#'                  option is "random" or as a prior if option is "prior_mean" or
 #'                  option is "prior". Ignored if option is "fixed".
 #' @param sd        SD value of the parameter. Treated as a starting value is
 #'                  option is "random" or a prior if option is "prior". Ignored
@@ -17,7 +17,7 @@
 #'
 
 par_option <- function(option = "fixed", mean = 0, sd = 1) {
-    list(option = factor(option, levels = c("fixed", "random", "prior_mu", "prior")),
+    list(option = factor(option, levels = c("fixed", "random", "prior_mean", "prior")),
          mean = mean, sd = sd)
 }
 
@@ -26,6 +26,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'
 #' @param inputs             List that includes landings and index data
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
 #' @param log_q_option       Settings for the estimation of log_q; define using \code{\link{par_option}}.
 #' @param log_sd_I_option    Settings for the estimation of sd for the indices; define using
 #'                           \code{\link{par_option}}.
@@ -40,6 +41,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
 fit_model <- function(inputs,
                       survey_group = "gear_season",
+                      log_r_option = par_option(),
                       log_q_option = par_option(),
                       log_sd_I_option = par_option(),
                       cor_str = "one") {
@@ -64,12 +66,15 @@ fit_model <- function(inputs,
                 min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
+                log_r_option = as.integer(log_r_option$option),
                 log_q_option = as.integer(log_q_option$option),
                 log_sd_I_option = as.integer(log_sd_I_option$option))
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 log_sd_B = rep(-1, nlevels(landings$species)),
                 logit_cor = rep(0, n_cor),
                 log_K = 2,
+                mean_log_r = log_r_option$mean,
+                log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-1, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
                 mean_log_q = log_q_option$mean,
@@ -84,28 +89,38 @@ fit_model <- function(inputs,
         map$logit_cor <- factor(rep(1, length(par$logit_cor)))
     }
     if (cor_str == "none") {
-        # map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
+        map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
+    }
+
+    if (log_r_option$option %in% c("fixed", "prior")) {
+        map$mean_log_r <- map$log_sd_log_r <- factor(NA)
+    }
+    if (log_r_option$option == "prior_mean") {
+        map$mean_log_r <- factor(NA)
     }
 
     if (log_q_option$option %in% c("fixed", "prior")) {
         map$mean_log_q <- map$log_sd_log_q <- factor(NA)
     }
-    if (log_q_option$option == "prior_mu") {
+    if (log_q_option$option == "prior_mean") {
         map$mean_log_q <- factor(NA)
     }
 
     if (log_sd_I_option$option %in% c("fixed", "prior")) {
         map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
     }
-    if (log_sd_I_option$option == "prior_mu") {
+    if (log_sd_I_option$option == "prior_mean") {
         map$mean_log_sd_I <- factor(NA)
     }
 
     random <- "log_B"
-    if (log_q_option$option %in% c("random", "prior_mu")) {
+    if (log_r_option$option %in% c("random", "prior_mean")) {
+        random <- c(random, "log_r")
+    }
+    if (log_q_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_q")
     }
-    if (log_sd_I_option$option %in% c("random", "prior_mu")) {
+    if (log_sd_I_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_sd_I")
     }
 
