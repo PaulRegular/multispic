@@ -20,7 +20,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
-    DATA_INTEGER(q_option);
+    DATA_INTEGER(log_q_option);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -29,7 +29,7 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_K);
     PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_m);
-    PARAMETER(mu_log_q);
+    PARAMETER(mean_log_q);
     PARAMETER(log_sd_log_q);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_sd_I);
@@ -75,9 +75,9 @@ Type objective_function<Type>::operator() ()
     Type nll = Type(0);
 
     // Priors / random effects
-    if (q_option > 0) {
+    if (log_q_option > 0) {
         for(int i = 0; i < log_q.size(); i++) {
-            nll -= dnorm(log_q(i), mu_log_q, sd_log_q, true);
+            nll -= dnorm(log_q(i), mean_log_q, sd_log_q, true);
         }
     }
 

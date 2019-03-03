@@ -2,5 +2,6 @@
 
 export(add_fit)
 export(fit_model)
+export(par_option)
 import(TMB)
 useDynLib(multispic)
