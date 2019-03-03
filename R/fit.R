@@ -24,13 +24,15 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
 #' Fit a multispecies surplus production model
 #'
-#' @param inputs        List that includes landings and index data
-#' @param survey_group  Name of column in the index data to group the survey parameter estimates by
-#' @param log_q_option  Settings defined using \code{\link{par_option}}.
-#' @param cor_str       Correlation structure across species. "none" will not estimate
-#'                      correlations across species, "one" will estimate one shared correlation
-#'                      parameter across species, and "all" will estimate correlation parameters
-#'                      across all combinations of species.
+#' @param inputs             List that includes landings and index data
+#' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param log_q_option       Settings for the estimation of log_q; define using \code{\link{par_option}}.
+#' @param log_sd_I_option    Settings for the estimation of sd for the indices; define using
+#'                           \code{\link{par_option}}.
+#' @param cor_str            Correlation structure across species. "none" will not estimate
+#'                           correlations across species, "one" will estimate one shared correlation
+#'                           parameter across species, and "all" will estimate correlation parameters
+#'                           across all combinations of species.
 #'
 #' @return
 #' @export
@@ -39,6 +41,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 fit_model <- function(inputs,
                       survey_group = "gear_season",
                       log_q_option = par_option(),
+                      log_sd_I_option = par_option(),
                       cor_str = "one") {
 
     landings <- inputs$landings
@@ -61,7 +64,8 @@ fit_model <- function(inputs,
                 min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
-                log_q_option = as.integer(log_q_option$option))
+                log_q_option = as.integer(log_q_option$option),
+                log_sd_I_option = as.integer(log_sd_I_option$option))
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 log_sd_B = rep(-1, nlevels(landings$species)),
                 logit_cor = rep(0, n_cor),
@@ -71,6 +75,8 @@ fit_model <- function(inputs,
                 mean_log_q = log_q_option$mean,
                 log_sd_log_q = log(log_q_option$sd),
                 log_q = rep(-1, nlevels(index[, survey_group])),
+                mean_log_sd_I = log_sd_I_option$mean,
+                log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nlevels(index[, survey_group])))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
@@ -80,6 +86,7 @@ fit_model <- function(inputs,
     if (cor_str == "none") {
         # map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
     }
+
     if (log_q_option$option %in% c("fixed", "prior")) {
         map$mean_log_q <- map$log_sd_log_q <- factor(NA)
     }
@@ -87,9 +94,19 @@ fit_model <- function(inputs,
         map$mean_log_q <- factor(NA)
     }
 
+    if (log_sd_I_option$option %in% c("fixed", "prior")) {
+        map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
+    }
+    if (log_sd_I_option$option == "prior_mu") {
+        map$mean_log_sd_I <- factor(NA)
+    }
+
     random <- "log_B"
     if (log_q_option$option %in% c("random", "prior_mu")) {
         random <- c(random, "log_q")
+    }
+    if (log_sd_I_option$option %in% c("random", "prior_mu")) {
+        random <- c(random, "log_sd_I")
     }
 
     ## Fit model

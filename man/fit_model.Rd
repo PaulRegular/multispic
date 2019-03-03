@@ -5,14 +5,18 @@
 \title{Fit a multispecies surplus production model}
 \usage{
 fit_model(inputs, survey_group = "gear_season",
-  log_q_option = par_option(), cor_str = "one")
+  log_q_option = par_option(), log_sd_I_option = par_option(),
+  cor_str = "one")
 }
 \arguments{
 \item{inputs}{List that includes landings and index data}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
-\item{log_q_option}{Settings defined using \code{\link{par_option}}.}
+\item{log_q_option}{Settings for the estimation of log_q; define using \code{\link{par_option}}.}
+
+\item{log_sd_I_option}{Settings for the estimation of sd for the indices; define using
+\code{\link{par_option}}.}
 
 \item{cor_str}{Correlation structure across species. "none" will not estimate
 correlations across species, "one" will estimate one shared correlation
