@@ -1,5 +1,9 @@
 
 ## TODO:
+## - Consider estimating one sd for the process error
+## - Think more about B0 now that it works back to the 60s
+## - Add a rho parameter of sorts to the K for the relative contribution
+##   of each species to total K
 ## - Return to converted data for species you can
 ## - Restrict range of q and r in nlminb?
 ## - Fix q of Campelen-Fall to 1? For cod...maybe?
@@ -18,6 +22,9 @@ unique(multispic::landings$species)
 
 index <- multispic::index
 landings <- multispic::landings
+
+
+## Setup the data --------------------------------------------------------------
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
@@ -75,9 +82,14 @@ landings %>%
     add_lines(x = ~year, y = ~total_landings)
 
 
-## Run model
+## Run model -------------------------------------------------------------------
+
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "none")
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+                 log_r_option = par_option(option = "random", mean = 0, sd = 0.5),
+                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 0.5),
+                 log_q_option = par_option(option = "random", mean = 0, sd = 0.5),
+                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 0.5))
 fit$opt$message
 fit$sd_rep
 
@@ -85,11 +97,18 @@ fit$sd_rep
 par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 q <- exp(par$log_q)
-names(q) <- levels(index$gear_season)
+names(q) <- levels(index$survey)
 round(q, 2)
+sd_I <- exp(par$log_sd_I)
+names(sd_I) <- levels(index$survey)
+round(sd_I, 2)
 r <- exp(par$log_r)
 names(r) <- levels(index$species)
 round(r, 2)
+sd_B <- exp(par$log_sd_B)
+names(sd_B) <- levels(index$species)
+round(sd_B, 2)
+
 
 ## Explore parameter correlations
 sd_rep <- fit$sd_rep

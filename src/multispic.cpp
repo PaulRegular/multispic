@@ -20,15 +20,27 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
+    DATA_INTEGER(log_sd_B_option);
+    DATA_INTEGER(log_r_option);
+    DATA_INTEGER(log_q_option);
+    DATA_INTEGER(log_sd_I_option);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
+    PARAMETER(mean_log_sd_B);
+    PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
     PARAMETER_VECTOR(logit_cor);
     PARAMETER(log_K);
+    PARAMETER(mean_log_r);
+    PARAMETER(log_sd_log_r);
     PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_m);
+    PARAMETER(mean_log_q);
+    PARAMETER(log_sd_log_q);
     PARAMETER_VECTOR(log_q);
+    PARAMETER(mean_log_sd_I);
+    PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
 
     // Dim
@@ -58,6 +70,10 @@ Type objective_function<Type>::operator() ()
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
+    Type sd_log_sd_B = exp(log_sd_log_sd_B);
+    Type sd_log_r = exp(log_sd_log_r);
+    Type sd_log_q = exp(log_sd_log_q);
+    Type sd_log_sd_I = exp(log_sd_log_sd_I);
 
     // Set-up a landings matrix and vector of B
     for (int i = 0; i < nL; i++) {
@@ -69,6 +85,28 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+
+    // Priors / random effects
+    if (log_sd_B_option > 0) {
+        for(int i = 0; i < log_sd_B.size(); i++) {
+            nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
+        }
+    }
+    if (log_r_option > 0) {
+        for(int i = 0; i < log_r.size(); i++) {
+            nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
+        }
+    }
+    if (log_q_option > 0) {
+        for(int i = 0; i < log_q.size(); i++) {
+            nll -= dnorm(log_q(i), mean_log_q, sd_log_q, true);
+        }
+    }
+    if (log_sd_I_option > 0) {
+        for(int i = 0; i < log_sd_I.size(); i++) {
+            nll -= dnorm(log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
+        }
+    }
 
     // Process equation
     using namespace density;
