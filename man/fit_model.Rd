@@ -5,15 +5,21 @@
 \title{Fit a multispecies surplus production model}
 \usage{
 fit_model(inputs, survey_group = "gear_season",
-  log_r_option = par_option(), log_q_option = par_option(),
-  log_sd_I_option = par_option(), cor_str = "one")
+  log_r_option = par_option(), log_sd_B_option = par_option(),
+  log_q_option = par_option(), log_sd_I_option = par_option(),
+  cor_str = "one")
 }
 \arguments{
 \item{inputs}{List that includes landings and index data}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
-\item{log_q_option}{Settings for the estimation of log_r; define using \code{\link{par_option}}.}
+\item{log_r_option}{Settings for the estimation of log_r; define using \code{\link{par_option}}.}
+
+\item{log_sd_B_option}{Settings for the estimation of sd for the process; define using
+\code{\link{par_option}}.}
+
+\item{log_q_option}{Settings for the estimation of log_q; define using \code{\link{par_option}}.}
 
 \item{log_sd_I_option}{Settings for the estimation of sd for the indices; define using
 \code{\link{par_option}}.}
@@ -22,8 +28,6 @@ fit_model(inputs, survey_group = "gear_season",
 correlations across species, "one" will estimate one shared correlation
 parameter across species, and "all" will estimate correlation parameters
 across all combinations of species.}
-
-\item{log_q_option}{Settings for the estimation of log_q; define using \code{\link{par_option}}.}
 }
 \description{
 Fit a multispecies surplus production model

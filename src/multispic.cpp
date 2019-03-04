@@ -20,12 +20,15 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
+    DATA_INTEGER(log_sd_B_option);
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
+    PARAMETER(mean_log_sd_B);
+    PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
     PARAMETER_VECTOR(logit_cor);
     PARAMETER(log_K);
@@ -67,6 +70,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
+    Type sd_log_sd_B = exp(log_sd_log_sd_B);
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
@@ -83,6 +87,11 @@ Type objective_function<Type>::operator() ()
     Type nll = Type(0);
 
     // Priors / random effects
+    if (log_sd_B_option > 0) {
+        for(int i = 0; i < log_sd_B.size(); i++) {
+            nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
+        }
+    }
     if (log_r_option > 0) {
         for(int i = 0; i < log_r.size(); i++) {
             nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
