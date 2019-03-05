@@ -26,6 +26,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'
 #' @param inputs             List that includes landings and index data
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param log_K_option       Settings for the estimation of log_K; define using \code{\link{par_option}}.
 #' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
 #' @param log_sd_B_option    Settings for the estimation of sd for the process; define using
 #'                           \code{\link{par_option}}.
@@ -43,6 +44,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
 fit_model <- function(inputs,
                       survey_group = "gear_season",
+                      log_K_option = par_option(),
                       log_r_option = par_option(),
                       log_sd_B_option = par_option(),
                       log_q_option = par_option(),
@@ -69,6 +71,7 @@ fit_model <- function(inputs,
                 min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
+                log_K_option = as.integer(log_K_option$option),
                 log_r_option = as.integer(log_r_option$option),
                 log_sd_B_option = as.integer(log_sd_B_option$option),
                 log_q_option = as.integer(log_q_option$option),
@@ -78,7 +81,9 @@ fit_model <- function(inputs,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
                 logit_cor = rep(0, n_cor),
-                log_K = 2,
+                mean_log_K = log_K_option$mean,
+                log_sd_log_K = log(log_K_option$sd),
+                log_K = rep(2, nlevels(landings$species)),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-1, nlevels(landings$species)),
@@ -105,6 +110,13 @@ fit_model <- function(inputs,
         map$mean_log_sd_B <- factor(NA)
     }
 
+    if (log_K_option$option %in% c("fixed", "prior")) {
+        map$mean_log_K <- map$log_sd_log_K <- factor(NA)
+    }
+    if (log_K_option$option == "prior_mean") {
+        map$mean_log_K <- factor(NA)
+    }
+
     if (log_r_option$option %in% c("fixed", "prior")) {
         map$mean_log_r <- map$log_sd_log_r <- factor(NA)
     }
@@ -129,6 +141,9 @@ fit_model <- function(inputs,
     random <- "log_B"
     if (log_sd_B_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_sd_B")
+    }
+    if (log_K_option$option %in% c("random", "prior_mean")) {
+        random <- c(random, "log_K")
     }
     if (log_r_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_r")

@@ -5,14 +5,16 @@
 \title{Fit a multispecies surplus production model}
 \usage{
 fit_model(inputs, survey_group = "gear_season",
-  log_r_option = par_option(), log_sd_B_option = par_option(),
-  log_q_option = par_option(), log_sd_I_option = par_option(),
-  cor_str = "one")
+  log_K_option = par_option(), log_r_option = par_option(),
+  log_sd_B_option = par_option(), log_q_option = par_option(),
+  log_sd_I_option = par_option(), cor_str = "one")
 }
 \arguments{
 \item{inputs}{List that includes landings and index data}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
+
+\item{log_K_option}{Settings for the estimation of log_K; define using \code{\link{par_option}}.}
 
 \item{log_r_option}{Settings for the estimation of log_r; define using \code{\link{par_option}}.}
 
