@@ -86,10 +86,10 @@ landings %>%
 
 inputs <- list(landings = landings, index = index)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 log_K_option = par_option(option = "fixed", mean = 2, sd = 0.5),
-                 log_r_option = par_option(option = "prior", mean = log(0.2), sd = 0.1),
+                 log_K_option = par_option(option = "fixed", mean = 5, sd = 0.5),
+                 log_r_option = par_option(option = "prior", mean = log(0.2), sd = 0.5),
                  log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 0.5),
-                 log_q_option = par_option(option = "prior", mean = 0, sd = 0.2),
+                 log_q_option = par_option(option = "prior", mean = log(1), sd = 0.5),
                  log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 0.5))
 fit$opt$message
 fit$sd_rep
