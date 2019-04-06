@@ -34,7 +34,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1984
+start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -92,12 +92,10 @@ curve(dlnorm(x, meanlog = -2, sdlog = 0.2), 0, 1.5)
 curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
-                 log_K_option = par_option(option = "prior", mean = 5, sd = 0.5),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 0.5))
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+                 log_sd_B_option = par_option(option = "random", mean = -1, sd = 0.5),
+                 log_q_option = par_option(option = "random", mean = -1, sd = 0.5),
+                 log_sd_I_option = par_option(option = "random", mean = -1, sd = 0.5))
 fit$opt$message
 fit$sd_rep
 
@@ -110,12 +108,6 @@ round(q, 2)
 sd_I <- exp(par$log_sd_I)
 names(sd_I) <- levels(index$survey)
 round(sd_I, 2)
-K <- exp(par$log_K)
-names(K) <- levels(index$species)
-signif(K, 2)
-r <- exp(par$log_r)
-names(r) <- levels(index$species)
-round(r, 2)
 sd_B <- exp(par$log_sd_B)
 names(sd_B) <- levels(index$species)
 round(sd_B, 2)
