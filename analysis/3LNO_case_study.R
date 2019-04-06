@@ -1,5 +1,7 @@
 
 ## TODO:
+## - Revert to one K?
+## - Use priors from Miller and Myers?
 ## - Consider estimating one sd for the process error
 ## - Think more about B0 now that it works back to the 60s
 ## - Add a rho parameter of sorts to the K for the relative contribution
@@ -31,8 +33,8 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
-# sub_sp <- c("Cod", "Yellowtail", "Witch", "Plaice")
-start_year <- 1975
+# sub_sp <- c("Cod", "Yellowtail", "Plaice")
+start_year <- 1984
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -84,18 +86,23 @@ landings %>%
 
 ## Run model -------------------------------------------------------------------
 
+## Prior visuals
+curve(dlnorm(x, meanlog = 5, sdlog = 0.5), 0, 1000)
+curve(dlnorm(x, meanlog = -2, sdlog = 0.2), 0, 1.5)
+curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
+
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 log_K_option = par_option(option = "fixed", mean = 5, sd = 0.5),
-                 log_r_option = par_option(option = "prior", mean = log(0.2), sd = 0.5),
-                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 0.5),
-                 log_q_option = par_option(option = "prior", mean = log(1), sd = 0.5),
-                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 0.5))
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
+                 log_K_option = par_option(option = "prior", mean = 5, sd = 0.5),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 0.5),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 0.5),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 0.5),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 0.5))
 fit$opt$message
 fit$sd_rep
 
 ## Visually assess par
-par <- as.list(fit$sd_rep, "Est")
+par <- fit$par
 hist(unlist(par), breaks = 30)
 q <- exp(par$log_q)
 names(q) <- levels(index$survey)
