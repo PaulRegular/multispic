@@ -59,6 +59,10 @@ fit_model <- function(inputs,
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
+    ## Scale the prior accordingly
+    log_K_option$mean <- log(exp(log_K_option$mean) / scaler)
+
+    ## Set-up the objects for TMB
     n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
                                   ncol = nlevels(landings$species))))
     dat <- list(L = as.numeric(landings$landings),
@@ -162,6 +166,13 @@ fit_model <- function(inputs,
     sd_rep <- sdreport(obj)
     rep <- obj$report()
 
+    ## Extract par and re-scale
+    par <- as.list(sd_rep, "Est")
+    par$log_B <- log(exp(par$log_B) * scaler)
+    par$log_K <- log(exp(par$log_K) * scaler)
+    par$mean_log_K <- log(exp(par$mean_log_K) * scaler)
+    se <- as.list(fit$sd_rep, "Std. Error")
+
     ## Reset scale
     landings$landings <- landings$landings * scaler
     index$index <- index$index * scaler
@@ -191,7 +202,8 @@ fit_model <- function(inputs,
                           B_upr = exp(upr$log_B_vec) * scaler)
 
     list(scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep, rep = rep,
-         index = index, landings = landings, pe = pe, biomass = biomass)
+         par = par, se = se, index = index, landings = landings,
+         pe = pe, biomass = biomass)
 
 }
 
