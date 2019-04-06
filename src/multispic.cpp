@@ -21,7 +21,6 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
     DATA_INTEGER(log_sd_B_option);
-    DATA_INTEGER(log_K_option);
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
@@ -32,9 +31,7 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
     PARAMETER_VECTOR(logit_cor);
-    PARAMETER(mean_log_K);
-    PARAMETER(log_sd_log_K);
-    PARAMETER_VECTOR(log_K);
+    PARAMETER(log_K);
     PARAMETER(mean_log_r);
     PARAMETER(log_sd_log_r);
     PARAMETER_VECTOR(log_r);
@@ -69,12 +66,11 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_I = log(I);
     vector<Type> sd_B = exp(log_sd_B);
     vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
-    vector<Type> K = exp(log_K);
+    Type K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
     Type sd_log_sd_B = exp(log_sd_log_sd_B);
-    Type sd_log_K = exp(log_sd_log_K);
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
@@ -94,11 +90,6 @@ Type objective_function<Type>::operator() ()
     if (log_sd_B_option > 0) {
         for(int i = 0; i < log_sd_B.size(); i++) {
             nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
-        }
-    }
-    if (log_K_option > 0) {
-        for(int i = 0; i < log_K.size(); i++) {
-            nll -= dnorm(log_K(i), mean_log_K, sd_log_K, true);
         }
     }
     if (log_r_option > 0) {
@@ -124,7 +115,7 @@ Type objective_function<Type>::operator() ()
             if (i > 0) {
                 B(i - 1, j) = exp(log_B(i - 1, j));
                 pred_B(i, j) = (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow(B(i - 1) / K(j), m(j) - 1.0)) -
+                    (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
                     L_mat(i - 1, j);
                 pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
                 log_pred_B(i, j) = log(pred_B(i, j));

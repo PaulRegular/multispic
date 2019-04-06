@@ -1,14 +1,6 @@
 
 ## TODO:
-## - Revert to one K?
-## - Use priors from Miller and Myers?
-## - Consider estimating one sd for the process error
-## - Think more about B0 now that it works back to the 60s
-## - Add a rho parameter of sorts to the K for the relative contribution
-##   of each species to total K
-## - Return to converted data for species you can
-## - Restrict range of q and r in nlminb?
-## - Fix q of Campelen-Fall to 1? For cod...maybe?
+## - Return to converted data for species you can?
 ## - Start comparing parameter estimates to those in the assessments
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
@@ -34,7 +26,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1984
+start_year <- 1975
 end_year <- 2017
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -86,20 +78,18 @@ landings %>%
 
 ## Run model -------------------------------------------------------------------
 
-## Prior visuals
-curve(dlnorm(x, meanlog = 5, sdlog = 0.5), 0, 1000)
-curve(dlnorm(x, meanlog = -2, sdlog = 0.2), 0, 1.5)
+## Prior visual
 curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
-                 log_K_option = par_option(option = "prior", mean = 5, sd = 0.5),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 0.5),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 0.5))
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+                 log_r_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1))
 fit$opt$message
 fit$sd_rep
+fit$opt$objective
 
 ## Visually assess par
 par <- fit$par
@@ -111,7 +101,6 @@ sd_I <- exp(par$log_sd_I)
 names(sd_I) <- levels(index$survey)
 round(sd_I, 2)
 K <- exp(par$log_K)
-names(K) <- levels(index$species)
 signif(K, 2)
 r <- exp(par$log_r)
 names(r) <- levels(index$species)
