@@ -83,6 +83,7 @@ curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+                 log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_r_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
@@ -108,6 +109,8 @@ round(r, 2)
 sd_B <- exp(par$log_sd_B)
 names(sd_B) <- levels(index$species)
 round(sd_B, 2)
+P0 <- exp(par$log_P0)
+round(P0 * K)
 
 
 ## Explore parameter correlations
@@ -118,7 +121,7 @@ rownames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
 colnames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
 cor_tab <- as.data.frame.table(cor_mat)
 names(cor_tab) <- c("x", "y", "z")
-corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
+# corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 cor_tab %>%
     plot_ly(x = ~x, y = ~y, z = ~z, text = ~text,
             colors = c("#B2182B", "white", "#2166AC")) %>%

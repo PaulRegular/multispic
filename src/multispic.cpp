@@ -21,6 +21,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_SCALAR(min_B);
     DATA_INTEGER(log_sd_B_option);
+    DATA_INTEGER(log_P0_option);
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
@@ -31,6 +32,9 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
     PARAMETER_VECTOR(logit_cor);
+    PARAMETER(mean_log_P0);
+    PARAMETER(log_sd_log_P0);
+    PARAMETER_VECTOR(log_P0);
     PARAMETER(log_K);
     PARAMETER(mean_log_r);
     PARAMETER(log_sd_log_r);
@@ -63,6 +67,7 @@ Type objective_function<Type>::operator() ()
     matrix<Type> L_mat(nY, nS);
 
     // Transformations
+    vector<Type> P0 = exp(log_P0);
     vector<Type> log_I = log(I);
     vector<Type> sd_B = exp(log_sd_B);
     vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
@@ -71,6 +76,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
     Type sd_log_sd_B = exp(log_sd_log_sd_B);
+    Type sd_log_P0 = exp(log_sd_log_P0);
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
@@ -87,6 +93,11 @@ Type objective_function<Type>::operator() ()
     Type nll = Type(0);
 
     // Priors / random effects
+    if (log_P0_option > 0) {
+        for(int i = 0; i < log_P0.size(); i++) {
+            nll -= dnorm(log_P0(i), mean_log_P0, sd_log_P0, true);
+        }
+    }
     if (log_sd_B_option > 0) {
         for(int i = 0; i < log_sd_B.size(); i++) {
             nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
@@ -112,14 +123,16 @@ Type objective_function<Type>::operator() ()
     using namespace density;
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            if (i > 0) {
+            if (i == 0) {
+                pred_B(i, j) = P0(j) * K;
+            } else {
                 B(i - 1, j) = exp(log_B(i - 1, j));
                 pred_B(i, j) = (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
                     (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
                     L_mat(i - 1, j);
-                pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
-                log_pred_B(i, j) = log(pred_B(i, j));
             }
+            pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
+            log_pred_B(i, j) = log(pred_B(i, j));
         }
         nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_B)(log_B.row(i) - log_pred_B.row(i));
     }

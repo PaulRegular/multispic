@@ -26,6 +26,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'
 #' @param inputs             List that includes landings and index data
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param log_P0_option      Settings for the estimation of the starting biomass (as a portion of K);
+#'                           define using \code{\link{par_option}}.
 #' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
 #' @param log_sd_B_option    Settings for the estimation of sd for the process; define using
 #'                           \code{\link{par_option}}.
@@ -37,12 +39,12 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           parameter across species, and "all" will estimate correlation parameters
 #'                           across all combinations of species.
 #'
-#' @return
 #' @export
 #'
 
 fit_model <- function(inputs,
                       survey_group = "gear_season",
+                      log_P0_option = par_option(),
                       log_r_option = par_option(),
                       log_sd_B_option = par_option(),
                       log_q_option = par_option(),
@@ -70,6 +72,7 @@ fit_model <- function(inputs,
                 min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
+                log_P0_option = as.integer(log_P0_option$option) - 1,
                 log_r_option = as.integer(log_r_option$option) - 1,
                 log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
                 log_q_option = as.integer(log_q_option$option) - 1,
@@ -79,6 +82,9 @@ fit_model <- function(inputs,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
                 logit_cor = rep(0, n_cor),
+                mean_log_P0 = log_P0_option$mean,
+                log_sd_log_P0 = log(log_P0_option$sd),
+                log_P0 = rep(-1, nlevels(landings$species)),
                 log_K = 2,
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
@@ -106,6 +112,13 @@ fit_model <- function(inputs,
         map$mean_log_sd_B <- factor(NA)
     }
 
+    if (log_P0_option$option %in% c("fixed", "prior")) {
+        map$mean_log_P0 <- map$log_sd_log_P0 <- factor(NA)
+    }
+    if (log_r_option$option == "prior_mean") {
+        map$mean_log_P0 <- factor(NA)
+    }
+
     if (log_r_option$option %in% c("fixed", "prior")) {
         map$mean_log_r <- map$log_sd_log_r <- factor(NA)
     }
@@ -130,6 +143,9 @@ fit_model <- function(inputs,
     random <- "log_B"
     if (log_sd_B_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_sd_B")
+    }
+    if (log_P0_option$option %in% c("random", "prior_mean")) {
+        random <- c(random, "log_P0")
     }
     if (log_r_option$option %in% c("random", "prior_mean")) {
         random <- c(random, "log_r")
