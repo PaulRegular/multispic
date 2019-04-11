@@ -1,6 +1,5 @@
 
 ## TODO:
-## - Start comparing parameter estimates to those in the assessments
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
@@ -81,7 +80,7 @@ landings %>%
 curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
                  log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_r_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
@@ -137,13 +136,13 @@ p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
 
 ## Process error residuals
-p <- fit$pe %>%
+p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe)
 
 
 ## Correlation in pe
-pe_wide <- tidyr::spread(fit$pe[, c("year", "species", "pe")], species, pe)
+pe_wide <- tidyr::spread(fit$pop[, c("year", "species", "pe")], species, pe)
 pe_wide$year <- NULL
 plot(pe_wide)
 pe_wide <- as.matrix(pe_wide)
@@ -169,7 +168,7 @@ p %>% layout(yaxis = list(type = "log"))
 
 
 ## Biomass
-p <- fit$biomass %>%
+p <- fit$pop %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
             legendgroup = ~species) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
@@ -178,6 +177,16 @@ p <- fit$biomass %>%
 p
 p %>% layout(yaxis = list(type = "log"))
 
+
+## F
+p <- fit$pop %>%
+    # filter(is.finite(F)) %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~F_lwr, ymax = ~F_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~F)
+p
 
 
 ## Compare to accepted assessment model results --------------------------------
@@ -192,7 +201,7 @@ assess$source <- "assessment"
 assess$B_lwr <- NA
 assess$B_upr <- NA
 
-spm <- fit$biomass
+spm <- fit$pop
 spm$source <- "multispic"
 
 keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")

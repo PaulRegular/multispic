@@ -65,6 +65,8 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_I_res(nI);
     vector<Type> log_I_std_res(nI);
     matrix<Type> L_mat(nY, nS);
+    vector<Type> F(nL);
+    vector<Type> log_F(nL);
 
     // Transformations
     vector<Type> P0 = exp(log_P0);
@@ -146,15 +148,18 @@ Type objective_function<Type>::operator() ()
     }
 
 
-    // Calculate residuals
+    // Calculate residuals and F
     for (int i = 0; i < nL; i++) {
         log_B_res(i) = log_B(L_year(i), L_species(i)) - log_pred_B(L_year(i), L_species(i));
         log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));
+        F(i) = L(i) / B_vec(i);
+        log_F(i) = log(F(i));
     }
 
     // AD report values
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
+    ADREPORT(log_F);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);

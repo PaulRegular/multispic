@@ -185,23 +185,20 @@ fit_model <- function(inputs,
     index$pred_upr <- exp(upr$log_pred_I) * scaler
     index$std_res <- rep$log_I_std_res
 
-    ## Extract process error
-    pe <- data.frame(year = landings$year,
-                     species = landings$species,
-                     stock = landings$stock,
-                     pe = rep$log_B_std_res)
-
-    ## Extract biomass
-    biomass <- data.frame(year = landings$year,
-                          species = landings$species,
-                          stock = landings$stock,
-                          B = exp(est$log_B_vec) * scaler,
-                          B_lwr = exp(lwr$log_B_vec) * scaler,
-                          B_upr = exp(upr$log_B_vec) * scaler)
+    ## Extract population estimates
+    pop <- data.frame(year = landings$year,
+                      species = landings$species,
+                      stock = landings$stock,
+                      pe = rep$log_B_std_res,
+                      B = exp(est$log_B_vec) * scaler,
+                      B_lwr = exp(lwr$log_B_vec) * scaler,
+                      B_upr = exp(upr$log_B_vec) * scaler,
+                      F = exp(est$log_F),
+                      F_lwr = exp(lwr$log_F),
+                      F_upr = exp(upr$log_F))
 
     list(scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep, rep = rep,
-         par = par, se = se, index = index, landings = landings,
-         pe = pe, biomass = biomass)
+         par = par, se = se, index = index, landings = landings, pop = pop)
 
 }
 
