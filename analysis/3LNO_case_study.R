@@ -1,6 +1,5 @@
 
 ## TODO:
-## - Return to converted data for species you can?
 ## - Start comparing parameter estimates to those in the assessments
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
@@ -82,7 +81,7 @@ landings %>%
 curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_r_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
@@ -91,6 +90,7 @@ fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
+# 356.0832
 
 ## Visually assess par
 par <- fit$par
@@ -177,4 +177,42 @@ p <- fit$biomass %>%
     add_lines(y = ~B)
 p
 p %>% layout(yaxis = list(type = "log"))
+
+
+
+## Compare to accepted assessment model results --------------------------------
+
+
+assess <- read.csv("analysis/stock_assessment_estimates.csv")
+names(assess) <- c("species_div", "year", "B", "B_type")
+x <- data.table::tstrsplit(assess$species, split = " ")
+assess$species <- x[[1]]
+assess$division <- x[[2]]
+assess$source <- "assessment"
+assess$B_lwr <- NA
+assess$B_upr <- NA
+
+spm <- fit$biomass
+spm$source <- "multispic"
+
+keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
+comp <- rbind(assess[, keep], spm[, keep])
+
+comp %>%
+    group_by(species, source) %>%
+    mutate(scaled_B = scale(B),
+           center = attr(scale(B), "scaled:center"),
+           scale = attr(scale(B), "scaled:scale")) %>%
+    mutate(lwr = (B_lwr - center) / scale,
+           upr = (B_upr - center) / scale) %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            linetype = ~source, legendgroup = ~species) %>%
+    add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~scaled_B)
+
+
+
+
+
 
