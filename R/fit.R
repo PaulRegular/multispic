@@ -24,7 +24,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
 #' Fit a multispecies surplus production model
 #'
-#' @param inputs             List that includes landings and index data
+#' @param inputs             List that includes landings, index and covariate (optional) data.
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
 #' @param log_P0_option      Settings for the estimation of the starting biomass (as a portion of K);
 #'                           define using \code{\link{par_option}}.
@@ -38,6 +38,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           correlations across species, "one" will estimate one shared correlation
 #'                           parameter across species, and "all" will estimate correlation parameters
 #'                           across all combinations of species.
+#' @param formula            Formula describing relationship between surplus production and covariates.
+#'                           Not used if set to NULL.
 #'
 #' @export
 #'
@@ -49,10 +51,20 @@ fit_model <- function(inputs,
                       log_sd_B_option = par_option(),
                       log_q_option = par_option(),
                       log_sd_I_option = par_option(),
-                      cor_str = "one") {
+                      cor_str = "one",
+                      formula = NULL) {
 
     landings <- inputs$landings
     index <- inputs$index
+    covariates <- inputs$covariates
+
+    ## Set-up model matrix | formula with covariates
+    if (is.null(formula)) {
+        model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
+    } else {
+        f <- as.formula(paste(Reduce(paste, deparse(formula)), "-1")) # drop intercept
+        model_mat <- model.matrix(f, data = covariates)
+    }
 
     ## Scale index and landings to aid convergence
     scaler <- sd(index$index)
@@ -76,7 +88,8 @@ fit_model <- function(inputs,
                 log_r_option = as.integer(log_r_option$option) - 1,
                 log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
                 log_q_option = as.integer(log_q_option$option) - 1,
-                log_sd_I_option = as.integer(log_sd_I_option$option) - 1)
+                log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
+                covariates = model_mat)
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
@@ -96,7 +109,8 @@ fit_model <- function(inputs,
                 log_q = rep(-1, nlevels(index[, survey_group])),
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
-                log_sd_I = rep(-1, nlevels(index[, survey_group])))
+                log_sd_I = rep(-1, nlevels(index[, survey_group])),
+                betas =  rep(0, ncol(model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
     if (cor_str == "one") {
@@ -139,6 +153,10 @@ fit_model <- function(inputs,
     }
     if (log_sd_I_option$option == "prior_mean") {
         map$mean_log_sd_I <- factor(NA)
+    }
+
+    if (is.null(formula)) {
+        map$betas <- factor(NA)
     }
 
     random <- "log_B"

@@ -25,6 +25,7 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
+    DATA_MATRIX(covariates);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -46,6 +47,7 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_sd_I);
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
+    PARAMETER_VECTOR(betas);
 
     // Dim
     int nY = log_B.rows();         // number of years
@@ -123,6 +125,7 @@ Type objective_function<Type>::operator() ()
 
     // Process equation
     using namespace density;
+    vector<Type> covar_effect = covariates * betas;
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
             if (i == 0) {
@@ -131,7 +134,7 @@ Type objective_function<Type>::operator() ()
                 B(i - 1, j) = exp(log_B(i - 1, j));
                 pred_B(i, j) = (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
                     (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
-                    L_mat(i - 1, j);
+                    L_mat(i - 1, j) + covar_effect(i - 1);
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));

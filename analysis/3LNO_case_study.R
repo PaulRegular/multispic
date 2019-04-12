@@ -1,9 +1,11 @@
 
 ## TODO:
+## - Pick Grand Bank strata and run Rstrap using the same strata across all species
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
 ## - Get hake landings for 2017
+
 
 library(units)
 library(plotly)
@@ -14,6 +16,12 @@ unique(multispic::landings$species)
 
 index <- multispic::index
 landings <- multispic::landings
+covariates <- multispic::covariates
+
+covariates <- covariates %>%
+    mutate(core_cil_lag2 = dplyr::lag(core_cil, 2),
+           core_cil_lag4 = dplyr::lag(core_cil, 4),
+           core_cil_lag6 = dplyr::lag(core_cil, 6))
 
 
 ## Setup the data --------------------------------------------------------------
@@ -30,6 +38,7 @@ index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
+covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -57,7 +66,11 @@ index %>%
     mutate(scaled_index = scale(index)) %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~scaled_index, color = ~species,
-              colors = viridis::viridis(100))
+              colors = viridis::viridis(100)) %>%
+    add_lines(data = covariates, x = ~year, y = ~core_cil_lag4,
+              color = I("red"), yaxis = "y2", line = list(width = 3),
+              name = "Core CIL") %>%
+    layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
     group_by(stock) %>%
@@ -79,17 +92,20 @@ landings %>%
 ## Prior visual
 curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
-inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+inputs <- list(landings = landings, index = index, covariates = covariates)
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_r_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1))
+                 log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1),
+                 formula = NULL)
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
-# 356.0832
+# 356.0832 one
+# 369.9291 none
+
 
 ## Visually assess par
 par <- fit$par

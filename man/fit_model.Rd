@@ -7,10 +7,10 @@
 fit_model(inputs, survey_group = "gear_season",
   log_P0_option = par_option(), log_r_option = par_option(),
   log_sd_B_option = par_option(), log_q_option = par_option(),
-  log_sd_I_option = par_option(), cor_str = "one")
+  log_sd_I_option = par_option(), cor_str = "one", formula = NULL)
 }
 \arguments{
-\item{inputs}{List that includes landings and index data}
+\item{inputs}{List that includes landings, index and covariate (optional) data.}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
@@ -31,6 +31,9 @@ define using \code{\link{par_option}}.}
 correlations across species, "one" will estimate one shared correlation
 parameter across species, and "all" will estimate correlation parameters
 across all combinations of species.}
+
+\item{formula}{Formula describing relationship between surplus production and covariates.
+Not used if set to NULL.}
 }
 \description{
 Fit a multispecies surplus production model
