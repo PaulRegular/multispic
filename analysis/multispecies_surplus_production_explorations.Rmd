@@ -22,7 +22,7 @@ library(multispic)
 
 Here I present initial results from of a standard surplus production model which has been modified to fit to multiple species:
 
-$$B_{t, s} = \left ( \frac{r_s}{m - 1} B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ]^{m - 1} \right ) - L_{t-1, s} \right ) e^{u_{s}}$$
+$$B_{t, s} = \left (B_{t-1, s} + \frac{r_s}{m - 1} B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ]^{m - 1} \right ) - L_{t-1, s} \right ) e^{u_{s}}$$
 where
 
 $$ u \sim N(0, \Sigma_s)$$

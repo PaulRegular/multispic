@@ -1,6 +1,9 @@
 
 ## TODO:
+## - Revert to proportion formulation to hopefully stabilize the optimization
+## - Get NAO index
 ## - Pick Grand Bank strata and run Rstrap using the same strata across all species
+##   (requires 3LNO landings for all species!!)
 ## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
@@ -22,6 +25,10 @@ covariates <- covariates %>%
     mutate(core_cil_lag2 = dplyr::lag(core_cil, 2),
            core_cil_lag4 = dplyr::lag(core_cil, 4),
            core_cil_lag6 = dplyr::lag(core_cil, 6))
+
+# index <- index %>%
+#     group_by(species, stock, gear, season) %>%
+#     mutate(change = log(index / dplyr::lag(index)))
 
 
 ## Setup the data --------------------------------------------------------------
@@ -94,8 +101,8 @@ curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = 0, sd = 1),
+                 log_r_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1),
@@ -103,13 +110,13 @@ fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
-# 356.0832 one
-# 369.9291 none
 
+## Raw par
+par <- as.list(fit$sd_rep, "Est")
+hist(unlist(par), breaks = 30)
 
 ## Visually assess par
 par <- fit$par
-hist(unlist(par), breaks = 30)
 q <- exp(par$log_q)
 names(q) <- levels(index$survey)
 round(q, 2)
@@ -124,8 +131,8 @@ round(r, 2)
 sd_B <- exp(par$log_sd_B)
 names(sd_B) <- levels(index$species)
 round(sd_B, 2)
-P0 <- exp(par$log_P0)
-round(P0 * K)
+B0 <- exp(par$log_B0)
+round(B0)
 
 
 ## Explore parameter correlations
@@ -235,6 +242,34 @@ comp %>%
     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~scaled_B)
+
+
+
+## Regression approach ---------------------------------------------------------
+
+
+data <- index %>%
+    dplyr::left_join(landings, by = c("species", "stock", "year")) %>%
+    dplyr::left_join(covariates, by = c("year"))
+
+data %>%
+    plot_ly(x = ~landings, y = ~change, color = ~species) %>%
+    add_markers() %>%
+    layout(xaxis = list(type = "log"))
+
+
+data %>%
+    plot_ly(x = ~core_cil, y = ~change, color = ~species) %>%
+    add_markers()
+
+
+data %>%
+    plot_ly(x = ~core_cil_lag2, y = ~change, color = ~species) %>%
+    add_markers()
+
+data %>%
+    plot_ly(x = ~core_cil_lag4, y = ~change, color = ~species) %>%
+    add_markers()
 
 
 
