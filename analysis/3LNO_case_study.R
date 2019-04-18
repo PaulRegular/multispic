@@ -101,9 +101,9 @@ curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 5)
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 log_B0_option = par_option(option = "fixed", mean = 0, sd = 1),
+                 log_P0_option = par_option(option = "fixed", mean = 0, sd = 1),
                  log_r_option = par_option(option = "fixed", mean = 0, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_sd_P_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1),
                  formula = NULL)
@@ -128,11 +128,11 @@ signif(K, 2)
 r <- exp(par$log_r)
 names(r) <- levels(index$species)
 round(r, 2)
-sd_B <- exp(par$log_sd_B)
-names(sd_B) <- levels(index$species)
-round(sd_B, 2)
-B0 <- exp(par$log_B0)
-round(B0)
+sd_P <- exp(par$log_sd_P)
+names(sd_P) <- levels(index$species)
+round(sd_P, 2)
+P0 <- exp(par$log_P0)
+round(P0, 5)
 
 
 ## Explore parameter correlations

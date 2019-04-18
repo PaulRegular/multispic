@@ -5,8 +5,8 @@
 \title{Fit a multispecies surplus production model}
 \usage{
 fit_model(inputs, survey_group = "gear_season",
-  log_B0_option = par_option(), log_r_option = par_option(),
-  log_sd_B_option = par_option(), log_q_option = par_option(),
+  log_P0_option = par_option(), log_r_option = par_option(),
+  log_sd_P_option = par_option(), log_q_option = par_option(),
   log_sd_I_option = par_option(), cor_str = "one", formula = NULL)
 }
 \arguments{
@@ -14,12 +14,12 @@ fit_model(inputs, survey_group = "gear_season",
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
-\item{log_B0_option}{Settings for the estimation of the starting biomass;
+\item{log_P0_option}{Settings for the estimation of the starting biomass (proportion of B/K);
 define using \code{\link{par_option}}.}
 
 \item{log_r_option}{Settings for the estimation of log_r; define using \code{\link{par_option}}.}
 
-\item{log_sd_B_option}{Settings for the estimation of sd for the process; define using
+\item{log_sd_P_option}{Settings for the estimation of sd for the process; define using
 \code{\link{par_option}}.}
 
 \item{log_q_option}{Settings for the estimation of log_q; define using \code{\link{par_option}}.}
