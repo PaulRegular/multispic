@@ -7,8 +7,8 @@
 #'                  around an estimated mean and sd ("random"), a fixed mean
 #'                  ("prior_mean") or a fixed mean and sd ("prior").
 #' @param mean      Mean value of the parameter. Treated as a starting value if
-#'                  option is "random" or as a prior if option is "prior_mean" or
-#'                  option is "prior". Ignored if option is "fixed".
+#'                  option is "random" or as a prior if option is option is "prior".
+#'                  Ignored if option is "fixed".
 #' @param sd        SD value of the parameter. Treated as a starting value is
 #'                  option is "random" or a prior if option is "prior". Ignored
 #'                  if option is "fixed".
@@ -17,7 +17,7 @@
 #'
 
 par_option <- function(option = "fixed", mean = 0, sd = 1) {
-    list(option = factor(option, levels = c("fixed", "random", "prior_mean", "prior")),
+    list(option = factor(option, levels = c("fixed", "random", "prior")),
          mean = mean, sd = sd)
 }
 
@@ -33,6 +33,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           \code{\link{par_option}}.
 #' @param log_q_option       Settings for the estimation of log_q; define using \code{\link{par_option}}.
 #' @param log_sd_I_option    Settings for the estimation of sd for the indices; define using
+#'                           \code{\link{par_option}}.
+#' @param logit_cor_option   Setting for the estimation of the correlation across stocks; define using
 #'                           \code{\link{par_option}}.
 #' @param cor_str            Correlation structure across species. "none" will not estimate
 #'                           correlations across species, "one" will estimate one shared correlation
@@ -51,6 +53,7 @@ fit_model <- function(inputs,
                       log_sd_B_option = par_option(),
                       log_q_option = par_option(),
                       log_sd_I_option = par_option(),
+                      logit_cor_option = par_option(),
                       cor_str = "one",
                       formula = NULL) {
 
@@ -81,7 +84,7 @@ fit_model <- function(inputs,
                 I_species = as.numeric(index$species) - 1,
                 I_survey = as.numeric(index[, survey_group]) - 1,
                 I_sy = as.numeric(index$sy) - 1,
-                min_B = 0.001,
+                min_B = 0.01,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
                 log_B0_option = as.integer(log_B0_option$option) - 1,
@@ -89,11 +92,14 @@ fit_model <- function(inputs,
                 log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
+                logit_cor_option = as.integer(logit_cor_option$option) - 1,
                 covariates = model_mat)
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
+                mean_logit_cor = logit_cor_option$mean,
+                log_sd_logit_cor = log(logit_cor_option$sd),
                 logit_cor = rep(0, n_cor),
                 logit_phi = 0,
                 mean_log_B0 = log_B0_option$mean,
@@ -118,41 +124,31 @@ fit_model <- function(inputs,
     }
     if (cor_str == "none") {
         map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
+        dat$logit_cor_option <- 0 # skip prior / random effect loop
     }
 
     if (log_sd_B_option$option %in% c("fixed", "prior")) {
         map$mean_log_sd_B <- map$log_sd_log_sd_B <- factor(NA)
     }
-    if (log_sd_B_option$option == "prior_mean") {
-        map$mean_log_sd_B <- factor(NA)
-    }
 
     if (log_B0_option$option %in% c("fixed", "prior")) {
         map$mean_log_B0 <- map$log_sd_log_B0 <- factor(NA)
-    }
-    if (log_r_option$option == "prior_mean") {
-        map$mean_log_B0 <- factor(NA)
     }
 
     if (log_r_option$option %in% c("fixed", "prior")) {
         map$mean_log_r <- map$log_sd_log_r <- factor(NA)
     }
-    if (log_r_option$option == "prior_mean") {
-        map$mean_log_r <- factor(NA)
-    }
 
     if (log_q_option$option %in% c("fixed", "prior")) {
         map$mean_log_q <- map$log_sd_log_q <- factor(NA)
-    }
-    if (log_q_option$option == "prior_mean") {
-        map$mean_log_q <- factor(NA)
     }
 
     if (log_sd_I_option$option %in% c("fixed", "prior")) {
         map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
     }
-    if (log_sd_I_option$option == "prior_mean") {
-        map$mean_log_sd_I <- factor(NA)
+
+    if (logit_cor_option$option %in% c("fixed", "prior")) {
+        map$mean_logit_cor <- map$log_sd_logit_cor <- factor(NA)
     }
 
     if (is.null(formula)) {
@@ -160,20 +156,23 @@ fit_model <- function(inputs,
     }
 
     random <- "log_B"
-    if (log_sd_B_option$option %in% c("random", "prior_mean")) {
+    if (log_sd_B_option$option == "random") {
         random <- c(random, "log_sd_B")
     }
-    if (log_B0_option$option %in% c("random", "prior_mean")) {
+    if (log_B0_option$option == "random") {
         random <- c(random, "log_B0")
     }
-    if (log_r_option$option %in% c("random", "prior_mean")) {
+    if (log_r_option$option == "random") {
         random <- c(random, "log_r")
     }
-    if (log_q_option$option %in% c("random", "prior_mean")) {
+    if (log_q_option$option == "random") {
         random <- c(random, "log_q")
     }
-    if (log_sd_I_option$option %in% c("random", "prior_mean")) {
+    if (log_sd_I_option$option == "random") {
         random <- c(random, "log_sd_I")
+    }
+    if (logit_cor_option$option == "random") {
+        random <- c(random, "logit_cor")
     }
 
     ## Fit model

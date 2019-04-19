@@ -7,7 +7,8 @@
 fit_model(inputs, survey_group = "gear_season",
   log_B0_option = par_option(), log_r_option = par_option(),
   log_sd_B_option = par_option(), log_q_option = par_option(),
-  log_sd_I_option = par_option(), cor_str = "one", formula = NULL)
+  log_sd_I_option = par_option(), logit_cor_option = par_option(),
+  cor_str = "one", formula = NULL)
 }
 \arguments{
 \item{inputs}{List that includes landings, index and covariate (optional) data.}
@@ -25,6 +26,9 @@ define using \code{\link{par_option}}.}
 \item{log_q_option}{Settings for the estimation of log_q; define using \code{\link{par_option}}.}
 
 \item{log_sd_I_option}{Settings for the estimation of sd for the indices; define using
+\code{\link{par_option}}.}
+
+\item{logit_cor_option}{Setting for the estimation of the correlation across stocks; define using
 \code{\link{par_option}}.}
 
 \item{cor_str}{Correlation structure across species. "none" will not estimate

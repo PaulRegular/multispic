@@ -25,6 +25,7 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
+    DATA_INTEGER(logit_cor_option);
     DATA_MATRIX(covariates);
 
     // Parameters
@@ -32,6 +33,8 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_sd_B);
     PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
+    PARAMETER(mean_logit_cor);
+    PARAMETER(log_sd_logit_cor);
     PARAMETER_VECTOR(logit_cor);
     PARAMETER(mean_log_B0);
     PARAMETER(log_sd_log_B0);
@@ -84,6 +87,8 @@ Type objective_function<Type>::operator() ()
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
+    Type sd_logit_cor = exp(log_sd_logit_cor);
+
 
     // Set-up a landings matrix and vector of B
     for (int i = 0; i < nL; i++) {
@@ -95,6 +100,7 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+
 
     // Priors / random effects
     if (log_B0_option > 0) {
@@ -122,6 +128,12 @@ Type objective_function<Type>::operator() ()
             nll -= dnorm(log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
         }
     }
+    if (logit_cor_option > 0) {
+        for(int i = 0; i < logit_cor.size(); i++) {
+            nll -= dnorm(logit_cor(i), mean_logit_cor, sd_logit_cor, true);
+        }
+    }
+
 
     // Process equation
     using namespace density;
