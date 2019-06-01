@@ -26,6 +26,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'
 #' @param inputs             List that includes landings, index and covariate (optional) data.
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param scaler             Number to scale values by to aid convergence.
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
 #'                           define using \code{\link{par_option}}.
 #' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
@@ -47,6 +48,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'
 
 fit_model <- function(inputs,
+                      scaler = sd(inputs$index$index),
                       survey_group = "gear_season",
                       log_B0_option = par_option(),
                       log_r_option = par_option(),
@@ -56,6 +58,8 @@ fit_model <- function(inputs,
                       logit_cor_option = par_option(),
                       cor_str = "one",
                       formula = NULL) {
+
+    call <- match.call()
 
     landings <- inputs$landings
     index <- inputs$index
@@ -70,7 +74,6 @@ fit_model <- function(inputs,
     }
 
     ## Scale index and landings to aid convergence
-    scaler <- sd(index$index)
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
@@ -84,7 +87,7 @@ fit_model <- function(inputs,
                 I_species = as.numeric(index$species) - 1,
                 I_survey = as.numeric(index[, survey_group]) - 1,
                 I_sy = as.numeric(index$sy) - 1,
-                min_B = 0.01,
+                min_B = 0.001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
                 log_B0_option = as.integer(log_B0_option$option) - 1,
@@ -187,7 +190,7 @@ fit_model <- function(inputs,
     par$log_B0 <- log(exp(par$log_B0) * scaler)
     par$log_B <- log(exp(par$log_B) * scaler)
     par$log_K <- log(exp(par$log_K) * scaler)
-    se <- as.list(obj$sd_rep, "Std. Error")
+    se <- as.list(sd_rep, "Std. Error")
 
     ## Reset scale
     landings$landings <- landings$landings * scaler
@@ -215,8 +218,9 @@ fit_model <- function(inputs,
                       F_lwr = exp(lwr$log_F),
                       F_upr = exp(upr$log_F))
 
-    list(scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep, rep = rep,
-         par = par, se = se, index = index, landings = landings, pop = pop)
+    list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
+         rep = rep, par = par, se = se, index = index, landings = landings,
+         pop = pop)
 
 }
 

@@ -1,5 +1,6 @@
 
 ## TODO:
+## - Visualize priors and posteriors
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Get NAO index
 ## - Pick Grand Bank strata and run Rstrap using the same strata across all species
@@ -9,6 +10,7 @@
 ## - Use covariates to estimate time varrying K or r?
 ## - Get hake landings for 2017
 
+## Mean number per tow? Weight by coverage?
 
 library(units)
 library(plotly)
@@ -35,17 +37,22 @@ covariates <- covariates %>%
 
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
+# sub_sp <- sub_sp[sub_sp != "Haddock"]
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1965
-end_year <- 2017
+start_year <- 1979
+end_year <- 2018
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
 covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
+
+## Assume Yankee Q = Engel Q
+index$gear[index$gear == "Yankee"] <- "Engel"
+
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -97,23 +104,27 @@ landings %>%
 ## Run model -------------------------------------------------------------------
 
 ## Prior visual
-curve(dnorm(x, mean = 0, sd = 1), -10, 10)
+curve(dlnorm(x, meanlog = -1, sdlog = 1), 0, 1)
+curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 3)
+curve(dnorm(x, mean = -1, sd = 1), -5, 5)
+curve(dnorm(x, mean = 0, sd = 1), -5, 5)
 curve(dnorm(x, mean = 0, sd = 2), -10, 10)
 curve(dnorm(x, mean = 0, sd = 5), -20, 20)
 curve(dnorm(x, mean = 0, sd = 10), -50, 50)
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
-                 logit_cor_option = par_option(option = "prior", mean = 0, sd = 1),
-                 log_B0_option = par_option(option = "prior", mean = 0, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = 0, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = 0, sd = 1),
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+                 logit_cor_option = par_option(option = "fixed", mean = 0, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = 0, sd = 1),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
                  formula = NULL)
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
+
 
 ## Raw par
 par <- as.list(fit$sd_rep, "Est")
@@ -137,6 +148,8 @@ names(sd_B) <- levels(index$species)
 round(sd_B, 2)
 B0 <- exp(par$log_B0)
 round(B0)
+cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
+round(cor, 2)
 
 
 ## Explore parameter correlations
@@ -166,6 +179,12 @@ p %>% add_markers(x = ~survey, y = ~std_res)
 p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe)
+
+## pe vs covariates
+fit$pop %>%
+    dplyr::left_join(inputs$covariates, by = c("year")) %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+    add_markers(x = ~core_cil, y = ~exp(pe), text = ~year)
 
 
 ## Correlation in pe

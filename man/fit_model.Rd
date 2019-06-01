@@ -4,14 +4,16 @@
 \alias{fit_model}
 \title{Fit a multispecies surplus production model}
 \usage{
-fit_model(inputs, survey_group = "gear_season",
-  log_B0_option = par_option(), log_r_option = par_option(),
-  log_sd_B_option = par_option(), log_q_option = par_option(),
-  log_sd_I_option = par_option(), logit_cor_option = par_option(),
-  cor_str = "one", formula = NULL)
+fit_model(inputs, scaler = sd(inputs$index$index),
+  survey_group = "gear_season", log_B0_option = par_option(),
+  log_r_option = par_option(), log_sd_B_option = par_option(),
+  log_q_option = par_option(), log_sd_I_option = par_option(),
+  logit_cor_option = par_option(), cor_str = "one", formula = NULL)
 }
 \arguments{
 \item{inputs}{List that includes landings, index and covariate (optional) data.}
+
+\item{scaler}{Number to scale values by to aid convergence.}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
