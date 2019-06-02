@@ -42,7 +42,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1979
+start_year <- 1977
 end_year <- 2018
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -113,9 +113,9 @@ curve(dnorm(x, mean = 0, sd = 5), -20, 20)
 curve(dnorm(x, mean = 0, sd = 10), -50, 50)
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = 0, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = 0, sd = 1),
+                 log_B0_option = par_option(option = "prior", mean = 0, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),

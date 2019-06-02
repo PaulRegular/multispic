@@ -1,4 +1,6 @@
 "species","stock","gear","season","year","index"
+"Yellowtail","3LNO","Yankee","Spring",1977,129.310200199728
+"Yellowtail","3LNO","Yankee","Spring",1978,79.1681813176127
 "Yellowtail","3LNO","Yankee","Spring",1979,108.842388721027
 "Yellowtail","3LNO","Yankee","Spring",1980,119.377339262917
 "Yellowtail","3LNO","Yankee","Spring",1982,79.1150467447078
@@ -31,7 +33,6 @@
 "Yellowtail","3LNO","Campelen","Spring",2012,489.441079239571
 "Yellowtail","3LNO","Campelen","Spring",2013,397.330132871575
 "Yellowtail","3LNO","Campelen","Spring",2014,332.106233706509
-"Yellowtail","3LNO","Campelen","Spring",2015,220.15172953277
 "Yellowtail","3LNO","Campelen","Spring",2016,133.422305614911
 "Yellowtail","3LNO","Campelen","Spring",2018,303.402310159707
 "Yellowtail","3LNO","Engel","Fall",1990,40.5967964269878
@@ -39,7 +40,6 @@
 "Yellowtail","3LNO","Engel","Fall",1992,37.7902738658206
 "Yellowtail","3LNO","Engel","Fall",1993,66.5173586442917
 "Yellowtail","3LNO","Engel","Fall",1994,67.0251657032053
-"Yellowtail","3LNO","Campelen","Fall",1995,129.78617086565
 "Yellowtail","3LNO","Campelen","Fall",1996,114.866124416421
 "Yellowtail","3LNO","Campelen","Fall",1997,245.32301062411
 "Yellowtail","3LNO","Campelen","Fall",1998,186.74091282597
@@ -62,6 +62,8 @@
 "Yellowtail","3LNO","Campelen","Fall",2016,286.657600250498
 "Yellowtail","3LNO","Campelen","Fall",2017,322.191005081529
 "Yellowtail","3LNO","Campelen","Fall",2018,278.609982595365
+"Witch","3LNO","Yankee","Spring",1977,13.4407592079233
+"Witch","3LNO","Yankee","Spring",1978,6.34465372008395
 "Witch","3LNO","Yankee","Spring",1979,10.0348909479776
 "Witch","3LNO","Yankee","Spring",1980,8.78441214034699
 "Witch","3LNO","Yankee","Spring",1982,13.8873041589218
@@ -94,7 +96,6 @@
 "Witch","3LNO","Campelen","Spring",2012,15.7328417518591
 "Witch","3LNO","Campelen","Spring",2013,26.2397818904478
 "Witch","3LNO","Campelen","Spring",2014,12.6046504920714
-"Witch","3LNO","Campelen","Spring",2015,6.77862714976589
 "Witch","3LNO","Campelen","Spring",2016,9.17318556038512
 "Witch","3LNO","Campelen","Spring",2018,9.78497598820295
 "Witch","3LNO","Engel","Fall",1990,15.6168939003892
@@ -102,7 +103,6 @@
 "Witch","3LNO","Engel","Fall",1992,6.29286329316831
 "Witch","3LNO","Engel","Fall",1993,5.20163360416143
 "Witch","3LNO","Engel","Fall",1994,4.26946575274292
-"Witch","3LNO","Campelen","Fall",1995,12.1914063463999
 "Witch","3LNO","Campelen","Fall",1996,13.9066905879303
 "Witch","3LNO","Campelen","Fall",1997,6.73345024373621
 "Witch","3LNO","Campelen","Fall",1998,8.79955083995023
@@ -125,6 +125,8 @@
 "Witch","3LNO","Campelen","Fall",2016,12.1379789491664
 "Witch","3LNO","Campelen","Fall",2017,14.9117174515232
 "Witch","3LNO","Campelen","Fall",2018,15.6390250912256
+"Cod","3LNO","Yankee","Spring",1977,136.748642539945
+"Cod","3LNO","Yankee","Spring",1978,126.454491517378
 "Cod","3LNO","Yankee","Spring",1979,214.11265127761
 "Cod","3LNO","Yankee","Spring",1980,175.500906831453
 "Cod","3LNO","Yankee","Spring",1982,197.314158479292
@@ -157,7 +159,6 @@
 "Cod","3LNO","Campelen","Spring",2012,106.241774765171
 "Cod","3LNO","Campelen","Spring",2013,179.206802010144
 "Cod","3LNO","Campelen","Spring",2014,151.805147275945
-"Cod","3LNO","Campelen","Spring",2015,54.1066804308663
 "Cod","3LNO","Campelen","Spring",2016,49.3966154277944
 "Cod","3LNO","Campelen","Spring",2018,47.461829016028
 "Cod","3LNO","Engel","Fall",1990,299.222393550471
@@ -165,7 +166,6 @@
 "Cod","3LNO","Engel","Fall",1992,98.1926664181698
 "Cod","3LNO","Engel","Fall",1993,37.4033644255918
 "Cod","3LNO","Engel","Fall",1994,20.890396388887
-"Cod","3LNO","Campelen","Fall",1995,50.3142094366234
 "Cod","3LNO","Campelen","Fall",1996,20.5695630893182
 "Cod","3LNO","Campelen","Fall",1997,32.5619434723746
 "Cod","3LNO","Campelen","Fall",1998,24.1708969614154
@@ -188,6 +188,8 @@
 "Cod","3LNO","Campelen","Fall",2016,109.293844686009
 "Cod","3LNO","Campelen","Fall",2017,97.224892243366
 "Cod","3LNO","Campelen","Fall",2018,105.589923355684
+"Plaice","3LNO","Yankee","Spring",1977,394.786357812675
+"Plaice","3LNO","Yankee","Spring",1978,330.785644610163
 "Plaice","3LNO","Yankee","Spring",1979,336.524767008002
 "Plaice","3LNO","Yankee","Spring",1980,359.929179236549
 "Plaice","3LNO","Yankee","Spring",1982,305.48839760956
@@ -220,7 +222,6 @@
 "Plaice","3LNO","Campelen","Spring",2012,169.208098780126
 "Plaice","3LNO","Campelen","Spring",2013,232.764954017053
 "Plaice","3LNO","Campelen","Spring",2014,225.697854848216
-"Plaice","3LNO","Campelen","Spring",2015,144.365297965282
 "Plaice","3LNO","Campelen","Spring",2016,69.5399073989761
 "Plaice","3LNO","Campelen","Spring",2018,122.255381670716
 "Plaice","3LNO","Engel","Fall",1990,220.129845566746
@@ -228,7 +229,6 @@
 "Plaice","3LNO","Engel","Fall",1992,84.8231707488797
 "Plaice","3LNO","Engel","Fall",1993,77.9067071218093
 "Plaice","3LNO","Engel","Fall",1994,46.9127320026249
-"Plaice","3LNO","Campelen","Fall",1995,152.821536522736
 "Plaice","3LNO","Campelen","Fall",1996,147.998574172493
 "Plaice","3LNO","Campelen","Fall",1997,168.961726984688
 "Plaice","3LNO","Campelen","Fall",1998,182.075135207979
@@ -251,6 +251,8 @@
 "Plaice","3LNO","Campelen","Fall",2016,178.364568267797
 "Plaice","3LNO","Campelen","Fall",2017,202.059958646045
 "Plaice","3LNO","Campelen","Fall",2018,197.517947456248
+"Redfish","3LNO","Yankee","Spring",1977,65.9189446515494
+"Redfish","3LNO","Yankee","Spring",1978,14.699865076979
 "Redfish","3LNO","Yankee","Spring",1979,85.0264983519576
 "Redfish","3LNO","Yankee","Spring",1980,15.0525658679125
 "Redfish","3LNO","Yankee","Spring",1982,54.0949414064321
@@ -283,7 +285,6 @@
 "Redfish","3LNO","Campelen","Spring",2012,554.421463487503
 "Redfish","3LNO","Campelen","Spring",2013,344.433408719644
 "Redfish","3LNO","Campelen","Spring",2014,444.333634242858
-"Redfish","3LNO","Campelen","Spring",2015,557.273762354878
 "Redfish","3LNO","Campelen","Spring",2016,718.344211240113
 "Redfish","3LNO","Campelen","Spring",2018,140.067036727277
 "Redfish","3LNO","Engel","Fall",1990,37.9084396753597
@@ -291,7 +292,6 @@
 "Redfish","3LNO","Engel","Fall",1992,85.1003888868024
 "Redfish","3LNO","Engel","Fall",1993,40.2750956067579
 "Redfish","3LNO","Engel","Fall",1994,47.7560402529782
-"Redfish","3LNO","Campelen","Fall",1995,216.397260450078
 "Redfish","3LNO","Campelen","Fall",1996,39.0017173542828
 "Redfish","3LNO","Campelen","Fall",1997,225.366722077009
 "Redfish","3LNO","Campelen","Fall",1998,187.94981627335
@@ -314,6 +314,8 @@
 "Redfish","3LNO","Campelen","Fall",2016,246.058818922448
 "Redfish","3LNO","Campelen","Fall",2017,232.151818158425
 "Redfish","3LNO","Campelen","Fall",2018,245.169316174443
+"Skate","3LNO","Yankee","Spring",1977,127.325521187793
+"Skate","3LNO","Yankee","Spring",1978,73.7405872973185
 "Skate","3LNO","Yankee","Spring",1979,88.0737376422255
 "Skate","3LNO","Yankee","Spring",1980,88.8757524074288
 "Skate","3LNO","Yankee","Spring",1982,90.79743019607
@@ -346,7 +348,6 @@
 "Skate","3LNO","Campelen","Spring",2012,106.892826232145
 "Skate","3LNO","Campelen","Spring",2013,131.617452329864
 "Skate","3LNO","Campelen","Spring",2014,124.011469324947
-"Skate","3LNO","Campelen","Spring",2015,99.9127946212039
 "Skate","3LNO","Campelen","Spring",2016,113.07494382666
 "Skate","3LNO","Campelen","Spring",2018,134.101146286488
 "Skate","3LNO","Engel","Fall",1990,102.574848633221
@@ -354,7 +355,6 @@
 "Skate","3LNO","Engel","Fall",1992,53.4064497666921
 "Skate","3LNO","Engel","Fall",1993,48.786660802421
 "Skate","3LNO","Engel","Fall",1994,39.007995035136
-"Skate","3LNO","Campelen","Fall",1995,96.7338407292003
 "Skate","3LNO","Campelen","Fall",1996,74.0416961822047
 "Skate","3LNO","Campelen","Fall",1997,118.009131277086
 "Skate","3LNO","Campelen","Fall",1998,81.7844271776032
@@ -377,6 +377,8 @@
 "Skate","3LNO","Campelen","Fall",2016,139.41510982571
 "Skate","3LNO","Campelen","Fall",2017,154.000676114809
 "Skate","3LNO","Campelen","Fall",2018,171.908570718078
+"Hake","3LNO","Yankee","Spring",1977,1.38883790782305
+"Hake","3LNO","Yankee","Spring",1978,3.98861082467901
 "Hake","3LNO","Yankee","Spring",1979,2.14262334116996
 "Hake","3LNO","Yankee","Spring",1980,1.3853048748859
 "Hake","3LNO","Yankee","Spring",1982,1.05843583639918
@@ -409,7 +411,6 @@
 "Hake","3LNO","Campelen","Spring",2012,7.78139761520412
 "Hake","3LNO","Campelen","Spring",2013,7.82677334907642
 "Hake","3LNO","Campelen","Spring",2014,9.98159513295475
-"Hake","3LNO","Campelen","Spring",2015,6.17347429657466
 "Hake","3LNO","Campelen","Spring",2016,4.08220245696833
 "Hake","3LNO","Campelen","Spring",2018,3.632159475
 "Hake","3LNO","Engel","Fall",1990,1.78444612082305
@@ -417,7 +418,6 @@
 "Hake","3LNO","Engel","Fall",1992,0.492795330827161
 "Hake","3LNO","Engel","Fall",1993,0.747832611103514
 "Hake","3LNO","Engel","Fall",1994,1.44507221460712
-"Hake","3LNO","Campelen","Fall",1995,4.1925101430591
 "Hake","3LNO","Campelen","Fall",1996,3.96353877595279
 "Hake","3LNO","Campelen","Fall",1997,4.34294792330317
 "Hake","3LNO","Campelen","Fall",1998,3.03222170738436
@@ -440,6 +440,8 @@
 "Hake","3LNO","Campelen","Fall",2016,2.88709559032479
 "Hake","3LNO","Campelen","Fall",2017,4.20319337341026
 "Hake","3LNO","Campelen","Fall",2018,3.05669025563298
+"Haddock","3LNO","Yankee","Spring",1977,0.214920432481481
+"Haddock","3LNO","Yankee","Spring",1978,4.08468891188148
 "Haddock","3LNO","Yankee","Spring",1979,0.95071606181141
 "Haddock","3LNO","Yankee","Spring",1980,1.40060141481481
 "Haddock","3LNO","Yankee","Spring",1982,11.8910391242161
@@ -472,7 +474,6 @@
 "Haddock","3LNO","Campelen","Spring",2012,14.5608514842029
 "Haddock","3LNO","Campelen","Spring",2013,16.4505962033042
 "Haddock","3LNO","Campelen","Spring",2014,13.8995895263348
-"Haddock","3LNO","Campelen","Spring",2015,13.6095268186395
 "Haddock","3LNO","Campelen","Spring",2016,5.87894067017044
 "Haddock","3LNO","Campelen","Spring",2018,5.12848110474359
 "Haddock","3LNO","Engel","Fall",1990,1.66466238550465
@@ -480,7 +481,6 @@
 "Haddock","3LNO","Engel","Fall",1992,1.3807950292716
 "Haddock","3LNO","Engel","Fall",1993,0.727292297513031
 "Haddock","3LNO","Engel","Fall",1994,0.534447068236467
-"Haddock","3LNO","Campelen","Fall",1995,7.87740545066927
 "Haddock","3LNO","Campelen","Fall",1996,0.180865315837104
 "Haddock","3LNO","Campelen","Fall",1997,0.480915619977375
 "Haddock","3LNO","Campelen","Fall",1998,2.83382019055606
