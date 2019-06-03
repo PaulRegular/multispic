@@ -1,16 +1,12 @@
 
 ## TODO:
-## - Visualize priors and posteriors
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Get NAO index
-## - Pick Grand Bank strata and run Rstrap using the same strata across all species
-##   (requires 3LNO landings for all species!!)
-## - Get latest catch numbers for 3O redfish and 3LNO hake (2016 and 2017 are guesses)
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
-## - Get hake landings for 2017
 
-## Mean number per tow? Weight by coverage?
+## add greenland halibut?
+## loop across species using Rstrap to see if there are any interesting patterns
 
 library(units)
 library(plotly)
@@ -42,7 +38,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1970
+start_year <- 1977
 end_year <- 2018
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -105,11 +101,11 @@ landings %>%
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "fixed", mean = 0, sd = 2),
-                 log_B0_option = par_option(option = "prior", mean = 0, sd = 2),
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = 0, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
                  formula = NULL)
 fit$opt$message
@@ -120,14 +116,15 @@ fit$opt$objective
 par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 
+## Mean and 95% limits of general prior (mean = -1, sd = 1)
+mean <- exp(-1)
+lwr <- exp(-1 - (qnorm(0.975)))
+upr <- exp(-1 + (qnorm(0.975)))
+c(lwr, mean, upr)
+
 ## Prior and posterior
 post_mean <- as.list(fit$sd_rep, "Est")
 post_sd <- as.list(fit$sd_rep, "Std. Error")
-plot_prior_post(prior_mean = 0, prior_sd = 2,
-                post_mean = post_mean$log_B0,
-                post_sd = post_sd$log_B0,
-                post_names = levels(landings$species),
-                xlab = "log(B0)")
 plot_prior_post(prior_mean = -1, prior_sd = 1,
                 post_mean = post_mean$log_r,
                 post_sd = post_sd$log_r,
@@ -138,7 +135,7 @@ plot_prior_post(prior_mean = -1, prior_sd = 1,
                 post_sd = post_sd$log_sd_B,
                 post_names = levels(landings$species),
                 xlab = "log(SD<sub>B</sub>)")
-plot_prior_post(prior_mean = 0, prior_sd = 1,
+plot_prior_post(prior_mean = -1, prior_sd = 1,
                 post_mean = post_mean$log_q,
                 post_sd = post_sd$log_q,
                 post_names = levels(index$survey),
@@ -204,7 +201,11 @@ p %>% add_lines(x = ~year, y = ~pe)
 fit$pop %>%
     dplyr::left_join(inputs$covariates, by = c("year")) %>%
     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~core_cil, y = ~exp(pe), text = ~year)
+    add_markers(x = ~core_cil, y = ~pe, text = ~year)
+fit$pop %>%
+    dplyr::left_join(inputs$covariates, by = c("year")) %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+    add_markers(x = ~nao, y = ~pe, text = ~year)
 
 
 ## Correlation in pe
@@ -285,37 +286,5 @@ comp %>%
     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~scaled_B)
-
-
-
-## Regression approach ---------------------------------------------------------
-
-
-data <- index %>%
-    dplyr::left_join(landings, by = c("species", "stock", "year")) %>%
-    dplyr::left_join(covariates, by = c("year"))
-
-data %>%
-    plot_ly(x = ~landings, y = ~change, color = ~species) %>%
-    add_markers() %>%
-    layout(xaxis = list(type = "log"))
-
-
-data %>%
-    plot_ly(x = ~core_cil, y = ~change, color = ~species) %>%
-    add_markers()
-
-
-data %>%
-    plot_ly(x = ~core_cil_lag2, y = ~change, color = ~species) %>%
-    add_markers()
-
-data %>%
-    plot_ly(x = ~core_cil_lag4, y = ~change, color = ~species) %>%
-    add_markers()
-
-
-
-
 
 
