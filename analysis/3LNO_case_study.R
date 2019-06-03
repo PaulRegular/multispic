@@ -42,7 +42,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
-start_year <- 1977
+start_year <- 1970
 end_year <- 2018
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
@@ -51,7 +51,7 @@ landings <- landings[landings$year >= start_year & landings$year <= end_year &
 covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Assume Yankee Q = Engel Q
-index$gear[index$gear == "Yankee"] <- "Engel"
+# index$gear[index$gear == "Yankee"] <- "Engel"
 
 
 ## Set-up indices for TMB
@@ -103,19 +103,10 @@ landings %>%
 
 ## Run model -------------------------------------------------------------------
 
-## Prior visual
-curve(dlnorm(x, meanlog = -1, sdlog = 1), 0, 1)
-curve(dlnorm(x, meanlog = 0, sdlog = 1), 0, 3)
-curve(dnorm(x, mean = -1, sd = 1), -5, 5)
-curve(dnorm(x, mean = 0, sd = 1), -5, 5)
-curve(dnorm(x, mean = 0, sd = 2), -10, 10)
-curve(dnorm(x, mean = 0, sd = 5), -20, 20)
-curve(dnorm(x, mean = 0, sd = 10), -50, 50)
-
 inputs <- list(landings = landings, index = index, covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "fixed", mean = 0, sd = 1),
-                 log_B0_option = par_option(option = "prior", mean = 0, sd = 1),
+                 logit_cor_option = par_option(option = "fixed", mean = 0, sd = 2),
+                 log_B0_option = par_option(option = "prior", mean = 0, sd = 2),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = 0, sd = 1),
@@ -125,10 +116,39 @@ fit$opt$message
 fit$sd_rep
 fit$opt$objective
 
-
 ## Raw par
 par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
+
+## Prior and posterior
+post_mean <- as.list(fit$sd_rep, "Est")
+post_sd <- as.list(fit$sd_rep, "Std. Error")
+plot_prior_post(prior_mean = 0, prior_sd = 2,
+                post_mean = post_mean$log_B0,
+                post_sd = post_sd$log_B0,
+                post_names = levels(landings$species),
+                xlab = "log(B0)")
+plot_prior_post(prior_mean = -1, prior_sd = 1,
+                post_mean = post_mean$log_r,
+                post_sd = post_sd$log_r,
+                post_names = levels(landings$species),
+                xlab = "log(r)")
+plot_prior_post(prior_mean = -1, prior_sd = 1,
+                post_mean = post_mean$log_sd_B,
+                post_sd = post_sd$log_sd_B,
+                post_names = levels(landings$species),
+                xlab = "log(SD<sub>B</sub>)")
+plot_prior_post(prior_mean = 0, prior_sd = 1,
+                post_mean = post_mean$log_q,
+                post_sd = post_sd$log_q,
+                post_names = levels(index$survey),
+                xlab = "log(q)")
+plot_prior_post(prior_mean = -1, prior_sd = 1,
+                post_mean = post_mean$log_sd_I,
+                post_sd = post_sd$log_sd_I,
+                post_names = levels(index$survey),
+                xlab = "log(SD<sub>I</sub>)")
+
 
 ## Visually assess par
 par <- fit$par
