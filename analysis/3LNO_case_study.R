@@ -80,17 +80,19 @@ landings %>%
     add_lines(x = ~year, y = ~total_landings)
 
 
+inputs <- list(landings = landings, index = index, covariates = covariates)
+
+
 ## Run model -------------------------------------------------------------------
 
-inputs <- list(landings = landings, index = index, covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 leave_out = NULL)
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
@@ -270,5 +272,36 @@ comp %>%
     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~scaled_B)
+
+
+
+
+## Model comparison ------------------------------------------------------------
+
+null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+one <- update(null, cor_str = "one")
+all <- update(null, cor_str = "all")
+
+null$mAIC
+one$mAIC
+all$mAIC
+
+loo_null <- run_loo(null)
+loo_one <- run_loo(one)
+loo_all <- run_loo(all)
+
+loo_null$mse
+loo_one$mse
+loo_all$mse
+
+write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
+
+
 
 

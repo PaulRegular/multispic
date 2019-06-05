@@ -102,7 +102,6 @@ Type objective_function<Type>::operator() ()
     Type pen = Type(0);
     Type nll = Type(0);
 
-
     // Priors / random effects
     if (log_B0_option > 0) {
         for(int i = 0; i < log_B0.size(); i++) {
@@ -183,6 +182,7 @@ Type objective_function<Type>::operator() ()
     REPORT(log_B_std_res);
     REPORT(log_I_res);
     REPORT(log_I_std_res);
+    REPORT(log_pred_I);
 
     REPORT(pen);
 

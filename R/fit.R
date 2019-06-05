@@ -45,6 +45,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           Not used if set to NULL.
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
+#' @param light              Skip running sdreport and limit output to speed things up?
+#' @param silent             Disable tracing information?
 #'
 #' @export
 #'
@@ -60,7 +62,9 @@ fit_model <- function(inputs,
                       logit_cor_option = par_option(),
                       cor_str = "one",
                       formula = NULL,
-                      leave_out = NULL) {
+                      leave_out = NULL,
+                      light = FALSE,
+                      silent = FALSE) {
 
     call <- match.call()
 
@@ -189,54 +193,99 @@ fit_model <- function(inputs,
     }
 
     ## Fit model
-    obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic")
+    obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
+                     silent = silent)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
-    sd_rep <- sdreport(obj)
-    rep <- obj$report()
-
-    ## Extract par and re-scale
-    par <- as.list(sd_rep, "Est")
-    par$log_B0 <- log(exp(par$log_B0) * scaler)
-    par$log_B <- log(exp(par$log_B) * scaler)
-    par$log_K <- log(exp(par$log_K) * scaler)
-    se <- as.list(sd_rep, "Std. Error")
 
     ## Reset scale
     landings$landings <- landings$landings * scaler
     index$index <- index$index * scaler
 
-    ## Extract and append fits
-    est <- split(unname(sd_rep$value), names(sd_rep$value))
-    sd <- split(sd_rep$sd, names(sd_rep$value))
-    lwr <- split(unname(sd_rep$value) - 1.96 * sd_rep$sd, names(sd_rep$val))
-    upr <- split(unname(sd_rep$value) + 1.96 * sd_rep$sd, names(sd_rep$val))
-    index$pred <- exp(est$log_pred_I) * scaler
-    index$pred_lwr <- exp(lwr$log_pred_I) * scaler
-    index$pred_upr <- exp(upr$log_pred_I) * scaler
+    ## Extract REPORT objects
+    rep <- obj$report()
+
+    index$log_index <- log(index$index)
+    index$log_pred_index <- log(exp(rep$log_pred_I) * scaler)
     index$std_res <- rep$log_I_std_res
     index$left_out <- !as.logical(keep)
 
-    ## Extract population estimates
     pop <- data.frame(year = landings$year,
                       species = landings$species,
                       stock = landings$stock,
-                      pe = rep$log_B_std_res,
-                      B = exp(est$log_B_vec) * scaler,
-                      B_lwr = exp(lwr$log_B_vec) * scaler,
-                      B_upr = exp(upr$log_B_vec) * scaler,
-                      F = exp(est$log_F),
-                      F_lwr = exp(lwr$log_F),
-                      F_upr = exp(upr$log_F))
+                      pe = rep$log_B_std_res)
+    se <- NA
+    sd_rep <- NA
+
+    if (!light) {
+
+        ## Extract ADREPORT objects
+        sd_rep <- sdreport(obj)
+        par <- as.list(sd_rep, "Est")
+        par$log_B0 <- log(exp(par$log_B0) * scaler)
+        par$log_B <- log(exp(par$log_B) * scaler)
+        par$log_K <- log(exp(par$log_K) * scaler)
+        se <- as.list(sd_rep, "Std. Error")
+
+        ## Extract and append fits
+        est <- split(unname(sd_rep$value), names(sd_rep$value))
+        sd <- split(sd_rep$sd, names(sd_rep$value))
+        lwr <- split(unname(sd_rep$value) - 1.96 * sd_rep$sd, names(sd_rep$val))
+        upr <- split(unname(sd_rep$value) + 1.96 * sd_rep$sd, names(sd_rep$val))
+        index$pred <- exp(est$log_pred_I) * scaler
+        index$pred_lwr <- exp(lwr$log_pred_I) * scaler
+        index$pred_upr <- exp(upr$log_pred_I) * scaler
+
+        ## Extract population estimates
+        pop$B <- exp(est$log_B_vec) * scaler
+        pop$B_lwr <- exp(lwr$log_B_vec) * scaler
+        pop$B_upr <- exp(upr$log_B_vec) * scaler
+        pop$F <- exp(est$log_F)
+        pop$F_lwr <- exp(lwr$log_F)
+        pop$F_upr <- exp(upr$log_F)
+
+    }
 
     ## Calculate marginal AIC
     mAIC <- 2 * length(opt$par) + 2 * opt$objective
 
-    list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
+    out <- list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
          rep = rep, par = par, se = se, index = index, landings = landings,
          pop = pop, mAIC = mAIC)
 
 }
 
+
+#' Function for running leave one out cross-validation
+#'
+#' @param fit  Object from \code{\link{fit_model}}
+#'
+#' @return Returns a list of four: 1) fit - all fit objects from each setp,
+#'         2) obs - log observations that were left out at each step
+#'         3) pred - log predictions at each step, and 4) mse - mean squared
+#'         error of the predictions (leave one out cross validation score).
+#'
+#' @export
+#'
+
+run_loo <- function(fit) {
+
+    n <- length(fit$index$index)
+    pb <- txtProgressBar(min = 0, max = n, style = 3)
+    fits <- vector("list", n)
+    obs <- numeric(n)
+    pred <- numeric(n)
+
+    for (i in seq(n)) {
+        f <- update(fit, leave_out = i, light = TRUE, silent = TRUE)
+        obs[i] <- f$index$log_index[f$index$left_out]
+        pred[i] <- f$index$log_pred_index[f$index$left_out]
+        fits[[i]] <- f
+        setTxtProgressBar(pb, i)
+    }
+
+    list(fits = fits, obs = obs, pred = pred, mse = mean((obs - pred) ^ 2))
+
+}
 
 

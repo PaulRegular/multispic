@@ -9,7 +9,7 @@ fit_model(inputs, scaler = sd(inputs$index$index),
   log_r_option = par_option(), log_sd_B_option = par_option(),
   log_q_option = par_option(), log_sd_I_option = par_option(),
   logit_cor_option = par_option(), cor_str = "one", formula = NULL,
-  leave_out = NULL)
+  leave_out = NULL, light = FALSE, silent = FALSE)
 }
 \arguments{
 \item{inputs}{List that includes landings, index and covariate (optional) data.}
@@ -44,6 +44,10 @@ Not used if set to NULL.}
 
 \item{leave_out}{Specific index values to leave out from the analysis (row number).
 Useful for cross-validation. All data are kept if NULL.}
+
+\item{light}{Skip running sdreport and limit output to speed things up?}
+
+\item{silent}{Disable tracing information?}
 }
 \description{
 Fit a multispecies surplus production model
