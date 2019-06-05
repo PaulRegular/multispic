@@ -8,10 +8,10 @@ fit_model(inputs, scaler = sd(inputs$index$index),
   survey_group = "gear_season", log_B0_option = par_option(),
   log_r_option = par_option(), log_sd_B_option = par_option(),
   log_q_option = par_option(), log_sd_I_option = par_option(),
-  logit_cor_option = par_option(), cor_str = "one", formula = NULL)
+  logit_cor_option = par_option(), cor_str = "one", r_covar = NULL)
 }
 \arguments{
-\item{inputs}{List that includes landings, index and covariate (optional) data.}
+\item{inputs}{List that includes landings and index data.}
 
 \item{scaler}{Number to scale values by to aid convergence.}
 
@@ -38,8 +38,8 @@ correlations across species, "one" will estimate one shared correlation
 parameter across species, and "all" will estimate correlation parameters
 across all combinations of species.}
 
-\item{formula}{Formula describing relationship between surplus production and covariates.
-Not used if set to NULL.}
+\item{r_covar}{Covariate, such as temperature, that is expected to have a gaussian effect
+on growth rate. Must be sorted by and include all years. Ignored if NULL}
 }
 \description{
 Fit a multispecies surplus production model

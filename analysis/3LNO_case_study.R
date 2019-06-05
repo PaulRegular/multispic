@@ -34,6 +34,7 @@ covariates <- covariates %>%
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- sub_sp[sub_sp != "Haddock"]
+# sub_sp <- sub_sp[sub_sp != "Redfish"]
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
 # sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
@@ -99,15 +100,15 @@ landings %>%
 
 ## Run model -------------------------------------------------------------------
 
-inputs <- list(landings = landings, index = index, covariates = covariates)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+inputs <- list(landings = landings, index = index)
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 formula = NULL)
+                 r_covar = covariates$core_cil)
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
@@ -197,15 +198,17 @@ p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe)
 
-## pe vs covariates
+## r ~ covariates
 fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~core_cil, y = ~pe, text = ~year)
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~r_lwr, ymax = ~r_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~r)
+
 fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~nao, y = ~pe, text = ~year)
+    plot_ly(x = ~r_covar, y = ~r, color = ~species, colors = viridis::viridis(100)) %>%
+    add_lines()
 
 
 ## Correlation in pe

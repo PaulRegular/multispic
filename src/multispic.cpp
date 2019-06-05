@@ -26,7 +26,8 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_cor_option);
-    DATA_MATRIX(covariates);
+    DATA_VECTOR(r_covar);
+    DATA_INTEGER(r_covar_option);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -50,7 +51,8 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_sd_I);
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
-    PARAMETER_VECTOR(betas);
+    PARAMETER_VECTOR(mu);
+    PARAMETER_VECTOR(log_sigma);
 
     // Dim
     int nY = log_B.rows();         // number of years
@@ -72,6 +74,9 @@ Type objective_function<Type>::operator() ()
     matrix<Type> L_mat(nY, nS);
     vector<Type> F(nL);
     vector<Type> log_F(nL);
+    matrix<Type> r_mat(nY, nS);
+    vector<Type> r_vec(nL);
+    vector<Type> log_r_vec(nL);
 
     // Transformations
     vector<Type> B0 = exp(log_B0);
@@ -79,7 +84,6 @@ Type objective_function<Type>::operator() ()
     vector<Type> sd_B = exp(log_sd_B);
     vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
     Type K = exp(log_K);
-    vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
     Type sd_log_sd_B = exp(log_sd_log_sd_B);
@@ -88,6 +92,7 @@ Type objective_function<Type>::operator() ()
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
     Type sd_logit_cor = exp(log_sd_logit_cor);
+    vector<Type> sigma = exp(log_sigma);
 
 
     // Set-up a landings matrix and vector of B
@@ -134,24 +139,36 @@ Type objective_function<Type>::operator() ()
         }
     }
 
-
-    // Process equation
+    // Process equations
     using namespace density;
-    vector<Type> covar_effect = covariates * betas;
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
+
+            // Gaussian covariate effect on r
+            if (r_covar_option == 0) {
+                r_mat(i, j) = exp(log_r(j));
+            } else {
+                r_mat(i, j) = exp(log_r(j)) *
+                    exp(-((r_covar(i) - mu(j)) * (r_covar(i) - mu(j))) /
+                    (2 * (sigma(j) * sigma(j))));
+            }
+
+            // Surplus production
             if (i == 0) {
                 pred_B(i, j) = B0(j);
             } else {
                 B(i - 1, j) = exp(log_B(i - 1, j));
-                pred_B(i, j) = B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
+                pred_B(i, j) = B(i - 1, j) + (r_mat(i - 1, j) / (m(j) - 1.0)) * B(i - 1, j) *
                     (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
-                    L_mat(i - 1, j) + covar_effect(i - 1);
+                    L_mat(i - 1, j);
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));
         }
+
+        // Process error
         nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_B)(log_B.row(i) - log_pred_B.row(i));
+
     }
 
     // Observation equations
@@ -163,23 +180,27 @@ Type objective_function<Type>::operator() ()
     }
 
 
-    // Calculate residuals and F
+    // Calculate residuals, F, etc.
     for (int i = 0; i < nL; i++) {
         log_B_res(i) = log_B(L_year(i), L_species(i)) - log_pred_B(L_year(i), L_species(i));
         log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));
         F(i) = L(i) / B_vec(i);
         log_F(i) = log(F(i));
+        r_vec(i) = r_mat(L_year(i), L_species(i));
+        log_r_vec(i) = log(r_vec(i));
     }
 
     // AD report values
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
     ADREPORT(log_F);
+    ADREPORT(log_r_vec);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);
     REPORT(log_I_res);
     REPORT(log_I_std_res);
+    REPORT(r_vec);
 
     REPORT(pen);
 

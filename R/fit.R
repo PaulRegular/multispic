@@ -24,7 +24,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
 #' Fit a multispecies surplus production model
 #'
-#' @param inputs             List that includes landings, index and covariate (optional) data.
+#' @param inputs             List that includes landings and index data.
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
 #' @param scaler             Number to scale values by to aid convergence.
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
@@ -41,8 +41,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           correlations across species, "one" will estimate one shared correlation
 #'                           parameter across species, and "all" will estimate correlation parameters
 #'                           across all combinations of species.
-#' @param formula            Formula describing relationship between surplus production and covariates.
-#'                           Not used if set to NULL.
+#' @param r_covar            Covariate, such as temperature, that is expected to have a gaussian effect
+#'                           on growth rate. Must be sorted by and include all years. Ignored if NULL
 #'
 #' @export
 #'
@@ -57,21 +57,12 @@ fit_model <- function(inputs,
                       log_sd_I_option = par_option(),
                       logit_cor_option = par_option(),
                       cor_str = "one",
-                      formula = NULL) {
+                      r_covar = NULL) {
 
     call <- match.call()
 
     landings <- inputs$landings
     index <- inputs$index
-    covariates <- inputs$covariates
-
-    ## Set-up model matrix | formula with covariates
-    if (is.null(formula)) {
-        model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
-    } else {
-        f <- as.formula(paste(Reduce(paste, deparse(formula)), "-1")) # drop intercept
-        model_mat <- model.matrix(f, data = covariates)
-    }
 
     ## Scale index and landings to aid convergence
     index$index <- index$index / scaler
@@ -96,7 +87,8 @@ fit_model <- function(inputs,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_cor_option = as.integer(logit_cor_option$option) - 1,
-                covariates = model_mat)
+                r_covar = if (is.null(r_covar)) 0 else r_covar,
+                r_covar_option = as.numeric(!is.null(r_covar)))
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
@@ -119,7 +111,8 @@ fit_model <- function(inputs,
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nlevels(index[, survey_group])),
-                betas =  rep(0, ncol(model_mat)))
+                mu = rep(0, nlevels(landings$species)),
+                log_sigma = rep(0, nlevels(landings$species)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
     if (cor_str == "one") {
@@ -154,8 +147,8 @@ fit_model <- function(inputs,
         map$mean_logit_cor <- map$log_sd_logit_cor <- factor(NA)
     }
 
-    if (is.null(formula)) {
-        map$betas <- factor(NA)
+    if (is.null(r_covar)) {
+        map$mu <- map$log_sigma <- factor(rep(NA, nlevels(landings$species)))
     }
 
     random <- "log_B"
@@ -210,13 +203,17 @@ fit_model <- function(inputs,
     pop <- data.frame(year = landings$year,
                       species = landings$species,
                       stock = landings$stock,
+                      r_covar = r_covar,
                       pe = rep$log_B_std_res,
                       B = exp(est$log_B_vec) * scaler,
                       B_lwr = exp(lwr$log_B_vec) * scaler,
                       B_upr = exp(upr$log_B_vec) * scaler,
                       F = exp(est$log_F),
                       F_lwr = exp(lwr$log_F),
-                      F_upr = exp(upr$log_F))
+                      F_upr = exp(upr$log_F),
+                      r = exp(est$log_r_vec),
+                      r_lwr = exp(lwr$log_r_vec),
+                      r_upr = exp(upr$log_r_vec))
 
     list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
          rep = rep, par = par, se = se, index = index, landings = landings,
