@@ -8,7 +8,8 @@ fit_model(inputs, scaler = sd(inputs$index$index),
   survey_group = "gear_season", log_B0_option = par_option(),
   log_r_option = par_option(), log_sd_B_option = par_option(),
   log_q_option = par_option(), log_sd_I_option = par_option(),
-  logit_cor_option = par_option(), cor_str = "one", formula = NULL)
+  logit_cor_option = par_option(), cor_str = "one", formula = NULL,
+  leave_out = NULL)
 }
 \arguments{
 \item{inputs}{List that includes landings, index and covariate (optional) data.}
@@ -40,6 +41,9 @@ across all combinations of species.}
 
 \item{formula}{Formula describing relationship between surplus production and covariates.
 Not used if set to NULL.}
+
+\item{leave_out}{Specific index values to leave out from the analysis (row number).
+Useful for cross-validation. All data are kept if NULL.}
 }
 \description{
 Fit a multispecies surplus production model

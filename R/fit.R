@@ -43,6 +43,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           across all combinations of species.
 #' @param formula            Formula describing relationship between surplus production and covariates.
 #'                           Not used if set to NULL.
+#' @param leave_out          Specific index values to leave out from the analysis (row number).
+#'                           Useful for cross-validation. All data are kept if NULL.
 #'
 #' @export
 #'
@@ -57,7 +59,8 @@ fit_model <- function(inputs,
                       log_sd_I_option = par_option(),
                       logit_cor_option = par_option(),
                       cor_str = "one",
-                      formula = NULL) {
+                      formula = NULL,
+                      leave_out = NULL) {
 
     call <- match.call()
 
@@ -76,6 +79,12 @@ fit_model <- function(inputs,
     ## Scale index and landings to aid convergence
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
+
+    ## Values to keep
+    keep <- rep(1L, length(index$index))
+    if (!is.null(leave_out)) {
+        keep[leave_out] <- 0L
+    }
 
     ## Set-up the objects for TMB
     n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
@@ -96,7 +105,8 @@ fit_model <- function(inputs,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_cor_option = as.integer(logit_cor_option$option) - 1,
-                covariates = model_mat)
+                covariates = model_mat,
+                keep = keep)
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
@@ -205,6 +215,7 @@ fit_model <- function(inputs,
     index$pred_lwr <- exp(lwr$log_pred_I) * scaler
     index$pred_upr <- exp(upr$log_pred_I) * scaler
     index$std_res <- rep$log_I_std_res
+    index$left_out <- !as.logical(keep)
 
     ## Extract population estimates
     pop <- data.frame(year = landings$year,

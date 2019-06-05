@@ -83,14 +83,14 @@ landings %>%
 ## Run model -------------------------------------------------------------------
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 formula = NULL)
+                 leave_out = NULL)
 fit$opt$message
 fit$sd_rep
 fit$opt$objective

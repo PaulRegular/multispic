@@ -19,6 +19,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_species);
     DATA_IVECTOR(I_survey);  // index vector for survey parameters
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
+    DATA_IVECTOR(keep);      // useful for cross-validation
     DATA_SCALAR(min_B);
     DATA_INTEGER(log_sd_B_option);
     DATA_INTEGER(log_B0_option);
@@ -157,7 +158,9 @@ Type objective_function<Type>::operator() ()
     // Observation equations
     for (int i = 0; i < nI; i++){
         log_pred_I(i) = log_q(I_survey(i)) + log_B_vec(I_sy(i));
-        nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
+        if (keep(i) == 1) {
+            nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
+        }
         log_I_res(i) = log_I(i) - log_pred_I(i);
         log_I_std_res(i) = log_I_res(i) / sd_I(I_survey(i));
     }
