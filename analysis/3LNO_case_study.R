@@ -1,12 +1,7 @@
 
 ## TODO:
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
-## - Get NAO index
 ## - Calculate one-step ahead residuals
-## - Use covariates to estimate time varrying K or r?
-
-## add greenland halibut?
-## loop across species using Rstrap to see if there are any interesting patterns
 
 library(units)
 library(plotly)
@@ -18,15 +13,6 @@ unique(multispic::landings$species)
 index <- multispic::index
 landings <- multispic::landings
 covariates <- multispic::covariates
-
-covariates <- covariates %>%
-    mutate(core_cil_lag2 = dplyr::lag(core_cil, 2),
-           core_cil_lag4 = dplyr::lag(core_cil, 4),
-           core_cil_lag6 = dplyr::lag(core_cil, 6))
-
-# index <- index %>%
-#     group_by(species, stock, gear, season) %>%
-#     mutate(change = log(index / dplyr::lag(index)))
 
 
 ## Setup the data --------------------------------------------------------------
@@ -77,9 +63,6 @@ index %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~scaled_index, color = ~species,
               colors = viridis::viridis(100)) %>%
-    add_lines(data = covariates, x = ~year, y = ~core_cil_lag4,
-              color = I("red"), yaxis = "y2", line = list(width = 3),
-              name = "Core CIL") %>%
     layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
@@ -100,7 +83,7 @@ landings %>%
 ## Run model -------------------------------------------------------------------
 
 inputs <- list(landings = landings, index = index, covariates = covariates)
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
@@ -111,6 +94,7 @@ fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
+fit$mAIC
 
 ## Raw par
 par <- as.list(fit$sd_rep, "Est")

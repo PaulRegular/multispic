@@ -218,9 +218,12 @@ fit_model <- function(inputs,
                       F_lwr = exp(lwr$log_F),
                       F_upr = exp(upr$log_F))
 
+    ## Calculate marginal AIC
+    mAIC <- 2 * length(opt$par) + 2 * opt$objective
+
     list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
          rep = rep, par = par, se = se, index = index, landings = landings,
-         pop = pop)
+         pop = pop, mAIC = mAIC)
 
 }
 
