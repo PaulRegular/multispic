@@ -1,12 +1,8 @@
 
 ## TODO:
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
-## - Get NAO index
 ## - Calculate one-step ahead residuals
 ## - Use covariates to estimate time varrying K or r?
-
-## add greenland halibut?
-## loop across species using Rstrap to see if there are any interesting patterns
 
 library(units)
 library(plotly)
@@ -18,11 +14,6 @@ unique(multispic::landings$species)
 index <- multispic::index
 landings <- multispic::landings
 covariates <- multispic::covariates
-
-covariates <- covariates %>%
-    mutate(core_cil_lag2 = dplyr::lag(core_cil, 2),
-           core_cil_lag4 = dplyr::lag(core_cil, 4),
-           core_cil_lag6 = dplyr::lag(core_cil, 6))
 
 # index <- index %>%
 #     group_by(species, stock, gear, season) %>%
@@ -78,9 +69,6 @@ index %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~scaled_index, color = ~species,
               colors = viridis::viridis(100)) %>%
-    add_lines(data = covariates, x = ~year, y = ~core_cil_lag4,
-              color = I("red"), yaxis = "y2", line = list(width = 3),
-              name = "Core CIL") %>%
     layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
@@ -106,9 +94,9 @@ fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = 0, sd = 0.5),
                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 r_covar = covariates$core_cil)
+                 r_covar = NULL)
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
@@ -118,9 +106,9 @@ par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 
 ## Mean and 95% limits of general prior (mean = -1, sd = 1)
-mean <- exp(-1)
-lwr <- exp(-1 - (qnorm(0.975)))
-upr <- exp(-1 + (qnorm(0.975)))
+mean <- exp(0)
+lwr <- exp(0 - 1 * (qnorm(0.975)))
+upr <- exp(0 + 1 * (qnorm(0.975)))
 c(lwr, mean, upr)
 
 ## Prior and posterior
@@ -136,7 +124,7 @@ plot_prior_post(prior_mean = -1, prior_sd = 1,
                 post_sd = post_sd$log_sd_B,
                 post_names = levels(landings$species),
                 xlab = "log(SD<sub>B</sub>)")
-plot_prior_post(prior_mean = -1, prior_sd = 1,
+plot_prior_post(prior_mean = 0, prior_sd = 0.5,
                 post_mean = post_mean$log_q,
                 post_sd = post_sd$log_q,
                 post_names = levels(index$survey),

@@ -149,6 +149,8 @@ fit_model <- function(inputs,
 
     if (is.null(r_covar)) {
         map$mu <- map$log_sigma <- factor(rep(NA, nlevels(landings$species)))
+    } else {
+        map$log_sigma <- factor(rep(1, nlevels(landings$species)))
     }
 
     random <- "log_B"
@@ -203,7 +205,7 @@ fit_model <- function(inputs,
     pop <- data.frame(year = landings$year,
                       species = landings$species,
                       stock = landings$stock,
-                      r_covar = r_covar,
+                      r_covar = dat$r_covar,
                       pe = rep$log_B_std_res,
                       B = exp(est$log_B_vec) * scaler,
                       B_lwr = exp(lwr$log_B_vec) * scaler,
