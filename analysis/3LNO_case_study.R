@@ -3,6 +3,11 @@
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Calculate one-step ahead residuals
 
+## - Test seals as a covariate
+## - Test coupling of species by biology and distribution
+## - Check magnitude of estimates vs. assessments
+## - Add ice index
+
 library(units)
 library(plotly)
 library(TMB)
@@ -105,7 +110,7 @@ inputs <- list(landings = landings, index = index, covariates = covariates)
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
@@ -313,20 +318,69 @@ null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
 one <- update(null, cor_str = "one")
 all <- update(null, cor_str = "all")
 
-null$mAIC
-one$mAIC
-all$mAIC
+cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
+                 formula = ~core_cil)
+cei <- update(cil, formula = ~cei)
+cil_one <- update(cil, cor_str = "one")
+cei_one <- update(cei, cor_str = "one")
 
 loo_null <- run_loo(null)
 loo_one <- run_loo(one)
 loo_all <- run_loo(all)
+loo_cil <- run_loo(cil)
+loo_cei <- run_loo(cei)
+loo_cil_one <- run_loo(cil_one)
+loo_cei_one <- run_loo(cei_one)
 
+# write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
+
+null$mAIC
+one$mAIC
+all$mAIC
+cil$mAIC
+cei$mAIC
+cil_one$mAIC
+cei_one$mAIC
 loo_null$mse
 loo_one$mse
 loo_all$mse
+loo_cil$mse
+loo_cei$mse
+loo_cil_one$mse
+loo_cei_one$mse
 
-write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
-
-
-
+# > null$mAIC
+# [1] 925.5041
+# > one$mAIC
+# [1] 848.0871
+# > all$mAIC
+# [1] 866.2714
+# > cil$mAIC
+# [1] 881.877
+# > cei$mAIC
+# [1] 905.3074
+# > cil_one$mAIC
+# [1] 831.3529
+# > cei_one$mAIC
+# [1] 846.92
+# > loo_null$mse
+# [1] 0.2686458
+# > loo_one$mse
+# [1] 0.2501681
+# > loo_all$mse
+# [1] 0.2337481
+# > loo_cil$mse
+# [1] 0.2586276
+# > loo_cei$mse
+# [1] 0.2527108
+# > loo_cil_one$mse
+# [1] 0.2535405
+# > loo_cei_one$mse
+# [1] 0.2551145
 
