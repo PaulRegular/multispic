@@ -14,6 +14,13 @@ nao <- monthly_nao %>%
 ## Import core cil data
 core_cil <- fread("data-raw/covariates/core_cil.csv")
 
+## Import composite environmental index
+cei <- fread("data-raw/covariates/cei.csv")
+names(cei) <- c("year", "cei")
+
 ## Merge and export
-covariates <- merge(nao, core_cil, by = c("year"), all = TRUE)
+covariates <- nao %>%
+    full_join(core_cil, by = "year") %>%
+    full_join(cei, by = "year")
+
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)

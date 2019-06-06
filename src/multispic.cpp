@@ -144,9 +144,9 @@ Type objective_function<Type>::operator() ()
                 pred_B(i, j) = B0(j);
             } else {
                 B(i - 1, j) = exp(log_B(i - 1, j));
-                pred_B(i, j) = B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
+                pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
                     (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
-                    L_mat(i - 1, j) + covar_effect(i - 1);
+                    L_mat(i - 1, j)) * exp(covar_effect(i - 1));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));

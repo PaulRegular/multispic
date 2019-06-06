@@ -7,12 +7,17 @@ library(units)
 library(plotly)
 library(TMB)
 library(multispic)
+library(dplyr)
+library(zoo)
 
 unique(multispic::landings$species)
 
 index <- multispic::index
 landings <- multispic::landings
-covariates <- multispic::covariates
+covariates <- multispic::covariates %>%
+    mutate(cei_ma = rollmean(cei, 5, align = "right", fill = NA),
+           cil_ma = rollmean(core_cil, 5, align = "right", fill = NA),
+           nao_ma = rollmean(nao, 5, align = "right", fill = NA))
 
 
 ## Setup the data --------------------------------------------------------------
@@ -80,18 +85,34 @@ landings %>%
     add_lines(x = ~year, y = ~total_landings)
 
 
+covariates %>%
+    plot_ly(x = ~year) %>%
+    add_lines(y = ~core_cil, name = "Core CIL") %>%
+    add_lines(y = ~cil_ma, name = "Moving average")
+
+covariates %>%
+    plot_ly(x = ~year) %>%
+    add_lines(y = ~nao, name = "NAO") %>%
+    add_lines(y = ~nao_ma, name = "Moving average")
+
+covariates %>%
+    plot_ly(x = ~year) %>%
+    add_lines(y = ~cei, name = "CEI") %>%
+    add_lines(y = ~cei_ma, name = "Moving average")
+
 inputs <- list(landings = landings, index = index, covariates = covariates)
 
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
+                 formula = NULL)
 
 fit$opt$message
 fit$sd_rep
@@ -192,6 +213,10 @@ fit$pop %>%
     dplyr::left_join(inputs$covariates, by = c("year")) %>%
     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
     add_markers(x = ~nao, y = ~pe, text = ~year)
+fit$pop %>%
+    dplyr::left_join(inputs$covariates, by = c("year")) %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+    add_markers(x = ~cei, y = ~pe, text = ~year)
 
 
 ## Correlation in pe
