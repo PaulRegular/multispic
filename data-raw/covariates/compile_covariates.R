@@ -18,9 +18,15 @@ core_cil <- fread("data-raw/covariates/core_cil.csv")
 cei <- fread("data-raw/covariates/cei.csv")
 names(cei) <- c("year", "cei")
 
+## Import timing of ice retreat data
+tice <- fread("data-raw/covariates/tice.csv") %>%
+    select(year, tice)
+
 ## Merge and export
 covariates <- nao %>%
     full_join(core_cil, by = "year") %>%
-    full_join(cei, by = "year")
+    full_join(cei, by = "year") %>%
+    full_join(tice, by = "year") %>%
+    arrange(year)
 
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)

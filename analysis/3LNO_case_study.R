@@ -3,10 +3,8 @@
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Calculate one-step ahead residuals
 
-## - Test seals as a covariate
 ## - Test coupling of species by biology and distribution
 ## - Check magnitude of estimates vs. assessments
-## - Add ice index
 
 library(units)
 library(plotly)
@@ -22,7 +20,8 @@ landings <- multispic::landings
 covariates <- multispic::covariates %>%
     mutate(cei_ma = rollmean(cei, 5, align = "right", fill = NA),
            cil_ma = rollmean(core_cil, 5, align = "right", fill = NA),
-           nao_ma = rollmean(nao, 5, align = "right", fill = NA))
+           nao_ma = rollmean(nao, 5, align = "right", fill = NA),
+           tice = tice - mean(tice, na.rm = TRUE))
 
 
 ## Setup the data --------------------------------------------------------------
@@ -105,12 +104,16 @@ covariates %>%
     add_lines(y = ~cei, name = "CEI") %>%
     add_lines(y = ~cei_ma, name = "Moving average")
 
+covariates %>%
+    plot_ly(x = ~year) %>%
+    add_lines(y = ~tice, name = "tice")
+
 inputs <- list(landings = landings, index = index, covariates = covariates)
 
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
@@ -222,6 +225,10 @@ fit$pop %>%
     dplyr::left_join(inputs$covariates, by = c("year")) %>%
     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
     add_markers(x = ~cei, y = ~pe, text = ~year)
+fit$pop %>%
+    dplyr::left_join(inputs$covariates, by = c("year")) %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+    add_markers(x = ~tice, y = ~pe, text = ~year)
 
 
 ## Correlation in pe
@@ -297,12 +304,14 @@ comp %>%
            scale = attr(scale(B), "scaled:scale")) %>%
     mutate(lwr = (B_lwr - center) / scale,
            upr = (B_upr - center) / scale) %>%
+    filter(year > min(index$year)) %>%
+    ungroup() %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            linetype = ~source, legendgroup = ~species) %>%
+            linetype = ~source, legendgroup = ~species,
+            text = ~B) %>%
     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~scaled_B)
-
 
 
 
@@ -327,8 +336,10 @@ cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                   log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
                  formula = ~core_cil)
 cei <- update(cil, formula = ~cei)
+nao <- update(cil, formula = ~nao)
 cil_one <- update(cil, cor_str = "one")
 cei_one <- update(cei, cor_str = "one")
+nao_one <- update(nao, cor_str = "one")
 
 loo_null <- run_loo(null)
 loo_one <- run_loo(one)
@@ -337,6 +348,8 @@ loo_cil <- run_loo(cil)
 loo_cei <- run_loo(cei)
 loo_cil_one <- run_loo(cil_one)
 loo_cei_one <- run_loo(cei_one)
+loo_nao <- run_loo(nao)
+loo_nao_one <- run_loo(nao_one)
 
 # write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
 
@@ -345,6 +358,7 @@ one$mAIC
 all$mAIC
 cil$mAIC
 cei$mAIC
+nao$mAIC
 cil_one$mAIC
 cei_one$mAIC
 loo_null$mse
@@ -352,8 +366,10 @@ loo_one$mse
 loo_all$mse
 loo_cil$mse
 loo_cei$mse
+loo_nao$mse
 loo_cil_one$mse
 loo_cei_one$mse
+loo_nao_one$mse
 
 # > null$mAIC
 # [1] 925.5041
@@ -365,6 +381,8 @@ loo_cei_one$mse
 # [1] 881.877
 # > cei$mAIC
 # [1] 905.3074
+# > nao$mAIC
+# [1] 900.1162
 # > cil_one$mAIC
 # [1] 831.3529
 # > cei_one$mAIC
@@ -379,8 +397,12 @@ loo_cei_one$mse
 # [1] 0.2586276
 # > loo_cei$mse
 # [1] 0.2527108
+# > loo_nao$mse
+# [1] 0.2616873
 # > loo_cil_one$mse
 # [1] 0.2535405
 # > loo_cei_one$mse
 # [1] 0.2551145
+# > loo_nao_one$mse
+# [1] 0.2503353
 
