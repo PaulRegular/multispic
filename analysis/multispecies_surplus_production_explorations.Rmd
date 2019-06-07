@@ -12,50 +12,91 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
                       out.width = "100%")
 
+library(units)
 library(plotly)
 library(TMB)
 library(multispic)
+library(dplyr)
+library(zoo)
 
 ```
 
+# Methods
+
 ## Multispecies surplus production model
 
-Here I present initial results from of a standard surplus production model which has been modified to fit to multiple species:
+Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species:
 
-$$B_{t, s} = \left (B_{t-1, s} + \frac{r_s}{m - 1} B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ]^{m - 1} \right ) - L_{t-1, s} \right ) e^{u_{s}}$$
+$$B_{t, s} = \left (B_{t-1, s} + r_s B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ] \right ) - L_{t-1, s} \right ) e^ {\beta X_t + {\delta_{t,s}}}$$
 where
 
-$$ u \sim N(0, \Sigma_s)$$
+$$ \delta_{t,s} \sim N(0, \Sigma_s)$$
+and
 
-The key difference here from a standard generalized surplus production model is that biomass is indexed by species, $s$, and the ratio of biomass over carrying capacity is based on the total biomass of the species included in the model. Note that intrinsic growth rates, $r_s$, are species specific while only one carrying capacity $K$ parameter is estimated. Therefore, as the population in the system increases towards $K$, year-over-year growth of all species slows. The concept is that the species included in the model are limited by the finite amount of energy in the system. Another difference is the way the process error is modeled. Because multiple species are included, covariance between the species can be estimated. Here I model process error using the multivariate normal distribution and estimate standard deviation parameters for each species as well as the correlation in the errors across species. If these species are affected by similar drivers, then correlations will be positive. Alternatively, negative correlations may occur if there is competition or predator-prey interactions between two species.
+$$ \Sigma_s = \begin{bmatrix}
+\sigma^2_{\delta~1} &  \sigma_{\delta~1} \sigma_{\delta~2} \rho_{1,2}  & \dots &  \sigma_{\delta~1} \sigma_{\delta~s} \rho_{1,s} & \\ 
+\sigma_{\delta~2} \sigma_{\delta~1} \rho_{2,1}       & \sigma^2_{\delta~2}     & \dots & \sigma_{\delta~2} \sigma_{\delta~s} \rho_{2,s}  & \\ 
+\vdots & \vdots &  \ddots     &  \vdots & \\ 
+\sigma_{\delta~s} \sigma_{\delta~1} \rho_{s,1} & \sigma_{\delta~s} \sigma_{\delta~2} \rho_{s,2} & \dots  &  \sigma^2_{\delta~s} & 
+\end{bmatrix} $$
+
+The key difference here from a standard surplus production model is that biomass is indexed by species, $s$, and the ratio of biomass over carrying capacity is based on the total biomass of the species included in the model. Note that intrinsic growth rates, $r_s$, are species specific while only one carrying capacity $K$ parameter is estimated. Therefore, as the population in the system increases towards $K$, year-over-year growth of all species slows. The concept is that the species included in the model are limited by the finite amount of energy in the system. Another difference is the way the process error is modeled. Because multiple species are included, covariance between the species can be estimated. Here I model process error using the multivariate normal distribution and estimate standard deviation parameters ($\sigma^2_{\delta ~ s}$) for each species as well as the correlation in the errors across species ($\rho_{s,s}$). If these species are affected by similar drivers, then correlations will be positive. Alternatively, negative correlations may occur if there is competition or predator-prey interactions between two species. Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect ($\beta X$).
 
 The observation portion of this state-space model is
 
 $$I_{t,s,g} = q_{s,g} ~ B_{t,s} ~ e^{\nu}$$
 where
 
-$$\nu \sim N(0, \sigma^2_{s,g})$$
-Here $g$ can be either gear, season or a combination of the two. Convergence was often an issue when catchability parameters $q$ were both species and gear/season specific and, as such, I couple the $q$ and $\sigma$ parameters across species.
+$$\nu \sim N(0, \sigma^2_{\nu ~ s,g})$$
+Here $g$ represents survey grouping (e.g. season, gear). This allows for the catachability and variability of surveys to be species and survey specific. This model was constructed using Template Model Builder. 
 
-As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): Yellowtail, Witch, Cod, Plaice, Skate, Hake, Redfish. Below I have included some exploratory plots of the data and the model fits.
+### Data and priors
+
+As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): yellowtail, Witch, Cod, Plaice, Skate, Hake, Haddock, Redfish. Landings data were obtained from the STATLANT21A database maintained by NAFO (https://www.nafo.int/Data/STATLANT). Survey indices are from Canadian spring and fall multispecies surveys. Three gear changes have occurred throughout the survey time-series, from Yankee, Engel and Campelen gear. Coverage of the Grand Bank has been inconsistent and, as such, the data has been restricted to years where 90% of the core area (strata that have been sampled for more than 20 years) has been covered by the survey. Separate catchabilities are estimated by season and gear type. 
+
+The same prior (mean = -1, sd = 1) was used on $log(r)$, $log(\sigma^2_{\delta ~ s})$, $log(q_{s,g})$ and $log(\sigma^2_{\nu ~ s,g})$, which corresponds to 95% interval of 0.05 and 2.61. These general priors stabilized convergence by penalizing large deviations into unrealistic parameter space [i.e. growth ($r$), catchability ($q$) and variance ($\sigma^2$) parameters are not expected to move far outside the 0.05 - 2.61 range].
+
+## Model selection
+
+A range of models have been tested and compared:
+1. null: assumes no correlation across species and no covariate effects.
+2. one: assumes one common correlation parameters across species and no covariate effects
+3. cil: assumes no correlation across species but adds core cold intermediate layer (CIL) temperature as a covariate
+4. cei: assumes no correlation across species but adds composite environmental index (CEI) as a covariate
+5. cil_one: assumes one correlation parameter and adds core CIL temperature as a covariate
+6. cei_one: assumes one correlation parameter and adds CEI as a covariate
+
+Models are compared using marginal AIC
+
+$$mAIC =  2k + 2log(\hat{L}),$$
+
+where $k$ is the number of fixed parameters and $log(\hat{L})$ is the negative log likelihood, and leave-one-out cross-validation score
+
+$$LOOCV = \frac{1}{n} \sum_{i-1}^{n} \left (  log(I_i) - log(\hat{I}_i) \right ) ^ 2$$
+LOOCV is the mean squared error of the log estimates of the survey indices $\hat{I}$, under consecutive model runs where each observation $i$ was left out. For both metrics, lower values indicate models with greater predictive ability.
 
 
-```{r include=FALSE}
+
+# Results
+
+```{r include = FALSE, cache = TRUE}
 
 index <- multispic::index
 landings <- multispic::landings
-
+covariates <- multispic::covariates %>%
+    mutate(cei_ma = rollmean(cei, 5, align = "right", fill = NA),
+           cil_ma = rollmean(core_cil, 5, align = "right", fill = NA),
+           nao_ma = rollmean(nao, 5, align = "right", fill = NA),
+           tice = tice - mean(tice, na.rm = TRUE))
 ## Subset the data
 sub_sp <- unique(multispic::landings$species)
-# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
-# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-# sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
-start_year <- 1975
-end_year <- 2017
+start_year <- 1977
+end_year <- 2018
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
+covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Set-up indices for TMB
 landings$species <- factor(landings$species)
@@ -65,16 +106,50 @@ landings <- landings[order(landings$sy), ]
 index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
 index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
 index$gear_season <- factor(paste0(index$gear, "-", index$season))
+index$gear_species <- factor(paste0(index$gear, "-", index$species))
 index$species <- factor(index$species)
+index$null <- factor(rep("null", nrow(index)))
 
 ## Run model
-inputs <- list(landings = landings, index = index)
-fit <- fit_model(inputs, q_groups = "gear_season", cor_str = "one")
-fit$opt$message
+inputs <- list(landings = landings, index = index, covariates = covariates)
+
+null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+one <- update(null, cor_str = "one")
+all <- update(null, cor_str = "all")
+
+cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
+                 formula = ~core_cil)
+cei <- update(cil, formula = ~cei)
+nao <- update(cil, formula = ~nao)
+cil_one <- update(cil, cor_str = "one")
+cei_one <- update(cei, cor_str = "one")
+nao_one <- update(nao, cor_str = "one")
+
+# loo_null <- run_loo(null)
+# loo_one <- run_loo(one)
+# loo_all <- run_loo(all)
+# loo_cil <- run_loo(cil)
+# loo_cei <- run_loo(cei)
+# loo_cil_one <- run_loo(cil_one)
+# loo_cei_one <- run_loo(cei_one)
+# loo_nao <- run_loo(nao)
+# loo_nao_one <- run_loo(nao_one)
 
 ```
 
-### Survey data
+### Survey data (scaled)
 
 ```{r}
 
@@ -96,10 +171,10 @@ index %>%
 
 ```
 
+
 ### Landings
 
 ```{r}
-
 
 p <- landings %>%
     group_by(stock) %>%
@@ -111,11 +186,11 @@ p %>% layout(yaxis = list(type = "log"))
 
 ```
 
-### Index residuals
+### Index residuals (null)
 
 ```{r}
 
-p <- fit$index %>%
+p <- null$index %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
@@ -124,10 +199,36 @@ p %>% add_markers(x = ~survey, y = ~std_res)
 ```
 
 
-### Fit to the index
+### Index residuals (one)
 
 ```{r}
-p <- fit$index %>%
+
+p <- one$index %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_markers(x = ~year, y = ~std_res)
+p %>% add_markers(x = ~log(pred), y = ~std_res)
+p %>% add_markers(x = ~survey, y = ~std_res)
+
+```
+
+
+### Index residuals (cei)
+
+```{r}
+
+p <- cei$index %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_markers(x = ~year, y = ~std_res)
+p %>% add_markers(x = ~log(pred), y = ~std_res)
+p %>% add_markers(x = ~survey, y = ~std_res)
+
+```
+
+
+### Fit to the index (null)
+
+```{r}
+p <- null$index %>%
     group_by(survey) %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
             legendgroup = ~species) %>%
@@ -140,20 +241,58 @@ p %>% layout(yaxis = list(type = "log"))
 ```
 
 
-### Trend in process error
+### Fit to the index (one)
+
+```{r}
+p <- one$index %>%
+    group_by(survey) %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE)
+p
+p %>% layout(yaxis = list(type = "log"))
+```
+
+
+### Fit to the index (cei)
+
+```{r}
+p <- cei$index %>%
+    group_by(survey) %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE)
+p
+p %>% layout(yaxis = list(type = "log"))
+```
+
+
+### Trend in process error (null, one, cei)
 
 ```{r}
 
-p <- fit$pe %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
-p %>% add_lines(x = ~year, y = ~pe)
+p <- plot_ly(color = ~species, colors = viridis::viridis(100),
+             x = ~year, y = ~pe)
+
+p %>% add_lines(data = null$pop) %>% 
+    layout(title = "null")
+p %>% add_lines(data = one$pop) %>% 
+    layout(title = "one")
+p %>% add_lines(data = cei$pop) %>% 
+    layout(title = "cei")
 
 ```
 
-### Biomass trends
+### Biomass trends (one)
 
 ```{r}
-p <- fit$biomass %>%
+p <- one$pop %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
             legendgroup = ~species) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
@@ -165,5 +304,104 @@ p %>% layout(yaxis = list(type = "log"))
 ```
 
 
-Though this model has some problems, coupling catchability across species may be the biggest, key features of note are the parallel trends in the process error from 1984-1992 and 2012-2016. Also note that the correlation across species is estimated to be `r round(plogis(fit$opt$par["logit_cor"]), 2)`. Again, this is a shared parameter across species, but it indicates that there is a shared driver underlying the process error.
+### Comparison with assessments (one)
+
+```{r}
+
+assess <- read.csv("analysis/stock_assessment_estimates.csv")
+names(assess) <- c("species_div", "year", "B", "B_type")
+x <- data.table::tstrsplit(assess$species, split = " ")
+assess$species <- x[[1]]
+assess$division <- x[[2]]
+assess$source <- "assessment"
+assess$B_lwr <- NA
+assess$B_upr <- NA
+
+spm <- one$pop
+spm$source <- "multispic"
+
+keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
+comp <- rbind(assess[, keep], spm[, keep])
+
+comp %>%
+    group_by(species, source) %>%
+    mutate(scaled_B = scale(B),
+           center = attr(scale(B), "scaled:center"),
+           scale = attr(scale(B), "scaled:scale")) %>%
+    mutate(lwr = (B_lwr - center) / scale,
+           upr = (B_upr - center) / scale) %>%
+    filter(year > min(index$year)) %>%
+    ungroup() %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            linetype = ~source, legendgroup = ~species,
+            text = ~B) %>%
+    add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~scaled_B)
+
+
+```
+
+
+### Parameter estimates (one)
+
+```{r echo=FALSE}
+
+## Visually assess par
+par <- one$par
+q <- exp(par$log_q)
+names(q) <- levels(index$survey)
+cat("q \n"); round(q, 2)
+sd_I <- exp(par$log_sd_I)
+names(sd_I) <- levels(index$survey)
+cat("sd observations \n"); round(sd_I, 2)
+K <- exp(par$log_K)
+names(K) <- "all"
+cat("K \n"); signif(K, 2)
+r <- exp(par$log_r)
+names(r) <- levels(index$species)
+cat("r \n"); round(r, 2)
+sd_B <- exp(par$log_sd_B)
+names(sd_B) <- levels(index$species)
+cat("sd process \n"); round(sd_B, 2)
+B0 <- exp(par$log_B0)
+names(B0) <- levels(index$species)
+cat("B0 \n"); round(B0)
+cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
+if (all(duplicated(cor)[-1])) {
+    cor <- cor[1]
+    names(cor) <- "all"
+} else {
+    names(cor) <- rep("todo", length(cor))
+}
+cat("correlation \n"); round(cor, 3)
+
+```
+
+
+
+### Information criteria
+
+| Model |    Name | Correlation | Covariate |   mAIC |  LOOCV | 
+|-------|---------|-------------|-----------|--------|--------|
+|     1 |    null |           - |         - |    925 |  0.269 |
+|     2 |     one |     coupled |         - |    848 |  0.250 |
+|     3 |     cil |           - |  core CIL |    881 |  0.259 |
+|     4 |     cei |           - |       CEI |    905 |  0.253 |
+|     5 | cil_one |     coupled |  core CIL |    831 |  0.254 |
+|     6 | cei_one |     coupled |  core CIL |    846 |  0.255 |
+
+
+# Conclusions
+
+- Ideally, priors would not need to be used however more information was required. Priors used should not be overly restrictive.
+- There are no clear red flags in the residuals.
+- The top ranked model is the one with one correlation parameter shared across all species. This indicates that there is an underlying process affecting all species.
+- The next best models are those that include a climate variable (core CIL or CEI). This indicates that some of the correlation in the process error is explained by climactic variability. 
+- The model that estimates all parameters independently, the null model, preforms the poorest. 
+- Overall, these results suggest that there is an underlying factor affecting these species that results in parallel trends. This is expected since all these species occupy the same space and all are likely to be affected by climatic variability. Finally, sharing information across species appears to improve predictive ability.
+
+# Next steps?
+
+- Apply covariate effect directly to K.
 

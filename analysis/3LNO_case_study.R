@@ -3,9 +3,6 @@
 ## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Calculate one-step ahead residuals
 
-## - Test coupling of species by biology and distribution
-## - Check magnitude of estimates vs. assessments
-
 library(units)
 library(plotly)
 library(TMB)
