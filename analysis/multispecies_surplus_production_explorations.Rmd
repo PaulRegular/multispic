@@ -52,13 +52,14 @@ Here $g$ represents survey grouping (e.g. season, gear). This allows for the cat
 
 ### Data and priors
 
-As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): yellowtail, Witch, Cod, Plaice, Skate, Hake, Haddock, Redfish. Landings data were obtained from the STATLANT21A database maintained by NAFO (https://www.nafo.int/Data/STATLANT). Survey indices are from Canadian spring and fall multispecies surveys. Three gear changes have occurred throughout the survey time-series, from Yankee, Engel and Campelen gear. Coverage of the Grand Bank has been inconsistent and, as such, the data has been restricted to years where 90% of the core area (strata that have been sampled for more than 20 years) has been covered by the survey. Separate catchabilities are estimated by season and gear type. 
+As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): Yellowtail, Witch, Cod, Plaice, Skate, Hake, Haddock, Redfish. Landings data were obtained from the STATLANT21A database maintained by NAFO (https://www.nafo.int/Data/STATLANT). Survey indices are from Canadian spring and fall multispecies surveys. Three gear changes have occurred throughout the survey time-series, from Yankee, Engel and Campelen gear. Coverage of the Grand Bank has been inconsistent and, as such, the data has been restricted to years where 90% of the core area (strata that have been sampled for more than 20 years) has been covered by the survey. Separate catchabilities are estimated by season and gear type. 
 
 The same prior (mean = -1, sd = 1) was used on $log(r)$, $log(\sigma^2_{\delta ~ s})$, $log(q_{s,g})$ and $log(\sigma^2_{\nu ~ s,g})$, which corresponds to 95% interval of 0.05 and 2.61. These general priors stabilized convergence by penalizing large deviations into unrealistic parameter space [i.e. growth ($r$), catchability ($q$) and variance ($\sigma^2$) parameters are not expected to move far outside the 0.05 - 2.61 range].
 
-## Model selection
+### Model selection
 
 A range of models have been tested and compared:
+
 1. null: assumes no correlation across species and no covariate effects.
 2. one: assumes one common correlation parameters across species and no covariate effects
 3. cil: assumes no correlation across species but adds core cold intermediate layer (CIL) temperature as a covariate
@@ -186,159 +187,149 @@ p %>% layout(yaxis = list(type = "log"))
 
 ```
 
-### Index residuals (null)
+### Index residuals
 
 ```{r}
 
-p <- null$index %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
+null$index$model <- "null"
+one$index$model <- "one"
+cei$index$model <- "cei"
+cil$index$model <- "cil"
+cil_one$index$model <- "cil_one"
+cei_one$index$model <- "cei_one"
+
+d <- rbind(null$index, one$index, cei$index, cil$index, cei_one$index, cil_one$index)
+d$model <- factor(d$model, levels = c("null", "one", "cil", "cei", "cil_one", "cei_one"))
+
+p <- d %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100), frame = ~model)
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
-p %>% add_markers(x = ~survey, y = ~std_res)
+p %>% add_markers(x = ~survey, y = ~std_res) %>% 
+    layout(xaxis = list(tickfont = list(size = 5)))
 
 ```
 
 
-### Index residuals (one)
+### Fit to the index
 
 ```{r}
-
-p <- one$index %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
-p %>% add_markers(x = ~year, y = ~std_res)
-p %>% add_markers(x = ~log(pred), y = ~std_res)
-p %>% add_markers(x = ~survey, y = ~std_res)
-
-```
-
-
-### Index residuals (cei)
-
-```{r}
-
-p <- cei$index %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
-p %>% add_markers(x = ~year, y = ~std_res)
-p %>% add_markers(x = ~log(pred), y = ~std_res)
-p %>% add_markers(x = ~survey, y = ~std_res)
-
-```
-
-
-### Fit to the index (null)
-
-```{r}
-p <- null$index %>%
+p <- d %>%
     group_by(survey) %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
+            legendgroup = ~species, frame = ~model) %>%
     add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~pred) %>%
-    add_markers(y = ~index, showlegend = FALSE)
+    add_markers(y = ~index, showlegend = FALSE) %>% 
+    animation_opts(frame = 0)
 p
 p %>% layout(yaxis = list(type = "log"))
 ```
 
 
-### Fit to the index (one)
+### Trend in process error
 
 ```{r}
-p <- one$index %>%
-    group_by(survey) %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
-    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~pred) %>%
-    add_markers(y = ~index, showlegend = FALSE)
-p
-p %>% layout(yaxis = list(type = "log"))
+
+null$pop$model <- "null"
+one$pop$model <- "one"
+cei$pop$model <- "cei"
+cil$pop$model <- "cil"
+cil_one$pop$model <- "cil_one"
+cei_one$pop$model <- "cei_one"
+
+d <- rbind(null$pop, one$pop, cei$pop, cil$pop, cei_one$pop, cil_one$pop)
+d$model <- factor(d$model, levels = c("null", "one", "cil", "cei", "cil_one", "cei_one"))
+
+d %>% 
+    plot_ly(color = ~species, colors = viridis::viridis(100),
+             x = ~year, y = ~pe, frame = ~model) %>% 
+    add_lines()
+
 ```
 
 
-### Fit to the index (cei)
+### Biomass trends
 
 ```{r}
-p <- cei$index %>%
-    group_by(survey) %>%
+p <- d %>%
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
-    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~pred) %>%
-    add_markers(y = ~index, showlegend = FALSE)
-p
-p %>% layout(yaxis = list(type = "log"))
-```
-
-
-### Trend in process error (null, one, cei)
-
-```{r}
-
-p <- plot_ly(color = ~species, colors = viridis::viridis(100),
-             x = ~year, y = ~pe)
-
-p %>% add_lines(data = null$pop) %>% 
-    layout(title = "null")
-p %>% add_lines(data = one$pop) %>% 
-    layout(title = "one")
-p %>% add_lines(data = cei$pop) %>% 
-    layout(title = "cei")
-
-```
-
-### Biomass trends (one)
-
-```{r}
-p <- one$pop %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
+            legendgroup = ~species, frame = ~model) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~B)
+    add_lines(y = ~B) %>% 
+    animation_opts(frame = 0)
 p
 p %>% layout(yaxis = list(type = "log"))
 
 ```
 
 
-### Comparison with assessments (one)
+### Comparison with assessments
 
 ```{r}
 
 assess <- read.csv("analysis/stock_assessment_estimates.csv")
-names(assess) <- c("species_div", "year", "B", "B_type")
+names(assess) <- c("species_div", "year", "assess_B", "B_type")
 x <- data.table::tstrsplit(assess$species, split = " ")
 assess$species <- x[[1]]
 assess$division <- x[[2]]
-assess$source <- "assessment"
-assess$B_lwr <- NA
-assess$B_upr <- NA
-
-spm <- one$pop
-spm$source <- "multispic"
-
-keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
-comp <- rbind(assess[, keep], spm[, keep])
-
-comp %>%
-    group_by(species, source) %>%
-    mutate(scaled_B = scale(B),
+comp <- merge(d, assess, by = c("species", "year"), all.x = TRUE) %>% 
+    group_by(species) %>%
+    mutate(scaled_assess_B = scale(assess_B),
+           scaled_B = scale(B),
            center = attr(scale(B), "scaled:center"),
            scale = attr(scale(B), "scaled:scale")) %>%
     mutate(lwr = (B_lwr - center) / scale,
-           upr = (B_upr - center) / scale) %>%
-    filter(year > min(index$year)) %>%
-    ungroup() %>%
+           upr = (B_upr - center) / scale)
+
+
+comp %>% 
     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            linetype = ~source, legendgroup = ~species,
-            text = ~B) %>%
+            legendgroup = ~species, frame = ~model) %>%
     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~scaled_B)
+    add_lines(y = ~scaled_B) %>% 
+    add_lines(y = ~scaled_assess_B, linetype = I(3), showlegend = FALSE) %>% 
+    animation_opts(frame = 0)
 
+
+```
+
+
+### Parameter estimates (null)
+
+```{r echo=FALSE}
+
+## Visually assess par
+par <- null$par
+q <- exp(par$log_q)
+names(q) <- levels(index$survey)
+cat("q \n"); round(q, 2)
+sd_I <- exp(par$log_sd_I)
+names(sd_I) <- levels(index$survey)
+cat("sd observations \n"); round(sd_I, 2)
+K <- exp(par$log_K)
+names(K) <- "all"
+cat("K \n"); signif(K, 2)
+r <- exp(par$log_r)
+names(r) <- levels(index$species)
+cat("r \n"); round(r, 2)
+sd_B <- exp(par$log_sd_B)
+names(sd_B) <- levels(index$species)
+cat("sd process \n"); round(sd_B, 2)
+B0 <- exp(par$log_B0)
+names(B0) <- levels(index$species)
+cat("B0 \n"); round(B0)
+cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
+if (all(duplicated(cor)[-1])) {
+    cor <- cor[1]
+    names(cor) <- "all"
+} else {
+    names(cor) <- rep("todo", length(cor))
+}
+cat("correlation \n"); round(cor, 3)
 
 ```
 
@@ -379,6 +370,43 @@ cat("correlation \n"); round(cor, 3)
 ```
 
 
+### Parameter estimates (cei)
+
+```{r echo=FALSE}
+
+## Visually assess par
+par <- cei$par
+q <- exp(par$log_q)
+names(q) <- levels(index$survey)
+cat("q \n"); round(q, 2)
+sd_I <- exp(par$log_sd_I)
+names(sd_I) <- levels(index$survey)
+cat("sd observations \n"); round(sd_I, 2)
+K <- exp(par$log_K)
+names(K) <- "all"
+cat("K \n"); signif(K, 2)
+r <- exp(par$log_r)
+names(r) <- levels(index$species)
+cat("r \n"); round(r, 2)
+sd_B <- exp(par$log_sd_B)
+names(sd_B) <- levels(index$species)
+cat("sd process \n"); round(sd_B, 2)
+B0 <- exp(par$log_B0)
+names(B0) <- levels(index$species)
+cat("B0 \n"); round(B0)
+cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
+if (all(duplicated(cor)[-1])) {
+    cor <- cor[1]
+    names(cor) <- "all"
+} else {
+    names(cor) <- rep("todo", length(cor))
+}
+cat("correlation \n"); round(cor, 3)
+
+```
+
+
+
 
 ### Information criteria
 
@@ -403,5 +431,6 @@ cat("correlation \n"); round(cor, 3)
 
 # Next steps?
 
-- Apply covariate effect directly to K.
+- Apply covariate effect directly to $K$.
+- Troubleshoot the correlation options - currently the fully unstructured option does not converge and there are a large standard error on the estimate of one correlaiton parameter.
 
