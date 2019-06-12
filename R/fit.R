@@ -41,8 +41,10 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           correlations across species, "one" will estimate one shared correlation
 #'                           parameter across species, and "all" will estimate correlation parameters
 #'                           across all combinations of species.
-#' @param formula            Formula describing relationship between surplus production and covariates.
-#'                           Not used if set to NULL.
+#' @param pe_formula         Formula describing relationship between surplus production (process error)
+#'                           and covariates. Not used if set to NULL.
+#' @param K_formula          Formula describing relationship between K and covariates. Not used if set
+#'                           to NULL.
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
 #' @param light              Skip running sdreport and limit output to speed things up?
@@ -61,7 +63,8 @@ fit_model <- function(inputs,
                       log_sd_I_option = par_option(),
                       logit_cor_option = par_option(),
                       cor_str = "one",
-                      formula = NULL,
+                      pe_formula = NULL,
+                      K_formula = NULL,
                       leave_out = NULL,
                       light = FALSE,
                       silent = FALSE) {
@@ -73,11 +76,17 @@ fit_model <- function(inputs,
     covariates <- inputs$covariates
 
     ## Set-up model matrix | formula with covariates
-    if (is.null(formula)) {
-        model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
+    if (is.null(pe_formula)) {
+        pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
-        f <- as.formula(paste(Reduce(paste, deparse(formula)), "-1")) # drop intercept
-        model_mat <- model.matrix(f, data = covariates)
+        f <- as.formula(paste(Reduce(paste, deparse(pe_formula)), "-1")) # drop intercept
+        pe_model_mat <- model.matrix(f, data = covariates)
+    }
+    if (is.null(K_formula)) {
+        K_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
+    } else {
+        f <- as.formula(paste(Reduce(paste, deparse(K_formula)), "-1")) # drop intercept
+        K_model_mat <- model.matrix(f, data = covariates)
     }
 
     ## Scale index and landings to aid convergence
@@ -109,7 +118,8 @@ fit_model <- function(inputs,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_cor_option = as.integer(logit_cor_option$option) - 1,
-                covariates = model_mat,
+                pe_covariates = pe_model_mat,
+                K_covariates = K_model_mat,
                 keep = keep)
     par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
@@ -133,7 +143,8 @@ fit_model <- function(inputs,
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nlevels(index[, survey_group])),
-                betas =  rep(0, ncol(model_mat)))
+                pe_betas =  rep(0, ncol(pe_model_mat)),
+                K_betas =  rep(0, ncol(K_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
     if (cor_str == "one") {
@@ -168,8 +179,11 @@ fit_model <- function(inputs,
         map$mean_logit_cor <- map$log_sd_logit_cor <- factor(NA)
     }
 
-    if (is.null(formula)) {
-        map$betas <- factor(NA)
+    if (is.null(pe_formula)) {
+        map$pe_betas <- factor(NA)
+    }
+    if (is.null(K_formula)) {
+        map$K_betas <- factor(NA)
     }
 
     random <- "log_B"
@@ -243,6 +257,9 @@ fit_model <- function(inputs,
         pop$F <- exp(est$log_F)
         pop$F_lwr <- exp(lwr$log_F)
         pop$F_upr <- exp(upr$log_F)
+        pop$K <- exp(est$log_K_vec) * scaler
+        pop$K_lwr <- exp(lwr$log_K_vec) * scaler
+        pop$K_upr <- exp(upr$log_K_vec) * scaler
 
     }
 

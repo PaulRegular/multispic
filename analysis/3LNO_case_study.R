@@ -20,6 +20,11 @@ covariates <- multispic::covariates %>%
            nao_ma = rollmean(nao, 5, align = "right", fill = NA),
            tice = tice - mean(tice, na.rm = TRUE))
 
+## Mystery series from Mariano
+mystery <- readxl::read_excel("analysis/mystery_series.xlsx")
+names(mystery) <- c("year", "mystery")
+covariates <- left_join(covariates, mystery, by = "year")
+
 
 ## Setup the data --------------------------------------------------------------
 
@@ -105,24 +110,32 @@ covariates %>%
     plot_ly(x = ~year) %>%
     add_lines(y = ~tice, name = "tice")
 
+covariates %>%
+    plot_ly(x = ~year) %>%
+    add_lines(y = ~mystery, name = "mystery")
+
 inputs <- list(landings = landings, index = index, covariates = covariates)
 
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "one",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 formula = NULL)
+                 pe_formula = NULL, K_formula = ~core_cil)
 
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
 fit$mAIC
+
+# loo_fit <- run_loo(fit)
+# loo_fit$mse
+
 
 ## Raw par
 par <- as.list(fit$sd_rep, "Est")
@@ -275,6 +288,14 @@ p <- fit$pop %>%
     add_lines(y = ~F)
 p
 
+## K
+p <- fit$pop %>%
+    plot_ly(x = ~year, color = I(viridis::viridis(1))) %>%
+    add_ribbons(ymin = ~K_lwr, ymax = ~K_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE, name = "95% CI") %>%
+    add_lines(y = ~K, name = "K")
+p
+
 
 ## Compare to accepted assessment model results --------------------------------
 
@@ -315,28 +336,30 @@ comp %>%
 ## Model comparison ------------------------------------------------------------
 
 null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
-one <- update(null, cor_str = "one")
-all <- update(null, cor_str = "all")
-
-cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                   logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
                   log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
                   log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                   log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                   log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 formula = ~core_cil)
-cei <- update(cil, formula = ~cei)
-nao <- update(cil, formula = ~nao)
+                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+one <- update(null, cor_str = "one")
+all <- update(null, cor_str = "all")
+
+cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
+                 K_formula = ~core_cil)
+cei <- update(cil, K_formula = ~cei)
+nao <- update(cil, K_formula = ~nao)
+tice <- update(cil, K_formula = ~tice)
 cil_one <- update(cil, cor_str = "one")
 cei_one <- update(cei, cor_str = "one")
 nao_one <- update(nao, cor_str = "one")
+tice_one <- update(tice, cor_str = "one")
 
 loo_null <- run_loo(null)
 loo_one <- run_loo(one)
@@ -347,6 +370,8 @@ loo_cil_one <- run_loo(cil_one)
 loo_cei_one <- run_loo(cei_one)
 loo_nao <- run_loo(nao)
 loo_nao_one <- run_loo(nao_one)
+loo_tice <- run_loo(tice)
+loo_tice_one <- run_loo(tice_one)
 
 # write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
 
@@ -356,50 +381,62 @@ all$mAIC
 cil$mAIC
 cei$mAIC
 nao$mAIC
+tice$mAIC
 cil_one$mAIC
 cei_one$mAIC
+tice_one$mAIC
 loo_null$mse
 loo_one$mse
 loo_all$mse
 loo_cil$mse
 loo_cei$mse
 loo_nao$mse
+loo_tice$mse
 loo_cil_one$mse
 loo_cei_one$mse
 loo_nao_one$mse
+loo_tice_one$mse
 
 # > null$mAIC
-# [1] 925.5041
+# [1] 946.3922
 # > one$mAIC
-# [1] 848.0871
+# [1] 879.7829
 # > all$mAIC
-# [1] 866.2714
+# [1] 892.2615
 # > cil$mAIC
-# [1] 881.877
+# [1] 940.034
 # > cei$mAIC
-# [1] 905.3074
+# [1] 940.9621
 # > nao$mAIC
-# [1] 900.1162
+# [1] 941.6836
+# > tice$mAIC
+# [1] 938.5548
 # > cil_one$mAIC
-# [1] 831.3529
+# [1] 881.7692
 # > cei_one$mAIC
-# [1] 846.92
+# [1] 881.1266
+# > tice_one$mAIC
+# [1] 877.1522
 # > loo_null$mse
-# [1] 0.2686458
+# [1] 0.2546963
 # > loo_one$mse
-# [1] 0.2501681
+# [1] 0.2502405
 # > loo_all$mse
-# [1] 0.2337481
+# [1] 0.231504
 # > loo_cil$mse
-# [1] 0.2586276
+# [1] 0.2536944
 # > loo_cei$mse
-# [1] 0.2527108
+# [1] 0.2537975
 # > loo_nao$mse
-# [1] 0.2616873
+# [1] 0.2561157
+# > loo_tice$mse
+# [1] 0.2556873
 # > loo_cil_one$mse
-# [1] 0.2535405
+# [1] 0.2504235
 # > loo_cei_one$mse
-# [1] 0.2551145
+# [1] 0.2503321
 # > loo_nao_one$mse
-# [1] 0.2503353
+# [1] 0.2504409
+# > loo_tice_one$mse
+# [1] 0.2515622
 

@@ -27,7 +27,8 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_cor_option);
-    DATA_MATRIX(covariates);
+    DATA_MATRIX(pe_covariates);
+    DATA_MATRIX(K_covariates);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -51,7 +52,8 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_sd_I);
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
-    PARAMETER_VECTOR(betas);
+    PARAMETER_VECTOR(pe_betas);
+    PARAMETER_VECTOR(K_betas);
 
     // Dim
     int nY = log_B.rows();         // number of years
@@ -73,6 +75,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> L_mat(nY, nS);
     vector<Type> F(nL);
     vector<Type> log_F(nL);
+    vector<Type> K_vec(nY);
+    vector<Type> log_K_vec(nY);
 
     // Transformations
     vector<Type> B0 = exp(log_B0);
@@ -137,22 +141,25 @@ Type objective_function<Type>::operator() ()
 
     // Process equation
     using namespace density;
-    vector<Type> covar_effect = covariates * betas;
+    vector<Type> pe_covar_effect = pe_covariates * pe_betas;
+    vector<Type> K_covar_effect = K_covariates * K_betas;
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
+            K_vec(i) = K + K_covar_effect(i);
             if (i == 0) {
                 pred_B(i, j) = B0(j);
             } else {
                 B(i - 1, j) = exp(log_B(i - 1, j));
                 pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow((B.row(i - 1).sum() / K), m(j) - 1.0)) -
-                    L_mat(i - 1, j)) * exp(covar_effect(i - 1));
+                    (1.0 - pow((B.row(i - 1).sum() / K_vec(i)), m(j) - 1.0)) -
+                    L_mat(i - 1, j)) * exp(pe_covar_effect(i - 1));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));
         }
         nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_B)(log_B.row(i) - log_pred_B.row(i));
     }
+    log_K_vec = log(K_vec);
 
     // Observation equations
     for (int i = 0; i < nI; i++){
@@ -177,6 +184,7 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
     ADREPORT(log_F);
+    ADREPORT(log_K_vec);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);
