@@ -108,3 +108,23 @@ index <- rbind(yellowtail, witch, cod, plaice, redfish, skate, hake, haddock)
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 
 
+## Export some yellowtail and witch data
+yt <- strat.fun(setdet = setdet, program = "strat2",
+                data.series = "Campelen", species = 891,
+                survey.year = 1996:2018,
+                season = "spring", NAFOdiv = c("3L", "3N", "3O"),
+                export = NULL, plot.results = FALSE)
+yt_setdet <- yt$raw.data$set.details
+write.csv(yt_setdet, file = "data-raw/Rstrap_runs/exports/yellowtail_3LNO.csv",
+          row.names = FALSE)
+
+wi <- strat.fun(setdet = setdet, program = "strat2",
+                data.series = "Campelen", species = 890,
+                survey.year = 1996:2018,
+                season = "spring", NAFOdiv = c("3N", "3O"),
+                export = NULL, plot.results = FALSE)
+wi_setdet <- wi$raw.data$set.details
+write.csv(wi_setdet, file = "data-raw/Rstrap_runs/exports/witch_3NO.csv",
+          row.names = FALSE)
+
+
