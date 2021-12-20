@@ -22,14 +22,14 @@ keep_sp <- c("ATLANTIC COD - COD" = "Atlantic Cod",
              "SKATES (NS) - SKA" = "Skate spp.",
              "HADDOCK - HAD" = "Haddock",
              "WITCH FLOUNDER - WIT" = "Witch Flounder",
+             "ATLANTIC HERRING - HER" = "Atlantic Herring",
              "WHITE HAKE - HKW" = "White Hake",
              "WOLFFISHES (CATFISH) (NS) - CAT" = "Wolffish spp.",
              "ROUGHHEAD GRENADIER - RHG" = "Roughhead Grenadier",
              "ATLANTIC HALIBUT - HAL" = "Atlantic Halibut",
              "ROUNDNOSE GRENADIER - RNG" = "Roundnose Grenadier",
              "AMERICAN ANGLER - ANG" = "Monkfish",
-             "SILVER HAKE - HKS" = "Silver Hake",
-             "SANDEELS (SANDLANCES) - SAN" = "Sand Lance")
+             "SILVER HAKE - HKS" = "Silver Hake")
 
 landings <- landings[landings$species %in% names(keep_sp), ]
 

@@ -55,7 +55,7 @@ spring_years <- coverage %>%
 
 
 ## Common species = those that have been consistently sampled in
-## core strata for > 40 years
+## core strata for > 30 years
 
 totals <- setdet %>%
     filter(!is.na(spec) & strat %in% core_strat,
@@ -74,7 +74,7 @@ common_spp <- totals %>%
     group_by(spec, common.name) %>%
     summarise(n_cases = n()) %>%
     arrange(-n_cases) %>%
-    filter(n_cases > 40)
+    filter(n_cases > 30)
 data.frame(common_spp)
 
 ## Tidy up common name
@@ -83,13 +83,16 @@ x <- gsub(",", ", ", x)
 x <- sub("(^.*),\\s(.*$)","\\2 \\1", x)
 x <- tolower(x)
 x <- tools::toTitleCase(x)
-x <- gsub(" \\(Ns\\)| \\(Common)| \\(Marlin|\\(Monkfish\\)", "", x)
+x <- gsub(" \\(Ns\\)| \\(Common)| \\(Marlin|\\(Monkfish\\)|\\(Marinus\\)|\\(Round\\) ", "", x)
 x[x == "Turbot"] <- "Greenland Halibut"
 x[x == "Halibut (Atlantic)"] <- "Atlantic Halibut"
 x[x == " Deep Water Redfish"] <- "Redfish spp."
 x[x == "Offshore Sand Launce"] <- "Sand Lance"
 x[x == "Lanternfishes"] <- "Lanternfish"
 x[x == "Common Angler"] <- "Monkfish"
+x[x == "Scyphozoan (Jellyfish)"] <- "Jellyfish"
+x[x == "Cephalopod Rossi.(B.a.sq"] <- "Rossi spp."
+x[x == "Octopus   Octo."] <- "Octopus spp."
 names(x) <- common_spp$spec
 common_spp <- x
 
