@@ -3,8 +3,6 @@ library(Rstrap)
 library(dplyr)
 library(plotly)
 
-load("data-raw/Rstrap_runs/set_details_2019-02-15.Rdata")
-
 ## Note: index converted to kt
 
 ## Keep years where 90% of the core area is covered
@@ -56,6 +54,53 @@ spring_years <- coverage %>%
     .$survey.year
 
 
+## Common species = those that have been consistently sampled in
+## core strata for > 40 years
+
+totals <- setdet %>%
+    filter(!is.na(spec) & strat %in% core_strat,
+           survey.year %in% unique(c(fall_years, spring_years))) %>%
+    group_by(survey.year, spec, common.name) %>%
+    summarise(n_sets = n(),
+              total_n = sum(number, na.rm = TRUE),
+              total_weight = sum(weight, na.rm = TRUE)) %>%
+    group_by(survey.year) %>%
+    mutate(ranking = dense_rank(desc(total_weight))) %>%
+    arrange(ranking)
+
+# length(unique(setdet$survey.year))
+common_spp <- totals %>%
+    filter(n_sets > 1) %>%
+    group_by(spec, common.name) %>%
+    summarise(n_cases = n()) %>%
+    arrange(-n_cases) %>%
+    filter(n_cases > 40)
+data.frame(common_spp)
+
+## Tidy up common name
+x <- common_spp$common.name
+x <- gsub(",", ", ", x)
+x <- sub("(^.*),\\s(.*$)","\\2 \\1", x)
+x <- tolower(x)
+x <- tools::toTitleCase(x)
+x <- gsub(" \\(Ns\\)| \\(Common)| \\(Marlin|\\(Monkfish\\)", "", x)
+x[x == "Turbot"] <- "Greenland Halibut"
+x[x == "Halibut (Atlantic)"] <- "Atlantic Halibut"
+x[x == " Deep Water Redfish"] <- "Redfish"
+x[x == "Offshore Sand Launce"] <- "Sand Lance"
+x[x == "Lanternfishes"] <- "Lanternfish"
+names(x) <- common_spp$spec
+common_spp <- x
+
+totals$common.name <- common_spp[as.character(totals$spec)]
+
+totals %>%
+    filter(!is.na(common.name)) %>%
+    plot_ly(x = ~survey.year, y = ~total_weight, color = ~common.name) %>%
+    add_bars() %>%
+    layout(barmode = "stack")
+
+
 ## Functions
 
 one_strat <- function(years, season, series, NAFOdiv, species, species_name) {
@@ -93,38 +138,36 @@ stack_strat <- function(NAFOdiv, species, species_name) {
 
 }
 
-divs <- c("3L", "3N", "3O")
-yellowtail <- stack_strat(divs, 891, "Yellowtail")
-witch <- stack_strat(divs, 890, "Witch")
-cod <- stack_strat(divs, 438, "Cod")
-plaice <- stack_strat(divs, 889, "Plaice")
-redfish <- stack_strat(divs, 794, "Redfish")
-skate <- stack_strat(divs, 90, "Skate")
-hake <- stack_strat(divs, 447, "Hake")
-haddock <- stack_strat(divs, 441, "Haddock")
 
-index <- rbind(yellowtail, witch, cod, plaice, redfish, skate, hake, haddock)
+
+## Generate index across common species
+index <- lapply(seq_along(common_spp), function(i) {
+    stack_strat(c("3L", "3N", "3O"),
+                as.numeric(names(common_spp[i])),
+                unname(common_spp[i]))
+})
+index <- do.call(rbind, index)
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 
 
-## Export some yellowtail and witch data
-yt <- strat.fun(setdet = setdet, program = "strat2",
-                data.series = "Campelen", species = 891,
-                survey.year = 1996:2018,
-                season = "spring", NAFOdiv = c("3L", "3N", "3O"),
-                export = NULL, plot.results = FALSE)
-yt_setdet <- yt$raw.data$set.details
-write.csv(yt_setdet, file = "data-raw/Rstrap_runs/exports/yellowtail_3LNO.csv",
-          row.names = FALSE)
-
-wi <- strat.fun(setdet = setdet, program = "strat2",
-                data.series = "Campelen", species = 890,
-                survey.year = 1996:2018,
-                season = "spring", NAFOdiv = c("3N", "3O"),
-                export = NULL, plot.results = FALSE)
-wi_setdet <- wi$raw.data$set.details
-write.csv(wi_setdet, file = "data-raw/Rstrap_runs/exports/witch_3NO.csv",
-          row.names = FALSE)
-
+# ## Export some yellowtail and witch data
+# yt <- strat.fun(setdet = setdet, program = "strat2",
+#                 data.series = "Campelen", species = 891,
+#                 survey.year = 1996:2018,
+#                 season = "spring", NAFOdiv = c("3L", "3N", "3O"),
+#                 export = NULL, plot.results = FALSE)
+# yt_setdet <- yt$raw.data$set.details
+# write.csv(yt_setdet, file = "data-raw/Rstrap_runs/exports/yellowtail_3LNO.csv",
+#           row.names = FALSE)
+#
+# wi <- strat.fun(setdet = setdet, program = "strat2",
+#                 data.series = "Campelen", species = 890,
+#                 survey.year = 1996:2018,
+#                 season = "spring", NAFOdiv = c("3N", "3O"),
+#                 export = NULL, plot.results = FALSE)
+# wi_setdet <- wi$raw.data$set.details
+# write.csv(wi_setdet, file = "data-raw/Rstrap_runs/exports/witch_3NO.csv",
+#           row.names = FALSE)
+#
 
