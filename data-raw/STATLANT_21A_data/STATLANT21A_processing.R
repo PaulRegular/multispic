@@ -2,21 +2,34 @@
 library(dplyr)
 
 ## Import STATLANT 21A landings data from 3LNO
-## Note the landinigs data are in tonnes
-landings <- read.csv("data-raw/STATLANT_21A_data/STATLANT21A_Extraction.csv", skip = 10)
-names(landings) <- c("year", "division", "species", "abbrev", "landings")
+## Note the landings data are in tonnes
+landings <- read.csv("data-raw/STATLANT_21A_data/STATLANT21A_Extraction.csv")
+names(landings) <- c("year", "country", "division", "species", "landings")
 
-sub_landings <- landings[landings$year == 1984, ]
-head(sub_landings[order(sub_landings$landings, decreasing = TRUE), ], 100)
+## Groundfish species with all time reported landings of > 1000 tonnes and > 10 years
+totals <- landings %>%
+    group_by(species) %>%
+    summarise(n_years = length(unique(year)), total = sum(landings)) %>%
+    arrange(-total)
+data.frame(totals)
 
-keep_sp <- c("Atlantic Cod" = "Cod",
-             "American Plaice" = "Plaice",
-             "Atlantic Redfishes (ns)" = "Redfish",
-             "Yellowtail Flounder" = "Yellowtail",
-             "White Hake" = "Hake",
-             "Witch Flounder" = "Witch",
-             "Haddock" = "Haddock",
-             "Skates (ns)" = "Skate")
+keep_sp <- c("ATLANTIC COD - COD" = "Atlantic Cod",
+             "AMERICAN PLAICE - PLA" = "American Plaice",
+             "ATLANTIC REDFISHES (NS) - RED" = "Redfish spp.",
+             "CAPELIN - CAP" = "Capelin",
+             "YELLOWTAIL FLOUNDER - YEL" = "Yellowtail Flounder",
+             "GREENLAND HALIBUT - GHL" = "Greenland Halibut",
+             "SKATES (NS) - SKA" = "Skate spp.",
+             "HADDOCK - HAD" = "Haddock",
+             "WITCH FLOUNDER - WIT" = "Witch Flounder",
+             "WHITE HAKE - HKW" = "White Hake",
+             "WOLFFISHES (CATFISH) (NS) - CAT" = "Wolffish spp.",
+             "ROUGHHEAD GRENADIER - RHG" = "Roughhead Grenadier",
+             "ATLANTIC HALIBUT - HAL" = "Atlantic Halibut",
+             "ROUNDNOSE GRENADIER - RNG" = "Roundnose Grenadier",
+             "AMERICAN ANGLER - ANG" = "Monkfish",
+             "SILVER HAKE - HKS" = "Silver Hake",
+             "SANDEELS (SANDLANCES) - SAN" = "Sand Lance")
 
 landings <- landings[landings$species %in% names(keep_sp), ]
 
