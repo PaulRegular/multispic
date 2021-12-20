@@ -41,9 +41,14 @@ landings <- landings %>%
 
 ## Simplify names
 landings$species <- keep_sp[as.character(landings$species)]
-landings$stock <- "3LNO"
+
+## Fill missing values with zero
+grd <- expand.grid(year = unique(landings$year), species = unique(landings$species))
+landings <- merge(landings, grd, by = c("year", "species"), all = TRUE)
+landings$landings[is.na(landings$landings)] <- 0
 
 ## Export
+landings$stock <- "3LNO"
 landings <- landings[, c("species", "stock", "year", "landings")]
 names(landings) <- c("Species", "Stock", "Year", "Landings (kt)")
 write.csv(landings, file = "data-raw/landings.csv", row.names = FALSE)
