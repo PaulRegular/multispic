@@ -86,12 +86,28 @@ x <- tools::toTitleCase(x)
 x <- gsub(" \\(Ns\\)| \\(Common)| \\(Marlin|\\(Monkfish\\)", "", x)
 x[x == "Turbot"] <- "Greenland Halibut"
 x[x == "Halibut (Atlantic)"] <- "Atlantic Halibut"
-x[x == " Deep Water Redfish"] <- "Redfish"
+x[x == " Deep Water Redfish"] <- "Redfish spp."
 x[x == "Offshore Sand Launce"] <- "Sand Lance"
 x[x == "Lanternfishes"] <- "Lanternfish"
+x[x == "Common Angler"] <- "Monkfish"
 names(x) <- common_spp$spec
 common_spp <- x
 
+## Aggregate Wolffish and Skate
+
+wolf_spp <- common_spp[grep("Wolffish", common_spp)]
+wolf <- "Wolffish spp."
+names(wolf) <- paste0(names(wolf_spp), collapse = "")
+
+skate_spp <- common_spp[grep("Skate", common_spp)]
+skate <- "Skate spp."
+names(skate) <- paste0(names(skate_spp), collapse = "")
+
+common_spp <- common_spp[!common_spp %in% c(wolf_spp, skate_spp)]
+common_spp <- c(common_spp, wolf, skate)
+
+totals$spec[totals$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
+totals$spec[totals$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
 totals$common.name <- common_spp[as.character(totals$spec)]
 
 totals %>%
@@ -99,6 +115,11 @@ totals %>%
     plot_ly(x = ~survey.year, y = ~total_weight, color = ~common.name) %>%
     add_bars() %>%
     layout(barmode = "stack")
+
+## Replace species specific codes in setdet with wolffish and skate spp. codes
+setdet$spec[setdet$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
+setdet$spec[setdet$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
+
 
 
 ## Functions

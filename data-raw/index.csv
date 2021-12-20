@@ -1,202 +1,4 @@
 "species","stock","gear","season","year","index"
-"Thorny Skate","3LNO","Yankee","Spring",1977,127.325521187793
-"Thorny Skate","3LNO","Yankee","Spring",1978,73.7405872973185
-"Thorny Skate","3LNO","Yankee","Spring",1979,88.0737376422255
-"Thorny Skate","3LNO","Yankee","Spring",1980,88.8757524074288
-"Thorny Skate","3LNO","Yankee","Spring",1982,90.79743019607
-"Thorny Skate","3LNO","Engel","Spring",1985,117.760484771919
-"Thorny Skate","3LNO","Engel","Spring",1986,89.3005065389971
-"Thorny Skate","3LNO","Engel","Spring",1987,76.2122605877521
-"Thorny Skate","3LNO","Engel","Spring",1988,81.5762697497247
-"Thorny Skate","3LNO","Engel","Spring",1989,64.0173579653541
-"Thorny Skate","3LNO","Engel","Spring",1990,60.9203342094089
-"Thorny Skate","3LNO","Engel","Spring",1991,59.1045948339389
-"Thorny Skate","3LNO","Engel","Spring",1992,36.5833848908531
-"Thorny Skate","3LNO","Engel","Spring",1993,24.4917196323102
-"Thorny Skate","3LNO","Engel","Spring",1994,16.924002404155
-"Thorny Skate","3LNO","Engel","Spring",1995,14.9391606342692
-"Thorny Skate","3LNO","Campelen","Spring",1996,51.5306912113756
-"Thorny Skate","3LNO","Campelen","Spring",1997,41.964158667683
-"Thorny Skate","3LNO","Campelen","Spring",1998,61.3436280797197
-"Thorny Skate","3LNO","Campelen","Spring",1999,87.5769989937511
-"Thorny Skate","3LNO","Campelen","Spring",2000,82.7890059429841
-"Thorny Skate","3LNO","Campelen","Spring",2001,98.6574963503215
-"Thorny Skate","3LNO","Campelen","Spring",2002,60.5908570189579
-"Thorny Skate","3LNO","Campelen","Spring",2003,76.3341962232343
-"Thorny Skate","3LNO","Campelen","Spring",2004,67.9714336937434
-"Thorny Skate","3LNO","Campelen","Spring",2005,99.5383176670077
-"Thorny Skate","3LNO","Campelen","Spring",2007,127.601971119875
-"Thorny Skate","3LNO","Campelen","Spring",2008,97.7607096478836
-"Thorny Skate","3LNO","Campelen","Spring",2009,89.8628486413333
-"Thorny Skate","3LNO","Campelen","Spring",2010,117.682095145776
-"Thorny Skate","3LNO","Campelen","Spring",2011,88.3053771105384
-"Thorny Skate","3LNO","Campelen","Spring",2012,106.892826232145
-"Thorny Skate","3LNO","Campelen","Spring",2013,131.617452329864
-"Thorny Skate","3LNO","Campelen","Spring",2014,124.011469324947
-"Thorny Skate","3LNO","Campelen","Spring",2016,113.07494382666
-"Thorny Skate","3LNO","Campelen","Spring",2018,134.101146286488
-"Thorny Skate","3LNO","Campelen","Spring",2019,103.297517492076
-"Thorny Skate","3LNO","Engel","Fall",1990,102.574848633221
-"Thorny Skate","3LNO","Engel","Fall",1991,91.394030970942
-"Thorny Skate","3LNO","Engel","Fall",1992,53.4064497666921
-"Thorny Skate","3LNO","Engel","Fall",1993,48.786660802421
-"Thorny Skate","3LNO","Engel","Fall",1994,39.007995035136
-"Thorny Skate","3LNO","Campelen","Fall",1996,74.0416961822047
-"Thorny Skate","3LNO","Campelen","Fall",1997,118.009131277086
-"Thorny Skate","3LNO","Campelen","Fall",1998,81.7844271776032
-"Thorny Skate","3LNO","Campelen","Fall",1999,88.8310047015461
-"Thorny Skate","3LNO","Campelen","Fall",2000,119.785673997322
-"Thorny Skate","3LNO","Campelen","Fall",2001,112.88632154589
-"Thorny Skate","3LNO","Campelen","Fall",2002,104.516950648525
-"Thorny Skate","3LNO","Campelen","Fall",2003,97.4158160188431
-"Thorny Skate","3LNO","Campelen","Fall",2004,83.3659396566741
-"Thorny Skate","3LNO","Campelen","Fall",2005,119.14348070042
-"Thorny Skate","3LNO","Campelen","Fall",2006,123.586559560921
-"Thorny Skate","3LNO","Campelen","Fall",2007,157.263167987086
-"Thorny Skate","3LNO","Campelen","Fall",2008,186.934735108596
-"Thorny Skate","3LNO","Campelen","Fall",2009,126.848952333135
-"Thorny Skate","3LNO","Campelen","Fall",2010,103.177905304399
-"Thorny Skate","3LNO","Campelen","Fall",2011,137.157860133484
-"Thorny Skate","3LNO","Campelen","Fall",2012,170.639653732178
-"Thorny Skate","3LNO","Campelen","Fall",2013,156.953946093352
-"Thorny Skate","3LNO","Campelen","Fall",2015,134.898475213869
-"Thorny Skate","3LNO","Campelen","Fall",2016,139.41510982571
-"Thorny Skate","3LNO","Campelen","Fall",2017,154.000676114809
-"Thorny Skate","3LNO","Campelen","Fall",2018,171.908570718078
-"Thorny Skate","3LNO","Campelen","Fall",2019,171.750011996064
-"Thorny Skate","3LNO","Campelen","Fall",2020,202.66353435752
-"Smooth Skate","3LNO","Yankee","Spring",1977,0.658784165292181
-"Smooth Skate","3LNO","Yankee","Spring",1978,0.107174559437037
-"Smooth Skate","3LNO","Yankee","Spring",1979,0.148559991207819
-"Smooth Skate","3LNO","Yankee","Spring",1980,0.23658270881893
-"Smooth Skate","3LNO","Yankee","Spring",1982,0.783128133609054
-"Smooth Skate","3LNO","Engel","Spring",1985,0.304170262061728
-"Smooth Skate","3LNO","Engel","Spring",1986,0.180276345311385
-"Smooth Skate","3LNO","Engel","Spring",1987,0.173789333105624
-"Smooth Skate","3LNO","Engel","Spring",1988,0.0458492118518519
-"Smooth Skate","3LNO","Engel","Spring",1989,0.0275305450864198
-"Smooth Skate","3LNO","Engel","Spring",1990,0.163042376089079
-"Smooth Skate","3LNO","Engel","Spring",1991,0.192785285061454
-"Smooth Skate","3LNO","Engel","Spring",1992,0.295242326578601
-"Smooth Skate","3LNO","Engel","Spring",1993,0.0497482339320988
-"Smooth Skate","3LNO","Engel","Spring",1994,0.0406787430108025
-"Smooth Skate","3LNO","Engel","Spring",1995,0.116370211380658
-"Smooth Skate","3LNO","Campelen","Spring",1996,0.281884494792609
-"Smooth Skate","3LNO","Campelen","Spring",1997,0.408301089731706
-"Smooth Skate","3LNO","Campelen","Spring",1998,0.14630682678733
-"Smooth Skate","3LNO","Campelen","Spring",1999,0.280448580864756
-"Smooth Skate","3LNO","Campelen","Spring",2000,0.22329670423454
-"Smooth Skate","3LNO","Campelen","Spring",2001,0.513620375135747
-"Smooth Skate","3LNO","Campelen","Spring",2002,0.20060857418552
-"Smooth Skate","3LNO","Campelen","Spring",2003,0.50068819193816
-"Smooth Skate","3LNO","Campelen","Spring",2004,0.322217519834087
-"Smooth Skate","3LNO","Campelen","Spring",2005,0.551050386349925
-"Smooth Skate","3LNO","Campelen","Spring",2007,0.323718606055807
-"Smooth Skate","3LNO","Campelen","Spring",2008,0.343709365183509
-"Smooth Skate","3LNO","Campelen","Spring",2009,0.339171779568627
-"Smooth Skate","3LNO","Campelen","Spring",2010,0.199829257880845
-"Smooth Skate","3LNO","Campelen","Spring",2011,0.203209464928775
-"Smooth Skate","3LNO","Campelen","Spring",2012,0.343093986757164
-"Smooth Skate","3LNO","Campelen","Spring",2013,0.152308016503268
-"Smooth Skate","3LNO","Campelen","Spring",2014,0.511196647058823
-"Smooth Skate","3LNO","Campelen","Spring",2016,0.206360953016591
-"Smooth Skate","3LNO","Campelen","Spring",2018,0.362522027152338
-"Smooth Skate","3LNO","Campelen","Spring",2019,0.389071006686777
-"Smooth Skate","3LNO","Engel","Fall",1990,0.535332322452263
-"Smooth Skate","3LNO","Engel","Fall",1991,0.120921278612757
-"Smooth Skate","3LNO","Engel","Fall",1992,0.0953394126049383
-"Smooth Skate","3LNO","Engel","Fall",1993,0.280500757708941
-"Smooth Skate","3LNO","Engel","Fall",1994,0.0801229882716049
-"Smooth Skate","3LNO","Campelen","Fall",1996,0.904049622865762
-"Smooth Skate","3LNO","Campelen","Fall",1997,0.286850630135747
-"Smooth Skate","3LNO","Campelen","Fall",1998,0.665182087811463
-"Smooth Skate","3LNO","Campelen","Fall",1999,0.535774384965309
-"Smooth Skate","3LNO","Campelen","Fall",2000,0.477557295331825
-"Smooth Skate","3LNO","Campelen","Fall",2001,0.593837364695827
-"Smooth Skate","3LNO","Campelen","Fall",2002,1.098521236727
-"Smooth Skate","3LNO","Campelen","Fall",2003,0.266902209253394
-"Smooth Skate","3LNO","Campelen","Fall",2004,0.432771292385621
-"Smooth Skate","3LNO","Campelen","Fall",2005,0.542266410104072
-"Smooth Skate","3LNO","Campelen","Fall",2006,0.573158642925591
-"Smooth Skate","3LNO","Campelen","Fall",2007,0.354511211898441
-"Smooth Skate","3LNO","Campelen","Fall",2008,0.688925880194067
-"Smooth Skate","3LNO","Campelen","Fall",2009,1.14149691685805
-"Smooth Skate","3LNO","Campelen","Fall",2010,0.764866890388637
-"Smooth Skate","3LNO","Campelen","Fall",2011,0.478571672963298
-"Smooth Skate","3LNO","Campelen","Fall",2012,0.782810982926596
-"Smooth Skate","3LNO","Campelen","Fall",2013,0.341703010542484
-"Smooth Skate","3LNO","Campelen","Fall",2015,0.572681519941176
-"Smooth Skate","3LNO","Campelen","Fall",2016,0.0430469142106586
-"Smooth Skate","3LNO","Campelen","Fall",2017,0.432266093838612
-"Smooth Skate","3LNO","Campelen","Fall",2018,0.591137793888889
-"Smooth Skate","3LNO","Campelen","Fall",2019,1.14382259372197
-"Smooth Skate","3LNO","Campelen","Fall",2020,0.265719900105078
-"Spinytail Skate","3LNO","Yankee","Spring",1977,0.0881666532098765
-"Spinytail Skate","3LNO","Yankee","Spring",1978,0
-"Spinytail Skate","3LNO","Yankee","Spring",1979,0.0447084862633745
-"Spinytail Skate","3LNO","Yankee","Spring",1980,0.0563763400205761
-"Spinytail Skate","3LNO","Yankee","Spring",1982,0.0982640388477366
-"Spinytail Skate","3LNO","Engel","Spring",1985,0.114510433333333
-"Spinytail Skate","3LNO","Engel","Spring",1986,0.0447420149382716
-"Spinytail Skate","3LNO","Engel","Spring",1987,0.0958568015226337
-"Spinytail Skate","3LNO","Engel","Spring",1988,0.0389583185185185
-"Spinytail Skate","3LNO","Engel","Spring",1989,0.420715435576132
-"Spinytail Skate","3LNO","Engel","Spring",1990,0.158588317783951
-"Spinytail Skate","3LNO","Engel","Spring",1991,0.132929310802469
-"Spinytail Skate","3LNO","Engel","Spring",1992,0.11925824382716
-"Spinytail Skate","3LNO","Engel","Spring",1993,0.155202734814815
-"Spinytail Skate","3LNO","Engel","Spring",1994,0.139296631358025
-"Spinytail Skate","3LNO","Engel","Spring",1995,0.0220250866255144
-"Spinytail Skate","3LNO","Campelen","Spring",1996,0.130528688135747
-"Spinytail Skate","3LNO","Campelen","Spring",1997,0.211179652352941
-"Spinytail Skate","3LNO","Campelen","Spring",1998,0.667205657239819
-"Spinytail Skate","3LNO","Campelen","Spring",1999,0.276902476404315
-"Spinytail Skate","3LNO","Campelen","Spring",2000,0.130453763197587
-"Spinytail Skate","3LNO","Campelen","Spring",2001,0.359261053541143
-"Spinytail Skate","3LNO","Campelen","Spring",2002,0.00106869679235797
-"Spinytail Skate","3LNO","Campelen","Spring",2003,0.0341203897435897
-"Spinytail Skate","3LNO","Campelen","Spring",2004,1.22636930910005
-"Spinytail Skate","3LNO","Campelen","Spring",2005,0.534596006133735
-"Spinytail Skate","3LNO","Campelen","Spring",2007,0.894573498190045
-"Spinytail Skate","3LNO","Campelen","Spring",2008,0.245634970588235
-"Spinytail Skate","3LNO","Campelen","Spring",2009,0.524096206443942
-"Spinytail Skate","3LNO","Campelen","Spring",2010,1.55079734824535
-"Spinytail Skate","3LNO","Campelen","Spring",2011,0.440843662950226
-"Spinytail Skate","3LNO","Campelen","Spring",2012,0.68642202387632
-"Spinytail Skate","3LNO","Campelen","Spring",2013,1.18162978214932
-"Spinytail Skate","3LNO","Campelen","Spring",2014,1.21394327427602
-"Spinytail Skate","3LNO","Campelen","Spring",2016,0.556404766023127
-"Spinytail Skate","3LNO","Campelen","Spring",2018,2.17078281545249
-"Spinytail Skate","3LNO","Campelen","Spring",2019,1.11931523250377
-"Spinytail Skate","3LNO","Engel","Fall",1990,0.757512476201646
-"Spinytail Skate","3LNO","Engel","Fall",1991,1.2962487483726
-"Spinytail Skate","3LNO","Engel","Fall",1992,0.354576621345679
-"Spinytail Skate","3LNO","Engel","Fall",1993,0.395749981973064
-"Spinytail Skate","3LNO","Engel","Fall",1994,0.185508885839506
-"Spinytail Skate","3LNO","Campelen","Fall",1996,2.6252495505423
-"Spinytail Skate","3LNO","Campelen","Fall",1997,2.04739556160215
-"Spinytail Skate","3LNO","Campelen","Fall",1998,3.40294266020865
-"Spinytail Skate","3LNO","Campelen","Fall",1999,0.981650960431875
-"Spinytail Skate","3LNO","Campelen","Fall",2000,1.96065794399013
-"Spinytail Skate","3LNO","Campelen","Fall",2001,3.42538511618241
-"Spinytail Skate","3LNO","Campelen","Fall",2002,3.23619586092509
-"Spinytail Skate","3LNO","Campelen","Fall",2003,1.24078311253394
-"Spinytail Skate","3LNO","Campelen","Fall",2004,0.271063355681247
-"Spinytail Skate","3LNO","Campelen","Fall",2005,0.731228650067873
-"Spinytail Skate","3LNO","Campelen","Fall",2006,1.83562170358472
-"Spinytail Skate","3LNO","Campelen","Fall",2007,1.36639566441428
-"Spinytail Skate","3LNO","Campelen","Fall",2008,0.570735181236802
-"Spinytail Skate","3LNO","Campelen","Fall",2009,1.60262156153042
-"Spinytail Skate","3LNO","Campelen","Fall",2010,0.819628017574661
-"Spinytail Skate","3LNO","Campelen","Fall",2011,1.31239259925339
-"Spinytail Skate","3LNO","Campelen","Fall",2012,1.13052092581448
-"Spinytail Skate","3LNO","Campelen","Fall",2013,0.211956872488688
-"Spinytail Skate","3LNO","Campelen","Fall",2015,1.10406283048768
-"Spinytail Skate","3LNO","Campelen","Fall",2016,1.71449659084465
-"Spinytail Skate","3LNO","Campelen","Fall",2017,3.00432781822272
-"Spinytail Skate","3LNO","Campelen","Fall",2018,1.21543276606335
-"Spinytail Skate","3LNO","Campelen","Fall",2019,1.04628930330065
-"Spinytail Skate","3LNO","Campelen","Fall",2020,2.57554859003871
 "Capelin","3LNO","Yankee","Spring",1977,20.879979256314
 "Capelin","3LNO","Yankee","Spring",1978,0.331895648783539
 "Capelin","3LNO","Yankee","Spring",1979,17.7889513194566
@@ -923,204 +725,6 @@
 "Sand Lance","3LNO","Campelen","Fall",2018,0
 "Sand Lance","3LNO","Campelen","Fall",2019,131.707280024332
 "Sand Lance","3LNO","Campelen","Fall",2020,63.1168019649883
-"Broadhead Wolffish","3LNO","Yankee","Spring",1977,3.26101484735033
-"Broadhead Wolffish","3LNO","Yankee","Spring",1978,1.34871416402058
-"Broadhead Wolffish","3LNO","Yankee","Spring",1979,5.56149908648434
-"Broadhead Wolffish","3LNO","Yankee","Spring",1980,5.57653174526749
-"Broadhead Wolffish","3LNO","Yankee","Spring",1982,1.44461048148148
-"Broadhead Wolffish","3LNO","Engel","Spring",1985,3.28256736658436
-"Broadhead Wolffish","3LNO","Engel","Spring",1986,0.38814445473251
-"Broadhead Wolffish","3LNO","Engel","Spring",1987,3.88348164666667
-"Broadhead Wolffish","3LNO","Engel","Spring",1988,9.70036984604938
-"Broadhead Wolffish","3LNO","Engel","Spring",1989,4.41205584469136
-"Broadhead Wolffish","3LNO","Engel","Spring",1990,1.21714907351852
-"Broadhead Wolffish","3LNO","Engel","Spring",1991,0.0488386435185185
-"Broadhead Wolffish","3LNO","Engel","Spring",1992,0.839035697716049
-"Broadhead Wolffish","3LNO","Engel","Spring",1993,0.720531614498457
-"Broadhead Wolffish","3LNO","Engel","Spring",1994,0.838671636358025
-"Broadhead Wolffish","3LNO","Engel","Spring",1995,0.408682519604938
-"Broadhead Wolffish","3LNO","Campelen","Spring",1996,1.43617343793363
-"Broadhead Wolffish","3LNO","Campelen","Spring",1997,2.800079762794
-"Broadhead Wolffish","3LNO","Campelen","Spring",1998,2.10134417731942
-"Broadhead Wolffish","3LNO","Campelen","Spring",1999,1.67422787561086
-"Broadhead Wolffish","3LNO","Campelen","Spring",2000,2.87669136065359
-"Broadhead Wolffish","3LNO","Campelen","Spring",2001,0.99942446848919
-"Broadhead Wolffish","3LNO","Campelen","Spring",2002,0.368864167478632
-"Broadhead Wolffish","3LNO","Campelen","Spring",2003,1.37968748251131
-"Broadhead Wolffish","3LNO","Campelen","Spring",2004,0.83342510627451
-"Broadhead Wolffish","3LNO","Campelen","Spring",2005,4.66046130798496
-"Broadhead Wolffish","3LNO","Campelen","Spring",2007,4.57055295159041
-"Broadhead Wolffish","3LNO","Campelen","Spring",2008,1.40093298652489
-"Broadhead Wolffish","3LNO","Campelen","Spring",2009,0.359450709519859
-"Broadhead Wolffish","3LNO","Campelen","Spring",2010,1.96268084129462
-"Broadhead Wolffish","3LNO","Campelen","Spring",2011,2.81719727399095
-"Broadhead Wolffish","3LNO","Campelen","Spring",2012,1.53846658211564
-"Broadhead Wolffish","3LNO","Campelen","Spring",2013,0.933756048557064
-"Broadhead Wolffish","3LNO","Campelen","Spring",2014,1.80455252790347
-"Broadhead Wolffish","3LNO","Campelen","Spring",2016,1.31440063082956
-"Broadhead Wolffish","3LNO","Campelen","Spring",2018,4.10011667691554
-"Broadhead Wolffish","3LNO","Campelen","Spring",2019,2.98579592352522
-"Broadhead Wolffish","3LNO","Engel","Fall",1990,3.86089759985597
-"Broadhead Wolffish","3LNO","Engel","Fall",1991,2.33726291803909
-"Broadhead Wolffish","3LNO","Engel","Fall",1992,1.43586536842593
-"Broadhead Wolffish","3LNO","Engel","Fall",1993,1.4007687364856
-"Broadhead Wolffish","3LNO","Engel","Fall",1994,1.16770462618107
-"Broadhead Wolffish","3LNO","Campelen","Fall",1996,2.79485248321221
-"Broadhead Wolffish","3LNO","Campelen","Fall",1997,3.46340821417798
-"Broadhead Wolffish","3LNO","Campelen","Fall",1998,4.47137878522624
-"Broadhead Wolffish","3LNO","Campelen","Fall",1999,4.34621807784314
-"Broadhead Wolffish","3LNO","Campelen","Fall",2000,2.3202296497004
-"Broadhead Wolffish","3LNO","Campelen","Fall",2001,2.28163611089241
-"Broadhead Wolffish","3LNO","Campelen","Fall",2002,3.54973293779035
-"Broadhead Wolffish","3LNO","Campelen","Fall",2003,2.03276149375616
-"Broadhead Wolffish","3LNO","Campelen","Fall",2004,0.610507213609854
-"Broadhead Wolffish","3LNO","Campelen","Fall",2005,3.38805062992714
-"Broadhead Wolffish","3LNO","Campelen","Fall",2006,7.06104775507977
-"Broadhead Wolffish","3LNO","Campelen","Fall",2007,3.43340904029982
-"Broadhead Wolffish","3LNO","Campelen","Fall",2008,3.20319751620094
-"Broadhead Wolffish","3LNO","Campelen","Fall",2009,6.02436085399183
-"Broadhead Wolffish","3LNO","Campelen","Fall",2010,3.61291261085239
-"Broadhead Wolffish","3LNO","Campelen","Fall",2011,2.77132726348517
-"Broadhead Wolffish","3LNO","Campelen","Fall",2012,2.56725932858388
-"Broadhead Wolffish","3LNO","Campelen","Fall",2013,2.47568920934238
-"Broadhead Wolffish","3LNO","Campelen","Fall",2015,1.37470813147813
-"Broadhead Wolffish","3LNO","Campelen","Fall",2016,1.54939464003519
-"Broadhead Wolffish","3LNO","Campelen","Fall",2017,2.77142807829311
-"Broadhead Wolffish","3LNO","Campelen","Fall",2018,2.60031570006771
-"Broadhead Wolffish","3LNO","Campelen","Fall",2019,1.82934435234641
-"Broadhead Wolffish","3LNO","Campelen","Fall",2020,1.55852294478029
-"Striped Wolffish","3LNO","Yankee","Spring",1977,9.23265992576158
-"Striped Wolffish","3LNO","Yankee","Spring",1978,7.32052305521934
-"Striped Wolffish","3LNO","Yankee","Spring",1979,14.8919276993512
-"Striped Wolffish","3LNO","Yankee","Spring",1980,16.6544147220731
-"Striped Wolffish","3LNO","Yankee","Spring",1982,20.6172892350206
-"Striped Wolffish","3LNO","Engel","Spring",1985,15.7627091747465
-"Striped Wolffish","3LNO","Engel","Spring",1986,19.4653926687391
-"Striped Wolffish","3LNO","Engel","Spring",1987,17.2849307539667
-"Striped Wolffish","3LNO","Engel","Spring",1988,14.4623392022783
-"Striped Wolffish","3LNO","Engel","Spring",1989,12.6092190035531
-"Striped Wolffish","3LNO","Engel","Spring",1990,15.2462932933782
-"Striped Wolffish","3LNO","Engel","Spring",1991,8.85433500414085
-"Striped Wolffish","3LNO","Engel","Spring",1992,8.50449997571502
-"Striped Wolffish","3LNO","Engel","Spring",1993,8.14946827481992
-"Striped Wolffish","3LNO","Engel","Spring",1994,15.2641958624325
-"Striped Wolffish","3LNO","Engel","Spring",1995,3.93993693366975
-"Striped Wolffish","3LNO","Campelen","Spring",1996,5.67253039816309
-"Striped Wolffish","3LNO","Campelen","Spring",1997,7.09078287062762
-"Striped Wolffish","3LNO","Campelen","Spring",1998,7.3784560505522
-"Striped Wolffish","3LNO","Campelen","Spring",1999,10.0007869813292
-"Striped Wolffish","3LNO","Campelen","Spring",2000,9.68494119601475
-"Striped Wolffish","3LNO","Campelen","Spring",2001,20.7867090277593
-"Striped Wolffish","3LNO","Campelen","Spring",2002,12.7266586763833
-"Striped Wolffish","3LNO","Campelen","Spring",2003,21.2931393059856
-"Striped Wolffish","3LNO","Campelen","Spring",2004,15.7309906898552
-"Striped Wolffish","3LNO","Campelen","Spring",2005,17.3172577114044
-"Striped Wolffish","3LNO","Campelen","Spring",2007,25.6995227591914
-"Striped Wolffish","3LNO","Campelen","Spring",2008,26.5411980367911
-"Striped Wolffish","3LNO","Campelen","Spring",2009,15.348516368275
-"Striped Wolffish","3LNO","Campelen","Spring",2010,18.3538882625591
-"Striped Wolffish","3LNO","Campelen","Spring",2011,13.6129958035365
-"Striped Wolffish","3LNO","Campelen","Spring",2012,18.1132591022499
-"Striped Wolffish","3LNO","Campelen","Spring",2013,24.0856594421242
-"Striped Wolffish","3LNO","Campelen","Spring",2014,11.8695110982388
-"Striped Wolffish","3LNO","Campelen","Spring",2016,8.24252822844717
-"Striped Wolffish","3LNO","Campelen","Spring",2018,11.92851166449
-"Striped Wolffish","3LNO","Campelen","Spring",2019,8.07808618878825
-"Striped Wolffish","3LNO","Engel","Fall",1990,6.82132331527195
-"Striped Wolffish","3LNO","Engel","Fall",1991,3.52416572806036
-"Striped Wolffish","3LNO","Engel","Fall",1992,10.389418644716
-"Striped Wolffish","3LNO","Engel","Fall",1993,3.93730461030964
-"Striped Wolffish","3LNO","Engel","Fall",1994,2.32649101910973
-"Striped Wolffish","3LNO","Campelen","Fall",1996,3.63357410915135
-"Striped Wolffish","3LNO","Campelen","Fall",1997,2.78459091649573
-"Striped Wolffish","3LNO","Campelen","Fall",1998,4.10129503827903
-"Striped Wolffish","3LNO","Campelen","Fall",1999,4.18737701897888
-"Striped Wolffish","3LNO","Campelen","Fall",2000,8.01589041804558
-"Striped Wolffish","3LNO","Campelen","Fall",2001,10.0521839367957
-"Striped Wolffish","3LNO","Campelen","Fall",2002,8.47459468510371
-"Striped Wolffish","3LNO","Campelen","Fall",2003,7.05685298323254
-"Striped Wolffish","3LNO","Campelen","Fall",2004,1.85499072590699
-"Striped Wolffish","3LNO","Campelen","Fall",2005,13.214938082011
-"Striped Wolffish","3LNO","Campelen","Fall",2006,10.235588082219
-"Striped Wolffish","3LNO","Campelen","Fall",2007,9.68767573426747
-"Striped Wolffish","3LNO","Campelen","Fall",2008,8.70732513914522
-"Striped Wolffish","3LNO","Campelen","Fall",2009,13.8048267982486
-"Striped Wolffish","3LNO","Campelen","Fall",2010,8.50100421858815
-"Striped Wolffish","3LNO","Campelen","Fall",2011,7.76791157177124
-"Striped Wolffish","3LNO","Campelen","Fall",2012,10.3776834312334
-"Striped Wolffish","3LNO","Campelen","Fall",2013,12.1421941425443
-"Striped Wolffish","3LNO","Campelen","Fall",2015,6.50942533478272
-"Striped Wolffish","3LNO","Campelen","Fall",2016,8.80366994446613
-"Striped Wolffish","3LNO","Campelen","Fall",2017,8.19664487513991
-"Striped Wolffish","3LNO","Campelen","Fall",2018,6.55880845750473
-"Striped Wolffish","3LNO","Campelen","Fall",2019,7.92866465931234
-"Striped Wolffish","3LNO","Campelen","Fall",2020,9.20673593519985
-"Spotted Wolffish","3LNO","Yankee","Spring",1977,6.80633118867681
-"Spotted Wolffish","3LNO","Yankee","Spring",1978,2.24966036333745
-"Spotted Wolffish","3LNO","Yankee","Spring",1979,6.56361992515185
-"Spotted Wolffish","3LNO","Yankee","Spring",1980,6.70861020627572
-"Spotted Wolffish","3LNO","Yankee","Spring",1982,4.36343910523868
-"Spotted Wolffish","3LNO","Engel","Spring",1985,1.92105473901235
-"Spotted Wolffish","3LNO","Engel","Spring",1986,2.16964350154321
-"Spotted Wolffish","3LNO","Engel","Spring",1987,2.64989442538272
-"Spotted Wolffish","3LNO","Engel","Spring",1988,3.48971452609053
-"Spotted Wolffish","3LNO","Engel","Spring",1989,3.14907119598354
-"Spotted Wolffish","3LNO","Engel","Spring",1990,1.98496666301399
-"Spotted Wolffish","3LNO","Engel","Spring",1991,0.418242445588477
-"Spotted Wolffish","3LNO","Engel","Spring",1992,0.505193309012346
-"Spotted Wolffish","3LNO","Engel","Spring",1993,0.335784871411523
-"Spotted Wolffish","3LNO","Engel","Spring",1994,0.157057421007407
-"Spotted Wolffish","3LNO","Engel","Spring",1995,0.580535619395062
-"Spotted Wolffish","3LNO","Campelen","Spring",1996,1.05726529507206
-"Spotted Wolffish","3LNO","Campelen","Spring",1997,0.753207648649436
-"Spotted Wolffish","3LNO","Campelen","Spring",1998,2.33763713073404
-"Spotted Wolffish","3LNO","Campelen","Spring",1999,2.32785740874158
-"Spotted Wolffish","3LNO","Campelen","Spring",2000,3.26875450200959
-"Spotted Wolffish","3LNO","Campelen","Spring",2001,2.03898479731657
-"Spotted Wolffish","3LNO","Campelen","Spring",2002,0.542911473339366
-"Spotted Wolffish","3LNO","Campelen","Spring",2003,2.00186064844612
-"Spotted Wolffish","3LNO","Campelen","Spring",2004,9.47266568183023
-"Spotted Wolffish","3LNO","Campelen","Spring",2005,8.71670143941641
-"Spotted Wolffish","3LNO","Campelen","Spring",2007,16.2962566046212
-"Spotted Wolffish","3LNO","Campelen","Spring",2008,7.11185423176823
-"Spotted Wolffish","3LNO","Campelen","Spring",2009,0.97751038047813
-"Spotted Wolffish","3LNO","Campelen","Spring",2010,6.39139388243405
-"Spotted Wolffish","3LNO","Campelen","Spring",2011,2.5069605277642
-"Spotted Wolffish","3LNO","Campelen","Spring",2012,2.08775366242836
-"Spotted Wolffish","3LNO","Campelen","Spring",2013,5.23186842363231
-"Spotted Wolffish","3LNO","Campelen","Spring",2014,3.62787318073655
-"Spotted Wolffish","3LNO","Campelen","Spring",2016,2.85367816829965
-"Spotted Wolffish","3LNO","Campelen","Spring",2018,1.13837736696078
-"Spotted Wolffish","3LNO","Campelen","Spring",2019,2.92566569835763
-"Spotted Wolffish","3LNO","Engel","Fall",1990,3.29720965704115
-"Spotted Wolffish","3LNO","Engel","Fall",1991,1.50528812512757
-"Spotted Wolffish","3LNO","Engel","Fall",1992,1.40598545693621
-"Spotted Wolffish","3LNO","Engel","Fall",1993,0.925205159903666
-"Spotted Wolffish","3LNO","Engel","Fall",1994,0.791682174974186
-"Spotted Wolffish","3LNO","Campelen","Fall",1996,0.0773133624776513
-"Spotted Wolffish","3LNO","Campelen","Fall",1997,2.77913412732495
-"Spotted Wolffish","3LNO","Campelen","Fall",1998,2.18296398062594
-"Spotted Wolffish","3LNO","Campelen","Fall",1999,1.90350740879554
-"Spotted Wolffish","3LNO","Campelen","Fall",2000,2.08212092898944
-"Spotted Wolffish","3LNO","Campelen","Fall",2001,3.74683612943456
-"Spotted Wolffish","3LNO","Campelen","Fall",2002,10.100494208183
-"Spotted Wolffish","3LNO","Campelen","Fall",2003,2.7447963066365
-"Spotted Wolffish","3LNO","Campelen","Fall",2004,0.72144787518723
-"Spotted Wolffish","3LNO","Campelen","Fall",2005,10.4274963223938
-"Spotted Wolffish","3LNO","Campelen","Fall",2006,11.0413253531016
-"Spotted Wolffish","3LNO","Campelen","Fall",2007,8.23835623621669
-"Spotted Wolffish","3LNO","Campelen","Fall",2008,11.1768757752778
-"Spotted Wolffish","3LNO","Campelen","Fall",2009,3.9486748298025
-"Spotted Wolffish","3LNO","Campelen","Fall",2010,2.22271049774662
-"Spotted Wolffish","3LNO","Campelen","Fall",2011,4.92509986677728
-"Spotted Wolffish","3LNO","Campelen","Fall",2012,7.01184091293833
-"Spotted Wolffish","3LNO","Campelen","Fall",2013,4.11287566561103
-"Spotted Wolffish","3LNO","Campelen","Fall",2015,3.16988066806988
-"Spotted Wolffish","3LNO","Campelen","Fall",2016,2.04619874012318
-"Spotted Wolffish","3LNO","Campelen","Fall",2017,2.59951744764253
-"Spotted Wolffish","3LNO","Campelen","Fall",2018,2.60070880525339
-"Spotted Wolffish","3LNO","Campelen","Fall",2019,5.11876446651835
-"Spotted Wolffish","3LNO","Campelen","Fall",2020,2.64300860773806
 "Esmark's Eelpout","3LNO","Yankee","Spring",1977,0.0435093651447591
 "Esmark's Eelpout","3LNO","Yankee","Spring",1978,0.00555912936213992
 "Esmark's Eelpout","3LNO","Yankee","Spring",1979,0.0815050184465021
@@ -1187,72 +791,72 @@
 "Esmark's Eelpout","3LNO","Campelen","Fall",2018,0
 "Esmark's Eelpout","3LNO","Campelen","Fall",2019,0.0676264578793364
 "Esmark's Eelpout","3LNO","Campelen","Fall",2020,0.00306669514328808
-"Redfish","3LNO","Yankee","Spring",1977,65.9189446515494
-"Redfish","3LNO","Yankee","Spring",1978,14.699865076979
-"Redfish","3LNO","Yankee","Spring",1979,85.0264983519576
-"Redfish","3LNO","Yankee","Spring",1980,15.0525658679125
-"Redfish","3LNO","Yankee","Spring",1982,54.0949414064321
-"Redfish","3LNO","Engel","Spring",1985,108.308841050115
-"Redfish","3LNO","Engel","Spring",1986,70.0515126321687
-"Redfish","3LNO","Engel","Spring",1987,35.4281169779454
-"Redfish","3LNO","Engel","Spring",1988,26.7869734858653
-"Redfish","3LNO","Engel","Spring",1989,11.9037848925633
-"Redfish","3LNO","Engel","Spring",1990,65.3823578326086
-"Redfish","3LNO","Engel","Spring",1991,13.5921082616251
-"Redfish","3LNO","Engel","Spring",1992,12.3908275339835
-"Redfish","3LNO","Engel","Spring",1993,53.9534554985073
-"Redfish","3LNO","Engel","Spring",1994,76.6260856454582
-"Redfish","3LNO","Engel","Spring",1995,87.2710591383332
-"Redfish","3LNO","Campelen","Spring",1996,125.539146531367
-"Redfish","3LNO","Campelen","Spring",1997,30.715970783166
-"Redfish","3LNO","Campelen","Spring",1998,218.740418828016
-"Redfish","3LNO","Campelen","Spring",1999,184.101334424368
-"Redfish","3LNO","Campelen","Spring",2000,171.417730319034
-"Redfish","3LNO","Campelen","Spring",2001,68.493547411303
-"Redfish","3LNO","Campelen","Spring",2002,51.4987931641046
-"Redfish","3LNO","Campelen","Spring",2003,57.3949660969581
-"Redfish","3LNO","Campelen","Spring",2004,164.925039776555
-"Redfish","3LNO","Campelen","Spring",2005,126.688569016641
-"Redfish","3LNO","Campelen","Spring",2007,311.357104018709
-"Redfish","3LNO","Campelen","Spring",2008,212.732529397721
-"Redfish","3LNO","Campelen","Spring",2009,270.934608055009
-"Redfish","3LNO","Campelen","Spring",2010,305.43129543789
-"Redfish","3LNO","Campelen","Spring",2011,375.211110046492
-"Redfish","3LNO","Campelen","Spring",2012,554.421463487503
-"Redfish","3LNO","Campelen","Spring",2013,344.433408719644
-"Redfish","3LNO","Campelen","Spring",2014,444.333634242858
-"Redfish","3LNO","Campelen","Spring",2016,718.344211240113
-"Redfish","3LNO","Campelen","Spring",2018,140.067036727277
-"Redfish","3LNO","Campelen","Spring",2019,186.066412404783
-"Redfish","3LNO","Engel","Fall",1990,37.9084396753597
-"Redfish","3LNO","Engel","Fall",1991,33.2973905291509
-"Redfish","3LNO","Engel","Fall",1992,85.1003888868024
-"Redfish","3LNO","Engel","Fall",1993,40.2750956067579
-"Redfish","3LNO","Engel","Fall",1994,47.7560402529782
-"Redfish","3LNO","Campelen","Fall",1996,39.0017173542828
-"Redfish","3LNO","Campelen","Fall",1997,225.366722077009
-"Redfish","3LNO","Campelen","Fall",1998,187.94981627335
-"Redfish","3LNO","Campelen","Fall",1999,114.249691210315
-"Redfish","3LNO","Campelen","Fall",2000,160.657806400779
-"Redfish","3LNO","Campelen","Fall",2001,169.942722436208
-"Redfish","3LNO","Campelen","Fall",2002,84.2373845351996
-"Redfish","3LNO","Campelen","Fall",2003,90.7354634383622
-"Redfish","3LNO","Campelen","Fall",2004,77.7903039522497
-"Redfish","3LNO","Campelen","Fall",2005,96.7914609463102
-"Redfish","3LNO","Campelen","Fall",2006,145.383562017682
-"Redfish","3LNO","Campelen","Fall",2007,192.202912629448
-"Redfish","3LNO","Campelen","Fall",2008,278.537742827343
-"Redfish","3LNO","Campelen","Fall",2009,351.508732327679
-"Redfish","3LNO","Campelen","Fall",2010,611.643515994622
-"Redfish","3LNO","Campelen","Fall",2011,703.398759277811
-"Redfish","3LNO","Campelen","Fall",2012,750.99419930699
-"Redfish","3LNO","Campelen","Fall",2013,370.34575434072
-"Redfish","3LNO","Campelen","Fall",2015,469.07438139245
-"Redfish","3LNO","Campelen","Fall",2016,246.058818922448
-"Redfish","3LNO","Campelen","Fall",2017,232.151818158425
-"Redfish","3LNO","Campelen","Fall",2018,245.169316174443
-"Redfish","3LNO","Campelen","Fall",2019,333.094526613466
-"Redfish","3LNO","Campelen","Fall",2020,245.85372129343
+"Redfish spp.","3LNO","Yankee","Spring",1977,65.9189446515494
+"Redfish spp.","3LNO","Yankee","Spring",1978,14.699865076979
+"Redfish spp.","3LNO","Yankee","Spring",1979,85.0264983519576
+"Redfish spp.","3LNO","Yankee","Spring",1980,15.0525658679125
+"Redfish spp.","3LNO","Yankee","Spring",1982,54.0949414064321
+"Redfish spp.","3LNO","Engel","Spring",1985,108.308841050115
+"Redfish spp.","3LNO","Engel","Spring",1986,70.0515126321687
+"Redfish spp.","3LNO","Engel","Spring",1987,35.4281169779454
+"Redfish spp.","3LNO","Engel","Spring",1988,26.7869734858653
+"Redfish spp.","3LNO","Engel","Spring",1989,11.9037848925633
+"Redfish spp.","3LNO","Engel","Spring",1990,65.3823578326086
+"Redfish spp.","3LNO","Engel","Spring",1991,13.5921082616251
+"Redfish spp.","3LNO","Engel","Spring",1992,12.3908275339835
+"Redfish spp.","3LNO","Engel","Spring",1993,53.9534554985073
+"Redfish spp.","3LNO","Engel","Spring",1994,76.6260856454582
+"Redfish spp.","3LNO","Engel","Spring",1995,87.2710591383332
+"Redfish spp.","3LNO","Campelen","Spring",1996,125.539146531367
+"Redfish spp.","3LNO","Campelen","Spring",1997,30.715970783166
+"Redfish spp.","3LNO","Campelen","Spring",1998,218.740418828016
+"Redfish spp.","3LNO","Campelen","Spring",1999,184.101334424368
+"Redfish spp.","3LNO","Campelen","Spring",2000,171.417730319034
+"Redfish spp.","3LNO","Campelen","Spring",2001,68.493547411303
+"Redfish spp.","3LNO","Campelen","Spring",2002,51.4987931641046
+"Redfish spp.","3LNO","Campelen","Spring",2003,57.3949660969581
+"Redfish spp.","3LNO","Campelen","Spring",2004,164.925039776555
+"Redfish spp.","3LNO","Campelen","Spring",2005,126.688569016641
+"Redfish spp.","3LNO","Campelen","Spring",2007,311.357104018709
+"Redfish spp.","3LNO","Campelen","Spring",2008,212.732529397721
+"Redfish spp.","3LNO","Campelen","Spring",2009,270.934608055009
+"Redfish spp.","3LNO","Campelen","Spring",2010,305.43129543789
+"Redfish spp.","3LNO","Campelen","Spring",2011,375.211110046492
+"Redfish spp.","3LNO","Campelen","Spring",2012,554.421463487503
+"Redfish spp.","3LNO","Campelen","Spring",2013,344.433408719644
+"Redfish spp.","3LNO","Campelen","Spring",2014,444.333634242858
+"Redfish spp.","3LNO","Campelen","Spring",2016,718.344211240113
+"Redfish spp.","3LNO","Campelen","Spring",2018,140.067036727277
+"Redfish spp.","3LNO","Campelen","Spring",2019,186.066412404783
+"Redfish spp.","3LNO","Engel","Fall",1990,37.9084396753597
+"Redfish spp.","3LNO","Engel","Fall",1991,33.2973905291509
+"Redfish spp.","3LNO","Engel","Fall",1992,85.1003888868024
+"Redfish spp.","3LNO","Engel","Fall",1993,40.2750956067579
+"Redfish spp.","3LNO","Engel","Fall",1994,47.7560402529782
+"Redfish spp.","3LNO","Campelen","Fall",1996,39.0017173542828
+"Redfish spp.","3LNO","Campelen","Fall",1997,225.366722077009
+"Redfish spp.","3LNO","Campelen","Fall",1998,187.94981627335
+"Redfish spp.","3LNO","Campelen","Fall",1999,114.249691210315
+"Redfish spp.","3LNO","Campelen","Fall",2000,160.657806400779
+"Redfish spp.","3LNO","Campelen","Fall",2001,169.942722436208
+"Redfish spp.","3LNO","Campelen","Fall",2002,84.2373845351996
+"Redfish spp.","3LNO","Campelen","Fall",2003,90.7354634383622
+"Redfish spp.","3LNO","Campelen","Fall",2004,77.7903039522497
+"Redfish spp.","3LNO","Campelen","Fall",2005,96.7914609463102
+"Redfish spp.","3LNO","Campelen","Fall",2006,145.383562017682
+"Redfish spp.","3LNO","Campelen","Fall",2007,192.202912629448
+"Redfish spp.","3LNO","Campelen","Fall",2008,278.537742827343
+"Redfish spp.","3LNO","Campelen","Fall",2009,351.508732327679
+"Redfish spp.","3LNO","Campelen","Fall",2010,611.643515994622
+"Redfish spp.","3LNO","Campelen","Fall",2011,703.398759277811
+"Redfish spp.","3LNO","Campelen","Fall",2012,750.99419930699
+"Redfish spp.","3LNO","Campelen","Fall",2013,370.34575434072
+"Redfish spp.","3LNO","Campelen","Fall",2015,469.07438139245
+"Redfish spp.","3LNO","Campelen","Fall",2016,246.058818922448
+"Redfish spp.","3LNO","Campelen","Fall",2017,232.151818158425
+"Redfish spp.","3LNO","Campelen","Fall",2018,245.169316174443
+"Redfish spp.","3LNO","Campelen","Fall",2019,333.094526613466
+"Redfish spp.","3LNO","Campelen","Fall",2020,245.85372129343
 "Sea Raven","3LNO","Yankee","Spring",1977,4.71684069487037
 "Sea Raven","3LNO","Yankee","Spring",1978,2.2141806823716
 "Sea Raven","3LNO","Yankee","Spring",1979,3.85241042430777
@@ -1913,69 +1517,201 @@
 "Atlantic Halibut","3LNO","Campelen","Fall",2018,7.03842852384716
 "Atlantic Halibut","3LNO","Campelen","Fall",2019,13.7383437301019
 "Atlantic Halibut","3LNO","Campelen","Fall",2020,15.297802721301
-"Common Angler","3LNO","Yankee","Spring",1977,0.332279552111111
-"Common Angler","3LNO","Yankee","Spring",1978,0.673674149728395
-"Common Angler","3LNO","Yankee","Spring",1979,0.131215032191358
-"Common Angler","3LNO","Yankee","Spring",1980,0.820709774744856
-"Common Angler","3LNO","Yankee","Spring",1982,1.23133870899177
-"Common Angler","3LNO","Engel","Spring",1985,0.681460558938272
-"Common Angler","3LNO","Engel","Spring",1986,0.535432920987654
-"Common Angler","3LNO","Engel","Spring",1987,0.915577200356653
-"Common Angler","3LNO","Engel","Spring",1988,2.37017107117284
-"Common Angler","3LNO","Engel","Spring",1989,0.359236815240055
-"Common Angler","3LNO","Engel","Spring",1990,0.452497867024691
-"Common Angler","3LNO","Engel","Spring",1991,0.909384487465021
-"Common Angler","3LNO","Engel","Spring",1992,0.0925822796082304
-"Common Angler","3LNO","Engel","Spring",1993,0.185418701567901
-"Common Angler","3LNO","Engel","Spring",1994,1.22419081701804
-"Common Angler","3LNO","Engel","Spring",1995,0.232429719537037
-"Common Angler","3LNO","Campelen","Spring",1996,0.589516887594268
-"Common Angler","3LNO","Campelen","Spring",1997,1.51539018768797
-"Common Angler","3LNO","Campelen","Spring",1998,0.273522871475616
-"Common Angler","3LNO","Campelen","Spring",1999,1.16488998888185
-"Common Angler","3LNO","Campelen","Spring",2000,1.26591048995224
-"Common Angler","3LNO","Campelen","Spring",2001,2.45209489782303
-"Common Angler","3LNO","Campelen","Spring",2002,1.37415134752388
-"Common Angler","3LNO","Campelen","Spring",2003,2.10669606415284
-"Common Angler","3LNO","Campelen","Spring",2004,1.41011265395928
-"Common Angler","3LNO","Campelen","Spring",2005,1.44900084543741
-"Common Angler","3LNO","Campelen","Spring",2007,2.95577902610206
-"Common Angler","3LNO","Campelen","Spring",2008,1.73635892313474
-"Common Angler","3LNO","Campelen","Spring",2009,2.42422009580794
-"Common Angler","3LNO","Campelen","Spring",2010,3.40846651732328
-"Common Angler","3LNO","Campelen","Spring",2011,2.05474151719759
-"Common Angler","3LNO","Campelen","Spring",2012,3.40970332468024
-"Common Angler","3LNO","Campelen","Spring",2013,3.79651311970387
-"Common Angler","3LNO","Campelen","Spring",2014,1.87318158993213
-"Common Angler","3LNO","Campelen","Spring",2016,2.09638693067873
-"Common Angler","3LNO","Campelen","Spring",2018,0.39616102515083
-"Common Angler","3LNO","Campelen","Spring",2019,1.17713720084465
-"Common Angler","3LNO","Engel","Fall",1990,0.29177391026749
-"Common Angler","3LNO","Engel","Fall",1991,0.51461686837037
-"Common Angler","3LNO","Engel","Fall",1992,0.0748427581481481
-"Common Angler","3LNO","Engel","Fall",1993,0.609696630341564
-"Common Angler","3LNO","Engel","Fall",1994,0.535861228467683
-"Common Angler","3LNO","Campelen","Fall",1996,1.33547397386878
-"Common Angler","3LNO","Campelen","Fall",1997,0.585492308755656
-"Common Angler","3LNO","Campelen","Fall",1998,0.15273178107089
-"Common Angler","3LNO","Campelen","Fall",1999,0.256618830271493
-"Common Angler","3LNO","Campelen","Fall",2000,1.19374585691051
-"Common Angler","3LNO","Campelen","Fall",2001,2.3129537753909
-"Common Angler","3LNO","Campelen","Fall",2002,2.11396922445953
-"Common Angler","3LNO","Campelen","Fall",2003,1.64231386742836
-"Common Angler","3LNO","Campelen","Fall",2004,0.859520739057315
-"Common Angler","3LNO","Campelen","Fall",2005,1.50312527004525
-"Common Angler","3LNO","Campelen","Fall",2006,1.75333788054299
-"Common Angler","3LNO","Campelen","Fall",2007,2.85673871468074
-"Common Angler","3LNO","Campelen","Fall",2008,3.94807234099547
-"Common Angler","3LNO","Campelen","Fall",2009,2.23841475466801
-"Common Angler","3LNO","Campelen","Fall",2010,2.49203871233157
-"Common Angler","3LNO","Campelen","Fall",2011,0.595682085060835
-"Common Angler","3LNO","Campelen","Fall",2012,2.01088933567421
-"Common Angler","3LNO","Campelen","Fall",2013,2.04273651755455
-"Common Angler","3LNO","Campelen","Fall",2015,1.86892436909502
-"Common Angler","3LNO","Campelen","Fall",2016,0.472508299085973
-"Common Angler","3LNO","Campelen","Fall",2017,2.05255975907089
-"Common Angler","3LNO","Campelen","Fall",2018,1.05022952225742
-"Common Angler","3LNO","Campelen","Fall",2019,0.683982530862242
-"Common Angler","3LNO","Campelen","Fall",2020,1.92106752758371
+"Monkfish","3LNO","Yankee","Spring",1977,0.332279552111111
+"Monkfish","3LNO","Yankee","Spring",1978,0.673674149728395
+"Monkfish","3LNO","Yankee","Spring",1979,0.131215032191358
+"Monkfish","3LNO","Yankee","Spring",1980,0.820709774744856
+"Monkfish","3LNO","Yankee","Spring",1982,1.23133870899177
+"Monkfish","3LNO","Engel","Spring",1985,0.681460558938272
+"Monkfish","3LNO","Engel","Spring",1986,0.535432920987654
+"Monkfish","3LNO","Engel","Spring",1987,0.915577200356653
+"Monkfish","3LNO","Engel","Spring",1988,2.37017107117284
+"Monkfish","3LNO","Engel","Spring",1989,0.359236815240055
+"Monkfish","3LNO","Engel","Spring",1990,0.452497867024691
+"Monkfish","3LNO","Engel","Spring",1991,0.909384487465021
+"Monkfish","3LNO","Engel","Spring",1992,0.0925822796082304
+"Monkfish","3LNO","Engel","Spring",1993,0.185418701567901
+"Monkfish","3LNO","Engel","Spring",1994,1.22419081701804
+"Monkfish","3LNO","Engel","Spring",1995,0.232429719537037
+"Monkfish","3LNO","Campelen","Spring",1996,0.589516887594268
+"Monkfish","3LNO","Campelen","Spring",1997,1.51539018768797
+"Monkfish","3LNO","Campelen","Spring",1998,0.273522871475616
+"Monkfish","3LNO","Campelen","Spring",1999,1.16488998888185
+"Monkfish","3LNO","Campelen","Spring",2000,1.26591048995224
+"Monkfish","3LNO","Campelen","Spring",2001,2.45209489782303
+"Monkfish","3LNO","Campelen","Spring",2002,1.37415134752388
+"Monkfish","3LNO","Campelen","Spring",2003,2.10669606415284
+"Monkfish","3LNO","Campelen","Spring",2004,1.41011265395928
+"Monkfish","3LNO","Campelen","Spring",2005,1.44900084543741
+"Monkfish","3LNO","Campelen","Spring",2007,2.95577902610206
+"Monkfish","3LNO","Campelen","Spring",2008,1.73635892313474
+"Monkfish","3LNO","Campelen","Spring",2009,2.42422009580794
+"Monkfish","3LNO","Campelen","Spring",2010,3.40846651732328
+"Monkfish","3LNO","Campelen","Spring",2011,2.05474151719759
+"Monkfish","3LNO","Campelen","Spring",2012,3.40970332468024
+"Monkfish","3LNO","Campelen","Spring",2013,3.79651311970387
+"Monkfish","3LNO","Campelen","Spring",2014,1.87318158993213
+"Monkfish","3LNO","Campelen","Spring",2016,2.09638693067873
+"Monkfish","3LNO","Campelen","Spring",2018,0.39616102515083
+"Monkfish","3LNO","Campelen","Spring",2019,1.17713720084465
+"Monkfish","3LNO","Engel","Fall",1990,0.29177391026749
+"Monkfish","3LNO","Engel","Fall",1991,0.51461686837037
+"Monkfish","3LNO","Engel","Fall",1992,0.0748427581481481
+"Monkfish","3LNO","Engel","Fall",1993,0.609696630341564
+"Monkfish","3LNO","Engel","Fall",1994,0.535861228467683
+"Monkfish","3LNO","Campelen","Fall",1996,1.33547397386878
+"Monkfish","3LNO","Campelen","Fall",1997,0.585492308755656
+"Monkfish","3LNO","Campelen","Fall",1998,0.15273178107089
+"Monkfish","3LNO","Campelen","Fall",1999,0.256618830271493
+"Monkfish","3LNO","Campelen","Fall",2000,1.19374585691051
+"Monkfish","3LNO","Campelen","Fall",2001,2.3129537753909
+"Monkfish","3LNO","Campelen","Fall",2002,2.11396922445953
+"Monkfish","3LNO","Campelen","Fall",2003,1.64231386742836
+"Monkfish","3LNO","Campelen","Fall",2004,0.859520739057315
+"Monkfish","3LNO","Campelen","Fall",2005,1.50312527004525
+"Monkfish","3LNO","Campelen","Fall",2006,1.75333788054299
+"Monkfish","3LNO","Campelen","Fall",2007,2.85673871468074
+"Monkfish","3LNO","Campelen","Fall",2008,3.94807234099547
+"Monkfish","3LNO","Campelen","Fall",2009,2.23841475466801
+"Monkfish","3LNO","Campelen","Fall",2010,2.49203871233157
+"Monkfish","3LNO","Campelen","Fall",2011,0.595682085060835
+"Monkfish","3LNO","Campelen","Fall",2012,2.01088933567421
+"Monkfish","3LNO","Campelen","Fall",2013,2.04273651755455
+"Monkfish","3LNO","Campelen","Fall",2015,1.86892436909502
+"Monkfish","3LNO","Campelen","Fall",2016,0.472508299085973
+"Monkfish","3LNO","Campelen","Fall",2017,2.05255975907089
+"Monkfish","3LNO","Campelen","Fall",2018,1.05022952225742
+"Monkfish","3LNO","Campelen","Fall",2019,0.683982530862242
+"Monkfish","3LNO","Campelen","Fall",2020,1.92106752758371
+"Wolffish spp.","3LNO","Yankee","Spring",1977,11.8771269239113
+"Wolffish spp.","3LNO","Yankee","Spring",1978,9.53566904351152
+"Wolffish spp.","3LNO","Yankee","Spring",1979,20.3119869619663
+"Wolffish spp.","3LNO","Yankee","Spring",1980,21.8022210127551
+"Wolffish spp.","3LNO","Yankee","Spring",1982,22.4438811146584
+"Wolffish spp.","3LNO","Engel","Spring",1985,18.8068145169221
+"Wolffish spp.","3LNO","Engel","Spring",1986,20.8314651037562
+"Wolffish spp.","3LNO","Engel","Spring",1987,19.3583711922136
+"Wolffish spp.","3LNO","Engel","Spring",1988,21.6807181257456
+"Wolffish spp.","3LNO","Engel","Spring",1989,16.1285453281758
+"Wolffish spp.","3LNO","Engel","Spring",1990,16.2773170297393
+"Wolffish spp.","3LNO","Engel","Spring",1991,9.14260673171904
+"Wolffish spp.","3LNO","Engel","Spring",1992,9.44392715674383
+"Wolffish spp.","3LNO","Engel","Spring",1993,8.93218859313319
+"Wolffish spp.","3LNO","Engel","Spring",1994,15.994461386086
+"Wolffish spp.","3LNO","Engel","Spring",1995,4.73190850549691
+"Wolffish spp.","3LNO","Campelen","Spring",1996,7.07316587899827
+"Wolffish spp.","3LNO","Campelen","Spring",1997,9.72571039268761
+"Wolffish spp.","3LNO","Campelen","Spring",1998,9.95584613445701
+"Wolffish spp.","3LNO","Campelen","Spring",1999,12.00970643461
+"Wolffish spp.","3LNO","Campelen","Spring",2000,12.8545575595636
+"Wolffish spp.","3LNO","Campelen","Spring",2001,22.4623744603888
+"Wolffish spp.","3LNO","Campelen","Spring",2002,12.9602451631047
+"Wolffish spp.","3LNO","Campelen","Spring",2003,23.3818556674751
+"Wolffish spp.","3LNO","Campelen","Spring",2004,21.2637961291096
+"Wolffish spp.","3LNO","Campelen","Spring",2005,21.9497498512578
+"Wolffish spp.","3LNO","Campelen","Spring",2007,31.0636746135158
+"Wolffish spp.","3LNO","Campelen","Spring",2008,30.3855295436471
+"Wolffish spp.","3LNO","Campelen","Spring",2009,16.1134709149895
+"Wolffish spp.","3LNO","Campelen","Spring",2010,22.297824178819
+"Wolffish spp.","3LNO","Campelen","Spring",2011,16.3457175679422
+"Wolffish spp.","3LNO","Campelen","Spring",2012,20.359373492619
+"Wolffish spp.","3LNO","Campelen","Spring",2013,26.5081359118642
+"Wolffish spp.","3LNO","Campelen","Spring",2014,14.4813711804759
+"Wolffish spp.","3LNO","Campelen","Spring",2016,10.8986543611111
+"Wolffish spp.","3LNO","Campelen","Spring",2018,15.2614866061456
+"Wolffish spp.","3LNO","Campelen","Spring",2019,12.2883458273566
+"Wolffish spp.","3LNO","Engel","Fall",1990,9.25471860045835
+"Wolffish spp.","3LNO","Engel","Fall",1991,5.54505029834683
+"Wolffish spp.","3LNO","Engel","Fall",1992,12.3137252922311
+"Wolffish spp.","3LNO","Engel","Fall",1993,5.72308622725429
+"Wolffish spp.","3LNO","Engel","Fall",1994,3.72208229315135
+"Wolffish spp.","3LNO","Campelen","Fall",1996,6.11817394474357
+"Wolffish spp.","3LNO","Campelen","Fall",1997,7.13518028606888
+"Wolffish spp.","3LNO","Campelen","Fall",1998,8.92600714822566
+"Wolffish spp.","3LNO","Campelen","Fall",1999,8.84522907720111
+"Wolffish spp.","3LNO","Campelen","Fall",2000,10.493860804597
+"Wolffish spp.","3LNO","Campelen","Fall",2001,12.9902933305645
+"Wolffish spp.","3LNO","Campelen","Fall",2002,16.8604213693278
+"Wolffish spp.","3LNO","Campelen","Fall",2003,10.456522601938
+"Wolffish spp.","3LNO","Campelen","Fall",2004,3.02783605209346
+"Wolffish spp.","3LNO","Campelen","Fall",2005,22.572969088167
+"Wolffish spp.","3LNO","Campelen","Fall",2006,19.07179297568
+"Wolffish spp.","3LNO","Campelen","Fall",2007,14.8812469247226
+"Wolffish spp.","3LNO","Campelen","Fall",2008,14.375628585565
+"Wolffish spp.","3LNO","Campelen","Fall",2009,19.9749387191393
+"Wolffish spp.","3LNO","Campelen","Fall",2010,11.1468586551367
+"Wolffish spp.","3LNO","Campelen","Fall",2011,11.511525194478
+"Wolffish spp.","3LNO","Campelen","Fall",2012,16.7771169825411
+"Wolffish spp.","3LNO","Campelen","Fall",2013,14.3664200837899
+"Wolffish spp.","3LNO","Campelen","Fall",2015,8.56795937036174
+"Wolffish spp.","3LNO","Campelen","Fall",2016,11.3321103974386
+"Wolffish spp.","3LNO","Campelen","Fall",2017,9.59935948188627
+"Wolffish spp.","3LNO","Campelen","Fall",2018,9.67018405019601
+"Wolffish spp.","3LNO","Campelen","Fall",2019,11.5806698370945
+"Wolffish spp.","3LNO","Campelen","Fall",2020,10.0602996103529
+"Skate spp.","3LNO","Yankee","Spring",1977,118.06584469084
+"Skate spp.","3LNO","Yankee","Spring",1978,71.1696686826724
+"Skate spp.","3LNO","Yankee","Spring",1979,84.659445936444
+"Skate spp.","3LNO","Yankee","Spring",1980,85.7397492090832
+"Skate spp.","3LNO","Yankee","Spring",1982,83.9460278868436
+"Skate spp.","3LNO","Engel","Spring",1985,108.492542122884
+"Skate spp.","3LNO","Engel","Spring",1986,85.8706405099374
+"Skate spp.","3LNO","Engel","Spring",1987,72.4782462409936
+"Skate spp.","3LNO","Engel","Spring",1988,80.3915315200951
+"Skate spp.","3LNO","Engel","Spring",1989,62.2391784539549
+"Skate spp.","3LNO","Engel","Spring",1990,56.9827445784498
+"Skate spp.","3LNO","Engel","Spring",1991,52.2657505397669
+"Skate spp.","3LNO","Engel","Spring",1992,32.1871193434342
+"Skate spp.","3LNO","Engel","Spring",1993,21.8973301320406
+"Skate spp.","3LNO","Engel","Spring",1994,15.6068597079005
+"Skate spp.","3LNO","Engel","Spring",1995,13.8116649978479
+"Skate spp.","3LNO","Campelen","Spring",1996,47.2400347548799
+"Skate spp.","3LNO","Campelen","Spring",1997,37.423953903123
+"Skate spp.","3LNO","Campelen","Spring",1998,60.3083641118615
+"Skate spp.","3LNO","Campelen","Spring",1999,78.9767769219386
+"Skate spp.","3LNO","Campelen","Spring",2000,80.216923451607
+"Skate spp.","3LNO","Campelen","Spring",2001,77.9036227807677
+"Skate spp.","3LNO","Campelen","Spring",2002,56.6240266328396
+"Skate spp.","3LNO","Campelen","Spring",2003,66.1849491041141
+"Skate spp.","3LNO","Campelen","Spring",2004,64.3372735903555
+"Skate spp.","3LNO","Campelen","Spring",2005,90.3328913093432
+"Skate spp.","3LNO","Campelen","Spring",2007,118.64789511716
+"Skate spp.","3LNO","Campelen","Spring",2008,92.3432692289277
+"Skate spp.","3LNO","Campelen","Spring",2009,78.4129532066794
+"Skate spp.","3LNO","Campelen","Spring",2010,111.421472708583
+"Skate spp.","3LNO","Campelen","Spring",2011,80.5125439056668
+"Skate spp.","3LNO","Campelen","Spring",2012,94.7730570394541
+"Skate spp.","3LNO","Campelen","Spring",2013,123.752490971962
+"Skate spp.","3LNO","Campelen","Spring",2014,115.340820470713
+"Skate spp.","3LNO","Campelen","Spring",2016,88.0236860907532
+"Skate spp.","3LNO","Campelen","Spring",2018,122.182253671584
+"Skate spp.","3LNO","Campelen","Spring",2019,84.1648233577796
+"Skate spp.","3LNO","Engel","Fall",1990,97.2349698266056
+"Skate spp.","3LNO","Engel","Fall",1991,88.9104303426705
+"Skate spp.","3LNO","Engel","Fall",1992,52.1141609435279
+"Skate spp.","3LNO","Engel","Fall",1993,46.1970321389457
+"Skate spp.","3LNO","Engel","Fall",1994,38.5178785541754
+"Skate spp.","3LNO","Campelen","Fall",1996,67.414097372747
+"Skate spp.","3LNO","Campelen","Fall",1997,108.786125365217
+"Skate spp.","3LNO","Campelen","Fall",1998,79.6247746785369
+"Skate spp.","3LNO","Campelen","Fall",1999,83.7531592349954
+"Skate spp.","3LNO","Campelen","Fall",2000,115.330491263841
+"Skate spp.","3LNO","Campelen","Fall",2001,103.246695196061
+"Skate spp.","3LNO","Campelen","Fall",2002,99.448260328911
+"Skate spp.","3LNO","Campelen","Fall",2003,93.527621813955
+"Skate spp.","3LNO","Campelen","Fall",2004,80.6998521461572
+"Skate spp.","3LNO","Campelen","Fall",2005,107.119017512399
+"Skate spp.","3LNO","Campelen","Fall",2006,119.670968176298
+"Skate spp.","3LNO","Campelen","Fall",2007,151.566707207234
+"Skate spp.","3LNO","Campelen","Fall",2008,177.294580603697
+"Skate spp.","3LNO","Campelen","Fall",2009,117.375508556089
+"Skate spp.","3LNO","Campelen","Fall",2010,93.891782893657
+"Skate spp.","3LNO","Campelen","Fall",2011,122.772966371843
+"Skate spp.","3LNO","Campelen","Fall",2012,163.018823102379
+"Skate spp.","3LNO","Campelen","Fall",2013,152.453488826957
+"Skate spp.","3LNO","Campelen","Fall",2015,129.832664555503
+"Skate spp.","3LNO","Campelen","Fall",2016,137.546211309366
+"Skate spp.","3LNO","Campelen","Fall",2017,143.261318464476
+"Skate spp.","3LNO","Campelen","Fall",2018,162.557480021776
+"Skate spp.","3LNO","Campelen","Fall",2019,158.40925917625
+"Skate spp.","3LNO","Campelen","Fall",2020,198.807711124185
