@@ -169,6 +169,9 @@ index <- lapply(seq_along(common_spp), function(i) {
 })
 index <- do.call(rbind, index)
 
+## Drop zeros - data are missing from some species (e.g., capelin) for some years in the spring series
+index <- index[index$index > 0, ]
+
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 
 
