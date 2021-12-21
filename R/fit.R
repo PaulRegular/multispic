@@ -93,6 +93,10 @@ fit_model <- function(inputs,
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
+    ## Compute total landings by year to inform starting value for K
+    total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
+
+
     ## Values to keep
     keep <- rep(1L, length(index$index))
     if (!is.null(leave_out)) {
@@ -132,7 +136,7 @@ fit_model <- function(inputs,
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
                 log_B0 = rep(0, nlevels(landings$species)),
-                log_K = 2,
+                log_K = ceiling(log(max(total_landings$landings))),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-2, nlevels(landings$species)),

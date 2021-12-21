@@ -29,6 +29,7 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Setup the data --------------------------------------------------------------
 
 ## Subset the data
+## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- sub_sp[sub_sp != "Haddock"]
 # sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
@@ -36,7 +37,7 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
 # sub_sp <- c("Cod", "Yellowtail", "Plaice")
 start_year <- 1977
-end_year <- 2018
+end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
@@ -62,8 +63,9 @@ index$null <- factor(rep("null", nrow(index)))
 p <- index %>%
     group_by(survey) %>%
     plot_ly() %>%
-    add_lines(x = ~year, y = ~index, color = ~species,
-              colors = viridis::viridis(100))
+    add_trace(x = ~year, y = ~index, color = ~species,
+              colors = viridis::viridis(100), mode = "markers+lines",
+              type = "scatter")
 p
 p %>% layout(yaxis = list(type = "log"))
 
@@ -72,15 +74,17 @@ index %>%
     group_by(survey) %>%
     mutate(scaled_index = scale(index)) %>%
     plot_ly() %>%
-    add_lines(x = ~year, y = ~scaled_index, color = ~species,
-              colors = viridis::viridis(100)) %>%
+    add_trace(x = ~year, y = ~scaled_index, color = ~species,
+              colors = viridis::viridis(100), mode = "markers+lines",
+              type = "scatter") %>%
     layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
     group_by(stock) %>%
     plot_ly() %>%
-    add_lines(x = ~year, y = ~landings, color = ~species,
-              colors = viridis::viridis(100))
+    add_trace(x = ~year, y = ~landings, color = ~species,
+              colors = viridis::viridis(100), mode = "markers+lines",
+              type = "scatter")
 p
 p %>% layout(yaxis = list(type = "log"))
 
@@ -114,19 +118,18 @@ covariates %>%
     plot_ly(x = ~year) %>%
     add_lines(y = ~mystery, name = "mystery")
 
-inputs <- list(landings = landings, index = index, covariates = covariates)
+inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 
 ## Run model -------------------------------------------------------------------
 
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 logit_cor_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 pe_formula = NULL, K_formula = ~core_cil)
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
 
 fit$opt$message
 fit$sd_rep
