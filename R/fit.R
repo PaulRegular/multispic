@@ -75,6 +75,10 @@ fit_model <- function(inputs,
     index <- inputs$index
     covariates <- inputs$covariates
 
+    ## Sort data to make sure groups are in order for TMB
+    landings <- landings[order(landings$year, landings$species), ]
+    index <- index[order(index$year, index$species, index[, survey_group]), ]
+
     ## Set-up model matrix | formula with covariates
     if (is.null(pe_formula)) {
         pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
@@ -216,10 +220,29 @@ fit_model <- function(inputs,
         random <- c(random, "logit_cor")
     }
 
-    ## Fit model
+    ## Set-up model object
     obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                      silent = silent)
-    opt <- nlminb(obj$par, obj$fn, obj$gr,
+
+    ## Set-up lower and upper constraints to limit search within logical bounds
+    par_names <- names(obj$par)
+    lower <- rep(-Inf, length(par_names))
+    upper <- rep(Inf, length(par_names))
+    lower[grepl("log_sd_B", par_names)] <- log(0.01)
+    upper[grepl("log_sd_B", par_names)] <- log(5)
+    lower[grepl("log_sd_I", par_names)] <- log(0.01)
+    upper[grepl("log_sd_I", par_names)] <- log(5)
+    lower[grepl("log_B0", par_names)] <- log(landings$landings[landings$year == min(landings$year)])
+    upper[grepl("log_B0", par_names)] <- log(max_index * 100)
+    lower[grepl("log_q", par_names)] <- log(0.01)
+    upper[grepl("log_q", par_names)] <- log(5)
+    lower[grepl("log_r", par_names)] <- log(0.01)
+    upper[grepl("log_r", par_names)] <- log(5)
+    lower[grepl("log_K", par_names)] <- log(max_total_landings)
+    upper[grepl("log_K", par_names)] <- log(max_total_index * 1000)
+
+    ## Optimize
+    opt <- nlminb(obj$par, obj$fn, obj$gr, lower = lower, upper = upper,
                   control = list(eval.max = 1000, iter.max = 1000))
 
     ## Reset scale

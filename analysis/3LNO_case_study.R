@@ -31,11 +31,14 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
-# sub_sp <- sub_sp[sub_sp != "Haddock"]
-# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
-# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
-# sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
-# sub_sp <- c("Cod", "Yellowtail", "Plaice")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Capelin", "Yellowtail Flounder", "Greenland Halibut",
+            "Skate spp.")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Capelin", "Yellowtail Flounder")
+sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
+            "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
+            "White Hake")
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -45,7 +48,7 @@ landings <- landings[landings$year >= start_year & landings$year <= end_year &
 covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Assume Yankee Q = Engel Q
-# index$gear[index$gear == "Yankee"] <- "Engel"
+index$gear[index$gear == "Yankee"] <- "Engel"
 
 
 ## Set-up indices for TMB
@@ -124,12 +127,12 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 ## Run model -------------------------------------------------------------------
 
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
 
 fit$opt$message
 fit$sd_rep
