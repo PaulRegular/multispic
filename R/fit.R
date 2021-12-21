@@ -93,8 +93,15 @@ fit_model <- function(inputs,
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
-    ## Compute total landings by year to inform starting value for K
-    total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
+    ## Calculate some totals and means to improve starting values
+    max_total_landings <- max(aggregate(landings ~ year, FUN = sum, data = landings)[, 2])
+    mean_index <- aggregate(index ~ species, FUN = mean, data = index)
+    mean_index <- t(replicate(length(unique(landings$year)), mean_index$index))
+    max_index <- aggregate(index ~ species, FUN = max, data = index)[, 2]
+    max_total_index <- aggregate(index ~ species + year, FUN = max, data = index)
+    max_total_index <- max(aggregate(index ~ year, FUN = sum, data = max_total_index)[, 2])
+    sd_index <- aggregate(log(index) ~ species, FUN = sd, data = index)[, 2]
+    sd_survey_index <- aggregate(log(index$index), list(index[, survey_group]), FUN = sd)[, 2]
 
 
     ## Values to keep
@@ -125,28 +132,27 @@ fit_model <- function(inputs,
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
                 keep = keep)
-    par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
+    par <- list(log_B = log(mean_index),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
-                log_sd_B = rep(-1, nlevels(landings$species)),
+                log_sd_B = log(sd_index / 2),
                 mean_logit_cor = logit_cor_option$mean,
                 log_sd_logit_cor = log(logit_cor_option$sd),
                 logit_cor = rep(0, n_cor),
-                logit_phi = 0,
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
-                log_B0 = rep(0, nlevels(landings$species)),
-                log_K = ceiling(log(max(total_landings$landings))),
+                log_B0 = log(max_index),
+                log_K = log(max_total_index),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
-                log_r = rep(-2, nlevels(landings$species)),
+                log_r = rep(log(0.2), nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
                 mean_log_q = log_q_option$mean,
                 log_sd_log_q = log(log_q_option$sd),
-                log_q = rep(-0.5, nlevels(index[, survey_group])),
+                log_q = rep(0, nlevels(index[, survey_group])),
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
-                log_sd_I = rep(-1, nlevels(index[, survey_group])),
+                log_sd_I = log(sd_survey_index / 2),
                 pe_betas =  rep(0, ncol(pe_model_mat)),
                 K_betas =  rep(0, ncol(K_model_mat)))
 
