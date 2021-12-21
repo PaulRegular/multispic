@@ -1,6 +1,5 @@
 
 ## TODO:
-## - Think more about the cor option; add "couple" and "assume" options to par_option??
 ## - Calculate one-step ahead residuals
 
 library(units)
@@ -31,14 +30,16 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Capelin", "Yellowtail Flounder", "Greenland Halibut",
-            "Skate spp.")
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Capelin", "Yellowtail Flounder")
-sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
-            "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
-            "White Hake")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Capelin", "Yellowtail Flounder", "Greenland Halibut",
+#             "Skate spp.")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Capelin", "Yellowtail Flounder")
+# sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
+#             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
+#             "White Hake")
+# sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
+#             "Atlantic Cod", "Greenland Halibut")
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -128,9 +129,9 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "random", mean = -1, sd = 1),
                  log_r_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "coupled", mean = -1, sd = 1),
                  log_q_option = par_option(option = "fixed", mean = -1, sd = 1),
                  log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
 

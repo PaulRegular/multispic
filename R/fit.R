@@ -3,21 +3,21 @@
 
 #' Helper for defining the settings of a parameter
 #'
-#' @param option    Should the parameter be estimated freely ("fixed") or revolve
-#'                  around an estimated mean and sd ("random"), a fixed mean
-#'                  ("prior_mean") or a fixed mean and sd ("prior").
+#' @param option    Should the parameter be estimated freely ("fixed"), coupled across groups
+#'                  ("coupled"), revolve around an estimated mean and sd ("random"),
+#'                  or a fixed mean and sd ("prior").
 #' @param mean      Mean value of the parameter. Treated as a starting value if
 #'                  option is "random" or as a prior if option is option is "prior".
-#'                  Ignored if option is "fixed".
+#'                  Ignored if option is "fixed" or "coupled".
 #' @param sd        SD value of the parameter. Treated as a starting value is
 #'                  option is "random" or a prior if option is "prior". Ignored
-#'                  if option is "fixed".
+#'                  if option is "fixed" or "coupled".
 #'
 #' @export
 #'
 
 par_option <- function(option = "fixed", mean = 0, sd = 1) {
-    list(option = factor(option, levels = c("fixed", "random", "prior")),
+    list(option = factor(option, levels = c("fixed", "coupled", "random", "prior")),
          mean = mean, sd = sd)
 }
 
@@ -169,28 +169,47 @@ fit_model <- function(inputs,
         dat$logit_cor_option <- 0 # skip prior / random effect loop
     }
 
-    if (log_sd_B_option$option %in% c("fixed", "prior")) {
+    if (log_sd_B_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_log_sd_B <- map$log_sd_log_sd_B <- factor(NA)
+        if (log_sd_B_option$option == "coupled") {
+            map$log_sd_B <- factor(rep(1, length(par$log_sd_B)))
+        }
     }
 
-    if (log_B0_option$option %in% c("fixed", "prior")) {
+
+    if (log_B0_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_log_B0 <- map$log_sd_log_B0 <- factor(NA)
+        if (log_B0_option$option == "coupled") {
+            map$log_B0 <- factor(rep(1, length(par$log_B0)))
+        }
     }
 
-    if (log_r_option$option %in% c("fixed", "prior")) {
+    if (log_r_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_log_r <- map$log_sd_log_r <- factor(NA)
+        if (log_r_option$option == "coupled") {
+            map$log_r <- factor(rep(1, length(par$log_r)))
+        }
     }
 
-    if (log_q_option$option %in% c("fixed", "prior")) {
+    if (log_q_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_log_q <- map$log_sd_log_q <- factor(NA)
+        if (log_q_option$option == "coupled") {
+            map$log_q <- factor(rep(1, length(par$log_q)))
+        }
     }
 
-    if (log_sd_I_option$option %in% c("fixed", "prior")) {
+    if (log_sd_I_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
+        if (log_sd_I_option$option == "coupled") {
+            map$log_sd_I <- factor(rep(1, length(par$log_sd_I)))
+        }
     }
 
-    if (logit_cor_option$option %in% c("fixed", "prior")) {
+    if (logit_cor_option$option %in% c("fixed", "coupled", "prior")) {
         map$mean_logit_cor <- map$log_sd_logit_cor <- factor(NA)
+        if (logit_cor_option$option == "coupled") {
+            map$logit_cor <- factor(rep(1, length(par$logit_cor)))
+        }
     }
 
     if (is.null(pe_formula)) {
