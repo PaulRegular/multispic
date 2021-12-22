@@ -47,6 +47,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           to NULL.
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
+#' @param constrain          Should parameter search be constrained by built-in lower and upper bounds?
 #' @param light              Skip running sdreport and limit output to speed things up?
 #' @param silent             Disable tracing information?
 #'
@@ -66,6 +67,7 @@ fit_model <- function(inputs,
                       pe_formula = NULL,
                       K_formula = NULL,
                       leave_out = NULL,
+                      constrain = FALSE,
                       light = FALSE,
                       silent = FALSE) {
 
@@ -247,18 +249,20 @@ fit_model <- function(inputs,
     par_names <- names(obj$par)
     lower <- rep(-Inf, length(par_names))
     upper <- rep(Inf, length(par_names))
-    lower[grepl("log_sd_B", par_names)] <- log(0.01)
-    upper[grepl("log_sd_B", par_names)] <- log(5)
-    lower[grepl("log_sd_I", par_names)] <- log(0.01)
-    upper[grepl("log_sd_I", par_names)] <- log(5)
-    lower[grepl("log_B0", par_names)] <- log(landings$landings[landings$year == min(landings$year)])
-    upper[grepl("log_B0", par_names)] <- log(max_index * 100)
-    lower[grepl("log_q", par_names)] <- log(0.01)
-    upper[grepl("log_q", par_names)] <- log(5)
-    lower[grepl("log_r", par_names)] <- log(0.01)
-    upper[grepl("log_r", par_names)] <- log(5)
-    lower[grepl("log_K", par_names)] <- log(max_total_landings)
-    upper[grepl("log_K", par_names)] <- log(max_total_index * 1000)
+    if (constrain) {
+        lower[grepl("log_sd_B", par_names)] <- log(min(sd_survey_index) / 2)
+        upper[grepl("log_sd_B", par_names)] <- log(max(sd_survey_index) * 2)
+        lower[grepl("log_sd_I", par_names)] <- log(min(sd_survey_index) / 2)
+        upper[grepl("log_sd_I", par_names)] <- log(max(sd_survey_index) * 2)
+        lower[grepl("log_B0", par_names)] <- log(landings$landings[landings$year == min(landings$year)])
+        upper[grepl("log_B0", par_names)] <- log(max_index * 100)
+        lower[grepl("log_q", par_names)] <- log(0.01)
+        upper[grepl("log_q", par_names)] <- log(5)
+        lower[grepl("log_r", par_names)] <- log(0.01)
+        upper[grepl("log_r", par_names)] <- log(5)
+        lower[grepl("log_K", par_names)] <- log(max_total_landings)
+        upper[grepl("log_K", par_names)] <- log(max_total_index * 1000)
+    }
 
     ## Optimize
     opt <- nlminb(obj$par, obj$fn, obj$gr, lower = lower, upper = upper,

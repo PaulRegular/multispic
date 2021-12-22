@@ -38,8 +38,9 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
-# sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
-#             "Atlantic Cod", "Greenland Halibut")
+sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
+            "Atlantic Cod")
+# sub_sp <- c("Yellowtail Flounder", "Redfish spp.")
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -129,11 +130,11 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "random", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "coupled", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
 
 fit$opt$message
 fit$sd_rep
@@ -280,7 +281,15 @@ p <- fit$pop %>%
             legendgroup = ~species) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~B)
+    add_lines(y = ~B) %>%
+    layout(shapes =  list(
+        type = "line",
+        x0 = min(fit$landings$year),
+        x1 = max(fit$landings$year),
+        y0 = exp(fit$par$log_K),
+        y1 = exp(fit$par$log_K),
+        line = list(dash = "dot")
+    ))
 p
 p %>% layout(yaxis = list(type = "log"))
 
