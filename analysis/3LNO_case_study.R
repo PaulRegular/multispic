@@ -30,6 +30,7 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
+<<<<<<< HEAD
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Capelin", "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.")
@@ -41,6 +42,13 @@ sub_sp <- unique(multispic::landings$species)
 sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
             "Atlantic Cod")
 # sub_sp <- c("Yellowtail Flounder", "Redfish spp.")
+=======
+# sub_sp <- sub_sp[sub_sp != "Haddock"]
+# sub_sp <- c("Yellowtail", "Witch", "Cod", "Plaice", "Redfish", "Skate")
+# sub_sp <- c("Cod", "Plaice", "Yellowtail", "Redfish", "Witch")
+# sub_sp <- c("Yellowtail", "Plaice", "Skate", "Cod", "Witch", "Redfish")
+# sub_sp <- c("Cod", "Yellowtail", "Plaice")
+>>>>>>> parent of 94fda08 (Impose lower and upper bounds on parameter search)
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -50,7 +58,7 @@ landings <- landings[landings$year >= start_year & landings$year <= end_year &
 covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Assume Yankee Q = Engel Q
-index$gear[index$gear == "Yankee"] <- "Engel"
+# index$gear[index$gear == "Yankee"] <- "Engel"
 
 
 ## Set-up indices for TMB

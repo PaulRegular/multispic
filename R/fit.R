@@ -47,7 +47,6 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #'                           to NULL.
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
-#' @param constrain          Should parameter search be constrained by built-in lower and upper bounds?
 #' @param light              Skip running sdreport and limit output to speed things up?
 #' @param silent             Disable tracing information?
 #'
@@ -67,7 +66,6 @@ fit_model <- function(inputs,
                       pe_formula = NULL,
                       K_formula = NULL,
                       leave_out = NULL,
-                      constrain = FALSE,
                       light = FALSE,
                       silent = FALSE) {
 
@@ -76,10 +74,6 @@ fit_model <- function(inputs,
     landings <- inputs$landings
     index <- inputs$index
     covariates <- inputs$covariates
-
-    ## Sort data to make sure groups are in order for TMB
-    landings <- landings[order(landings$year, landings$species), ]
-    index <- index[order(index$year, index$species, index[, survey_group]), ]
 
     ## Set-up model matrix | formula with covariates
     if (is.null(pe_formula)) {
@@ -99,15 +93,8 @@ fit_model <- function(inputs,
     index$index <- index$index / scaler
     landings$landings <- landings$landings / scaler
 
-    ## Calculate some totals and means to improve starting values
-    max_total_landings <- max(aggregate(landings ~ year, FUN = sum, data = landings)[, 2])
-    mean_index <- aggregate(index ~ species, FUN = mean, data = index)
-    mean_index <- t(replicate(length(unique(landings$year)), mean_index$index))
-    max_index <- aggregate(index ~ species, FUN = max, data = index)[, 2]
-    max_total_index <- aggregate(index ~ species + year, FUN = max, data = index)
-    max_total_index <- max(aggregate(index ~ year, FUN = sum, data = max_total_index)[, 2])
-    sd_index <- aggregate(log(index) ~ species, FUN = sd, data = index)[, 2]
-    sd_survey_index <- aggregate(log(index$index), list(index[, survey_group]), FUN = sd)[, 2]
+    ## Compute total landings by year to inform starting value for K
+    total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
 
 
     ## Values to keep
@@ -138,27 +125,27 @@ fit_model <- function(inputs,
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
                 keep = keep)
-    par <- list(log_B = log(mean_index),
+    par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
-                log_sd_B = log(sd_index / 2),
+                log_sd_B = rep(-1, nlevels(landings$species)),
                 mean_logit_cor = logit_cor_option$mean,
                 log_sd_logit_cor = log(logit_cor_option$sd),
                 logit_cor = rep(0, n_cor),
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
-                log_B0 = log(max_index),
-                log_K = log(max_total_index),
+                log_B0 = rep(0, nlevels(landings$species)),
+                log_K = ceiling(log(max(total_landings$landings))),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
-                log_r = rep(log(0.2), nlevels(landings$species)),
+                log_r = rep(-2, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
                 mean_log_q = log_q_option$mean,
                 log_sd_log_q = log(log_q_option$sd),
-                log_q = rep(0, nlevels(index[, survey_group])),
+                log_q = rep(-0.5, nlevels(index[, survey_group])),
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
-                log_sd_I = log(sd_survey_index / 2),
+                log_sd_I = rep(-1, nlevels(index[, survey_group])),
                 pe_betas =  rep(0, ncol(pe_model_mat)),
                 K_betas =  rep(0, ncol(K_model_mat)))
 
@@ -241,31 +228,10 @@ fit_model <- function(inputs,
         random <- c(random, "logit_cor")
     }
 
-    ## Set-up model object
+    ## Fit model
     obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                      silent = silent)
-
-    ## Set-up lower and upper constraints to limit search within logical bounds
-    par_names <- names(obj$par)
-    lower <- rep(-Inf, length(par_names))
-    upper <- rep(Inf, length(par_names))
-    if (constrain) {
-        lower[grepl("log_sd_B", par_names)] <- log(min(sd_survey_index) / 2)
-        upper[grepl("log_sd_B", par_names)] <- log(max(sd_survey_index) * 2)
-        lower[grepl("log_sd_I", par_names)] <- log(min(sd_survey_index) / 2)
-        upper[grepl("log_sd_I", par_names)] <- log(max(sd_survey_index) * 2)
-        lower[grepl("log_B0", par_names)] <- log(landings$landings[landings$year == min(landings$year)])
-        upper[grepl("log_B0", par_names)] <- log(max_index * 100)
-        lower[grepl("log_q", par_names)] <- log(0.01)
-        upper[grepl("log_q", par_names)] <- log(5)
-        lower[grepl("log_r", par_names)] <- log(0.01)
-        upper[grepl("log_r", par_names)] <- log(5)
-        lower[grepl("log_K", par_names)] <- log(max_total_landings)
-        upper[grepl("log_K", par_names)] <- log(max_total_index * 1000)
-    }
-
-    ## Optimize
-    opt <- nlminb(obj$par, obj$fn, obj$gr, lower = lower, upper = upper,
+    opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
 
     ## Reset scale
