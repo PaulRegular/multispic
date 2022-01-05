@@ -65,6 +65,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> B(nY, nS);
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
+    vector<Type> tot_B(nY);
+    vector<Type> log_tot_B(nY);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
     vector<Type> log_B_res(nL);
@@ -180,11 +182,16 @@ Type objective_function<Type>::operator() ()
         log_F(i) = log(F(i));
     }
 
+    // Total biomass
+    tot_B = B.rowwise().sum();
+    log_tot_B = log(tot_B);
+
     // AD report values
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
     ADREPORT(log_F);
     ADREPORT(log_K_vec);
+    ADREPORT(log_tot_B);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);

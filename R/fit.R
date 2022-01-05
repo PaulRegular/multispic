@@ -250,6 +250,8 @@ fit_model <- function(inputs,
                       species = landings$species,
                       stock = landings$stock,
                       pe = rep$log_B_std_res)
+    tot_pop <- data.frame(year = sort(unique(landings$year)))
+
     se <- NA
     sd_rep <- NA
 
@@ -279,9 +281,13 @@ fit_model <- function(inputs,
         pop$F <- exp(est$log_F)
         pop$F_lwr <- exp(lwr$log_F)
         pop$F_upr <- exp(upr$log_F)
-        pop$K <- exp(est$log_K_vec) * scaler
-        pop$K_lwr <- exp(lwr$log_K_vec) * scaler
-        pop$K_upr <- exp(upr$log_K_vec) * scaler
+
+        tot_pop$B <- exp(est$log_tot_B) * scaler
+        tot_pop$B_lwr <- exp(lwr$log_tot_B) * scaler
+        tot_pop$B_upr <- exp(upr$log_tot_B) * scaler
+        tot_pop$K <- exp(est$log_K_vec) * scaler
+        tot_pop$K_lwr <- exp(lwr$log_K_vec) * scaler
+        tot_pop$K_upr <- exp(upr$log_K_vec) * scaler
 
     }
 
@@ -290,7 +296,7 @@ fit_model <- function(inputs,
 
     out <- list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
          rep = rep, par = par, se = se, index = index, landings = landings,
-         pop = pop, mAIC = mAIC)
+         pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
