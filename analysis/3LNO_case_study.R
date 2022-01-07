@@ -30,13 +30,13 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder", "Greenland Halibut",
-#             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-#             "Wolffish spp.", "Roughhead Grenadier",
-#             "Atlantic Halibut", "Monkfish")
 sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder")
+            "Yellowtail Flounder", "Greenland Halibut",
+            "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
+            "Wolffish spp.", "Roughhead Grenadier",
+            "Atlantic Halibut", "Monkfish")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -124,12 +124,14 @@ covariates %>%
     plot_ly(x = ~year) %>%
     add_lines(y = ~mystery, name = "mystery")
 
+
+## Carefully think about the year indexing re. the covariate effect
 inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
                  logit_cor_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "prior", mean = -1, sd = 1),
                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
@@ -283,14 +285,9 @@ p <- fit$pop %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~B) %>%
-    layout(shapes =  list(
-        type = "line",
-        x0 = min(fit$landings$year),
-        x1 = max(fit$landings$year),
-        y0 = exp(fit$par$log_K),
-        y1 = exp(fit$par$log_K),
-        line = list(dash = "dot")
-    ))
+    add_lines(x = ~year, y = ~K, data = fit$tot_pop,
+              color = I("black"), linetype = I(3), name = "K",
+              inherit = FALSE)
 p
 p %>% layout(yaxis = list(type = "log"))
 
