@@ -30,13 +30,13 @@ covariates <- left_join(covariates, mystery, by = "year")
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder", "Greenland Halibut",
-            "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-            "Wolffish spp.", "Roughhead Grenadier",
-            "Atlantic Halibut", "Monkfish")
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder")
+#             "Yellowtail Flounder", "Greenland Halibut",
+#             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
+#             "Wolffish spp.", "Roughhead Grenadier",
+#             "Atlantic Halibut", "Monkfish")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -132,17 +132,18 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 ## Run model -------------------------------------------------------------------
 
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "all",
-                 logit_cor_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "coupled", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
 
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
 fit$mAIC
+fit$rep$pen
 
 # loo_fit <- run_loo(fit)
 # loo_fit$mse

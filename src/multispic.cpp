@@ -21,6 +21,7 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_IVECTOR(keep);      // useful for cross-validation
     DATA_SCALAR(min_B);
+    DATA_SCALAR(min_K);      // lower bound for K; expect it to be larger than the max landings
     DATA_INTEGER(log_sd_B_option);
     DATA_INTEGER(log_B0_option);
     DATA_INTEGER(log_r_option);
@@ -148,7 +149,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> K_covar_effect = K_covariates * K_betas;
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            K_vec(i) = K + K_covar_effect(i);
+            K_vec(i) = K + K_covar_effect(i) + min_K;
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_effect(i));
             } else {
