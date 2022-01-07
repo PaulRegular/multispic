@@ -31,7 +31,7 @@ Type objective_function<Type>::operator() ()
     DATA_MATRIX(K_covariates);
 
     // Parameters
-    PARAMETER_MATRIX(delta); // process error
+    PARAMETER_MATRIX(log_B);
     PARAMETER(mean_log_sd_B);
     PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
@@ -56,14 +56,15 @@ Type objective_function<Type>::operator() ()
     PARAMETER_VECTOR(K_betas);
 
     // Dim
-    int nY = delta.rows();         // number of years
-    int nS = delta.cols();         // number of species
+    int nY = log_B.rows();         // number of years
+    int nS = log_B.cols();         // number of species
     int nL = L.size();
     int nI = I.size();
 
     // Containers
-    matrix<Type> B(nY, nS);
-    matrix<Type> log_B(nY, nS);
+    matrix<Type> pred_B(nY, nS);
+    matrix<Type> log_pred_B(nY, nS);
+    matrix<Type> delta(nY, nS);
     vector<Type> tot_B(nY);
     vector<Type> log_tot_B(nY);
     vector<Type> B_vec(nL);
@@ -80,6 +81,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_K_vec(nY);
 
     // Transformations
+    matrix<Type> B = exp(log_B.array());
     vector<Type> B0 = exp(log_B0);
     vector<Type> log_I = log(I);
     vector<Type> sd_B = exp(log_sd_B);
@@ -96,9 +98,11 @@ Type objective_function<Type>::operator() ()
     Type sd_logit_cor = exp(log_sd_logit_cor);
 
 
-    // Set-up a landings matrix
+    // Set-up a landings matrix and vector of B
     for (int i = 0; i < nL; i++) {
         L_mat(L_year(i), L_species(i)) = L(i);
+        log_B_vec(i) = log_B(L_year(i), L_species(i));
+        B_vec(i) = exp(log_B_vec(i));
     }
 
     // Initalize nll
@@ -146,24 +150,19 @@ Type objective_function<Type>::operator() ()
         for (int j = 0; j < nS; j++) {
             K_vec(i) = K + K_covar_effect(i);
             if (i == 0) {
-                B(i, j) = B0(j) * exp(pe_covar_effect(i) + delta(i, j));
+                pred_B(i, j) = B0(j) * exp(pe_covar_effect(i));
             } else {
-                B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
+                pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
                     (1.0 - pow((B.row(i - 1).sum() / K_vec(i)), m(j) - 1.0)) -
-                    L_mat(i - 1, j)) * exp(pe_covar_effect(i) + delta(i, j));
+                    L_mat(i - 1, j)) * exp(pe_covar_effect(i));
             }
-            B(i, j) = pos_fun(B(i, j), min_B, pen);
-            log_B(i, j) = log(B(i, j));
+            pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
+            log_pred_B(i, j) = log(pred_B(i, j));
+            delta(i, j) = log_B(i, j) - log_pred_B(i, j);
         }
         nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_B)(delta.row(i));
     }
     log_K_vec = log(K_vec);
-
-    // Transform B matrix to vector
-    for (int i = 0; i < nL; i++) {
-        log_B_vec(i) = log_B(L_year(i), L_species(i));
-        B_vec(i) = exp(log_B_vec(i));
-    }
 
     // Observation equations
     for (int i = 0; i < nI; i++){
@@ -176,7 +175,7 @@ Type objective_function<Type>::operator() ()
     }
 
 
-    // Calculate standardized residuals (process errors) and F
+    // Calculate process residuals (aka process error, aka delta) and F
     for (int i = 0; i < nL; i++) {
         log_B_res(i) = delta(L_year(i), L_species(i));
         log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));

@@ -125,7 +125,7 @@ fit_model <- function(inputs,
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
                 keep = keep)
-    par <- list(delta = matrix(0, nrow = dat$nY, ncol = dat$nS),
+    par <- list(log_B = matrix(0, nrow = dat$nY, ncol = dat$nS),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
@@ -208,7 +208,7 @@ fit_model <- function(inputs,
         map$K_betas <- factor(NA)
     }
 
-    random <- "delta"
+    random <- "log_B"
     if (log_sd_B_option$option == "random") {
         random <- c(random, "log_sd_B")
     }
@@ -249,8 +249,7 @@ fit_model <- function(inputs,
     pop <- data.frame(year = landings$year,
                       species = landings$species,
                       stock = landings$stock,
-                      pe = rep$log_B_res,
-                      std_pe = rep$log_B_std_res)
+                      pe = rep$log_B_std_res)
     tot_pop <- data.frame(year = sort(unique(landings$year)))
 
     se <- NA
@@ -262,7 +261,7 @@ fit_model <- function(inputs,
         sd_rep <- sdreport(obj)
         par <- as.list(sd_rep, "Est")
         par$log_B0 <- log(exp(par$log_B0) * scaler)
-        par$delta <- log(exp(par$delta) * scaler)
+        par$log_B <- log(exp(par$log_B) * scaler)
         par$log_K <- log(exp(par$log_K) * scaler)
         se <- as.list(sd_rep, "Std. Error")
 

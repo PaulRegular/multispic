@@ -229,7 +229,7 @@ p %>% add_markers(x = ~survey, y = ~std_res)
 ## Process error residuals
 p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
-p %>% add_lines(x = ~year, y = ~std_pe)
+p %>% add_lines(x = ~year, y = ~pe)
 
 ## pe vs covariates
 fit$pop %>%
@@ -251,7 +251,7 @@ fit$pop %>%
 
 
 ## Correlation in pe
-pe_wide <- tidyr::spread(fit$pop[, c("year", "species", "std_pe")], species, std_pe)
+pe_wide <- tidyr::spread(fit$pop[, c("year", "species", "pe")], species, pe)
 pe_wide$year <- NULL
 plot(pe_wide)
 pe_wide <- as.matrix(pe_wide)
@@ -283,8 +283,14 @@ p <- fit$pop %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~B) %>%
-    add_lines(data = fit$tot_pop, x = ~year, y = ~K, color = I("black"),
-              inherit = FALSE, linetype = I(3), name = "K")
+    layout(shapes =  list(
+        type = "line",
+        x0 = min(fit$landings$year),
+        x1 = max(fit$landings$year),
+        y0 = exp(fit$par$log_K),
+        y1 = exp(fit$par$log_K),
+        line = list(dash = "dot")
+    ))
 p
 p %>% layout(yaxis = list(type = "log"))
 
@@ -319,7 +325,7 @@ p <- fit$pop %>%
 p
 
 ## K
-p <- fit$tot_pop %>%
+p <- fit$pop %>%
     plot_ly(x = ~year, color = I(viridis::viridis(1))) %>%
     add_ribbons(ymin = ~K_lwr, ymax = ~K_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE, name = "95% CI") %>%
