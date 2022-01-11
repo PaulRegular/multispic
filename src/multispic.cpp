@@ -1,11 +1,5 @@
 #include <TMB.hpp>
-
-// Function for keeping values positive
-template<class Type>
-Type pos_fun(Type x, Type eps, Type &pen){
-    pen += CppAD::CondExpLt(x, eps, Type(0.01) * pow(x - eps, 2), Type(0));
-    return CppAD::CondExpGe(x, eps, x, eps / (Type(2) - x / eps));
-}
+#include "utils.hpp" // Atomic functions positive function and for censored likelihoods
 
 template<class Type>
 Type objective_function<Type>::operator() ()
@@ -27,6 +21,19 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_cor_option);
+    DATA_SCALAR(lower_log_sd_B);
+    DATA_SCALAR(upper_log_sd_B);
+    DATA_SCALAR(lower_log_B0);
+    DATA_SCALAR(upper_log_B0);
+    DATA_SCALAR(lower_log_r);
+    DATA_SCALAR(upper_log_r);
+    DATA_SCALAR(lower_log_q);
+    DATA_SCALAR(upper_log_q);
+    DATA_SCALAR(lower_log_sd_I);
+    DATA_SCALAR(upper_log_sd_I);
+    DATA_SCALAR(lower_logit_cor);
+    DATA_SCALAR(upper_logit_cor);
+    DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(pe_covariates);
     DATA_MATRIX(K_covariates);
 
@@ -112,32 +119,56 @@ Type objective_function<Type>::operator() ()
     // Priors / random effects
     if (log_B0_option > 1) {
         for(int i = 0; i < log_B0.size(); i++) {
-            nll -= dnorm(log_B0(i), mean_log_B0, sd_log_B0, true);
+            if (log_B0_option == 4) {
+                nll += dmuniform(log_B0(i), lower_log_B0, upper_log_B0, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_B0(i), mean_log_B0, sd_log_B0, true);
+            }
         }
     }
     if (log_sd_B_option > 1) {
         for(int i = 0; i < log_sd_B.size(); i++) {
-            nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
+            if (log_sd_B_option == 4) {
+                nll += dmuniform(log_sd_B(i), lower_log_sd_B, upper_log_sd_B, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
+            }
         }
     }
     if (log_r_option > 1) {
         for(int i = 0; i < log_r.size(); i++) {
-            nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
+            if (log_r_option == 4) {
+                nll += dmuniform(log_r(i), lower_log_r, upper_log_r, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
+            }
         }
     }
     if (log_q_option > 1) {
         for(int i = 0; i < log_q.size(); i++) {
-            nll -= dnorm(log_q(i), mean_log_q, sd_log_q, true);
+            if (log_q_option == 4) {
+                nll += dmuniform(log_q(i), lower_log_q, upper_log_q, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_q(i), mean_log_q, sd_log_q, true);
+            }
         }
     }
     if (log_sd_I_option > 1) {
         for(int i = 0; i < log_sd_I.size(); i++) {
-            nll -= dnorm(log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
+            if (log_sd_I_option == 4) {
+                nll += dmuniform(log_sd_I(i), lower_log_sd_I, upper_log_sd_I, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
+            }
         }
     }
     if (logit_cor_option > 1) {
         for(int i = 0; i < logit_cor.size(); i++) {
-            nll -= dnorm(logit_cor(i), mean_logit_cor, sd_logit_cor, true);
+            if (logit_cor_option == 4) {
+                nll += dmuniform(logit_cor(i), lower_logit_cor, upper_logit_cor, dmuniform_sd);
+            } else {
+                nll -= dnorm(logit_cor(i), mean_logit_cor, sd_logit_cor, true);
+            }
         }
     }
 
