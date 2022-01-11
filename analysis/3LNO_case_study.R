@@ -133,9 +133,9 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
                  logit_cor_option = par_option(option = "normal_prior", mean = -1, sd = 1),
                  log_B0_option = par_option(option = "normal_prior", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "normal_prior", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "uniform_prior", lower = -4, upper = 10),
                  log_sd_B_option = par_option(option = "normal_prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "uniform_prior", lower = -5, upper = 6),
+                 log_q_option = par_option(option = "normal_prior", mean = -1, upper = 1),
                  log_sd_I_option = par_option(option = "normal_prior", mean = -1, sd = 1))
 
 fit$opt$message

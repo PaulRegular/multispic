@@ -115,6 +115,7 @@ Type objective_function<Type>::operator() ()
     // Initalize nll
     Type pen = Type(0);
     Type nll = Type(0);
+    Type tmp = Type(0);
 
     // Priors / random effects
     if (log_B0_option > 1) {
@@ -139,6 +140,7 @@ Type objective_function<Type>::operator() ()
         for(int i = 0; i < log_r.size(); i++) {
             if (log_r_option == 4) {
                 nll += dmuniform(log_r(i), lower_log_r, upper_log_r, dmuniform_sd);
+                tmp += dmuniform(log_r(i), lower_log_r, upper_log_r, dmuniform_sd);
             } else {
                 nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
             }
@@ -232,6 +234,8 @@ Type objective_function<Type>::operator() ()
     REPORT(log_pred_I);
 
     REPORT(pen);
+
+    REPORT(tmp);
 
     nll += pen;
     return nll;

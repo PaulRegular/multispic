@@ -1,4 +1,47 @@
 
+
+#' Mollified uniform density using a Gaussian distribution
+#'
+#' @description Density distribution function for a mollified uniform using the
+#'              Gaussian distribution.
+#'
+#' @param x     Vector of quantiles.
+#' @param lower Lower range for the distribution.
+#' @param upper Upper range for the distribution.
+#' @param sd    Standard deviation to control the shape of the distribution. A value of 0 will
+#'              be equivalent to a uniform distribution and values approach the normal as sd
+#'              approach infinity.
+#'
+#' @example
+#' x <- seq(-5, 5, length = 100)
+#' d <- dmuniform(x, lower = -1, upper = 2, sd = 0.2)
+#' plot(x, d, type = "l", ylab = "Density")
+#'
+
+dmuniform <- function(x, lower = 0, upper = 1, sd = 0.1, log = FALSE, opt = 1) {
+    if (opt == 1) {
+        LZU <- (upper - x) / sd
+        LZL <- (lower - x) / sd
+        d <- pnorm(LZU) - pnorm(LZL)
+    } else {
+        mean <- (lower + upper) / 2
+        z <- (x - mean) / sd
+        delta_u <- ((upper - mean) / sd)
+        delta_l <- ((lower - mean) / sd)
+        d <- pnorm(-(delta_u + z)) - pnorm(-(delta_l + z))
+    }
+
+    if (log) d <- log(d)
+    d
+}
+
+x <- seq(-5, 5, length = 100)
+d1 <- dmuniform(x, lower = -1, upper = 2, sd = 0.2, log = TRUE)
+d2 <- dmuniform(x, lower = -1, upper = 2, sd = 0.2, log = TRUE, opt = 2)
+data.frame(x, d1, d2)
+plot(x, d1, type = "l", ylab = "Density")
+lines(x, d2, col = "red")
+
 #' Add observed and fit values to plotly visualization
 #'
 #' @export
