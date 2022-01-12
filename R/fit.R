@@ -138,7 +138,7 @@ fit_model <- function(inputs,
                 upper_log_sd_I = log_sd_I_option$upper,
                 lower_logit_cor = logit_cor_option$lower,
                 upper_logit_cor = logit_cor_option$upper,
-                dmuniform_sd = 1, # controls how sharp the approximate uniform distribution is
+                dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
                 keep = keep)
@@ -250,9 +250,6 @@ fit_model <- function(inputs,
     ## Fit model
     obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                      silent = silent)
-
-    browser()
-
     opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
 
