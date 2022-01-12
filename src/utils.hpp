@@ -141,7 +141,7 @@ Type dmuniform(Type x, Type lower, Type upper, Type sd) {
     Type mu = (lower + upper) / 2.0;
     Type z = (x - mu) / sd;
     Type upperb = (upper - mu) / sd;  // the censored_b function expects differences from the mean for the lower and upper bound
-    Type lowerb = (lower - mu) / sd;
+    Type lowerb = -((lower - mu) / sd);
     return censored_b(z, lowerb, upperb);
 }
 
