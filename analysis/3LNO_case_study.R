@@ -146,18 +146,46 @@ tot_landings <- landings %>%
     group_by(year) %>%
     summarise(tot_landings = sum(landings))
 
-max_tot_landings <- max(tot_landings$tot_landings)
-lower_log_K <- log(max_tot_landings / scaler)
-upper_log_K <- log(max_tot_landings * 1000 / scaler)
+max_tot_landings <- max(tot_landings$tot_landings) / scaler
 
-fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "none",
-                 log_K_option = par_option(option = "uniform_prior", lower = lower_log_K, upper = upper_log_K),
-                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "random", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "random", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
+lower_log_r <- log(0.01)
+upper_log_r <- log(1)
+mean_log_r <- (lower_log_r + upper_log_r) / 2
+sd_log_r <- (upper_log_r - lower_log_r) / 2
+
+lower_log_K <- log(max_tot_landings) - upper_log_r
+upper_log_K <- log(max_tot_landings * 100) - lower_log_r
+mean_log_K <- (lower_log_K + upper_log_K) / 2
+sd_log_K <- (upper_log_K - lower_log_K) / 2
+
+lower_log_B0 <- log(0.001)
+upper_log_B0 <- upper_log_K
+mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
+sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
+
+lower_log_sd <- log(0.01)
+upper_log_sd <- log(1)
+mean_log_sd <- (lower_log_sd + upper_log_sd) / 2
+sd_log_sd <- (upper_log_sd - lower_log_sd) / 2
+
+lower_log_q <- log(0.1)
+upper_log_q <- log(1)
+mean_log_q <- (lower_log_q + upper_log_q) / 2
+sd_log_q <- (upper_log_q - lower_log_q) / 2
+
+lower_logit_cor <- logit(-0.8, shift = TRUE)
+upper_logit_cor <- logit(0.8, shift = TRUE)
+mean_logit_cor <- (lower_logit_cor + upper_logit_cor) / 2
+sd_logit_cor <- (upper_logit_cor - lower_logit_cor) / 2
+
+fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "all",
+                 log_K_option = par_option(option = "normal_prior", mean = mean_log_K, upper = mean_log_K),
+                 logit_cor_option = par_option(option = "normal_prior", mean = mean_logit_cor, sd = sd_logit_cor),
+                 log_B0_option = par_option(option = "normal_prior", mean = mean_log_B0, sd = sd_log_B0),
+                 log_r_option = par_option(option = "normal_prior", mean = mean_log_r, sd = sd_log_r),
+                 log_sd_B_option = par_option(option = "normal_prior", mean = mean_log_sd, sd = sd_log_sd),
+                 log_q_option = par_option(option = "normal_prior", mean = mean_log_q, sd = sd_log_q),
+                 log_sd_I_option = par_option(option = "normal_prior", mean = mean_log_sd, sd = sd_log_sd))
 
 fit$opt$message
 fit$sd_rep
@@ -172,40 +200,39 @@ fit$mAIC
 par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 
-## Mean and 95% limits of general prior (mean = -1, sd = 1)
-mean <- exp(-1)
-lwr <- exp(-1 - (qnorm(0.975)))
-upr <- exp(-1 + (qnorm(0.975)))
-c(lwr, mean, upr)
-
 ## Prior and posterior
 post_mean <- as.list(fit$sd_rep, "Est")
 post_sd <- as.list(fit$sd_rep, "Std. Error")
-plot_prior_post(prior_mean = 0, prior_sd = 5,
+plot_prior_post(prior_mean = mean_log_K, prior_sd = sd_log_K,
                 post_mean = post_mean$log_K,
                 post_sd = post_sd$log_K,
                 post_names = "log(K)",
                 xlab = "log(K)")
-plot_prior_post(prior_mean = -1, prior_sd = 1,
+plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
                 post_mean = post_mean$log_r,
                 post_sd = post_sd$log_r,
                 post_names = levels(landings$species),
                 xlab = "log(r)")
-plot_prior_post(prior_mean = -1, prior_sd = 1,
+plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_B,
                 post_sd = post_sd$log_sd_B,
                 post_names = levels(landings$species),
                 xlab = "log(SD<sub>B</sub>)")
-plot_prior_post(prior_mean = -1, prior_sd = 1,
+plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
                 post_mean = post_mean$log_q,
                 post_sd = post_sd$log_q,
                 post_names = levels(index$survey),
                 xlab = "log(q)")
-plot_prior_post(prior_mean = -1, prior_sd = 1,
+plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_I,
                 post_sd = post_sd$log_sd_I,
                 post_names = levels(index$survey),
                 xlab = "log(SD<sub>I</sub>)")
+plot_prior_post(prior_mean = mean_logit_cor, prior_sd = sd_logit_cor,
+                post_mean = post_mean$logit_cor,
+                post_sd = post_sd$logit_cor,
+                post_names = seq(length(post_mean$logit_cor)),
+                xlab = "logit(cor)")
 
 
 ## Visually assess par

@@ -1,41 +1,5 @@
 
 
-#' Mollified uniform density using a Gaussian distribution
-#'
-#' @description Density distribution function for a mollified uniform using the
-#'              Gaussian distribution.
-#'
-#' @param x     Vector of quantiles.
-#' @param lower Lower range for the distribution.
-#' @param upper Upper range for the distribution.
-#' @param sd    Standard deviation to control the shape of the distribution. A value of 0 will
-#'              be equivalent to a uniform distribution and values approach the normal as sd
-#'              approach infinity.
-#'
-#' @export
-#'
-#' @example
-#' x <- seq(-1, 1, length = 100)
-#' d <- dmuniform(x, lower = -0.5, upper = 0.5, sd = 0.05)
-#' plot(x, d, type = "l", ylab = "Density")
-#'
-
-dmuniform <- function(x, lower = 0, upper = 1, sd = 0.1, log = FALSE) {
-
-    ## R translation of C++ function in scr/utils.hpp file
-    mean <- (lower + upper) / 2
-    z <- (x - mean) / sd
-    delta_u <- (upper - mean) / sd
-    delta_l <- -((lower - mean) / sd)
-    d <- ifelse(z > 0,
-                exp(log(pnorm(-(z - delta_l)))) - exp(log(pnorm(-(z + delta_u)))),
-                exp(log(pnorm(z + delta_u))) - exp(log(pnorm(z - delta_l))))
-    if (log) d <- log(d)
-    d
-
-}
-
-
 #' Add observed and fit values to plotly visualization
 #'
 #' @export
@@ -69,8 +33,6 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #' @description Plot prior and posterior distributions.
 #' Currently limited to the normal distribution
 #'
-#' @param x_min        Lower range of x values to plot
-#' @param x_max        Upper range of x values to plot
 #' @param prior_mean   Mean of the prior
 #' @param prior_sd     SD of the prior
 #' @param post_mean    Mean of the posterior (can be one or more values)
@@ -89,8 +51,7 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #'
 #'
 
-plot_prior_post <- function(x_min = -10, x_max = 10,
-                            prior_mean = 0, prior_sd = 1,
+plot_prior_post <- function(prior_mean = 0, prior_sd = 1,
                             post_mean = 0, post_sd = 1, post_names = "Posterior",
                             length_out = 500, xlab = "x", ylab = "Density", title = NULL,
                             min_den = 0.0001, exponentiate = FALSE) {
@@ -99,6 +60,8 @@ plot_prior_post <- function(x_min = -10, x_max = 10,
         stop("length(post_names) != length(post_mean) - Please specify a name for each posterior distribution")
     }
 
+    x_min <- prior_mean - (4 * prior_sd)
+    x_max <- prior_mean + (4 * prior_sd)
     x <- seq(x_min, x_max, length.out = length_out)
     prior_y <- dnorm(x, mean = prior_mean, sd = prior_sd)
 
