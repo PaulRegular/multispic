@@ -27,15 +27,25 @@ covariates <- left_join(covariates, mystery, by = "year")
 
 ## Setup the data --------------------------------------------------------------
 
+landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-tot)
+
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-#             "Wolffish spp.") # top 10 groundfish species - sorted by cumulative landings
+#             "Wolffish spp.", "Roughhead Grenadier",
+#             "Atlantic Halibut") # top 12 groundfish species - sorted by cumulative landings
 sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder")
+            "Yellowtail Flounder", "Greenland Halibut",
+            "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
+            "Wolffish spp.") # top 10 groundfish species - sorted by cumulative landings
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder", "Greenland Halibut",
+#             "Skate spp.", "Haddock", "Witch Flounder")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -130,13 +140,24 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 ## Run model -------------------------------------------------------------------
 
-fit <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "uniform_prior", lower = -10, upper = 10),
-                 log_B0_option = par_option(option = "uniform_prior", lower = -10, upper = 10),
-                 log_r_option = par_option(option = "uniform_prior", lower = -10, upper = 10),
-                 log_sd_B_option = par_option(option = "uniform_prior", lower = -10, upper = 10),
-                 log_q_option = par_option(option = "uniform_prior", lower = -10, upper = 10),
-                 log_sd_I_option = par_option(option = "uniform_prior", lower = -10, upper = 10))
+scaler <- sd(inputs$index$index)
+
+tot_landings <- landings %>%
+    group_by(year) %>%
+    summarise(tot_landings = sum(landings))
+
+max_tot_landings <- max(tot_landings$tot_landings)
+lower_log_K <- log(max_tot_landings / scaler)
+upper_log_K <- log(max_tot_landings * 1000 / scaler)
+
+fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "none",
+                 log_K_option = par_option(option = "uniform_prior", lower = lower_log_K, upper = upper_log_K),
+                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_r_option = par_option(option = "random", mean = -1, sd = 1),
+                 log_sd_B_option = par_option(option = "fixed", mean = -1, sd = 1),
+                 log_q_option = par_option(option = "random", mean = -1, sd = 1),
+                 log_sd_I_option = par_option(option = "fixed", mean = -1, sd = 1))
 
 fit$opt$message
 fit$sd_rep
@@ -160,6 +181,11 @@ c(lwr, mean, upr)
 ## Prior and posterior
 post_mean <- as.list(fit$sd_rep, "Est")
 post_sd <- as.list(fit$sd_rep, "Std. Error")
+plot_prior_post(prior_mean = 0, prior_sd = 5,
+                post_mean = post_mean$log_K,
+                post_sd = post_sd$log_K,
+                post_names = "log(K)",
+                xlab = "log(K)")
 plot_prior_post(prior_mean = -1, prior_sd = 1,
                 post_mean = post_mean$log_r,
                 post_sd = post_sd$log_r,

@@ -6,7 +6,8 @@
 #' @param option    Should the parameter be estimated freely ("fixed"), coupled across groups
 #'                  ("coupled"), revolve around an estimated mean and sd ("random"),
 #'                  or a fixed mean and sd ("normal_prior"), or be constrained between
-#'                  a lower and upper value ("uniform_prior").
+#'                  a lower and upper value ("uniform_prior"). The "coupled" and "random" options
+#'                  are not applicable if only one parameter is estimated (e.g. log_K).
 #' @param mean      Mean value of the parameter. Treated as a starting value if
 #'                  option is "random" or as a prior if option is option is "prior".
 #'                  Ignored if option is "fixed", "coupled", or "uniform_prior".
@@ -31,6 +32,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' @param inputs             List that includes landings, index and covariate (optional) data.
 #' @param survey_group       Name of column in the index data to group the survey parameter estimates by
 #' @param scaler             Number to scale values by to aid convergence.
+#' @param log_K_option       Settings for the estimation of log_K; define using \code{\link{par_option}}.
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
 #'                           define using \code{\link{par_option}}.
 #' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
@@ -60,6 +62,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 fit_model <- function(inputs,
                       scaler = sd(inputs$index$index),
                       survey_group = "gear_season",
+                      log_K_option = par_option(),
                       log_B0_option = par_option(),
                       log_r_option = par_option(),
                       log_sd_B_option = par_option(),
@@ -120,12 +123,17 @@ fit_model <- function(inputs,
                 min_B = 0.0001,
                 nY = max(as.numeric(landings$y)),
                 nS = max(as.numeric(landings$species)),
+                log_K_option = as.integer(log_K_option$option) - 1,
                 log_B0_option = as.integer(log_B0_option$option) - 1,
                 log_r_option = as.integer(log_r_option$option) - 1,
                 log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_cor_option = as.integer(logit_cor_option$option) - 1,
+                mean_log_K = log_K_option$mean,
+                sd_log_K = log_K_option$sd,
+                lower_log_K = log_K_option$lower,
+                upper_log_K = log_K_option$upper,
                 lower_log_B0 = log_B0_option$lower, # lots of repetition - todo: find better solution
                 upper_log_B0 = log_B0_option$upper,
                 lower_log_r = log_r_option$lower,
@@ -175,6 +183,11 @@ fit_model <- function(inputs,
     if (cor_str == "none") {
         map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
         dat$logit_cor_option <- 0 # skip prior / random effect loop
+    }
+
+    if (log_K_option$option %in% c("random", "coupled")) {
+        warning("The 'random' or 'coupled' options are not applicable for parametere 'log_K'. Setting option to 'fixed'")
+        dat$log_K_option <- 0
     }
 
     if (log_sd_B_option$option != "random") {

@@ -15,12 +15,17 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_IVECTOR(keep);      // useful for cross-validation
     DATA_SCALAR(min_B);
+    DATA_INTEGER(log_K_option);
     DATA_INTEGER(log_sd_B_option);
     DATA_INTEGER(log_B0_option);
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_cor_option);
+    DATA_SCALAR(mean_log_K);
+    DATA_SCALAR(sd_log_K);
+    DATA_SCALAR(lower_log_K);
+    DATA_SCALAR(upper_log_K);
     DATA_SCALAR(lower_log_sd_B);
     DATA_SCALAR(upper_log_sd_B);
     DATA_SCALAR(lower_log_B0);
@@ -117,6 +122,13 @@ Type objective_function<Type>::operator() ()
     Type nll = Type(0);
 
     // Priors / random effects
+    if (log_K_option > 1) {
+        if (log_K_option == 4) {
+            nll += dmuniform(log_K, lower_log_K, upper_log_K, dmuniform_sd);
+        } else {
+            nll -= dnorm(log_K, mean_log_K, sd_log_K, true);
+        }
+    }
     if (log_B0_option > 1) {
         for(int i = 0; i < log_B0.size(); i++) {
             if (log_B0_option == 4) {
