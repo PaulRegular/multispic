@@ -140,6 +140,10 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 
 ## Run model -------------------------------------------------------------------
 
+
+## Set-up prior settings
+## Note: during testing the fixed, random, and uniform_prior options rarely converged
+
 scaler <- sd(inputs$index$index)
 
 tot_landings <- landings %>%
@@ -173,8 +177,8 @@ upper_log_q <- log(1)
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
-lower_logit_cor <- logit(-0.8, shift = TRUE)
-upper_logit_cor <- logit(0.8, shift = TRUE)
+lower_logit_cor <- logit(-0.9, shift = TRUE)
+upper_logit_cor <- logit(0.9, shift = TRUE)
 mean_logit_cor <- (lower_logit_cor + upper_logit_cor) / 2
 sd_logit_cor <- (upper_logit_cor - lower_logit_cor) / 2
 
@@ -232,7 +236,7 @@ plot_prior_post(prior_mean = mean_logit_cor, prior_sd = sd_logit_cor,
                 post_mean = post_mean$logit_cor,
                 post_sd = post_sd$logit_cor,
                 post_names = seq(length(post_mean$logit_cor)),
-                xlab = "logit(cor)")
+                xlab = "logit(cor)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
 
 
 ## Visually assess par

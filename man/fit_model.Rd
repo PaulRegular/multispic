@@ -4,12 +4,24 @@
 \alias{fit_model}
 \title{Fit a multispecies surplus production model}
 \usage{
-fit_model(inputs, scaler = sd(inputs$index$index),
-  survey_group = "gear_season", log_B0_option = par_option(),
-  log_r_option = par_option(), log_sd_B_option = par_option(),
-  log_q_option = par_option(), log_sd_I_option = par_option(),
-  logit_cor_option = par_option(), cor_str = "one", formula = NULL,
-  leave_out = NULL, light = FALSE, silent = FALSE)
+fit_model(
+  inputs,
+  scaler = sd(inputs$index$index),
+  survey_group = "gear_season",
+  log_K_option = par_option(),
+  log_B0_option = par_option(),
+  log_r_option = par_option(),
+  log_sd_B_option = par_option(),
+  log_q_option = par_option(),
+  log_sd_I_option = par_option(),
+  logit_cor_option = par_option(),
+  cor_str = "one",
+  pe_formula = NULL,
+  K_formula = NULL,
+  leave_out = NULL,
+  light = FALSE,
+  silent = FALSE
+)
 }
 \arguments{
 \item{inputs}{List that includes landings, index and covariate (optional) data.}
@@ -17,6 +29,8 @@ fit_model(inputs, scaler = sd(inputs$index$index),
 \item{scaler}{Number to scale values by to aid convergence.}
 
 \item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
+
+\item{log_K_option}{Settings for the estimation of log_K; define using \code{\link{par_option}}.}
 
 \item{log_B0_option}{Settings for the estimation of the starting biomass;
 define using \code{\link{par_option}}.}
@@ -39,8 +53,11 @@ correlations across species, "one" will estimate one shared correlation
 parameter across species, and "all" will estimate correlation parameters
 across all combinations of species.}
 
-\item{formula}{Formula describing relationship between surplus production and covariates.
-Not used if set to NULL.}
+\item{pe_formula}{Formula describing relationship between surplus production (process error)
+and covariates. Not used if set to NULL.}
+
+\item{K_formula}{Formula describing relationship between K and covariates. Not used if set
+to NULL.}
 
 \item{leave_out}{Specific index values to leave out from the analysis (row number).
 Useful for cross-validation. All data are kept if NULL.}

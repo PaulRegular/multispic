@@ -43,7 +43,7 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #' @param ylab         Label for the y axis
 #' @param title        Plot title
 #' @param min_den      Drop points with densities below this threshold
-#' @param exponentiate Exponentiate?
+#' @param trans_fun    Function for transforming values (e.g. exp, inv_logit). Ignored if NULL
 #'
 #' @export
 #'
@@ -54,7 +54,7 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 plot_prior_post <- function(prior_mean = 0, prior_sd = 1,
                             post_mean = 0, post_sd = 1, post_names = "Posterior",
                             length_out = 500, xlab = "x", ylab = "Density", title = NULL,
-                            min_den = 0.0001, exponentiate = FALSE) {
+                            min_den = 0.0001, trans_fun = NULL) {
 
     if (length(post_names) != length(post_mean)) {
         stop("length(post_names) != length(post_mean) - Please specify a name for each posterior distribution")
@@ -79,9 +79,9 @@ plot_prior_post <- function(prior_mean = 0, prior_sd = 1,
 
     prior <- prior[prior$y > min_den, ]
     post <- post[post$y > min_den, ]
-    if (exponentiate) {
-        prior$x <- exp(prior$x)
-        post$x <- exp(post$x)
+    if (!is.null(trans_fun)) {
+        prior$x <- trans_fun(prior$x)
+        post$x <- trans_fun(post$x)
     }
 
     plot_ly(x = ~x, y = ~y, color = ~lab) %>%

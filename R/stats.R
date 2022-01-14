@@ -1,6 +1,6 @@
 
 
-#' Logit and invers logit functions
+#' Logit and inverse logit functions
 #'
 #' @param x     Probability or logit to transform
 #' @param shift Shift transformation such that the domain is between -1 and 1? Defaults to domain of 0 to 1.
@@ -20,6 +20,7 @@ logit <- function(x, shift = FALSE) {
 }
 
 #' @rdname logit
+#' @export
 inv_logit <- function(x, shift = FALSE) {
     if (!shift) { 1 / (1 + exp(-x)) } else { 2 / (1 + exp(-x)) - 1 }
 }
@@ -39,7 +40,7 @@ inv_logit <- function(x, shift = FALSE) {
 #'
 #' @export
 #'
-#' @example
+#' @examples
 #' x <- seq(-1, 1, length = 100)
 #' d <- dmuniform(x, lower = -0.5, upper = 0.5, sd = 0.05)
 #' plot(x, d, type = "l", ylab = "Density")

@@ -4,17 +4,21 @@
 \alias{plot_prior_post}
 \title{Plot prior and posterior distributions}
 \usage{
-plot_prior_post(x_min = -10, x_max = 10, prior_mean = 0,
-  prior_sd = 1, post_mean = 0, post_sd = 1,
-  post_names = "Posterior", length_out = 500, xlab = "x",
-  ylab = "Density", title = NULL, min_den = 1e-04,
-  exponentiate = FALSE)
+plot_prior_post(
+  prior_mean = 0,
+  prior_sd = 1,
+  post_mean = 0,
+  post_sd = 1,
+  post_names = "Posterior",
+  length_out = 500,
+  xlab = "x",
+  ylab = "Density",
+  title = NULL,
+  min_den = 1e-04,
+  trans_fun = NULL
+)
 }
 \arguments{
-\item{x_min}{Lower range of x values to plot}
-
-\item{x_max}{Upper range of x values to plot}
-
 \item{prior_mean}{Mean of the prior}
 
 \item{prior_sd}{SD of the prior}
@@ -35,7 +39,7 @@ plot_prior_post(x_min = -10, x_max = 10, prior_mean = 0,
 
 \item{min_den}{Drop points with densities below this threshold}
 
-\item{exponentiate}{Exponentiate?}
+\item{trans_fun}{Function for transforming values (e.g. exp, inv_logit). Ignored if NULL}
 }
 \description{
 Plot prior and posterior distributions.

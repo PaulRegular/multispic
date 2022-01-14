@@ -4,8 +4,17 @@
 \alias{add_fit}
 \title{Add observed and fit values to plotly visualization}
 \usage{
-add_fit(p, x = NULL, yline = NULL, ymarker = NULL, ymin = NULL,
-  ymax = NULL, ..., data = NULL, inherit = TRUE)
+add_fit(
+  p,
+  x = NULL,
+  yline = NULL,
+  ymarker = NULL,
+  ymin = NULL,
+  ymax = NULL,
+  ...,
+  data = NULL,
+  inherit = TRUE
+)
 }
 \description{
 Add observed and fit values to plotly visualization
