@@ -32,15 +32,16 @@ landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-t
 ## Subset the data
 ## Note: catchability may not be estimable without landings data??
 sub_sp <- unique(multispic::landings$species)
+sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagic species
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
 #             "Wolffish spp.", "Roughhead Grenadier",
 #             "Atlantic Halibut") # top 12 groundfish species - sorted by cumulative landings
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder", "Greenland Halibut",
-            "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-            "Wolffish spp.") # top 10 groundfish species - sorted by cumulative landings
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder", "Greenland Halibut",
+#             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
+#             "Wolffish spp.") # top 10 groundfish species - sorted by cumulative landings
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
@@ -144,7 +145,15 @@ inputs <- list(landings = landings, index = index)# , covariates = covariates)
 ## Set-up prior settings
 ## Note: during testing the fixed, random, and uniform_prior options rarely converged
 
-scaler <- sd(inputs$index$index)
+# scaler <- sd(inputs$index$index)
+
+tot_mean_index <- index %>%
+    group_by(year, species) %>%
+    summarise(mean_index = mean(index)) %>%
+    group_by(year) %>%
+    summarise(tot_mean_index = sum(mean_index))
+
+scaler <- sd(tot_mean_index$tot_mean_index)
 
 tot_landings <- landings %>%
     group_by(year) %>%
@@ -162,7 +171,7 @@ upper_log_K <- log(max_tot_landings * 100) - lower_log_r
 mean_log_K <- (lower_log_K + upper_log_K) / 2
 sd_log_K <- (upper_log_K - lower_log_K) / 2
 
-lower_log_B0 <- log(0.001)
+lower_log_B0 <- log(0.01 * exp(lower_log_K) / nlevels(landings$species))
 upper_log_B0 <- upper_log_K
 mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
 sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
@@ -177,19 +186,26 @@ upper_log_q <- log(1)
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
-lower_logit_cor <- logit(-0.99, shift = TRUE)
-upper_logit_cor <- logit(0.99, shift = TRUE)
+lower_logit_cor <- logit(-0.9, shift = TRUE)
+upper_logit_cor <- logit(0.9, shift = TRUE)
 mean_logit_cor <- (lower_logit_cor + upper_logit_cor) / 2
 sd_logit_cor <- (upper_logit_cor - lower_logit_cor) / 2
 
 fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "all",
-                 log_K_option = par_option(option = "normal_prior", mean = mean_log_K, upper = mean_log_K),
-                 logit_cor_option = par_option(option = "normal_prior", mean = mean_logit_cor, sd = sd_logit_cor),
-                 log_B0_option = par_option(option = "normal_prior", mean = mean_log_B0, sd = sd_log_B0),
-                 log_r_option = par_option(option = "normal_prior", mean = mean_log_r, sd = sd_log_r),
-                 log_sd_B_option = par_option(option = "normal_prior", mean = mean_log_sd, sd = sd_log_sd),
-                 log_q_option = par_option(option = "normal_prior", mean = mean_log_q, sd = sd_log_q),
-                 log_sd_I_option = par_option(option = "normal_prior", mean = mean_log_sd, sd = sd_log_sd))
+                 log_K_option = par_option(option = "normal_prior",
+                                           mean = mean_log_K, upper = mean_log_K),
+                 logit_cor_option = par_option(option = "normal_prior",
+                                               mean = mean_logit_cor, sd = sd_logit_cor),
+                 log_B0_option = par_option(option = "normal_prior",
+                                            mean = mean_log_B0, sd = sd_log_B0),
+                 log_r_option = par_option(option = "normal_prior",
+                                           mean = mean_log_r, sd = sd_log_r),
+                 log_sd_B_option = par_option(option = "normal_prior",
+                                              mean = mean_log_sd, sd = sd_log_sd),
+                 log_q_option = par_option(option = "normal_prior",
+                                           mean = mean_log_q, sd = sd_log_q),
+                 log_sd_I_option = par_option(option = "normal_prior",
+                                              mean = mean_log_sd, sd = sd_log_sd))
 
 fit$opt$message
 fit$sd_rep
@@ -217,6 +233,11 @@ plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
                 post_sd = post_sd$log_r,
                 post_names = levels(landings$species),
                 xlab = "log(r)")
+plot_prior_post(prior_mean = mean_log_B0, prior_sd = sd_log_B0,
+                post_mean = post_mean$log_B0,
+                post_sd = post_sd$log_B0,
+                post_names = levels(landings$species),
+                xlab = "log(B0)")
 plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_B,
                 post_sd = post_sd$log_sd_B,
@@ -233,13 +254,13 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_names = levels(index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
-sp_mat <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
-rownames(sp_mat) <- colnames(sp_mat) <- levels(landings$species)
-sp_mat[lower.tri(sp_mat)] <- sp_mat[upper.tri(sp_mat)] <- inv_logit(post_mean$logit_cor, shift = TRUE)
-diag(sp_mat) <- 1
-round(sp_mat, 2)
-for (i in seq(nrow(sp_mat))) {
-    for (j in seq(ncol(sp_mat))) {
+sp_cor <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
+rownames(sp_cor) <- colnames(sp_cor) <- levels(landings$species)
+sp_cor[lower.tri(sp_cor)] <- sp_cor[upper.tri(sp_cor)] <- inv_logit(post_mean$logit_cor, shift = TRUE)
+diag(sp_cor) <- 1
+round(sp_cor, 2)
+for (i in seq(nrow(sp_cor))) {
+    for (j in seq(ncol(sp_cor))) {
         sp_nm_mat[i, j] <- paste(levels(landings$species)[i], "-", levels(landings$species)[j])
     }
 }
@@ -271,7 +292,7 @@ B0 <- exp(par$log_B0)
 round(B0)
 cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
 round(cor, 2)
-round(sp_mat, 2)
+round(sp_cor, 2)
 
 
 ## Explore parameter correlations
@@ -302,26 +323,26 @@ p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe)
 
-## pe vs covariates
-fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~core_cil, y = ~pe, text = ~year)
-fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~nao, y = ~pe, text = ~year)
-fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~cei, y = ~pe, text = ~year)
-fit$pop %>%
-    dplyr::left_join(inputs$covariates, by = c("year")) %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-    add_markers(x = ~tice, y = ~pe, text = ~year)
+# ## pe vs covariates
+# fit$pop %>%
+#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
+#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+#     add_markers(x = ~core_cil, y = ~pe, text = ~year)
+# fit$pop %>%
+#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
+#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+#     add_markers(x = ~nao, y = ~pe, text = ~year)
+# fit$pop %>%
+#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
+#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+#     add_markers(x = ~cei, y = ~pe, text = ~year)
+# fit$pop %>%
+#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
+#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+#     add_markers(x = ~tice, y = ~pe, text = ~year)
 
 
-## Correlation in pe
+## Correlation in pe - post hoc
 pe_wide <- tidyr::spread(fit$pop[, c("year", "species", "pe")], species, pe)
 pe_wide$year <- NULL
 plot(pe_wide)
@@ -333,6 +354,12 @@ plot_ly(x = rownames(cor_mat), y = rownames(cor_mat), z = ~cor_mat,
     add_heatmap() %>% colorbar(limits = c(-1, 1))
 corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 
+
+## Correlation in pe - parameter estimates
+plot_ly(x = rownames(sp_cor), y = rownames(sp_cor), z = ~sp_cor,
+        colors = c("#B2182B", "white", "#2166AC")) %>%
+    add_heatmap() %>% colorbar(limits = c(-1, 1), title = "ρ")
+corrplot::corrplot.mixed(sp_cor, diag = "n", lower = "ellipse", upper = "number")
 
 ## Fits to the index
 p <- fit$index %>%
@@ -391,7 +418,7 @@ p <- fit$pop %>%
 p
 
 ## K
-p <- fit$pop %>%
+p <- fit$tot_pop %>%
     plot_ly(x = ~year, color = I(viridis::viridis(1))) %>%
     add_ribbons(ymin = ~K_lwr, ymax = ~K_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE, name = "95% CI") %>%
@@ -399,146 +426,150 @@ p <- fit$pop %>%
 p
 
 
-## Compare to accepted assessment model results --------------------------------
+
+## TODO: update below comparisons ---------------------------------------------
 
 
-assess <- read.csv("analysis/stock_assessment_estimates.csv")
-names(assess) <- c("species_div", "year", "B", "B_type")
-x <- data.table::tstrsplit(assess$species, split = " ")
-assess$species <- x[[1]]
-assess$division <- x[[2]]
-assess$source <- "assessment"
-assess$B_lwr <- NA
-assess$B_upr <- NA
-
-spm <- fit$pop
-spm$source <- "multispic"
-
-keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
-comp <- rbind(assess[, keep], spm[, keep])
-
-comp %>%
-    group_by(species, source) %>%
-    mutate(scaled_B = scale(B),
-           center = attr(scale(B), "scaled:center"),
-           scale = attr(scale(B), "scaled:scale")) %>%
-    mutate(lwr = (B_lwr - center) / scale,
-           upr = (B_upr - center) / scale) %>%
-    filter(year > min(index$year)) %>%
-    ungroup() %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            linetype = ~source, legendgroup = ~species,
-            text = ~B) %>%
-    add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~scaled_B)
-
-
-
-## Model comparison ------------------------------------------------------------
-
-null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
-one <- update(null, cor_str = "one")
-all <- update(null, cor_str = "all")
-
-cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-                 logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-                 log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-                 log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-                 K_formula = ~core_cil)
-cei <- update(cil, K_formula = ~cei)
-nao <- update(cil, K_formula = ~nao)
-tice <- update(cil, K_formula = ~tice)
-cil_one <- update(cil, cor_str = "one")
-cei_one <- update(cei, cor_str = "one")
-nao_one <- update(nao, cor_str = "one")
-tice_one <- update(tice, cor_str = "one")
-
-loo_null <- run_loo(null)
-loo_one <- run_loo(one)
-loo_all <- run_loo(all)
-loo_cil <- run_loo(cil)
-loo_cei <- run_loo(cei)
-loo_cil_one <- run_loo(cil_one)
-loo_cei_one <- run_loo(cei_one)
-loo_nao <- run_loo(nao)
-loo_nao_one <- run_loo(nao_one)
-loo_tice <- run_loo(tice)
-loo_tice_one <- run_loo(tice_one)
-
-# write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
-
-null$mAIC
-one$mAIC
-all$mAIC
-cil$mAIC
-cei$mAIC
-nao$mAIC
-tice$mAIC
-cil_one$mAIC
-cei_one$mAIC
-tice_one$mAIC
-loo_null$mse
-loo_one$mse
-loo_all$mse
-loo_cil$mse
-loo_cei$mse
-loo_nao$mse
-loo_tice$mse
-loo_cil_one$mse
-loo_cei_one$mse
-loo_nao_one$mse
-loo_tice_one$mse
-
-# > null$mAIC
-# [1] 946.3922
-# > one$mAIC
-# [1] 879.7829
-# > all$mAIC
-# [1] 892.2615
-# > cil$mAIC
-# [1] 940.034
-# > cei$mAIC
-# [1] 940.9621
-# > nao$mAIC
-# [1] 941.6836
-# > tice$mAIC
-# [1] 938.5548
-# > cil_one$mAIC
-# [1] 881.7692
-# > cei_one$mAIC
-# [1] 881.1266
-# > tice_one$mAIC
-# [1] 877.1522
-# > loo_null$mse
-# [1] 0.2546963
-# > loo_one$mse
-# [1] 0.2502405
-# > loo_all$mse
-# [1] 0.231504
-# > loo_cil$mse
-# [1] 0.2536944
-# > loo_cei$mse
-# [1] 0.2537975
-# > loo_nao$mse
-# [1] 0.2561157
-# > loo_tice$mse
-# [1] 0.2556873
-# > loo_cil_one$mse
-# [1] 0.2504235
-# > loo_cei_one$mse
-# [1] 0.2503321
-# > loo_nao_one$mse
-# [1] 0.2504409
-# > loo_tice_one$mse
-# [1] 0.2515622
-
+# ## Compare to accepted assessment model results --------------------------------
+#
+#
+# assess <- read.csv("analysis/stock_assessment_estimates.csv")
+# names(assess) <- c("species_div", "year", "B", "B_type")
+# x <- data.table::tstrsplit(assess$species, split = " ")
+# assess$species <- x[[1]]
+# assess$division <- x[[2]]
+# assess$source <- "assessment"
+# assess$B_lwr <- NA
+# assess$B_upr <- NA
+#
+# spm <- fit$pop
+# spm$source <- "multispic"
+#
+# keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
+# comp <- rbind(assess[, keep], spm[, keep])
+#
+# comp %>%
+#     group_by(species, source) %>%
+#     mutate(scaled_B = scale(B),
+#            center = attr(scale(B), "scaled:center"),
+#            scale = attr(scale(B), "scaled:scale")) %>%
+#     mutate(lwr = (B_lwr - center) / scale,
+#            upr = (B_upr - center) / scale) %>%
+#     filter(year > min(index$year)) %>%
+#     ungroup() %>%
+#     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+#             linetype = ~source, legendgroup = ~species,
+#             text = ~B) %>%
+#     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
+#                 alpha = 0.2, showlegend = FALSE) %>%
+#     add_lines(y = ~scaled_B)
+#
+#
+#
+# ## Model comparison ------------------------------------------------------------
+#
+# null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+#                   logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+#                   log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+#                   log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+#                   log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+#                   log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+#                   log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
+# one <- update(null, cor_str = "one")
+# all <- update(null, cor_str = "all")
+#
+# cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
+#                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
+#                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
+#                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
+#                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
+#                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
+#                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
+#                  K_formula = ~core_cil)
+# cei <- update(cil, K_formula = ~cei)
+# nao <- update(cil, K_formula = ~nao)
+# tice <- update(cil, K_formula = ~tice)
+# cil_one <- update(cil, cor_str = "one")
+# cei_one <- update(cei, cor_str = "one")
+# nao_one <- update(nao, cor_str = "one")
+# tice_one <- update(tice, cor_str = "one")
+#
+# loo_null <- run_loo(null)
+# loo_one <- run_loo(one)
+# loo_all <- run_loo(all)
+# loo_cil <- run_loo(cil)
+# loo_cei <- run_loo(cei)
+# loo_cil_one <- run_loo(cil_one)
+# loo_cei_one <- run_loo(cei_one)
+# loo_nao <- run_loo(nao)
+# loo_nao_one <- run_loo(nao_one)
+# loo_tice <- run_loo(tice)
+# loo_tice_one <- run_loo(tice_one)
+#
+# # write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
+#
+# null$mAIC
+# one$mAIC
+# all$mAIC
+# cil$mAIC
+# cei$mAIC
+# nao$mAIC
+# tice$mAIC
+# cil_one$mAIC
+# cei_one$mAIC
+# tice_one$mAIC
+# loo_null$mse
+# loo_one$mse
+# loo_all$mse
+# loo_cil$mse
+# loo_cei$mse
+# loo_nao$mse
+# loo_tice$mse
+# loo_cil_one$mse
+# loo_cei_one$mse
+# loo_nao_one$mse
+# loo_tice_one$mse
+#
+# # > null$mAIC
+# # [1] 946.3922
+# # > one$mAIC
+# # [1] 879.7829
+# # > all$mAIC
+# # [1] 892.2615
+# # > cil$mAIC
+# # [1] 940.034
+# # > cei$mAIC
+# # [1] 940.9621
+# # > nao$mAIC
+# # [1] 941.6836
+# # > tice$mAIC
+# # [1] 938.5548
+# # > cil_one$mAIC
+# # [1] 881.7692
+# # > cei_one$mAIC
+# # [1] 881.1266
+# # > tice_one$mAIC
+# # [1] 877.1522
+# # > loo_null$mse
+# # [1] 0.2546963
+# # > loo_one$mse
+# # [1] 0.2502405
+# # > loo_all$mse
+# # [1] 0.231504
+# # > loo_cil$mse
+# # [1] 0.2536944
+# # > loo_cei$mse
+# # [1] 0.2537975
+# # > loo_nao$mse
+# # [1] 0.2561157
+# # > loo_tice$mse
+# # [1] 0.2556873
+# # > loo_cil_one$mse
+# # [1] 0.2504235
+# # > loo_cei_one$mse
+# # [1] 0.2503321
+# # > loo_nao_one$mse
+# # [1] 0.2504409
+# # > loo_tice_one$mse
+# # [1] 0.2515622
+#
