@@ -177,8 +177,8 @@ upper_log_q <- log(1)
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
-lower_logit_cor <- logit(-0.9, shift = TRUE)
-upper_logit_cor <- logit(0.9, shift = TRUE)
+lower_logit_cor <- logit(-0.99, shift = TRUE)
+upper_logit_cor <- logit(0.99, shift = TRUE)
 mean_logit_cor <- (lower_logit_cor + upper_logit_cor) / 2
 sd_logit_cor <- (upper_logit_cor - lower_logit_cor) / 2
 
@@ -232,10 +232,22 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_sd = post_sd$log_sd_I,
                 post_names = levels(index$survey),
                 xlab = "log(SD<sub>I</sub>)")
+
+sp_mat <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
+rownames(sp_mat) <- colnames(sp_mat) <- levels(landings$species)
+sp_mat[lower.tri(sp_mat)] <- sp_mat[upper.tri(sp_mat)] <- inv_logit(post_mean$logit_cor, shift = TRUE)
+diag(sp_mat) <- 1
+round(sp_mat, 2)
+for (i in seq(nrow(sp_mat))) {
+    for (j in seq(ncol(sp_mat))) {
+        sp_nm_mat[i, j] <- paste(levels(landings$species)[i], "-", levels(landings$species)[j])
+    }
+}
+
 plot_prior_post(prior_mean = mean_logit_cor, prior_sd = sd_logit_cor,
                 post_mean = post_mean$logit_cor,
                 post_sd = post_sd$logit_cor,
-                post_names = seq(length(post_mean$logit_cor)),
+                post_names = sp_nm_mat[lower.tri(sp_nm_mat)],
                 xlab = "logit(cor)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
 
 
@@ -259,6 +271,7 @@ B0 <- exp(par$log_B0)
 round(B0)
 cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
 round(cor, 2)
+round(sp_mat, 2)
 
 
 ## Explore parameter correlations
