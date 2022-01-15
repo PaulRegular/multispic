@@ -41,12 +41,17 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' @param log_q_option       Settings for the estimation of log_q; define using \code{\link{par_option}}.
 #' @param log_sd_I_option    Settings for the estimation of sd for the indices; define using
 #'                           \code{\link{par_option}}.
-#' @param logit_cor_option   Setting for the estimation of the correlation across stocks; define using
+#' @param logit_rho_option   Setting for the estimation of the correlation across stocks; define using
 #'                           \code{\link{par_option}}.
-#' @param cor_str            Correlation structure across species. "none" will not estimate
+#' @param logit_phi_option   Setting for the estimation of temporal correlation in the process errors;
+#'                           define using \code{\link{par_option}}.
+#' @param species_cor        Correlation structure across species (rho). "none" will not estimate
 #'                           correlations across species, "one" will estimate one shared correlation
 #'                           parameter across species, and "all" will estimate correlation parameters
 #'                           across all combinations of species.
+#' @param temporal_cor       Correlation structure across time (phi). "none" assumes no temporal dependence
+#'                           in the process errors, "rw" assumes a random walk, and "ar1" fits an
+#'                           AR1 process, estimating an extra parameter.
 #' @param pe_formula         Formula describing relationship between surplus production (process error)
 #'                           and covariates. Not used if set to NULL.
 #' @param K_formula          Formula describing relationship between K and covariates. Not used if set
@@ -68,8 +73,10 @@ fit_model <- function(inputs,
                       log_sd_B_option = par_option(),
                       log_q_option = par_option(),
                       log_sd_I_option = par_option(),
-                      logit_cor_option = par_option(),
-                      cor_str = "one",
+                      logit_rho_option = par_option(),
+                      logit_phi_option = par_option(),
+                      species_cor = "none",
+                      temporal_cor = "none",
                       pe_formula = NULL,
                       K_formula = NULL,
                       leave_out = NULL,
@@ -111,7 +118,7 @@ fit_model <- function(inputs,
     }
 
     ## Set-up the objects for TMB
-    n_cor <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
+    n_rho <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
                                   ncol = nlevels(landings$species))))
     dat <- list(L = as.numeric(landings$landings),
                 L_species = as.numeric(landings$species) - 1,
@@ -129,7 +136,8 @@ fit_model <- function(inputs,
                 log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
-                logit_cor_option = as.integer(logit_cor_option$option) - 1,
+                logit_rho_option = as.integer(logit_rho_option$option) - 1,
+                logit_phi_option = as.integer(logit_rho_option$option) - 1,
                 mean_log_K = log_K_option$mean,
                 sd_log_K = log_K_option$sd,
                 lower_log_K = log_K_option$lower,
@@ -144,8 +152,12 @@ fit_model <- function(inputs,
                 upper_log_q = log_q_option$upper,
                 lower_log_sd_I = log_sd_I_option$lower,
                 upper_log_sd_I = log_sd_I_option$upper,
-                lower_logit_cor = logit_cor_option$lower,
-                upper_logit_cor = logit_cor_option$upper,
+                lower_logit_rho = logit_rho_option$lower,
+                upper_logit_rho = logit_rho_option$upper,
+                mean_logit_phi = logit_phi_option$mean,
+                sd_logit_phi = logit_phi_option$sd,
+                lower_logit_phi = logit_phi_option$lower,
+                upper_logit_phi = logit_phi_option$upper,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
@@ -156,9 +168,10 @@ fit_model <- function(inputs,
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
-                mean_logit_cor = logit_cor_option$mean,
-                log_sd_logit_cor = log(logit_cor_option$sd),
-                logit_cor = rep(0, n_cor),
+                mean_logit_rho = logit_rho_option$mean,
+                log_sd_logit_rho = log(logit_rho_option$sd),
+                logit_rho = rep(0, n_rho),
+                logit_phi = 0,
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
                 log_B0 = rep(ceiling(mean(log(index$index))), nlevels(landings$species)),
@@ -177,17 +190,30 @@ fit_model <- function(inputs,
                 K_betas =  rep(0, ncol(K_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
-    if (cor_str == "one") {
-        map$logit_cor <- factor(rep(1, length(par$logit_cor)))
+    if (species_cor == "one") {
+        map$logit_rho <- factor(rep(1, length(par$logit_rho)))
     }
-    if (cor_str == "none") {
-        map$logit_cor <- factor(rep(NA, length(par$logit_cor)))
-        dat$logit_cor_option <- 0 # skip prior / random effect loop
+    if (species_cor == "none") {
+        map$logit_rho <- factor(rep(NA, length(par$logit_rho)))
+        dat$logit_rho_option <- 0 # skip prior / random effect loop
+    }
+    if (temporal_cor == "none") {
+        map$logit_phi <- factor(NA)
+        par$logit_phi <- -15 # results in a value very close to 0
+    }
+    if (temporal_cor == "rw") {
+        map$logit_phi <- factor(NA)
+        par$logit_phi <- 15 # results in a value very close to 1
     }
 
     if (log_K_option$option %in% c("random", "coupled")) {
         warning("The 'random' or 'coupled' options are not applicable for parametere 'log_K'. Setting option to 'fixed'")
         dat$log_K_option <- 0
+    }
+
+    if (logit_phi_option$option %in% c("random", "coupled")) {
+        warning("The 'random' or 'coupled' options are not applicable for parametere 'logit_phi'. Setting option to 'fixed'")
+        dat$logit_phi_option <- 0
     }
 
     if (log_sd_B_option$option != "random") {
@@ -226,10 +252,10 @@ fit_model <- function(inputs,
         }
     }
 
-    if (logit_cor_option$option != "random") {
-        map$mean_logit_cor <- map$log_sd_logit_cor <- factor(NA)
-        if (logit_cor_option$option == "coupled") {
-            map$logit_cor <- factor(rep(1, length(par$logit_cor)))
+    if (logit_rho_option$option != "random") {
+        map$mean_logit_rho <- map$log_sd_logit_rho <- factor(NA)
+        if (logit_rho_option$option == "coupled") {
+            map$logit_rho <- factor(rep(1, length(par$logit_rho)))
         }
     }
 
@@ -256,8 +282,8 @@ fit_model <- function(inputs,
     if (log_sd_I_option$option == "random") {
         random <- c(random, "log_sd_I")
     }
-    if (logit_cor_option$option == "random") {
-        random <- c(random, "logit_cor")
+    if (logit_rho_option$option == "random") {
+        random <- c(random, "logit_rho")
     }
 
     ## Fit model
