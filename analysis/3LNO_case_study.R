@@ -192,9 +192,9 @@ mean_logit_rho <- (lower_logit_rho + upper_logit_rho) / 2
 sd_logit_rho <- (upper_logit_rho - lower_logit_rho) / 2
 
 lower_logit_phi <- logit(0.1)
-upper_logit_rho <- logit(0.9)
-mean_logit_rho <- (lower_logit_rho + upper_logit_rho) / 2
-sd_logit_rho <- (upper_logit_rho - lower_logit_rho) / 2
+upper_logit_phi <- logit(0.9)
+mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
+sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 fit <- fit_model(inputs, scaler = scaler, survey_group = "survey",
                  species_cor = "all", temporal_cor = "ar1",
@@ -218,7 +218,7 @@ fit <- fit_model(inputs, scaler = scaler, survey_group = "survey",
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
-fit$mAIC
+fit$mAIC # 2847
 
 # loo_fit <- run_loo(fit)
 # loo_fit$mse
@@ -277,7 +277,13 @@ plot_prior_post(prior_mean = mean_logit_rho, prior_sd = sd_logit_rho,
                 post_mean = post_mean$logit_rho,
                 post_sd = post_sd$logit_rho,
                 post_names = sp_nm_mat[lower.tri(sp_nm_mat)],
-                xlab = "logit(cor)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
+                xlab = "logit(rho)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
+
+plot_prior_post(prior_mean = mean_logit_phi, prior_sd = sd_logit_phi,
+                post_mean = post_mean$logit_phi,
+                post_sd = post_sd$logit_phi,
+                post_names = "logit(phi)",
+                xlab = "logit(phi)")# , trans_fun = inv_logit)
 
 
 ## Visually assess par
@@ -298,10 +304,11 @@ names(sd_B) <- levels(index$species)
 round(sd_B, 2)
 B0 <- exp(par$log_B0)
 round(B0)
-cor <- 2.0 / (1.0 + exp(-par$logit_rho)) - 1.0
-round(cor, 2)
+rho <- inv_logit(par$logit_rho, shift = TRUE)
+round(rho, 2)
 round(sp_rho, 2)
-
+phi <- inv_logit(par$logit_phi)
+round(phi, 2)
 
 ## Explore parameter correlations
 sd_rep <- fit$sd_rep

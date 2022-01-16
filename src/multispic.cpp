@@ -39,6 +39,7 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(upper_log_sd_I);
     DATA_SCALAR(lower_logit_rho);
     DATA_SCALAR(upper_logit_rho);
+    DATA_SCALAR(mean_logit_phi);
     DATA_SCALAR(sd_logit_phi);
     DATA_SCALAR(lower_logit_phi);
     DATA_SCALAR(upper_logit_phi);
