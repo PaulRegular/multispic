@@ -82,8 +82,7 @@ Type objective_function<Type>::operator() ()
     // Containers
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
-    matrix<Type> delta(nY, nS);
-    matrix<Type> epsilon(nY, nS);
+    array<Type> delta(nY, nS); // AR1 function expects an array
     vector<Type> tot_B(nY);
     vector<Type> log_tot_B(nY);
     vector<Type> B_vec(nL);
@@ -98,7 +97,6 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_F(nL);
     vector<Type> K_vec(nY);
     vector<Type> log_K_vec(nY);
-    vector<Type> init_sd_B(nS);
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -219,19 +217,10 @@ Type objective_function<Type>::operator() ()
             log_pred_B(i, j) = log(pred_B(i, j));
             delta(i, j) = log_B(i, j) - log_pred_B(i, j);
         }
-        if (i == 0) {
-            for (int j = 0; j < nS; j++) {
-                init_sd_B(j) = sqrt(((sd_B(j) * sd_B(j)) / (1 - (phi * phi))));
-                epsilon(i, j) = delta(i, j);
-            }
-            nll += VECSCALE(UNSTRUCTURED_CORR(rho), init_sd_B)(epsilon.row(i));
-        } else {
-            for (int j = 0; j < nS; j++) {
-                epsilon(i, j) = delta(i, j) - (phi * delta(i - 1, j));
-            }
-            nll += VECSCALE(UNSTRUCTURED_CORR(rho), sd_B)(epsilon.row(i));
-        }
     }
+    vector<Type> adj_sd_B = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
+    array<Type> delta_transpose = delta.transpose();
+    nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), adj_sd_B))(delta_transpose);
     log_K_vec = log(K_vec);
 
     // Observation equations
