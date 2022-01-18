@@ -457,46 +457,48 @@ p <- fit$tot_pop %>%
 p
 
 
+## Compare to accepted assessment model results --------------------------------
 
-## TODO: update below comparisons ---------------------------------------------
+
+assess <- read.csv("analysis/stock_assessment_estimates.csv")
+names(assess) <- c("species_div", "year", "B", "B_type")
+x <- data.table::tstrsplit(assess$species, split = " ")
+assess$species <- x[[1]]
+unique(assess$species)
+assess$species[assess$species == "Cod"] <- "Atlantic Cod"
+assess$species[assess$species == "Plaice"] <- "American Plaice"
+assess$species[assess$species == "Redfish"] <- "Redfish spp."
+assess$species[assess$species == "Yellowtail"] <- "Yellowtail Flounder"
+assess$species[assess$species == "Witch"] <- "Witch Flounder"
+assess$division <- x[[2]]
+assess$source <- "assessment"
+assess$B_lwr <- NA
+assess$B_upr <- NA
+
+spm <- fit$pop[fit$pop$species %in% unique(assess$species), ]
+spm$source <- "multispic"
+
+keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
+comp <- rbind(assess[, keep], spm[, keep])
+comp <- comp[order(comp$species, comp$source), ]
+
+comp %>%
+    group_by(species, source) %>%
+    mutate(scaled_B = c(scale(B)),
+           center = attr(scale(B), "scaled:center"),
+           scale = attr(scale(B), "scaled:scale")) %>%
+    mutate(lwr = (B_lwr - center) / scale,
+           upr = (B_upr - center) / scale) %>%
+    filter(year > min(index$year)) %>%
+    ungroup() %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            linetype = ~source, legendgroup = ~species,
+            text = ~B) %>%
+    add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~scaled_B)
 
 
-# ## Compare to accepted assessment model results --------------------------------
-#
-#
-# assess <- read.csv("analysis/stock_assessment_estimates.csv")
-# names(assess) <- c("species_div", "year", "B", "B_type")
-# x <- data.table::tstrsplit(assess$species, split = " ")
-# assess$species <- x[[1]]
-# assess$division <- x[[2]]
-# assess$source <- "assessment"
-# assess$B_lwr <- NA
-# assess$B_upr <- NA
-#
-# spm <- fit$pop
-# spm$source <- "multispic"
-#
-# keep <- c("year", "species", "B", "B_lwr", "B_upr", "source")
-# comp <- rbind(assess[, keep], spm[, keep])
-#
-# comp %>%
-#     group_by(species, source) %>%
-#     mutate(scaled_B = scale(B),
-#            center = attr(scale(B), "scaled:center"),
-#            scale = attr(scale(B), "scaled:scale")) %>%
-#     mutate(lwr = (B_lwr - center) / scale,
-#            upr = (B_upr - center) / scale) %>%
-#     filter(year > min(index$year)) %>%
-#     ungroup() %>%
-#     plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-#             linetype = ~source, legendgroup = ~species,
-#             text = ~B) %>%
-#     add_ribbons(ymin = ~lwr, ymax = ~upr, line = list(width = 0),
-#                 alpha = 0.2, showlegend = FALSE) %>%
-#     add_lines(y = ~scaled_B)
-#
-#
-#
 # ## Model comparison ------------------------------------------------------------
 #
 # null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
