@@ -60,21 +60,9 @@ landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
 covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
-## Assume Yankee Q = Engel Q
+## Set-up survey column for model; assume Yankee Q = Engel Q
 index$gear[index$gear == "Yankee"] <- "Engel"
-
-
-## Set-up indices for TMB
-landings$species <- factor(landings$species)
-landings$y <- factor(landings$year)
-landings$sy <- factor(paste0(landings$species, "-", landings$year))
-landings <- landings[order(landings$sy), ]
-index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
 index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
-index$gear_season <- factor(paste0(index$gear, "-", index$season))
-index$gear_species <- factor(paste0(index$gear, "-", index$species))
-index$species <- factor(index$species)
-index$null <- factor(rep("null", nrow(index)))
 
 p <- index %>%
     group_by(survey) %>%
@@ -171,7 +159,7 @@ upper_log_K <- log(max_tot_landings * 100) - lower_log_r
 mean_log_K <- (lower_log_K + upper_log_K) / 2
 sd_log_K <- (upper_log_K - lower_log_K) / 2
 
-lower_log_B0 <- log(0.01 * exp(lower_log_K) / nlevels(landings$species))
+lower_log_B0 <- log(0.01 * exp(lower_log_K) / length(unique(landings$species)))
 upper_log_B0 <- upper_log_K
 mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
 sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
@@ -199,8 +187,7 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- fit_model(inputs, scaler = scaler, survey_group = "survey",
-                 species_cor = "all", temporal_cor = "ar1",
+fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",

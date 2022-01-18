@@ -29,8 +29,11 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 
 #' Fit a multispecies surplus production model
 #'
-#' @param inputs             List that includes landings, index and covariate (optional) data.
-#' @param survey_group       Name of column in the index data to group the survey parameter estimates by
+#' @param inputs             List that includes the following data.frames with required columns in
+#'                           parentheses: landings (species, year, landings), index (species, year,
+#'                           survey, index). An optional covariates data.frame may be included in
+#'                           the list with the columns year and optional covriates (e.g., nao) for
+#'                           use in the formula arguments.
 #' @param scaler             Number to scale values by to aid convergence.
 #' @param log_K_option       Settings for the estimation of log_K; define using \code{\link{par_option}}.
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
@@ -56,6 +59,9 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           and covariates. Not used if set to NULL.
 #' @param K_formula          Formula describing relationship between K and covariates. Not used if set
 #'                           to NULL.
+#' @param n_forecast         Number of years to forecast. Assumes status quo landings and covariates
+#'                           (i.e. terminal values assumed through projected years). Indices are
+#'                           NA but predicted values are returned.
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
 #' @param light              Skip running sdreport and limit output to speed things up?
@@ -66,7 +72,6 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 
 fit_model <- function(inputs,
                       scaler = sd(inputs$index$index),
-                      survey_group = "gear_season",
                       log_K_option = par_option(),
                       log_B0_option = par_option(),
                       log_r_option = par_option(),
@@ -79,6 +84,7 @@ fit_model <- function(inputs,
                       temporal_cor = "none",
                       pe_formula = NULL,
                       K_formula = NULL,
+                      n_forecast = 0,
                       leave_out = NULL,
                       light = FALSE,
                       silent = FALSE) {
@@ -88,6 +94,24 @@ fit_model <- function(inputs,
     landings <- inputs$landings
     index <- inputs$index
     covariates <- inputs$covariates
+
+    ## Set-up factors for indexing in TMB
+    if (identical(sort(unique(landings$species)), sort(unique(index$species)))) {
+        stop("One or more species were not found in both the landings and index data.frames. Please ensure there are landings and index data for all species.")
+    }
+    landings$species <- factor(landings$species)
+    landings$y <- factor(landings$year)
+    landings$sy <- factor(paste0(landings$species, "-", landings$year))
+    landings <- landings[order(landings$sy), ]
+    index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
+    index$species <- factor(index$species, levels = levels(landings$species))
+    index$survey <- factor(index$survey)
+
+    ## Set-up inputs for forecasts
+    if (n_forecast > 0) {
+        message("TODO: work-up forecast settings")
+        # landings[landings$year == max(landings$year), ]
+    }
 
     ## Set-up model matrix | formula with covariates
     if (is.null(pe_formula)) {
@@ -125,7 +149,7 @@ fit_model <- function(inputs,
                 L_year = as.numeric(landings$y) - 1,
                 I = as.numeric(index$index),
                 I_species = as.numeric(index$species) - 1,
-                I_survey = as.numeric(index[, survey_group]) - 1,
+                I_survey = as.numeric(index$survey) - 1,
                 I_sy = as.numeric(index$sy) - 1,
                 min_B = 0.0001,
                 nY = max(as.numeric(landings$y)),
@@ -182,10 +206,10 @@ fit_model <- function(inputs,
                 log_m = rep(log(2), nlevels(landings$species)),
                 mean_log_q = log_q_option$mean,
                 log_sd_log_q = log(log_q_option$sd),
-                log_q = rep(0, nlevels(index[, survey_group])),
+                log_q = rep(0, nlevels(index$survey)),
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
-                log_sd_I = rep(-1, nlevels(index[, survey_group])),
+                log_sd_I = rep(-1, nlevels(index$survey)),
                 pe_betas =  rep(0, ncol(pe_model_mat)),
                 K_betas =  rep(0, ncol(K_model_mat)))
 

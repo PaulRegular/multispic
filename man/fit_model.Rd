@@ -7,7 +7,6 @@
 fit_model(
   inputs,
   scaler = sd(inputs$index$index),
-  survey_group = "gear_season",
   log_K_option = par_option(),
   log_B0_option = par_option(),
   log_r_option = par_option(),
@@ -20,17 +19,20 @@ fit_model(
   temporal_cor = "none",
   pe_formula = NULL,
   K_formula = NULL,
+  n_forecast = 0,
   leave_out = NULL,
   light = FALSE,
   silent = FALSE
 )
 }
 \arguments{
-\item{inputs}{List that includes landings, index and covariate (optional) data.}
+\item{inputs}{List that includes the following data.frames with required columns in
+parentheses: landings (species, year, landings), index (species, year,
+survey, index). An optional covariates data.frame may be included in
+the list with the columns year and optional covriates (e.g., nao) for
+use in the formula arguments.}
 
 \item{scaler}{Number to scale values by to aid convergence.}
-
-\item{survey_group}{Name of column in the index data to group the survey parameter estimates by}
 
 \item{log_K_option}{Settings for the estimation of log_K; define using \code{\link{par_option}}.}
 
@@ -67,6 +69,10 @@ and covariates. Not used if set to NULL.}
 
 \item{K_formula}{Formula describing relationship between K and covariates. Not used if set
 to NULL.}
+
+\item{n_forecast}{Number of years to forecast. Assumes status quo landings and covariates
+(i.e. terminal values assumed through projected years). Indices are
+NA but predicted values are returned.}
 
 \item{leave_out}{Specific index values to leave out from the analysis (row number).
 Useful for cross-validation. All data are kept if NULL.}
