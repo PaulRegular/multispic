@@ -186,16 +186,23 @@ upper_log_q <- log(1)
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
-lower_logit_cor <- logit(-0.9, shift = TRUE)
-upper_logit_cor <- logit(0.9, shift = TRUE)
-mean_logit_cor <- (lower_logit_cor + upper_logit_cor) / 2
-sd_logit_cor <- (upper_logit_cor - lower_logit_cor) / 2
+lower_logit_rho <- logit(-0.9, shift = TRUE)
+upper_logit_rho <- logit(0.9, shift = TRUE)
+mean_logit_rho <- (lower_logit_rho + upper_logit_rho) / 2
+sd_logit_rho <- (upper_logit_rho - lower_logit_rho) / 2
 
-fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "all",
+lower_logit_phi <- logit(0.1)
+upper_logit_phi <- logit(0.9)
+mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
+sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
+
+
+## Multivariate AR1 process now working
+## Forcing the RW structure results in unusual process errors for some species
+fit <- fit_model(inputs, scaler = scaler, survey_group = "survey",
+                 species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
-                 logit_cor_option = par_option(option = "normal_prior",
-                                               mean = mean_logit_cor, sd = sd_logit_cor),
                  log_B0_option = par_option(option = "normal_prior",
                                             mean = mean_log_B0, sd = sd_log_B0),
                  log_r_option = par_option(option = "normal_prior",
@@ -205,12 +212,16 @@ fit <- fit_model(inputs, scaler = scaler, survey_group = "survey", cor_str = "al
                  log_q_option = par_option(option = "normal_prior",
                                            mean = mean_log_q, sd = sd_log_q),
                  log_sd_I_option = par_option(option = "normal_prior",
-                                              mean = mean_log_sd, sd = sd_log_sd))
+                                              mean = mean_log_sd, sd = sd_log_sd),
+                 logit_rho_option = par_option(option = "normal_prior",
+                                               mean = mean_logit_rho, sd = sd_logit_rho),
+                 logit_phi_option = par_option(option = "normal_prior",
+                                               mean = mean_logit_phi, sd = sd_logit_phi))
 
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
-fit$mAIC
+fit$mAIC # 2847
 
 # loo_fit <- run_loo(fit)
 # loo_fit$mse
@@ -254,22 +265,28 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_names = levels(index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
-sp_cor <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
-rownames(sp_cor) <- colnames(sp_cor) <- levels(landings$species)
-sp_cor[lower.tri(sp_cor)] <- sp_cor[upper.tri(sp_cor)] <- inv_logit(post_mean$logit_cor, shift = TRUE)
-diag(sp_cor) <- 1
-round(sp_cor, 2)
-for (i in seq(nrow(sp_cor))) {
-    for (j in seq(ncol(sp_cor))) {
+sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
+rownames(sp_rho) <- colnames(sp_rho) <- levels(landings$species)
+sp_rho[lower.tri(sp_rho)] <- sp_rho[upper.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
+diag(sp_rho) <- 1
+round(sp_rho, 2)
+for (i in seq(nrow(sp_rho))) {
+    for (j in seq(ncol(sp_rho))) {
         sp_nm_mat[i, j] <- paste(levels(landings$species)[i], "-", levels(landings$species)[j])
     }
 }
 
-plot_prior_post(prior_mean = mean_logit_cor, prior_sd = sd_logit_cor,
-                post_mean = post_mean$logit_cor,
-                post_sd = post_sd$logit_cor,
+plot_prior_post(prior_mean = mean_logit_rho, prior_sd = sd_logit_rho,
+                post_mean = post_mean$logit_rho,
+                post_sd = post_sd$logit_rho,
                 post_names = sp_nm_mat[lower.tri(sp_nm_mat)],
-                xlab = "logit(cor)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
+                xlab = "logit(rho)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
+
+plot_prior_post(prior_mean = mean_logit_phi, prior_sd = sd_logit_phi,
+                post_mean = post_mean$logit_phi,
+                post_sd = post_sd$logit_phi,
+                post_names = "logit(phi)",
+                xlab = "logit(phi)")# , trans_fun = inv_logit)
 
 
 ## Visually assess par
@@ -290,10 +307,11 @@ names(sd_B) <- levels(index$species)
 round(sd_B, 2)
 B0 <- exp(par$log_B0)
 round(B0)
-cor <- 2.0 / (1.0 + exp(-par$logit_cor)) - 1.0
-round(cor, 2)
-round(sp_cor, 2)
-
+rho <- inv_logit(par$logit_rho, shift = TRUE)
+round(rho, 2)
+round(sp_rho, 2)
+phi <- inv_logit(par$logit_phi)
+round(phi, 2)
 
 ## Explore parameter correlations
 sd_rep <- fit$sd_rep
@@ -317,6 +335,8 @@ p <- fit$index %>%
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
+p %>% add_markers(x = ~species, y = ~std_res)
+
 
 ## Process error residuals
 p <- fit$pop %>%
@@ -356,10 +376,10 @@ corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number
 
 
 ## Correlation in pe - parameter estimates
-plot_ly(x = rownames(sp_cor), y = rownames(sp_cor), z = ~sp_cor,
+plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
         colors = c("#B2182B", "white", "#2166AC")) %>%
     add_heatmap() %>% colorbar(limits = c(-1, 1), title = "ρ")
-corrplot::corrplot.mixed(sp_cor, diag = "n", lower = "ellipse", upper = "number")
+corrplot::corrplot.mixed(sp_rho, diag = "n", lower = "ellipse", upper = "number")
 
 ## Fits to the index
 p <- fit$index %>%
@@ -372,6 +392,17 @@ p <- fit$index %>%
     add_markers(y = ~index, showlegend = FALSE)
 p
 p %>% layout(yaxis = list(type = "log"))
+
+
+fit$index %>%
+    filter(species == "Roundnose Grenadier") %>%
+    mutate(survey = factor(survey)) %>%
+    plot_ly(x = ~year, color = ~survey, legendgroup = ~survey) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE)  %>%
+    layout(yaxis = list(type = "log"))
 
 
 ## Biomass

@@ -14,8 +14,10 @@ fit_model(
   log_sd_B_option = par_option(),
   log_q_option = par_option(),
   log_sd_I_option = par_option(),
-  logit_cor_option = par_option(),
-  cor_str = "one",
+  logit_rho_option = par_option(),
+  logit_phi_option = par_option(),
+  species_cor = "none",
+  temporal_cor = "none",
   pe_formula = NULL,
   K_formula = NULL,
   leave_out = NULL,
@@ -45,13 +47,20 @@ define using \code{\link{par_option}}.}
 \item{log_sd_I_option}{Settings for the estimation of sd for the indices; define using
 \code{\link{par_option}}.}
 
-\item{logit_cor_option}{Setting for the estimation of the correlation across stocks; define using
+\item{logit_rho_option}{Setting for the estimation of the correlation across stocks; define using
 \code{\link{par_option}}.}
 
-\item{cor_str}{Correlation structure across species. "none" will not estimate
+\item{logit_phi_option}{Setting for the estimation of temporal correlation in the process errors;
+define using \code{\link{par_option}}.}
+
+\item{species_cor}{Correlation structure across species (rho). "none" will not estimate
 correlations across species, "one" will estimate one shared correlation
 parameter across species, and "all" will estimate correlation parameters
 across all combinations of species.}
+
+\item{temporal_cor}{Correlation structure across time (phi). "none" assumes no temporal dependence
+in the process errors, "rw" assumes a random walk, and "ar1" fits an
+AR1 process, estimating an extra parameter.}
 
 \item{pe_formula}{Formula describing relationship between surplus production (process error)
 and covariates. Not used if set to NULL.}

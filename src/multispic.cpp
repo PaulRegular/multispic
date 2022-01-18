@@ -21,7 +21,8 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
-    DATA_INTEGER(logit_cor_option);
+    DATA_INTEGER(logit_rho_option);
+    DATA_INTEGER(logit_phi_option);
     DATA_SCALAR(mean_log_K);
     DATA_SCALAR(sd_log_K);
     DATA_SCALAR(lower_log_K);
@@ -36,8 +37,12 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(upper_log_q);
     DATA_SCALAR(lower_log_sd_I);
     DATA_SCALAR(upper_log_sd_I);
-    DATA_SCALAR(lower_logit_cor);
-    DATA_SCALAR(upper_logit_cor);
+    DATA_SCALAR(lower_logit_rho);
+    DATA_SCALAR(upper_logit_rho);
+    DATA_SCALAR(mean_logit_phi);
+    DATA_SCALAR(sd_logit_phi);
+    DATA_SCALAR(lower_logit_phi);
+    DATA_SCALAR(upper_logit_phi);
     DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(pe_covariates);
     DATA_MATRIX(K_covariates);
@@ -47,9 +52,10 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_sd_B);
     PARAMETER(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
-    PARAMETER(mean_logit_cor);
-    PARAMETER(log_sd_logit_cor);
-    PARAMETER_VECTOR(logit_cor);
+    PARAMETER(mean_logit_rho);
+    PARAMETER(log_sd_logit_rho);
+    PARAMETER_VECTOR(logit_rho);
+    PARAMETER(logit_phi);
     PARAMETER(mean_log_B0);
     PARAMETER(log_sd_log_B0);
     PARAMETER_VECTOR(log_B0);
@@ -76,7 +82,7 @@ Type objective_function<Type>::operator() ()
     // Containers
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
-    matrix<Type> delta(nY, nS);
+    array<Type> delta(nY, nS); // AR1 function expects an array
     vector<Type> tot_B(nY);
     vector<Type> log_tot_B(nY);
     vector<Type> B_vec(nL);
@@ -97,7 +103,8 @@ Type objective_function<Type>::operator() ()
     vector<Type> B0 = exp(log_B0);
     vector<Type> log_I = log(I);
     vector<Type> sd_B = exp(log_sd_B);
-    vector<Type> cor = 2.0 / (1.0 + exp(-logit_cor)) - 1.0; // want cor to be between -1 and 1
+    vector<Type> rho = 2.0 / (1.0 + exp(-logit_rho)) - 1.0; // want cor to be between -1 and 1
+    Type phi = 1.0 / (1.0 + exp(-logit_phi)); // want temporal cor to be between 0 and 1
     Type K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
@@ -107,7 +114,7 @@ Type objective_function<Type>::operator() ()
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
     Type sd_log_sd_I = exp(log_sd_log_sd_I);
-    Type sd_logit_cor = exp(log_sd_logit_cor);
+    Type sd_logit_rho = exp(log_sd_logit_rho);
 
 
     // Set-up a landings matrix and vector of B
@@ -174,13 +181,20 @@ Type objective_function<Type>::operator() ()
             }
         }
     }
-    if (logit_cor_option > 1) {
-        for(int i = 0; i < logit_cor.size(); i++) {
-            if (logit_cor_option == 4) {
-                nll += dmuniform(logit_cor(i), lower_logit_cor, upper_logit_cor, dmuniform_sd);
+    if (logit_rho_option > 1) {
+        for(int i = 0; i < logit_rho.size(); i++) {
+            if (logit_rho_option == 4) {
+                nll += dmuniform(logit_rho(i), lower_logit_rho, upper_logit_rho, dmuniform_sd);
             } else {
-                nll -= dnorm(logit_cor(i), mean_logit_cor, sd_logit_cor, true);
+                nll -= dnorm(logit_rho(i), mean_logit_rho, sd_logit_rho, true);
             }
+        }
+    }
+    if (logit_phi_option > 1) {
+        if (logit_phi_option == 4) {
+            nll += dmuniform(logit_phi, lower_logit_phi, upper_logit_phi, dmuniform_sd);
+        } else {
+            nll -= dnorm(logit_phi, mean_logit_phi, sd_logit_phi, true);
         }
     }
 
@@ -203,8 +217,10 @@ Type objective_function<Type>::operator() ()
             log_pred_B(i, j) = log(pred_B(i, j));
             delta(i, j) = log_B(i, j) - log_pred_B(i, j);
         }
-        nll += VECSCALE(UNSTRUCTURED_CORR(cor), sd_B)(delta.row(i));
     }
+    vector<Type> adj_sd_B = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
+    array<Type> delta_transpose = delta.transpose();
+    nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), adj_sd_B))(delta_transpose);
     log_K_vec = log(K_vec);
 
     // Observation equations
