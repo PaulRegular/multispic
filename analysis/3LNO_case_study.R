@@ -421,9 +421,18 @@ p <- fit$tot_pop %>%
               linetype = I(3), color = I("black"), size = I(1)) %>%
     add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
               linetype = I(3), color = I("black"), size = I(1)) %>%
+    add_lines(x = ~year, y = ~tot_landings, data = tot_landings, inherit = FALSE,
+              color = I("firebrick"), name = "L") %>%
     layout(title = "Total biomass")
 p
 p %>% layout(yaxis = list(type = "log"))
+
+
+plot_ly() %>%
+    add_lines(x = ~year, y = ~B, name = "B", data = fit$tot_pop) %>%
+    add_lines(x = ~year, y = ~K/2, name = "B_msy", data = fit$tot_pop) %>%
+    add_lines(x = ~year, y = ~tot_landings, name = "L", data = tot_landings)
+
 
 
 ## F
