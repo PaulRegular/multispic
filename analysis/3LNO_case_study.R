@@ -199,7 +199,6 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-## Fits to Roundnose Grenadier are poor (poor data??)
 fit <- fit_model(inputs, scaler = scaler, survey_group = "survey",
                  species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
@@ -336,6 +335,8 @@ p <- fit$index %>%
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
+p %>% add_markers(x = ~species, y = ~std_res)
+
 
 ## Process error residuals
 p <- fit$pop %>%
@@ -391,6 +392,17 @@ p <- fit$index %>%
     add_markers(y = ~index, showlegend = FALSE)
 p
 p %>% layout(yaxis = list(type = "log"))
+
+
+fit$index %>%
+    filter(species == "Roundnose Grenadier") %>%
+    mutate(survey = factor(survey)) %>%
+    plot_ly(x = ~year, color = ~survey, legendgroup = ~survey) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE)  %>%
+    layout(yaxis = list(type = "log"))
 
 
 ## Biomass
