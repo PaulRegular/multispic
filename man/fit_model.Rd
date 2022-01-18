@@ -71,8 +71,7 @@ and covariates. Not used if set to NULL.}
 to NULL.}
 
 \item{n_forecast}{Number of years to forecast. Assumes status quo landings and covariates
-(i.e. terminal values assumed through projected years). Indices are
-NA but predicted values are returned.}
+(i.e. terminal values assumed through projected years).}
 
 \item{leave_out}{Specific index values to leave out from the analysis (row number).
 Useful for cross-validation. All data are kept if NULL.}

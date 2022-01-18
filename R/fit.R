@@ -60,8 +60,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' @param K_formula          Formula describing relationship between K and covariates. Not used if set
 #'                           to NULL.
 #' @param n_forecast         Number of years to forecast. Assumes status quo landings and covariates
-#'                           (i.e. terminal values assumed through projected years). Indices are
-#'                           NA but predicted values are returned.
+#'                           (i.e. terminal values assumed through projected years).
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if NULL.
 #' @param light              Skip running sdreport and limit output to speed things up?
@@ -95,8 +94,28 @@ fit_model <- function(inputs,
     index <- inputs$index
     covariates <- inputs$covariates
 
+    ## Set-up inputs for forecasts
+    if (n_forecast > 0) {
+        terminal_landings <- landings[landings$year == max(landings$year), ]
+        sq_landings <- lapply(seq(n_forecast), function(i) {
+            terminal_landings$year <- terminal_landings$year + i
+            terminal_landings
+        })
+        sq_landings <- do.call(rbind, sq_landings)
+        landings <- rbind(landings, sq_landings)
+        if (!is.null(covariates)) {
+            terminal_covariates <- covariates[covariates$year == max(covariates$year), ]
+            sq_covariates <- lapply(seq(n_forecast), function(i) {
+                sq_covariates$year <- sq_covariates$year + i
+                sq_covariates
+            })
+            sq_covariates <- do.call(rbind, sq_covariates)
+            covariates <- rbind(landings, sq_covariates)
+        }
+    }
+
     ## Set-up factors for indexing in TMB
-    if (identical(sort(unique(landings$species)), sort(unique(index$species)))) {
+    if (!identical(sort(unique(landings$species)), sort(unique(index$species)))) {
         stop("One or more species were not found in both the landings and index data.frames. Please ensure there are landings and index data for all species.")
     }
     landings$species <- factor(landings$species)
@@ -106,12 +125,6 @@ fit_model <- function(inputs,
     index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
     index$species <- factor(index$species, levels = levels(landings$species))
     index$survey <- factor(index$survey)
-
-    ## Set-up inputs for forecasts
-    if (n_forecast > 0) {
-        message("TODO: work-up forecast settings")
-        # landings[landings$year == max(landings$year), ]
-    }
 
     ## Set-up model matrix | formula with covariates
     if (is.null(pe_formula)) {

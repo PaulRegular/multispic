@@ -203,7 +203,8 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                  logit_rho_option = par_option(option = "normal_prior",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
-                                               mean = mean_logit_phi, sd = sd_logit_phi))
+                                               mean = mean_logit_phi, sd = sd_logit_phi),
+                 n_forecast = 5)
 
 fit$opt$message
 fit$sd_rep
