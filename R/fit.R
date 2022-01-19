@@ -31,9 +31,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'
 #' @param inputs             List that includes the following data.frames with required columns in
 #'                           parentheses: landings (species, year, landings), index (species, year,
-#'                           survey, index). An optional covariates data.frame may be included in
-#'                           the list with the columns year and optional covriates (e.g., nao) for
-#'                           use in the formula arguments.
+#'                           survey, index). Covariates can be included in the landings data.frame
+#'                           and specified using the covariates arguments (optional).
 #' @param scaler             Number to scale values by to aid convergence.
 #' @param log_K_option       Settings for the estimation of log_K; define using \code{\link{par_option}}.
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
@@ -92,7 +91,6 @@ fit_model <- function(inputs,
 
     landings <- inputs$landings
     index <- inputs$index
-    covariates <- inputs$covariates
 
     ## Set-up inputs for forecasts
     if (n_forecast > 0) {
@@ -103,15 +101,6 @@ fit_model <- function(inputs,
         })
         sq_landings <- do.call(rbind, sq_landings)
         landings <- rbind(landings, sq_landings)
-        if (!is.null(covariates)) {
-            terminal_covariates <- covariates[covariates$year == max(covariates$year), ]
-            sq_covariates <- lapply(seq(n_forecast), function(i) {
-                sq_covariates$year <- sq_covariates$year + i
-                sq_covariates
-            })
-            sq_covariates <- do.call(rbind, sq_covariates)
-            covariates <- rbind(landings, sq_covariates)
-        }
     }
 
     ## Set-up factors for indexing in TMB
@@ -130,14 +119,12 @@ fit_model <- function(inputs,
     if (is.null(pe_formula)) {
         pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
-        f <- as.formula(paste(Reduce(paste, deparse(pe_formula)), "-1")) # drop intercept
-        pe_model_mat <- model.matrix(f, data = covariates)
+        pe_model_mat <- model.matrix(pe_formula, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by the process errors
     }
     if (is.null(K_formula)) {
         K_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
-        f <- as.formula(paste(Reduce(paste, deparse(K_formula)), "-1")) # drop intercept
-        K_model_mat <- model.matrix(f, data = covariates)
+        K_model_mat <- model.matrix(K_formula, data = landings)[, -1, drop = FALSE] # drop intercept because that is covered by K
     }
 
     ## Scale index and landings to aid convergence

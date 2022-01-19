@@ -14,16 +14,8 @@ unique(multispic::landings$species)
 
 index <- multispic::index
 landings <- multispic::landings
-covariates <- multispic::covariates %>%
-    mutate(cei_ma = rollmean(cei, 5, align = "right", fill = NA),
-           cil_ma = rollmean(core_cil, 5, align = "right", fill = NA),
-           nao_ma = rollmean(nao, 5, align = "right", fill = NA),
-           tice = tice - mean(tice, na.rm = TRUE))
-
-## Mystery series from Mariano
-mystery <- readxl::read_excel("analysis/mystery_series.xlsx")
-names(mystery) <- c("year", "mystery")
-covariates <- left_join(covariates, mystery, by = "year")
+covariates <- multispic::covariates
+landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
 
 ## Setup the data --------------------------------------------------------------
@@ -46,21 +38,20 @@ sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagi
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod")
-sub_sp <- "Atlantic Cod"
+# sub_sp <- "Atlantic Cod"
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
                    index$species %in% sub_sp, ]
 landings <- landings[landings$year >= start_year & landings$year <= end_year &
                          landings$species %in% sub_sp, ]
-covariates <- covariates[covariates$year >= start_year & covariates$year <= end_year, ]
 
 ## Set-up survey column for model; assume Yankee Q = Engel Q
 index$gear[index$gear == "Yankee"] <- "Engel"
@@ -101,32 +92,16 @@ landings %>%
     add_lines(x = ~year, y = ~total_landings)
 
 
-covariates %>%
+landings %>%
     plot_ly(x = ~year) %>%
-    add_lines(y = ~core_cil, name = "Core CIL") %>%
-    add_lines(y = ~cil_ma, name = "Moving average")
-
-covariates %>%
-    plot_ly(x = ~year) %>%
-    add_lines(y = ~nao, name = "NAO") %>%
-    add_lines(y = ~nao_ma, name = "Moving average")
-
-covariates %>%
-    plot_ly(x = ~year) %>%
-    add_lines(y = ~cei, name = "CEI") %>%
-    add_lines(y = ~cei_ma, name = "Moving average")
-
-covariates %>%
-    plot_ly(x = ~year) %>%
-    add_lines(y = ~tice, name = "tice")
-
-covariates %>%
-    plot_ly(x = ~year) %>%
-    add_lines(y = ~mystery, name = "mystery")
+    add_lines(y = ~winter_nao, name = "Winter NAO") %>%
+    add_lines(y = ~spring_nao, name = "Spring NAO") %>%
+    add_lines(y = ~summer_nao, name = "Summer NAO") %>%
+    add_lines(y = ~fall_nao, name = "Fall NAO")
 
 
 ## Carefully think about the year indexing re. the covariate effect
-inputs <- list(landings = landings, index = index)# , covariates = covariates)
+inputs <- list(landings = landings, index = index)
 
 
 ## Run model -------------------------------------------------------------------
@@ -189,7 +164,7 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- fit_model(inputs, scaler = scaler, species_cor = "none", temporal_cor = "ar1",
+fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",
@@ -206,12 +181,12 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "none", temporal_cor = "
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5)
+                 n_forecast = 5, K_formula = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
 fit$opt$objective
-fit$mAIC # 2847
+fit$mAIC
 
 # loo_fit <- run_loo(fit)
 # loo_fit$mse
@@ -333,24 +308,11 @@ p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe)
 
-# ## pe vs covariates
-# fit$pop %>%
-#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
-#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-#     add_markers(x = ~core_cil, y = ~pe, text = ~year)
-# fit$pop %>%
-#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
-#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-#     add_markers(x = ~nao, y = ~pe, text = ~year)
-# fit$pop %>%
-#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
-#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-#     add_markers(x = ~cei, y = ~pe, text = ~year)
-# fit$pop %>%
-#     dplyr::left_join(inputs$covariates, by = c("year")) %>%
-#     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
-#     add_markers(x = ~tice, y = ~pe, text = ~year)
-
+## pe vs covariates
+fit$pop %>%
+    dplyr::left_join(inputs$landings, by = c("species", "year")) %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
+    add_markers(x = ~winter_nao, y = ~pe, text = ~year)
 
 ## Correlation in pe - post hoc
 pe_wide <- tidyr::spread(fit$pop[, c("year", "species", "pe")], species, pe)

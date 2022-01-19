@@ -28,9 +28,8 @@ fit_model(
 \arguments{
 \item{inputs}{List that includes the following data.frames with required columns in
 parentheses: landings (species, year, landings), index (species, year,
-survey, index). An optional covariates data.frame may be included in
-the list with the columns year and optional covriates (e.g., nao) for
-use in the formula arguments.}
+survey, index). Covariates can be included in the landings data.frame
+and specified using the covariates arguments (optional).}
 
 \item{scaler}{Number to scale values by to aid convergence.}
 

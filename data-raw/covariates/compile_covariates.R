@@ -3,30 +3,13 @@ library(data.table)
 library(dplyr)
 
 ## Calculate annual NAO index
-monthly_nao <- fread("data-raw/covariates/monthly_NAO.txt")
-names(monthly_nao) <- c("year", "month", "index")
-
-nao <- monthly_nao %>%
-    filter(month %in% c(12, 1, 2)) %>%
-    group_by(year) %>%
-    summarise(nao = mean(index))
-
-## Import core cil data
-core_cil <- fread("data-raw/covariates/core_cil.csv")
-
-## Import composite environmental index
-cei <- fread("data-raw/covariates/cei.csv")
-names(cei) <- c("year", "cei")
-
-## Import timing of ice retreat data
-tice <- fread("data-raw/covariates/tice.csv") %>%
-    select(year, tice)
-
-## Merge and export
-covariates <- nao %>%
-    full_join(core_cil, by = "year") %>%
-    full_join(cei, by = "year") %>%
-    full_join(tice, by = "year") %>%
-    arrange(year)
+monthly_nao <- fread("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/pna/norm.nao.monthly.b5001.current.ascii.table")
+names(monthly_nao) <- c("year", month.abb)
+nao <- data.frame(year = monthly_nao$year,
+                  winter_nao = rowMeans(monthly_nao[, c("Dec", "Jan", "Feb")]),
+                  spring_nao = rowMeans(monthly_nao[, c("Mar", "Apr", "May")]),
+                  summer_nao = rowMeans(monthly_nao[, c("Jun", "Jul", "Aug")]),
+                  fall_nao = rowMeans(monthly_nao[, c("Sep", "Oct", "Nov")]))
+covariates <- nao
 
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)
