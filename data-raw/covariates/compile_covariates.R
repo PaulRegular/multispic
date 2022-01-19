@@ -2,9 +2,14 @@
 library(data.table)
 library(dplyr)
 
-## Calculate annual NAO index
+## Import monthly NAO index
 monthly_nao <- fread("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/pna/norm.nao.monthly.b5001.current.ascii.table")
 names(monthly_nao) <- c("year", month.abb)
+
+## Lag Dec to pair with Jan for winter NAO index
+monthly_nao$Dec <- c(NA, monthly_nao$Dec[-1])
+
+## Calculate seasonal NAO indices
 nao <- data.frame(year = monthly_nao$year,
                   winter_nao = rowMeans(monthly_nao[, c("Dec", "Jan", "Feb")]),
                   spring_nao = rowMeans(monthly_nao[, c("Mar", "Apr", "May")]),

@@ -8,3 +8,4 @@
 /data-raw/nafo_scr/
 .Rproj.user
 /analysis/multispecies_surplus_production_explorations_cache/
+!data/*.RData

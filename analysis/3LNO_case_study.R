@@ -38,8 +38,8 @@ sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagi
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -181,7 +181,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5, K_formula = ~winter_nao)
+                 n_forecast = 5, K_formula = NULL)
 
 fit$opt$message
 fit$sd_rep
