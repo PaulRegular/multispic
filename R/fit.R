@@ -58,6 +58,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           and covariates. Not used if set to NULL.
 #' @param K_formula          Formula describing relationship between K and covariates. Not used if set
 #'                           to NULL.
+#' @param B_groups           Formula used to aggregate biomass across species using specific groupings.
+#'                           All species are summed if set to NULL.
 #' @param n_forecast         Number of years to forecast. Assumes status quo landings and covariates
 #'                           (i.e. terminal values assumed through projected years).
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
@@ -82,6 +84,7 @@ fit_model <- function(inputs,
                       temporal_cor = "none",
                       pe_formula = NULL,
                       K_formula = NULL,
+                      B_groups = NULL,
                       n_forecast = 0,
                       leave_out = NULL,
                       light = FALSE,
@@ -125,6 +128,15 @@ fit_model <- function(inputs,
         K_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
         K_model_mat <- model.matrix(K_formula, data = landings)[, -1, drop = FALSE] # drop intercept because that is covered by K
+    }
+    if (is.null(B_groups)) {
+        B_group_mat <- matrix(1, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
+    } else {
+        f <- as.formula(paste(Reduce(paste, deparse(B_groups)), "-1"))
+        sg <- unique(landings[, c("species", all.vars(B_groups))])
+        mm <- model.matrix(f, data = sg)
+        ind <- rep(seq(ncol(mm)), colSums(mm))
+        B_group_mat <- unname(mm[, ind])
     }
 
     ## Scale index and landings to aid convergence
@@ -194,6 +206,7 @@ fit_model <- function(inputs,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 pe_covariates = pe_model_mat,
                 K_covariates = K_model_mat,
+                B_groups = B_group_mat,
                 keep = keep)
 
     par <- list(log_B = matrix(floor(mean(log(index$index))),

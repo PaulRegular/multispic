@@ -181,7 +181,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "none", temporal_cor = "
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5, K_formula = ~winter_nao)
+                 n_forecast = 5, K_formula = ~species, B_groups = ~species)
 
 fit$opt$message
 fit$sd_rep

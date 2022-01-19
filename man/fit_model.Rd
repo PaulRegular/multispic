@@ -19,6 +19,7 @@ fit_model(
   temporal_cor = "none",
   pe_formula = NULL,
   K_formula = NULL,
+  B_groups = NULL,
   n_forecast = 0,
   leave_out = NULL,
   light = FALSE,
@@ -68,6 +69,9 @@ and covariates. Not used if set to NULL.}
 
 \item{K_formula}{Formula describing relationship between K and covariates. Not used if set
 to NULL.}
+
+\item{B_groups}{Formula used to aggregate biomass across species using specific groupings.
+All species are summed if set to NULL.}
 
 \item{n_forecast}{Number of years to forecast. Assumes status quo landings and covariates
 (i.e. terminal values assumed through projected years).}

@@ -46,6 +46,7 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(pe_covariates);
     DATA_MATRIX(K_covariates);
+    DATA_MATRIX(B_groups);
 
     // Parameters
     PARAMETER_MATRIX(log_B);
@@ -209,14 +210,20 @@ Type objective_function<Type>::operator() ()
     // Process equation
     using namespace density;
 
+    vector<Type> grouped_B(nS);
+    vector<Type> B_row(nS);
+    vector<Type> B_groups_row(nS);
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
             K_mat(i, j) = K * exp(K_covar_mat(i, j));
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {
+                B_row = B.row(i - 1);
+                B_groups_row = B_groups.row(j);
+                grouped_B = B_row * B_groups_row; // use 0s and 1s to group B sum
                 pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow((B.row(i - 1).sum() / K_mat(i, j)), m(j) - 1.0)) -
+                    (1.0 - pow((grouped_B.sum() / K_mat(i, j)), m(j) - 1.0)) -
                     L_mat(i - 1, j)) * exp(pe_covar_mat(i, j));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
