@@ -38,8 +38,8 @@ sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagi
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -181,7 +181,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5, K_formula = NULL)
+                 n_forecast = 5, K_formula = ~species)
 
 fit$opt$message
 fit$sd_rep
@@ -403,11 +403,11 @@ p <- fit$pop %>%
 p
 
 ## K
-p <- fit$tot_pop %>%
-    plot_ly(x = ~year, color = I(viridis::viridis(1))) %>%
+p <- fit$pop %>%
+    plot_ly(x = ~year, color = ~species, legendgroup = ~species) %>%
     add_ribbons(ymin = ~K_lwr, ymax = ~K_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE, name = "95% CI") %>%
-    add_lines(y = ~K, name = "K")
+    add_lines(y = ~K)
 p
 
 

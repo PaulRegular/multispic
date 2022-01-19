@@ -95,8 +95,9 @@ Type objective_function<Type>::operator() ()
     matrix<Type> L_mat(nY, nS);
     vector<Type> F(nL);
     vector<Type> log_F(nL);
-    vector<Type> K_vec(nY);
-    vector<Type> log_K_vec(nY);
+    matrix<Type> K_mat(nY, nS);
+    vector<Type> K_vec(nL);
+    vector<Type> log_K_vec(nL);
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -117,11 +118,17 @@ Type objective_function<Type>::operator() ()
     Type sd_logit_rho = exp(log_sd_logit_rho);
 
 
-    // Set-up a landings matrix and vector of B
+    // Set-up a vector of B, landings matrix, and covariate effects
+    vector<Type> pe_covar_vec = pe_covariates * pe_betas;
+    vector<Type> K_covar_vec = K_covariates * K_betas;
+    matrix<Type> pe_covar_mat(nY, nS);
+    matrix<Type> K_covar_mat(nY, nS);
     for (int i = 0; i < nL; i++) {
         L_mat(L_year(i), L_species(i)) = L(i);
         log_B_vec(i) = log_B(L_year(i), L_species(i));
         B_vec(i) = exp(log_B_vec(i));
+        pe_covar_mat(L_year(i), L_species(i)) = pe_covar_vec(i);
+        K_covar_mat(L_year(i), L_species(i)) = K_covar_vec(i);
     }
 
     // Initalize nll
@@ -201,17 +208,16 @@ Type objective_function<Type>::operator() ()
 
     // Process equation
     using namespace density;
-    vector<Type> pe_covar_effect = pe_covariates * pe_betas;
-    vector<Type> K_covar_effect = K_covariates * K_betas;
+
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            K_vec(i) = K + K_covar_effect(i);
+            K_mat(i, j) = K + K_covar_mat(i, j);
             if (i == 0) {
-                pred_B(i, j) = B0(j) * exp(pe_covar_effect(i));
+                pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {
                 pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow((B.row(i - 1).sum() / K_vec(i)), m(j) - 1.0)) -
-                    L_mat(i - 1, j)) * exp(pe_covar_effect(i));
+                    (1.0 - pow((B.row(i - 1).sum() / K_mat(i, j)), m(j) - 1.0)) -
+                    L_mat(i - 1, j)) * exp(pe_covar_mat(i, j));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));
@@ -220,14 +226,13 @@ Type objective_function<Type>::operator() ()
     }
     if (nS == 1) { // there were issues with the matrix math when attempting to fit to one species using the 'else' code below
         Type sd_B_scalar = sqrt(((sd_B(0) * sd_B(0)) / (1 - (phi * phi))));
-        vector<Type> delta_vector = delta.col(0);
-        nll += SCALE(AR1(phi), sd_B_scalar)(delta_vector);
+        vector<Type> delta_vec = delta.col(0);
+        nll += SCALE(AR1(phi), sd_B_scalar)(delta_vec);
     } else {
         array<Type> delta_transpose = delta.transpose();
-        vector<Type> sd_B_vector = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
-        nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), sd_B_vector))(delta_transpose);
+        vector<Type> sd_B_vec = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
+        nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), sd_B_vec))(delta_transpose);
     }
-    log_K_vec = log(K_vec);
 
     // Observation equations
     for (int i = 0; i < nI; i++){
@@ -246,6 +251,8 @@ Type objective_function<Type>::operator() ()
         log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));
         F(i) = L(i) / B_vec(i);
         log_F(i) = log(F(i));
+        K_vec(i) = K_mat(L_year(i), L_species(i));
+        log_K_vec(i) = log(K_vec(i));
     }
 
     // Total biomass
