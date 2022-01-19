@@ -155,8 +155,17 @@ fit_model <- function(inputs,
     }
 
     ## Set-up the objects for TMB
-    n_rho <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
-                                  ncol = nlevels(landings$species))))
+    if (nlevels(landings$species) == 1) {
+        n_rho <- 1
+        if (species_cor != "none") {
+            warning("Data from only one species was supplied; species_cor is therefore moot; setting to 'none'")
+            species_cor <- "none"
+        }
+    } else {
+        n_rho <- sum(lower.tri(matrix(NA, nrow = nlevels(landings$species),
+                                      ncol = nlevels(landings$species))))
+    }
+
     dat <- list(L = as.numeric(landings$landings),
                 L_species = as.numeric(landings$species) - 1,
                 L_year = as.numeric(landings$y) - 1,
@@ -174,7 +183,7 @@ fit_model <- function(inputs,
                 log_q_option = as.integer(log_q_option$option) - 1,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_rho_option = as.integer(logit_rho_option$option) - 1,
-                logit_phi_option = as.integer(logit_rho_option$option) - 1,
+                logit_phi_option = as.integer(logit_phi_option$option) - 1,
                 mean_log_K = log_K_option$mean,
                 sd_log_K = log_K_option$sd,
                 lower_log_K = log_K_option$lower,

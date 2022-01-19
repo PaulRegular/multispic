@@ -2,6 +2,7 @@
 ## TODO:
 ## - Calculate one-step ahead residuals
 
+
 library(units)
 library(plotly)
 library(TMB)
@@ -52,6 +53,7 @@ sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagi
 #             "White Hake")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod")
+sub_sp <- "Atlantic Cod"
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year & index$year <= end_year &
@@ -187,7 +189,7 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+fit <- fit_model(inputs, scaler = scaler, species_cor = "none", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",
@@ -230,17 +232,17 @@ plot_prior_post(prior_mean = mean_log_K, prior_sd = sd_log_K,
 plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
                 post_mean = post_mean$log_r,
                 post_sd = post_sd$log_r,
-                post_names = levels(landings$species),
+                post_names = levels(fit$landings$species),
                 xlab = "log(r)")
 plot_prior_post(prior_mean = mean_log_B0, prior_sd = sd_log_B0,
                 post_mean = post_mean$log_B0,
                 post_sd = post_sd$log_B0,
-                post_names = levels(landings$species),
+                post_names = levels(fit$landings$species),
                 xlab = "log(B0)")
 plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_B,
                 post_sd = post_sd$log_sd_B,
-                post_names = levels(landings$species),
+                post_names = levels(fit$landings$species),
                 xlab = "log(SD<sub>B</sub>)")
 plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
                 post_mean = post_mean$log_q,
@@ -426,13 +428,6 @@ p <- fit$tot_pop %>%
     layout(title = "Total biomass")
 p
 p %>% layout(yaxis = list(type = "log"))
-
-
-plot_ly() %>%
-    add_lines(x = ~year, y = ~B, name = "B", data = fit$tot_pop) %>%
-    add_lines(x = ~year, y = ~K/2, name = "B_msy", data = fit$tot_pop) %>%
-    add_lines(x = ~year, y = ~tot_landings, name = "L", data = tot_landings)
-
 
 
 ## F

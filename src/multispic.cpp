@@ -218,9 +218,15 @@ Type objective_function<Type>::operator() ()
             delta(i, j) = log_B(i, j) - log_pred_B(i, j);
         }
     }
-    vector<Type> adj_sd_B = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
-    array<Type> delta_transpose = delta.transpose();
-    nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), adj_sd_B))(delta_transpose);
+    if (nS == 1) { // there were issues with the matrix math when attempting to fit to one species using the 'else' code below
+        Type sd_B_scalar = sqrt(((sd_B(0) * sd_B(0)) / (1 - (phi * phi))));
+        vector<Type> delta_vector = delta.col(0);
+        nll += SCALE(AR1(phi), sd_B_scalar)(delta_vector);
+    } else {
+        array<Type> delta_transpose = delta.transpose();
+        vector<Type> sd_B_vector = sqrt(((sd_B * sd_B) / (1 - (phi * phi))));
+        nll += AR1(phi, VECSCALE(UNSTRUCTURED_CORR(rho), sd_B_vector))(delta_transpose);
+    }
     log_K_vec = log(K_vec);
 
     // Observation equations
