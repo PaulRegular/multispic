@@ -211,7 +211,7 @@ Type objective_function<Type>::operator() ()
 
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            K_mat(i, j) = K + K_covar_mat(i, j);
+            K_mat(i, j) = K * exp(K_covar_mat(i, j));
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {

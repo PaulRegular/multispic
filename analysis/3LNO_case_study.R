@@ -164,7 +164,7 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+fit <- fit_model(inputs, scaler = scaler, species_cor = "none", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",
@@ -181,7 +181,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5, K_formula = ~species)
+                 n_forecast = 5, K_formula = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
