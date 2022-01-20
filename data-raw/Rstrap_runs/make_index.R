@@ -1,200 +1,41 @@
 
-library(Rstrap)
-library(dplyr)
-library(plotly)
+source("data-raw/Rstrap_runs/index_helpers.R")
 
-## Note: index converted to kt
+regions <- list("2J3K" = c("2J", "3K"),
+                "3LNO" = c("3L", "3N", "3O"),
+                "3Ps" = c("3P"))
 
-## Keep years where 90% of the core area is covered
-## Core area = strat that have been sampled for more than 20 years
-setrec <- setdet %>%
-    filter(rec == 5, NAFOdiv %in% c("3L", "3N", "3O"),
-           which.survey == "multispecies")
+index <- lapply(seq_along(regions), function(i) {
 
-strat_freq <- setrec %>%
-    group_by(survey.year, season) %>%
-    distinct(NAFOdiv, strat) %>%
-    group_by(season, NAFOdiv, strat) %>%
-    summarise(n_years_sampled = n()) %>%
-    ungroup()
+    setdet <- region_data(regions[[i]])
 
-strat_freq %>%
-    plot_ly(x = ~factor(strat), y = ~n_years_sampled, color = ~season) %>%
-    add_bars() %>%
-    layout(xaxis = list(title = "Strat"),
-           yaxis = list(title = "Years sampled"))
+    common_spp <- unique(na.omit(setdet[, c("spec", "common.name")]))
 
-core_strat <- strat_freq %>%
-    filter(n_years_sampled > 20) %>%
-    .$strat %>% sort() %>% unique()
+    ## Generate index across common species
+    region_index <- lapply(seq(nrow(common_spp)), function(j) {
+        stack_strat(setdet,
+                    regions[[i]],
+                    common_spp$spec[j],
+                    common_spp$common.name[j],
+                    names(regions[i]))
+    })
+    region_index <- do.call(rbind, region_index)
+    rownames(region_index) <- NULL
 
-coverage <- setrec %>%
-    filter(strat %in% core_strat) %>%
-    group_by(season, survey.year) %>%
-    distinct(NAFOdiv, strat, strat.area) %>%
-    summarise(n_div = length(unique(NAFOdiv)),
-              n_strat = length(unique(strat)),
-              area_covered = sum(strat.area)) %>%
-    ungroup() %>%
-    mutate(percent_covered = (area_covered / max(area_covered)) * 100) %>%
-    as.data.frame()
+    region_index
 
-coverage %>%
-    plot_ly(x = ~survey.year, y = ~percent_covered, color = ~season) %>%
-    add_bars() %>%
-    layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Percent coverage"))
-
-fall_years <- coverage %>%
-    filter(percent_covered >= 90, season == "fall") %>%
-    .$survey.year
-
-spring_years <- coverage %>%
-    filter(percent_covered >= 90, season == "spring") %>%
-    .$survey.year
-
-
-## Common species = those that have been consistently sampled in
-## core strata for > 30 years
-
-totals <- setdet %>%
-    filter(!is.na(spec) & strat %in% core_strat,
-           survey.year %in% unique(c(fall_years, spring_years))) %>%
-    group_by(survey.year, spec, common.name) %>%
-    summarise(n_sets = n(),
-              total_n = sum(number, na.rm = TRUE),
-              total_weight = sum(weight, na.rm = TRUE)) %>%
-    group_by(survey.year) %>%
-    mutate(ranking = dense_rank(desc(total_weight))) %>%
-    arrange(ranking)
-
-# length(unique(setdet$survey.year))
-common_spp <- totals %>%
-    filter(n_sets > 1) %>%
-    group_by(spec, common.name) %>%
-    summarise(n_cases = n()) %>%
-    arrange(-n_cases) %>%
-    filter(n_cases > 30)
-data.frame(common_spp)
-
-## Tidy up common name
-x <- common_spp$common.name
-x <- gsub(",", ", ", x)
-x <- sub("(^.*),\\s(.*$)","\\2 \\1", x)
-x <- tolower(x)
-x <- tools::toTitleCase(x)
-x <- gsub(" \\(Ns\\)| \\(Common)| \\(Marlin|\\(Monkfish\\)|\\(Marinus\\)|\\(Round\\) ", "", x)
-x[x == "Turbot"] <- "Greenland Halibut"
-x[x == "Halibut (Atlantic)"] <- "Atlantic Halibut"
-x[x == " Deep Water Redfish"] <- "Redfish spp."
-x[x == "Offshore Sand Launce"] <- "Sand Lance"
-x[x == "Lanternfishes"] <- "Lanternfish"
-x[x == "Common Angler"] <- "Monkfish"
-x[x == "Scyphozoan (Jellyfish)"] <- "Jellyfish"
-x[x == "Cephalopod Rossi.(B.a.sq"] <- "Rossi spp."
-x[x == "Octopus   Octo."] <- "Octopus spp."
-names(x) <- common_spp$spec
-common_spp <- x
-
-## Aggregate Wolffish and Skate
-
-wolf_spp <- common_spp[grep("Wolffish", common_spp)]
-wolf <- "Wolffish spp."
-names(wolf) <- paste0(names(wolf_spp), collapse = "")
-
-skate_spp <- common_spp[grep("Skate", common_spp)]
-skate <- "Skate spp."
-names(skate) <- paste0(names(skate_spp), collapse = "")
-
-common_spp <- common_spp[!common_spp %in% c(wolf_spp, skate_spp)]
-common_spp <- c(common_spp, wolf, skate)
-
-totals$spec[totals$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
-totals$spec[totals$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
-totals$common.name <- common_spp[as.character(totals$spec)]
-
-totals %>%
-    filter(!is.na(common.name)) %>%
-    plot_ly(x = ~survey.year, y = ~total_weight, color = ~common.name) %>%
-    add_bars() %>%
-    layout(barmode = "stack")
-
-## Replace species specific codes in setdet with wolffish and skate spp. codes
-setdet$spec[setdet$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
-setdet$spec[setdet$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
-
-
-
-## Functions
-
-one_strat <- function(years, season, series, NAFOdiv, species, species_name) {
-
-    out <- strat.fun(setdet = setdet, program = "strat2",
-                     data.series = series, species = species,
-                     survey.year = years,
-                     season = season, NAFOdiv = NAFOdiv,
-                     export = NULL, plot.results = FALSE)
-    tab <- out$strat2$biomass$summary[, c("survey.year", "total")]
-
-    stock <- paste0("3", paste0(gsub("3", "", NAFOdiv), collapse = ""))
-
-    tab <- data.frame(species = species_name, stock = stock, gear = series,
-                      season = Hmisc::capitalize(season),
-                      year = tab$survey.year, index = tab$total / 1000000)
-    tab
-}
-
-stack_strat <- function(NAFOdiv, species, species_name) {
-
-    ## Keep years were > 60 strat were covered
-    spring_yankee <- one_strat(spring_years[spring_years <= 1982],
-                               "spring", "Yankee", NAFOdiv, species, species_name)
-    spring_engel <- one_strat(spring_years[spring_years >= 1982 & spring_years <= 1995],
-                              "spring", "Engel", NAFOdiv, species, species_name)
-    spring_campelen <- one_strat(spring_years[spring_years >= 1996],
-                                 "spring", "Campelen", NAFOdiv, species, species_name)
-    fall_engel <- one_strat(fall_years[fall_years >= 1982 & fall_years <= 1995],
-                            "fall", "Engel", NAFOdiv, species, species_name)
-    fall_campelen <- one_strat(fall_years[fall_years >= 1996],
-                               "fall", "Campelen", NAFOdiv, species, species_name)
-
-    rbind(spring_yankee, spring_engel, spring_campelen, fall_engel, fall_campelen)
-
-}
-
-
-
-## Generate index across common species
-index <- lapply(seq_along(common_spp), function(i) {
-    stack_strat(c("3L", "3N", "3O"),
-                as.numeric(names(common_spp[i])),
-                unname(common_spp[i]))
 })
 index <- do.call(rbind, index)
 
-## Drop zeros - data are missing from some species (e.g., capelin) for some years in the spring series
+index[index$index == 0, ]
+table(index$species[index$index == 0])
+
+## Drop zeros
+## Zeros are more commonly observed for rare and non-commercial species
+## Hard to know if they are true zeros or simply missing data
+## (i.e., very rare problem for the focal species to be used in the multispic analysis)
 index <- index[index$index > 0, ]
+index
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
-
-
-# ## Export some yellowtail and witch data
-# yt <- strat.fun(setdet = setdet, program = "strat2",
-#                 data.series = "Campelen", species = 891,
-#                 survey.year = 1996:2018,
-#                 season = "spring", NAFOdiv = c("3L", "3N", "3O"),
-#                 export = NULL, plot.results = FALSE)
-# yt_setdet <- yt$raw.data$set.details
-# write.csv(yt_setdet, file = "data-raw/Rstrap_runs/exports/yellowtail_3LNO.csv",
-#           row.names = FALSE)
-#
-# wi <- strat.fun(setdet = setdet, program = "strat2",
-#                 data.series = "Campelen", species = 890,
-#                 survey.year = 1996:2018,
-#                 season = "spring", NAFOdiv = c("3N", "3O"),
-#                 export = NULL, plot.results = FALSE)
-# wi_setdet <- wi$raw.data$set.details
-# write.csv(wi_setdet, file = "data-raw/Rstrap_runs/exports/witch_3NO.csv",
-#           row.names = FALSE)
-#
 

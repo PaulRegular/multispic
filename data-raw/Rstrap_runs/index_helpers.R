@@ -14,7 +14,15 @@ library(plotly)
 
 region_data <- function(divisions) {
 
-    setrec <- Rstrap::setdet %>%
+    raw_setdet <- Rstrap::setdet
+
+    ## Treat winter as spring survey for 3Ps as is done in the assessment
+    ## Gear change roughly corresponds to change in survey timing
+    raw_setdet$season[!is.na(raw_setdet$season) &
+                          raw_setdet$NAFOdiv == "3P" &
+                          raw_setdet$season == "winter"] <- "spring"
+
+    setrec <- raw_setdet %>%
         filter(rec == 5, NAFOdiv %in% divisions,
                which.survey == "multispecies")
 
@@ -61,7 +69,7 @@ region_data <- function(divisions) {
         .$survey.year
 
 
-    totals <- Rstrap::setdet %>%
+    totals <- raw_setdet %>%
         filter(!is.na(spec) & strat %in% core_strat,
                survey.year %in% unique(c(fall_years, spring_years))) %>%
         group_by(survey.year, spec, common.name) %>%
@@ -129,19 +137,19 @@ region_data <- function(divisions) {
         layout(barmode = "stack")
 
     ## Replace species specific codes in setdet with redfish, wolffish, and skate spp. "codes"
-    setdet$spec[setdet$spec %in% as.numeric(names(redfish_spp))] <- as.numeric(names(redfish))
-    setdet$spec[setdet$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
-    setdet$spec[setdet$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
+    raw_setdet$spec[raw_setdet$spec %in% as.numeric(names(redfish_spp))] <- as.numeric(names(redfish))
+    raw_setdet$spec[raw_setdet$spec %in% as.numeric(names(wolf_spp))] <- as.numeric(names(wolf))
+    raw_setdet$spec[raw_setdet$spec %in% as.numeric(names(skate_spp))] <- as.numeric(names(skate))
 
-    setdet <- Rstrap::setdet %>%
+    sub_setdet <- raw_setdet %>%
         filter(strat %in% core_strat,
                (!is.na(season) & season == "spring" & survey.year %in% spring_years) |
                (!is.na(season) & season == "fall" & survey.year %in% fall_years),
                (rec == 5 | spec %in% as.numeric(names(common_spp))))
 
-    setdet$common.name <- common_spp[as.character(setdet$spec)]
+    sub_setdet$common.name <- common_spp[as.character(sub_setdet$spec)]
 
-    setdet
+    sub_setdet
 
 }
 
