@@ -2,6 +2,12 @@
 ## TODO:
 ## - Calculate one-step ahead residuals
 
+## - Add data from 2J3K and 3Ps eco-regions
+## - Fit to each region (single-species, 5 species, 10 species, all species)
+## - Try to combine regions (K_formula = ~region, B_groups = ~region)
+## - Calculate species-specific leave one out scores to assess predictive ability of each model
+## - Hypothesis: multispecies >> single-species inference
+
 
 library(units)
 library(plotly)
