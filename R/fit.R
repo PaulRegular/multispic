@@ -393,6 +393,13 @@ fit_model <- function(inputs,
         tot_pop$B_lwr <- exp(lwr$log_tot_B) * scaler
         tot_pop$B_upr <- exp(upr$log_tot_B) * scaler
 
+        ## Add K to tot_pop object if K is shared across all species
+        if (all(apply(rep$K_mat, 1, function(x) length(unique(x)) == 1) == TRUE)) {
+            tot_pop$K <- exp(est$log_tot_K) * scaler
+            tot_pop$K_lwr <- exp(lwr$log_tot_K) * scaler
+            tot_pop$K_upr <- exp(upr$log_tot_K) * scaler
+        }
+
     }
 
     ## Calculate marginal AIC

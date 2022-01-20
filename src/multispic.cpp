@@ -99,6 +99,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> K_mat(nY, nS);
     vector<Type> K_vec(nL);
     vector<Type> log_K_vec(nL);
+    vector<Type> tot_K(nY);
+    vector<Type> log_tot_K(nY);
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -262,9 +264,11 @@ Type objective_function<Type>::operator() ()
         log_K_vec(i) = log(K_vec(i));
     }
 
-    // Total biomass
+    // Total biomass and K
     tot_B = B.rowwise().sum();
     log_tot_B = log(tot_B);
+    tot_K = K_mat.col(0); // only useful when K is equal across species
+    log_tot_K = log(tot_K);
 
     // AD report values
     ADREPORT(log_B_vec);
@@ -272,12 +276,14 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_F);
     ADREPORT(log_K_vec);
     ADREPORT(log_tot_B);
+    ADREPORT(log_tot_K);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);
     REPORT(log_I_res);
     REPORT(log_I_std_res);
     REPORT(log_pred_I);
+    REPORT(K_mat);
 
     REPORT(pen);
 
