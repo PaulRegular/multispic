@@ -8,11 +8,11 @@ names(landings) <- c("year", "country", "division", "species", "landings")
 
 ## Filter to focal area
 landings <- landings %>%
-    filter(division %in% c("2J", "3K", "3L", "3N", "3O", "3P")) %>%
+    filter(division %in% c("2J", "3K", "3L", "3N", "3O", "3P", "3PS")) %>%
     mutate(region = case_when(
         division %in% c("2J", "3K") ~ "2J3K",
         division %in% c("3L", "3N", "3O") ~ "3LNO",
-        division %in% c("3P") ~ "3Ps",
+        division %in% c("3P", "3PS") ~ "3Ps",
         TRUE ~ "ERROR"
     ))
 
