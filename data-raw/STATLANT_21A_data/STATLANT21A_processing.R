@@ -12,7 +12,7 @@ landings <- landings %>%
     mutate(region = case_when(
         division %in% c("2J", "3K") ~ "2J3K",
         division %in% c("3L", "3N", "3O") ~ "3LNO",
-        division %in% c("3P") ~ "3P",
+        division %in% c("3P") ~ "3Ps",
         TRUE ~ "ERROR"
     ))
 

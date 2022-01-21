@@ -31,8 +31,11 @@ landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-t
 ## Limit to species with landings data because
 ## catchability may not be estimable without landings data??
 
-sub_region <- "3LNO"
-sub_sp <- unique(multispic::landings$species)
+sub_region <- "3Ps"
+landings_sp <- unique(multispic::landings$species[multispic::landings$region %in% sub_region])
+index_sp <- unique(multispic::index$species[multispic::index$region %in% sub_region])
+sub_sp <- landings_sp[landings_sp %in% index_sp]
+
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
@@ -45,14 +48,14 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
-# sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
-#             "Atlantic Cod")
+# sub_sp <- c("American Plaice", "Atlantic Cod", "Redfish spp.", "Witch Flounder")
 # sub_sp <- "Atlantic Cod"
+# sub_sp <- "Witch Flounder"
 start_year <- 1977
 end_year <- 2020
 index <- index[index$year >= start_year &
