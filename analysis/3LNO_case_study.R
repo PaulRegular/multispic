@@ -28,10 +28,11 @@ landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
 landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-tot)
 
-## Subset the data
-## Note: catchability may not be estimable without landings data??
+## Limit to species with landings data because
+## catchability may not be estimable without landings data??
+
+sub_region <- "3LNO"
 sub_sp <- unique(multispic::landings$species)
-sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagic species
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
@@ -44,8 +45,8 @@ sub_sp <- sub_sp[!sub_sp %in% c("Capelin", "Atlantic Herring")] # exclude pelagi
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-            "Yellowtail Flounder")
+# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+#             "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -54,10 +55,14 @@ sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 # sub_sp <- "Atlantic Cod"
 start_year <- 1977
 end_year <- 2020
-index <- index[index$year >= start_year & index$year <= end_year &
-                   index$species %in% sub_sp, ]
-landings <- landings[landings$year >= start_year & landings$year <= end_year &
-                         landings$species %in% sub_sp, ]
+index <- index[index$year >= start_year &
+                   index$year <= end_year &
+                   index$species %in% sub_sp &
+                   index$region %in% sub_region, ]
+landings <- landings[landings$year >= start_year &
+                         landings$year <= end_year &
+                         landings$species %in% sub_sp &
+                         landings$region %in% sub_region, ]
 
 ## Set-up survey column for model; assume Yankee Q = Engel Q
 index$gear[index$gear == "Yankee"] <- "Engel"

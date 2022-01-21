@@ -17,6 +17,7 @@ landings <- landings %>%
     ))
 
 ## Demersal fish species with all time reported landings of > 1000 tonnes
+## Exception: Winter Flounder b/c inshore and not present in multispecies survey
 totals <- landings %>%
     group_by(species) %>%
     summarise(n_years = length(unique(year)), total = sum(landings)) %>%
@@ -38,7 +39,7 @@ keep_sp <- c("ATLANTIC COD - COD" = "Atlantic Cod",
              "ATLANTIC HALIBUT - HAL" = "Atlantic Halibut",
              "AMERICAN ANGLER - ANG" = "Monkfish",
              "RED HAKE - HKR" = "Red Hake",
-             "WINTER FLOUNDER - FLW" = "Winter Flounder", # may not be present in the survey data b/c inshore
+             # "WINTER FLOUNDER - FLW" = "Winter Flounder",
              "SILVER HAKE - HKS" = "Silver Hake",
              "BEAKED REDFISH(DEEP-WATER) - REB" = "Redfish spp.",
              "ATLANTIC WOLFFISH - CAA" = "Wolffish spp.",
