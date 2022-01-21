@@ -67,9 +67,9 @@ landings <- merge(landings, grd, by = c("year", "region", "species"), all = TRUE
 landings$landings[is.na(landings$landings)] <- 0
 
 ## Export
-landings <- landings[, c("year", "species", "region", "landings")]
+landings <- landings[, c("year", "region", "species", "landings")]
 landings <- landings[order(landings$year, landings$region, landings$species), ]
-names(landings) <- c("Year", "Species", "Region", "Landings (kt)")
+names(landings) <- c("Year", "Region", "Species", "Landings (kt)")
 write.csv(landings, file = "data-raw/landings.csv", row.names = FALSE)
 
 
