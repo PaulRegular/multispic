@@ -350,10 +350,9 @@ fit_model <- function(inputs,
     index$std_res <- rep$log_I_std_res
     index$left_out <- !as.logical(keep)
 
-    pop <- data.frame(year = landings$year,
-                      species = landings$species,
-                      stock = landings$stock,
-                      pe = rep$log_B_std_res)
+    pop <- landings
+    pop$pe <- rep$log_B_std_res
+
     tot_pop <- data.frame(year = sort(unique(landings$year)))
 
     se <- NA

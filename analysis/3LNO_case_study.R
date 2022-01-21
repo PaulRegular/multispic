@@ -45,8 +45,8 @@ sub_sp <- unique(multispic::landings$species)
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder")
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder")
+sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
+            "Yellowtail Flounder")
 # sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
 #             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
 #             "White Hake")
@@ -88,7 +88,6 @@ index %>%
     layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
-    group_by(stock) %>%
     plot_ly() %>%
     add_trace(x = ~year, y = ~landings, color = ~species,
               colors = viridis::viridis(100), mode = "markers+lines",
@@ -241,14 +240,14 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_names = levels(index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
-sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
-rownames(sp_rho) <- colnames(sp_rho) <- levels(landings$species)
+sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
+rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
 sp_rho[lower.tri(sp_rho)] <- sp_rho[upper.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
 diag(sp_rho) <- 1
 round(sp_rho, 2)
 for (i in seq(nrow(sp_rho))) {
     for (j in seq(ncol(sp_rho))) {
-        sp_nm_mat[i, j] <- paste(levels(landings$species)[i], "-", levels(landings$species)[j])
+        sp_nm_mat[i, j] <- paste(levels(fit$pop$species)[i], "-", levels(fit$pop$species)[j])
     }
 }
 
@@ -321,7 +320,6 @@ p %>% add_lines(x = ~year, y = ~pe)
 
 ## pe vs covariates
 fit$pop %>%
-    dplyr::left_join(inputs$landings, by = c("species", "year")) %>%
     plot_ly(color = ~species, colors = viridis::viridis(100)) %>%
     add_markers(x = ~winter_nao, y = ~pe, text = ~year)
 
@@ -374,8 +372,14 @@ p <- fit$pop %>%
             legendgroup = ~species) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~B) %>%
-    add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
+    add_lines(y = ~B)
+if (is.null(fit$tot_pop)) { # tot_pop object will not be present if K is grouped
+    p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
+} else {
+    p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K",
+                         color = I("black"), legendgroup = NULL)
+}
+
 p
 p %>% layout(yaxis = list(type = "log"))
 
