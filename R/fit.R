@@ -95,6 +95,18 @@ fit_model <- function(inputs,
     landings <- inputs$landings
     index <- inputs$index
 
+    ## Stop if there are any NAs
+    if (any(is.na(landings$landings)) | any(is.na(index$index))) {
+        stop("NA landings or index values are not permitted in the current model.")
+    }
+
+    ## Drop zeros
+    ind <- index$index == 0
+    if (sum(ind) > 0) {
+        warning("Index values equal to zero are present in the inputs. The current model lacks a way to deal with index values equal to zero. These values are being dropped from the analysis (i.e. treated as missing values).")
+        index <- index[!ind, ]
+    }
+
     ## Set-up inputs for forecasts
     if (n_forecast > 0) {
         terminal_landings <- landings[landings$year == max(landings$year), ]

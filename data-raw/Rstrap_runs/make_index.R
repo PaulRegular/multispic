@@ -30,12 +30,9 @@ index <- do.call(rbind, index)
 index[index$index == 0, ]
 table(index$species[index$index == 0])
 
-## Drop zeros
-## Zeros are more commonly observed for rare and non-commercial species
-## Hard to know if they are true zeros or simply missing data
-## (i.e., very rare problem for the focal species to be used in the multispic analysis)
-index <- index[index$index > 0, ]
-index
+## Zeros are an occasional problem.
+## They are more commonly observed for rare and non-commercial species.
+## Hard to know if they are true zeros or simply missing data.
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 

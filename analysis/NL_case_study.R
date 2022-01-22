@@ -35,16 +35,23 @@ landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-t
 ## Limit to species with landings data because
 ## catchability may not be estimable without landings data??
 
-sub_region <- "2J3K"
+sub_region <- "3LNO"
 landings_sp <- unique(multispic::landings$species[multispic::landings$region %in% sub_region])
 index_sp <- unique(multispic::index$species[multispic::index$region %in% sub_region])
 sub_sp <- landings_sp[landings_sp %in% index_sp]
 
+multispic::landings %>%
+    filter(region %in% sub_region, species %in% sub_sp) %>%
+    group_by(species) %>%
+    summarise(cum_total = sum(landings)) %>%
+    arrange(-cum_total)
+
+# sub_sp <- sub_sp[sub_sp != "Silver Hake"]
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
 #             "Wolffish spp.", "Roughhead Grenadier",
-#             "Atlantic Halibut") # top 12 groundfish species - sorted by cumulative landings
+#             "Atlantic Halibut") # top 12 groundfish species in 3LNO - sorted by cumulative landings
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
