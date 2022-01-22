@@ -1,8 +1,12 @@
 
+
+## Troubleshoot 3LNO fit...
+
+
 ## TODO:
 ## - Calculate one-step ahead residuals
 
-## - Add data from 2J3K and 3Ps eco-regions
+## - Add data from 2J3K and 3Ps eco-regions <-- done
 ## - Fit to each region (single-species, 5 species, 10 species, all species)
 ## - Try to combine regions (K_formula = ~region, B_groups = ~region)
 ## - Calculate species-specific leave one out scores to assess predictive ability of each model
@@ -31,7 +35,7 @@ landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-t
 ## Limit to species with landings data because
 ## catchability may not be estimable without landings data??
 
-sub_region <- "3Ps"
+sub_region <- "2J3K"
 landings_sp <- unique(multispic::landings$species[multispic::landings$region %in% sub_region])
 index_sp <- unique(multispic::index$species[multispic::index$region %in% sub_region])
 sub_sp <- landings_sp[landings_sp %in% index_sp]
@@ -56,14 +60,10 @@ sub_sp <- landings_sp[landings_sp %in% index_sp]
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Redfish spp.", "Witch Flounder")
 # sub_sp <- "Atlantic Cod"
 # sub_sp <- "Witch Flounder"
-start_year <- 1977
-end_year <- 2020
-index <- index[index$year >= start_year &
-                   index$year <= end_year &
-                   index$species %in% sub_sp &
+index <- index[index$species %in% sub_sp &
                    index$region %in% sub_region, ]
-landings <- landings[landings$year >= start_year &
-                         landings$year <= end_year &
+landings <- landings[landings$year >= min(index$year) &
+                         landings$year <= max(index$year) &
                          landings$species %in% sub_sp &
                          landings$region %in% sub_region, ]
 
@@ -145,7 +145,7 @@ mean_log_r <- (lower_log_r + upper_log_r) / 2
 sd_log_r <- (upper_log_r - lower_log_r) / 2
 
 lower_log_K <- log(max_tot_landings) - upper_log_r
-upper_log_K <- log(max_tot_landings * 100) - lower_log_r
+upper_log_K <- log(max_tot_landings * 10) - lower_log_r
 mean_log_K <- (lower_log_K + upper_log_K) / 2
 sd_log_K <- (upper_log_K - lower_log_K) / 2
 
