@@ -156,8 +156,9 @@ fit_model <- function(inputs,
     landings$landings <- landings$landings / scaler
 
     ## Compute total landings by year to inform starting value for K
+    ## And mean log index to inform starting values for B
     total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
-
+    mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
     ## Values to keep
     keep <- rep(1L, length(index$index))
@@ -221,8 +222,7 @@ fit_model <- function(inputs,
                 B_groups = B_group_mat,
                 keep = keep)
 
-    par <- list(log_B = matrix(floor(mean(log(index$index))),
-                               nrow = dat$nY, ncol = dat$nS),
+    par <- list(log_B = t(replicate(dat$nY, ceiling(mean_log_index$index))),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
@@ -232,7 +232,7 @@ fit_model <- function(inputs,
                 logit_phi = 0,
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
-                log_B0 = rep(ceiling(mean(log(index$index))), nlevels(landings$species)),
+                log_B0 = ceiling(mean_log_index$index),
                 log_K = ceiling(log(max(total_landings$landings))),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),

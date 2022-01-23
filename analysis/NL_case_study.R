@@ -46,7 +46,7 @@ multispic::landings %>%
     summarise(cum_total = sum(landings)) %>%
     arrange(-cum_total)
 
-# sub_sp <- sub_sp[sub_sp != "Silver Hake"]
+# sub_sp <- sub_sp[!sub_sp %in% c("Silver Hake", "Roundnose Grenadier")]
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
@@ -77,6 +77,13 @@ landings <- landings[landings$year >= min(index$year) &
 ## Set-up survey column for model; assume Yankee Q = Engel Q
 index$gear[index$gear == "Yankee"] <- "Engel"
 index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
+
+## Drop zeros as multispic has not been set-up to handle zero index values.
+## Not a huge issue has it is a relatively rare issue
+sum(index$index == 0)
+sum(index$index == 0) / nrow(index)
+index <- index[index$index > 0, ]
+# index$index[index$index < 0.1] <- 0.1
 
 p <- index %>%
     group_by(survey) %>%
