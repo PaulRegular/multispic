@@ -10,6 +10,9 @@ region_data <- function(divisions) {
     sub_setdet <- Rstrap::setdet %>%
         filter(NAFOdiv %in% divisions)
 
+    ## Treat Yankee and Engel as equivalent
+    sub_setdet$data.series[sub_setdet$data.series == "Yankee"] <- "Yankee-Engel"
+
     ## Treat winter as spring survey for 3Ps as is done in the assessment
     ## Gear change roughly corresponds to change in survey timing
     sub_setdet$season[!is.na(sub_setdet$season) &
@@ -67,49 +70,90 @@ region_data <- function(divisions) {
 
 
 
+## Under one_strat
+## If more than 5 years of data are present for a survey, the core strata are identified (those
+## covered in > 90% of unique survey years) and years where > 10% of the biomass were potentially
+## missing because of poor survey coverage are excluded.
 ## Note: index converted to kt
 
-one_strat <- function(setdet, years, season, series, NAFOdiv, species, species_name, region) {
+one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, region) {
 
-    out <- strat.fun(setdet = setdet, program = "strat2",
-                     data.series = series, species = species,
-                     survey.year = years,
-                     season = season, NAFOdiv = NAFOdiv,
-                     export = NULL, plot.results = FALSE)
-    tab <- out$strat2$biomass$summary[, c("survey.year", "total")]
+    ## Identify years with data
+    years <- sort(unique(setdet$survey.year[setdet$which.survey == "multispecies" &
+                                                setdet$rec == 6 &
+                                                setdet$spec == species &
+                                                setdet$NAFOdiv %in% NAFOdiv &
+                                                setdet$data.series %in% series &
+                                                setdet$season == season]))
 
-    tab <- data.frame(species = species_name, region = region, gear = series,
-                      season = Hmisc::capitalize(season),
-                      year = tab$survey.year, index = tab$total / 1000000)
+    if (length(years) > 5) {
+
+        ## First run analysis using all available data
+        all_strat <- strat.fun(setdet = setdet, program = "strat2",
+                               data.series = series, species = species,
+                               survey.year = years,
+                               season = season, NAFOdiv = NAFOdiv,
+                               export = NULL, plot.results = FALSE)
+
+        all_setdet <- all_strat$raw.data$set.details
+        all_means <- all_strat$strat2$biomass$details
+
+        ## Calculate percent biomass in each strata using grand totals
+        ## Limit to strata covered across more than 90% of survey years (i.e., keep core strata)
+        strat_percents <- all_means %>%
+            group_by(strat) %>%
+            summarise(strat_total = sum(totals), n = n(), percent_years = n() / length(years)) %>%
+            ungroup() %>%
+            mutate(grand_total = sum(strat_total), mean_percent = strat_total / sum(strat_total)) %>%
+            filter(percent_years > 0.9)
+        keep_strat <- strat_percents$strat
+
+        ## Identify years where more than 10% of the biomass was likely to be missing because of poor coverage
+        coverage <- table(all_setdet$strat, all_setdet$survey.year) == 0
+        coverage <- coverage[rownames(coverage) %in% as.character(keep_strat), ]
+        percents <- replicate(ncol(coverage), matrix(strat_percents$mean_percent, ncol = 1), simplify = TRUE)
+        coverage <- coverage * percents
+        percent_missing <- colSums(coverage)
+        drop_years <- percent_missing > 0.1
+
+        keep_years <- as.numeric(names(percent_missing)[!drop_years])
+
+
+        keep_strat <- strat.fun(setdet = setdet, program = "strat2",
+                                data.series = series, species = species,
+                                survey.year = keep_years, strat = keep_strat,
+                                season = season, NAFOdiv = NAFOdiv,
+                                export = NULL, plot.results = FALSE)
+
+        tab <- keep_strat$strat2$biomass$summary[, c("survey.year", "total")]
+
+        tab <- data.frame(species = species_name, region = region, gear = series,
+                          season = Hmisc::capitalize(season),
+                          year = tab$survey.year, index = tab$total / 1000000)
+        tab
+
+    } else {
+
+        warning("There were insufficient survey data to produce an index.")
+        tab <- NULL
+
+    }
+
     tab
+
 }
 
 stack_strat <- function(setdet, NAFOdiv, species, species_name, region) {
 
-    spring_years <- sort(unique(setdet$survey.year[setdet$season == "spring"]))
-    fall_years <- sort(unique(setdet$survey.year[setdet$season == "fall"]))
+    spring_engel <- one_strat(setdet, "spring", "Engel", NAFOdiv, species, species_name, region)
+    spring_campelen <- one_strat(setdet, "spring", "Campelen", NAFOdiv, species, species_name, region)
 
-    spring_yankee <- try(one_strat(setdet, spring_years[spring_years <= 1982],
-                                   "spring", "Yankee", NAFOdiv, species, species_name, region))
-    spring_engel <- try(one_strat(setdet, spring_years[spring_years >= 1982 & spring_years <= 1995],
-                                  "spring", "Engel", NAFOdiv, species, species_name, region))
-    spring_campelen <- try(one_strat(setdet, spring_years[spring_years >= 1996],
-                                     "spring", "Campelen", NAFOdiv, species, species_name, region))
+    fall_engel <- one_strat(setdet, "fall", "Engel", NAFOdiv, species, species_name, region)
+    fall_campelen <- one_strat(setdet, "fall", "Campelen", NAFOdiv, species, species_name, region)
 
-    fall_yankee <- try(one_strat(setdet, fall_years[fall_years <= 1982],
-                                 "fall", "Yankee", NAFOdiv, species, species_name, region))
-    fall_engel <- try(one_strat(setdet, fall_years[fall_years >= 1982 & fall_years <= 1995],
-                                "fall", "Engel", NAFOdiv, species, species_name, region))
-    fall_campelen <- try(one_strat(setdet, fall_years[fall_years >= 1996],
-                                   "fall", "Campelen", NAFOdiv, species, species_name, region))
-
-    dat <- list()
-    for (nm in c("spring_yankee", "spring_engel", "spring_campelen",
-           "fall_yankee", "fall_engel", "fall_campelen")) {
-        if (class(get(nm)) != "try-error") dat[[nm]] <- get(nm)
-    }
-
-    do.call(rbind, dat)
+    dat <- rbind(spring_engel, spring_campelen, fall_engel, fall_campelen)
+    dat$gear[dat$gear == "Engel"] <- "Yankee-Engel" # little indicator that these are combined
+    dat
 
 }
 
