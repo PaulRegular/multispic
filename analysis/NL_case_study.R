@@ -1,10 +1,4 @@
 
-
-## Troubleshoot 3LNO fit...
-
-
-
-
 ## TODO:
 ## - Calculate one-step ahead residuals
 
@@ -48,7 +42,7 @@ multispic::landings %>%
     summarise(cum_total = sum(landings)) %>%
     arrange(-cum_total)
 
-# sub_sp <- sub_sp[!sub_sp %in% c("Silver Hake", "Roundnose Grenadier")]
+# sub_sp <- sub_sp[!sub_sp %in% c("Roughhead Grenadier")]
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder", "Greenland Halibut",
 #             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
@@ -76,35 +70,17 @@ landings <- landings[landings$year >= min(index$year) &
                          landings$species %in% sub_sp &
                          landings$region %in% sub_region, ]
 
-## Set-up survey column for model; assume Yankee Q = Engel Q
-index$gear[index$gear == "Yankee"] <- "Engel"
-index$survey <- factor(paste0(index$species, "-", index$season, "-", index$gear))
-
-## Drop zeros as multispic has not been set-up to handle zero index values.
-## Not a huge issue has it is a relatively rare issue
-sum(index$index == 0)
-sum(index$index == 0) / nrow(index)
-index <- index[index$index > 0, ]
-# index$index[index$index < 0.1] <- 0.1
+## Survey (i.e. groups for catchability estimates) = species-gear-season
+index$survey <- paste0(index$species, ", ", index$season, " ", index$gear)
 
 p <- index %>%
-    group_by(survey) %>%
     plot_ly() %>%
-    add_trace(x = ~year, y = ~index, color = ~species,
+    add_trace(x = ~year, y = ~index, color = ~survey,
               colors = viridis::viridis(100), mode = "markers+lines",
               type = "scatter")
 p
 p %>% layout(yaxis = list(type = "log"))
 
-## Exploratory plots
-index %>%
-    group_by(survey) %>%
-    mutate(scaled_index = scale(index)) %>%
-    plot_ly() %>%
-    add_trace(x = ~year, y = ~scaled_index, color = ~species,
-              colors = viridis::viridis(100), mode = "markers+lines",
-              type = "scatter") %>%
-    layout(yaxis2 = list(overlaying = "y"))
 
 p <- landings %>%
     plot_ly() %>%
@@ -286,18 +262,18 @@ plot_prior_post(prior_mean = mean_logit_phi, prior_sd = sd_logit_phi,
 ## Visually assess par
 par <- fit$par
 q <- exp(par$log_q)
-names(q) <- levels(index$survey)
+names(q) <- levels(fit$index$survey)
 round(q, 2)
 sd_I <- exp(par$log_sd_I)
-names(sd_I) <- levels(index$survey)
+names(sd_I) <- levels(fit$index$survey)
 round(sd_I, 2)
 K <- exp(par$log_K)
 signif(K, 2)
 r <- exp(par$log_r)
-names(r) <- levels(index$species)
+names(r) <- levels(fit$index$species)
 round(r, 2)
 sd_B <- exp(par$log_sd_B)
-names(sd_B) <- levels(index$species)
+names(sd_B) <- levels(fit$index$species)
 round(sd_B, 2)
 B0 <- exp(par$log_B0)
 round(B0)
@@ -372,17 +348,6 @@ p <- fit$index %>%
     add_markers(y = ~index, showlegend = FALSE)
 p
 p %>% layout(yaxis = list(type = "log"))
-
-
-fit$index %>%
-    filter(species == "Roundnose Grenadier") %>%
-    mutate(survey = factor(survey)) %>%
-    plot_ly(x = ~year, color = ~survey, legendgroup = ~survey) %>%
-    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~pred) %>%
-    add_markers(y = ~index, showlegend = FALSE)  %>%
-    layout(yaxis = list(type = "log"))
 
 
 ## Biomass

@@ -27,6 +27,13 @@ index <- lapply(seq_along(regions), function(i) {
     region_index <- do.call(rbind, region_index)
     rownames(region_index) <- NULL
 
+    ## Drop spring Yankee-Engel series for Grenadier because deep water coverage was poor
+    ## (Kept by the algorithm but index strata are not representative because)
+    if (names(regions[i]) == "3LNO") {
+        region_index <- region_index %>%
+            filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
+    }
+
     ## Drop species with a partial series (less than 30 years of data)
     ## Zeros are also an occasional problem for species like Roundnose Grenadier, especially
     ## early in the time series. It is hard to know if these are true zeros or simply because
