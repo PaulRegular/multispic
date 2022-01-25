@@ -28,10 +28,7 @@ landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
 landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-tot)
 
-## Limit to species with landings data because
-## catchability may not be estimable without landings data??
-
-sub_region <- "3LNO"
+sub_region <- "3Ps"
 landings_sp <- unique(multispic::landings$species[multispic::landings$region %in% sub_region])
 index_sp <- unique(multispic::index$species[multispic::index$region %in% sub_region])
 sub_sp <- landings_sp[landings_sp %in% index_sp]
@@ -42,27 +39,10 @@ multispic::landings %>%
     summarise(cum_total = sum(landings)) %>%
     arrange(-cum_total)
 
-# sub_sp <- sub_sp[!sub_sp %in% c("Roughhead Grenadier")]
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder", "Greenland Halibut",
-#             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-#             "Wolffish spp.", "Roughhead Grenadier",
-#             "Atlantic Halibut") # top 12 groundfish species in 3LNO - sorted by cumulative landings
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder", "Greenland Halibut",
-#             "Skate spp.", "Haddock", "Witch Flounder", "White Hake",
-#             "Wolffish spp.") # top 10 groundfish species - sorted by cumulative landings
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder", "Greenland Halibut",
-#             "Skate spp.", "Haddock", "Witch Flounder")
 # sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
 #             "Yellowtail Flounder")
-# sub_sp <- c("American Plaice", "Yellowtail Flounder", "Redfish spp.",
-#             "Atlantic Cod", "Greenland Halibut", "Witch Flounder",
-#             "White Hake")
-# sub_sp <- c("American Plaice", "Atlantic Cod", "Redfish spp.", "Witch Flounder")
 # sub_sp <- "Atlantic Cod"
-# sub_sp <- "Witch Flounder"
+
 index <- index[index$species %in% sub_sp &
                    index$region %in% sub_region, ]
 landings <- landings[landings$year >= min(index$year) &
@@ -227,12 +207,12 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
 plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
                 post_mean = post_mean$log_q,
                 post_sd = post_sd$log_q,
-                post_names = levels(index$survey),
+                post_names = levels(fit$index$survey),
                 xlab = "log(q)")
 plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_I,
                 post_sd = post_sd$log_sd_I,
-                post_names = levels(index$survey),
+                post_names = levels(fit$index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
 sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))

@@ -27,36 +27,31 @@ index <- lapply(seq_along(regions), function(i) {
     region_index <- do.call(rbind, region_index)
     rownames(region_index) <- NULL
 
-    ## Drop spring Yankee-Engel series for Grenadier because deep water coverage was poor
-    ## (Kept by the algorithm but index strata are not representative because)
-    if (names(regions[i]) == "3LNO") {
-        region_index <- region_index %>%
-            filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
-    }
-
-    ## Drop species with a partial series (less than 30 years of data)
-    ## Zeros are also an occasional problem for species like Roundnose Grenadier, especially
-    ## early in the time series. It is hard to know if these are true zeros or simply because
-    ## they were not sampled.
-    # region_index %>% group_by(species) %>% summarise(n_years = length(unique(year)))
-    region_index <- region_index %>%
-        filter(index > 0) %>%
-        group_by(species) %>%
-        mutate(n_years = length(unique(year))) %>%
-        filter(n_years > 30)
-
     region_index
 
 })
 index <- do.call(rbind, index)
 
 ## Early values are not applicable to many species. Manually define start of each series.
-plot_ly(index, x = ~year, y = ~index, color = ~species, frame = ~region) %>% add_markers()
+# plot_ly(index, x = ~year, y = ~index, color = ~species, frame = ~region) %>% add_markers()
 index <- index %>%
     filter(region == "2J3K" & year >= 1978 |
                region %in% c("3LNO", "3Ps") & year >= 1983)
-plot_ly(index, x = ~year, y = ~index, color = ~species, frame = ~region) %>% add_markers()
 
+## Drop Grenadier as there has been poor coverage of this deep water species
+index <- index %>%
+    filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
+
+## Drop species with a partial series (less than 30 years of data)
+## Zeros are also an occasional problem, especially early in the time series.
+## It is hard to know if these are true zeros or simply because they were not sampled.
+# index %>% group_by(region, species) %>% summarise(n_years = length(unique(year))) %>% as.data.frame()
+index <- index %>%
+    filter(index > 0) %>%
+    group_by(region, species) %>%
+    mutate(n_years = length(unique(year))) %>%
+    filter(n_years > 30) %>%
+    as.data.frame()
 index$n_years <- NULL
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)

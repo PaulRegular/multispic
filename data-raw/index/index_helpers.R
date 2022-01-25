@@ -118,14 +118,13 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
 
         keep_years <- as.numeric(names(percent_missing)[!drop_years])
 
-
-        keep_strat <- strat.fun(setdet = setdet, program = "strat2",
+        sub_strat <- strat.fun(setdet = setdet, program = "strat2",
                                 data.series = series, species = species,
                                 survey.year = keep_years, strat = keep_strat,
                                 season = season, NAFOdiv = NAFOdiv,
                                 export = NULL, plot.results = FALSE)
 
-        tab <- keep_strat$strat2$biomass$summary[, c("survey.year", "total")]
+        tab <- sub_strat$strat2$biomass$summary[, c("survey.year", "total")]
 
         tab <- data.frame(species = species_name, region = region, gear = series,
                           season = Hmisc::capitalize(season),
