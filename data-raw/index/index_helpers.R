@@ -78,15 +78,14 @@ region_data <- function(divisions) {
 
 one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, region) {
 
-    ## Identify years with data
-    years <- sort(unique(setdet$survey.year[setdet$which.survey == "multispecies" &
-                                                setdet$rec == 6 &
-                                                setdet$spec == species &
-                                                setdet$NAFOdiv %in% NAFOdiv &
-                                                setdet$data.series %in% series &
-                                                setdet$season == season]))
+    ## Identify years with data across all divisions
+    ind <- setdet$which.survey == "multispecies" & setdet$rec == 5 &
+        setdet$NAFOdiv %in% NAFOdiv & setdet$data.series %in% series & setdet$season == season
+    year_div_table <- table(setdet$survey.year[ind], setdet$NAFOdiv[ind])
+    year_ind <- rowSums(year_div_table > 0) == length(NAFOdiv)
+    years <- as.numeric(names(year_ind[year_ind]))
 
-    if (length(years) > 5) {
+    if (length(years) >= 5) {
 
         ## First run analysis using all available data
         all_strat <- strat.fun(setdet = setdet, program = "strat2",
@@ -98,42 +97,52 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
         all_setdet <- all_strat$raw.data$set.details
         all_means <- all_strat$strat2$biomass$details
 
-        ## Calculate percent biomass in each strata using grand totals
-        ## Limit to strata covered across more than 90% of survey years (i.e., keep core strata)
-        strat_percents <- all_means %>%
-            group_by(strat) %>%
-            summarise(strat_total = sum(totals), n = n(), percent_years = n() / length(years)) %>%
-            ungroup() %>%
-            mutate(grand_total = sum(strat_total), mean_percent = strat_total / sum(strat_total)) %>%
-            filter(percent_years > 0.9)
-        keep_strat <- strat_percents$strat
+        if (all(all_means$totals == 0)) {
 
-        ## Identify years where more than 10% of the biomass was likely to be missing because of poor coverage
-        coverage <- table(all_setdet$strat, all_setdet$survey.year) == 0
-        coverage <- coverage[rownames(coverage) %in% as.character(keep_strat), ]
-        percents <- replicate(ncol(coverage), matrix(strat_percents$mean_percent, ncol = 1), simplify = TRUE)
-        coverage <- coverage * percents
-        percent_missing <- colSums(coverage)
-        drop_years <- percent_missing > 0.1
+            tab <- data.frame(species = species_name, region = region, gear = series,
+                              season = Hmisc::capitalize(season),
+                              year = years, index = 0)
 
-        keep_years <- as.numeric(names(percent_missing)[!drop_years])
+        } else {
 
-        sub_strat <- strat.fun(setdet = setdet, program = "strat2",
-                                data.series = series, species = species,
-                                survey.year = keep_years, strat = keep_strat,
-                                season = season, NAFOdiv = NAFOdiv,
-                                export = NULL, plot.results = FALSE)
+            ## Calculate percent biomass in each strata using grand totals
+            ## Limit to strata covered across more than 90% of survey years (i.e., keep core strata)
+            strat_percents <- all_means %>%
+                group_by(strat) %>%
+                summarise(strat_total = sum(totals), n = n(), percent_years = n() / length(years)) %>%
+                ungroup() %>%
+                mutate(grand_total = sum(strat_total), mean_percent = strat_total / sum(strat_total)) %>%
+                filter(percent_years > 0.9)
+            keep_strat <- strat_percents$strat
 
-        tab <- sub_strat$strat2$biomass$summary[, c("survey.year", "total")]
+            ## Identify years where more than 10% of the biomass was likely to be missing because of poor coverage
+            coverage <- table(all_setdet$strat, all_setdet$survey.year) == 0
+            coverage <- coverage[rownames(coverage) %in% as.character(keep_strat), ]
+            percents <- replicate(ncol(coverage), matrix(strat_percents$mean_percent, ncol = 1), simplify = TRUE)
+            coverage <- coverage * percents
+            percent_missing <- colSums(coverage)
+            drop_years <- percent_missing > 0.1
 
-        tab <- data.frame(species = species_name, region = region, gear = series,
-                          season = Hmisc::capitalize(season),
-                          year = tab$survey.year, index = tab$total / 1000000)
-        tab
+            keep_years <- as.numeric(names(percent_missing)[!drop_years])
+
+            sub_strat <- strat.fun(setdet = setdet, program = "strat2",
+                                   data.series = series, species = species,
+                                   survey.year = keep_years, strat = keep_strat,
+                                   season = season, NAFOdiv = NAFOdiv,
+                                   export = NULL, plot.results = FALSE)
+
+            tab <- sub_strat$strat2$biomass$summary[, c("survey.year", "total")]
+
+            tab <- data.frame(species = species_name, region = region, gear = series,
+                              season = Hmisc::capitalize(season),
+                              year = tab$survey.year, index = tab$total / 1000000)
+            tab
+
+        }
 
     } else {
 
-        warning("There were insufficient survey data to produce an index.")
+        warning(paste0("There were insufficient survey data to produce the following index: ", species_name, " - ", region, " - ", season, " - ", series))
         tab <- NULL
 
     }
