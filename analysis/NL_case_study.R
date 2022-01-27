@@ -19,9 +19,10 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-## Attempt analysis which includes data from all regions
+## Attempt analysis which includes data from 2J3KLNOPs
 
-index <- multispic::index
+index <- multispic::index %>%
+    filter(region %in% c("2J3KL", "3LNOPs")) # Use long-term fall series from 2J3KL and spring
 landings <- multispic::landings %>%
     group_by(year, species) %>%
     summarise(landings = sum(landings)) ## Aggregate landings across regions
@@ -32,7 +33,7 @@ landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 ## (survey data are needed to inform changes in biomass for each species in each region)
 
 sp_table <- table(index$species, index$region) > 0 # present / absent
-sp_ind <- rowSums(sp_table) == 3                   # found in 3 regions?
+sp_ind <- rowSums(sp_table) == 2                   # found in 2J3KL and 3LNOPs?
 sub_sp <- names(sp_ind)[sp_ind]
 
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
