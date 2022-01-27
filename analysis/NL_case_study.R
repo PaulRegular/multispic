@@ -16,42 +16,34 @@ library(multispic)
 library(dplyr)
 library(zoo)
 
-unique(multispic::landings$species)
+
+## All regions ------------------------------------------------------------------------------
+
+## Attempt analysis which includes data from all regions
 
 index <- multispic::index
-landings <- multispic::landings
+landings <- multispic::landings %>%
+    group_by(year, species) %>%
+    summarise(landings = sum(landings)) ## Aggregate landings across regions
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
+## Limit analysis start of survey series and to species with index data across all regions
+## (survey data are needed to inform changes in biomass for each species in each region)
 
-## Setup the data --------------------------------------------------------------
+sp_table <- table(index$species, index$region) > 0 # present / absent
+sp_ind <- rowSums(sp_table) == 3                   # found in 3 regions?
+sub_sp <- names(sp_ind)[sp_ind]
 
-landings %>% group_by(species) %>% summarise(tot = sum(landings)) %>% arrange(-tot)
+# sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
-sub_region <- "3Ps"
-landings_sp <- unique(multispic::landings$species[multispic::landings$region %in% sub_region])
-index_sp <- unique(multispic::index$species[multispic::index$region %in% sub_region])
-sub_sp <- landings_sp[landings_sp %in% index_sp]
-
-multispic::landings %>%
-    filter(region %in% sub_region, species %in% sub_sp) %>%
-    group_by(species) %>%
-    summarise(cum_total = sum(landings)) %>%
-    arrange(-cum_total)
-
-# sub_sp <- c("Atlantic Cod", "American Plaice", "Redfish spp.",
-#             "Yellowtail Flounder")
-# sub_sp <- "Atlantic Cod"
-
-index <- index[index$species %in% sub_sp &
-                   index$region %in% sub_region, ]
+index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$year >= min(index$year) &
                          landings$year <= max(index$year) &
-                         landings$species %in% sub_sp &
-                         landings$region %in% sub_region, ]
+                         landings$species %in% sub_sp, ]
 
-## Survey (i.e. groups for catchability estimates) = species-gear-season
-index$survey <- paste0(index$species, ", ", index$season, " ", index$gear)
+## Survey = species-region-gear-season (i.e. groups for catchability estimates)
+index$survey <- paste0(index$species, "-", index$region, "-", index$season, "-", index$gear)
 
 p <- index %>%
     plot_ly() %>%
@@ -73,6 +65,7 @@ p %>% layout(yaxis = list(type = "log"))
 landings %>%
     group_by(year) %>%
     summarise(total_landings = sum(landings)) %>%
+    ungroup() %>%
     plot_ly() %>%
     add_lines(x = ~year, y = ~total_landings)
 
@@ -85,7 +78,6 @@ landings %>%
     add_lines(y = ~fall_nao, name = "Fall NAO")
 
 
-## Carefully think about the year indexing re. the covariate effect
 inputs <- list(landings = landings, index = index)
 
 
@@ -166,7 +158,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 5, K_formula = NULL, B_groups = NULL)
+                 n_forecast = 1, K_formula = NULL, B_groups = NULL)
 
 fit$opt$message
 fit$sd_rep
@@ -215,6 +207,8 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_names = levels(fit$index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
+
+## The matrix seems wrong...troubleshoot
 sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
 rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
 sp_rho[lower.tri(sp_rho)] <- sp_rho[upper.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
@@ -287,6 +281,13 @@ p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
 p %>% add_markers(x = ~species, y = ~std_res)
 
+## There are some temporal trends in the residuals when the population is aggregated to 2J3KLPs
+## ...this may be related to regional differences in r, or shifts in distribution.
+fit$index %>%
+    plot_ly(x = ~year, y = ~std_res, color = ~survey,
+            colors = viridis::viridis(100)) %>%
+    add_lines()
+
 
 ## Process error residuals
 p <- fit$pop %>%
@@ -319,9 +320,8 @@ corrplot::corrplot.mixed(sp_rho, diag = "n", lower = "ellipse", upper = "number"
 
 ## Fits to the index
 p <- fit$index %>%
-    group_by(survey) %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
+    plot_ly(x = ~year, color = ~survey, colors = viridis::viridis(100),
+            legendgroup = ~survey) %>%
     add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~pred) %>%
