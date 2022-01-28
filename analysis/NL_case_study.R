@@ -4,7 +4,7 @@
 
 ## - Add data from 2J3K and 3Ps eco-regions <-- done
 ## - Fit to each region (single-species, 5 species, 10 species, all species)
-## - Try to combine regions (K_formula = ~region, B_groups = ~region)
+## - Try to combine regions (K_group = ~region)
 ## - Calculate species-specific leave one out scores to assess predictive ability of each model
 ## - Hypothesis: multispecies >> single-species inference
 
@@ -29,7 +29,7 @@ landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 ## Limit analysis to start of survey series and to species with indices
 sub_sp <- unique(index$species)
 
-sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
+# sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$year >= min(index$year) &
@@ -133,11 +133,9 @@ mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
 sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 
-inputs$landings$grp <- ifelse(inputs$landings$species == "Atlantic Cod", "cod", "not cod")
-
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- multispic(inputs, scaler = scaler, species_cor = "none", temporal_cor = "none",
+fit <- multispic(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",
@@ -154,7 +152,7 @@ fit <- multispic(inputs, scaler = scaler, species_cor = "none", temporal_cor = "
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = ~species)
+                 n_forecast = 1, K_groups = NULL)
 
 fit$opt$message
 fit$sd_rep
@@ -163,6 +161,14 @@ fit$mAIC
 
 # loo_fit <- run_loo(fit)
 # loo_fit$mse
+
+if (is.null(fit$call$K_groups)) {
+    K_groups <- NULL
+    K_label <- "All species"
+} else {
+    K_groups <- as.formula(fit$call$K_groups)
+    K_label <- unique(fit$landings[, all.vars(K_groups)])
+}
 
 
 ## Raw par
@@ -175,7 +181,7 @@ post_sd <- as.list(fit$sd_rep, "Std. Error")
 plot_prior_post(prior_mean = mean_log_K, prior_sd = sd_log_K,
                 post_mean = post_mean$log_K,
                 post_sd = post_sd$log_K,
-                post_names = unique(fit$landings$grp),
+                post_names = K_label,
                 xlab = "log(K)")
 plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
                 post_mean = post_mean$log_r,
@@ -203,11 +209,10 @@ plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_names = levels(fit$index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
-
-## The matrix seems wrong...troubleshoot
 sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
 rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
-sp_rho[lower.tri(sp_rho)] <- sp_rho[upper.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
+sp_rho[lower.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
+sp_rho[upper.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
 diag(sp_rho) <- 1
 round(sp_rho, 2)
 for (i in seq(nrow(sp_rho))) {
@@ -238,6 +243,7 @@ sd_I <- exp(par$log_sd_I)
 names(sd_I) <- levels(fit$index$survey)
 round(sd_I, 2)
 K <- exp(par$log_K)
+names(K) <- K_label
 signif(K, 2)
 r <- exp(par$log_r)
 names(r) <- levels(fit$index$species)
@@ -277,8 +283,6 @@ p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
 p %>% add_markers(x = ~species, y = ~std_res)
 
-## There are some temporal trends in the residuals when the population is aggregated to 2J3KLPs
-## ...this may be related to regional differences in r, or shifts in distribution.
 fit$index %>%
     plot_ly(x = ~year, y = ~std_res, color = ~survey,
             colors = viridis::viridis(100)) %>%
@@ -333,7 +337,7 @@ p <- fit$pop %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~B)
-if (!is.null(fit$call$K_groups)) {
+if (!is.null(K_groups)) {
     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
 } else {
     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K",
@@ -345,16 +349,20 @@ p %>% layout(yaxis = list(type = "log"))
 
 
 ## Total biomass
-K_groups <- as.formula(fit$call$K_groups)
+
 p <- fit$tot_pop %>%
-    plot_ly(x = ~year, color = K_groups,
-            legendgroup = K_groups) %>%
+    plot_ly(x = ~year, frame = K_groups) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~B) %>%
-    add_lines(y = ~K) %>%
-    add_lines(y = ~K_lwr, linetype = I(3)) %>%
-    add_lines(y = ~K_upr, linetype = I(3))
+                alpha = 0.2, showlegend = FALSE, legendgroup = "B",
+                color = I("steelblue")) %>%
+    add_lines(y = ~B, name = "B", color = I("steelblue"),
+              legendgroup = "B") %>%
+    add_lines(y = ~K, name = "K", legendgroup = "K",
+              linetype = I(1), color = I("black")) %>%
+    add_lines(y = ~K_lwr, legendgroup = "K", showlegend = FALSE,
+              linetype = I(3), color = I("black"), size = I(1)) %>%
+    add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
+              linetype = I(3), color = I("black"), size = I(1)) %>%
     layout(title = "Total biomass")
 p
 p %>% layout(yaxis = list(type = "log"))

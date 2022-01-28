@@ -6,12 +6,8 @@ landings <- read.csv("data-raw/landings.csv")
 keep_sp <- sort(unique(landings$Species))
 
 
-regions <- list("2J3KLNO" = c("2J", "3K", "3L", "3N", "3O"), # Extent of fall survey (starts 1990)
-                "3LNOPs"= c("3L", "3N", "3O", "3P"),         # Extent of spring survey
-                "2J3KL" = c("2J", "3K", "3L"),
-                "2J3K" = c("2J", "3K"),
+regions <- list("2J3K" = c("2J", "3K"),
                 "3LNO" = c("3L", "3N", "3O"),
-                "3NO" = c("3N", "3O"),
                 "3Ps" = c("3P"))
 
 index <- lapply(seq_along(regions), function(i) {
@@ -43,8 +39,8 @@ index <- index %>%
                region != "2J3K" & year >= 1983)
 
 ## Drop Grenadier as there has been poor coverage of this deep water species
-# index <- index %>%
-#     filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
+index <- index %>%
+    filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
 
 ## Drop species with a partial series (less than 30 years of data)
 ## Zeros are also an occasional problem, especially early in the time series.
