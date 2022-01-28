@@ -19,16 +19,16 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>%
-    filter(region == "2J3K")
-landings <- multispic::landings %>%
-    filter(region == "2J3K")
+index <- multispic::index
+landings <- multispic::landings
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
 ## Limit analysis to start of survey series and to species with indices
-sub_sp <- unique(index$species)
-
+sp_region <- table(index$species, index$region) > 0 # present-absent
+sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
+sub_sp <- rownames(sp_region)[sp_ind]
+# sub_sp <- unique(index$species)
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
@@ -38,6 +38,10 @@ landings <- landings[landings$year >= min(index$year) &
 
 ## Survey = species-region-gear-season (i.e. groups for catchability estimates)
 index$survey <- paste0(index$species, "-", index$region, "-", index$season, "-", index$gear)
+
+## Species (stock) = species-region
+index$species <- paste0(index$species, "-", index$region)
+landings$species <- paste0(landings$species, "-", landings$region)
 
 p <- index %>%
     plot_ly() %>%
@@ -92,7 +96,7 @@ tot_mean_index <- index %>%
 scaler <- sd(tot_mean_index$tot_mean_index)
 
 tot_landings <- landings %>%
-    group_by(year) %>%
+    group_by(year, region) %>%
     summarise(tot_landings = sum(landings))
 
 max_tot_landings <- max(tot_landings$tot_landings) / scaler
@@ -152,7 +156,7 @@ fit <- multispic(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = NULL)
+                 n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
@@ -337,12 +341,12 @@ p <- fit$pop %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~B)
-if (!is.null(K_groups)) {
-    p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
-} else {
-    p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K",
-                         color = I("black"), legendgroup = NULL)
-}
+# if (!is.null(K_groups)) {
+#     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
+# } else {
+#     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K",
+#                          color = I("black"), legendgroup = NULL)
+# }
 
 p
 p %>% layout(yaxis = list(type = "log"))
