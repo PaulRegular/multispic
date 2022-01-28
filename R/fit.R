@@ -1,19 +1,18 @@
 
 
-
 #' Helper for defining the settings of a parameter
 #'
-#' @param option    Should the parameter be estimated freely ("fixed"), coupled across groups
-#'                  ("coupled"), revolve around an estimated mean and sd ("random"),
-#'                  or a fixed mean and sd ("normal_prior"), or be constrained between
-#'                  a lower and upper value ("uniform_prior"). The "coupled" and "random" options
-#'                  are not applicable if only one parameter is estimated (e.g. log_K).
+#' @param option    Should the parameter be estimated freely (`"fixed"`), coupled across groups
+#'                  (`"coupled"`), revolve around an estimated mean and sd (`"random"`),
+#'                  or a fixed mean and sd (`"normal_prior"`), or be constrained between
+#'                  a lower and upper value (`"uniform_prior"`). The `"coupled"` and `"random"` options
+#'                  are not applicable if only one parameter is estimated (e.g. `log_K`).
 #' @param mean      Mean value of the parameter. Treated as a starting value if
-#'                  option is "random" or as a prior if option is option is "prior".
-#'                  Ignored if option is "fixed", "coupled", or "uniform_prior".
+#'                  option is `"random"` or as a prior if option is option is `"normal_prior"`.
+#'                  Ignored if option is `"fixed"`, `"coupled"`, or `"uniform_prior"`.
 #' @param sd        SD value of the parameter. Treated as a starting value is
-#'                  option is "random" or a prior if option is "prior". Ignored
-#'                  if option is "fixed", "coupled", or "uniform_prior".
+#'                  option is `"random"` or a prior if option is "prior". Ignored
+#'                  if option is `"fixed"`, `"coupled"`, or `"uniform_prior"`.
 #' @param lower     Lower range for the parameter.
 #' @param upper     Upper range for the parameter.
 #'
@@ -30,47 +29,46 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' Fit a multispecies surplus production model
 #'
 #' @param inputs             List that includes the following data.frames with required columns in
-#'                           parentheses: landings (species, year, landings), index (species, year,
-#'                           survey, index). Covariates can be included in the landings data.frame
-#'                           and specified using the covariates arguments (optional).
+#'                           parentheses: `landings` (`species`, `year`, `landings`), `index` (`species`, `year`,
+#'                           `survey`, `index`). Covariates can be included in the `landings` data.frame
+#'                           and specified using the `covariates` arguments (optional).
 #' @param scaler             Number to scale values by to aid convergence.
-#' @param log_K_option       Settings for the estimation of log_K; define using \code{\link{par_option}}.
+#' @param log_K_option       Settings for the estimation of `log_K`; define using [par_option()].
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
-#'                           define using \code{\link{par_option}}.
-#' @param log_r_option       Settings for the estimation of log_r; define using \code{\link{par_option}}.
+#'                           define using [par_option()].
+#' @param log_r_option       Settings for the estimation of `log_r`; define using [par_option()].
 #' @param log_sd_B_option    Settings for the estimation of sd for the process; define using
-#'                           \code{\link{par_option}}.
-#' @param log_q_option       Settings for the estimation of log_q; define using \code{\link{par_option}}.
+#'                           [par_option()].
+#' @param log_q_option       Settings for the estimation of `log_q`; define using [par_option()].
 #' @param log_sd_I_option    Settings for the estimation of sd for the indices; define using
-#'                           \code{\link{par_option}}.
+#'                           [par_option()].
 #' @param logit_rho_option   Setting for the estimation of the correlation across stocks; define using
-#'                           \code{\link{par_option}}.
+#'                           [par_option()].
 #' @param logit_phi_option   Setting for the estimation of temporal correlation in the process errors;
-#'                           define using \code{\link{par_option}}.
-#' @param species_cor        Correlation structure across species (rho). "none" will not estimate
-#'                           correlations across species, "one" will estimate one shared correlation
-#'                           parameter across species, and "all" will estimate correlation parameters
+#'                           define using [par_option()].
+#' @param species_cor        Correlation structure across species (`rho`). `"none"` will not estimate
+#'                           correlations across species, `"one"` will estimate one shared correlation
+#'                           parameter across species, and `"all"` will estimate correlation parameters
 #'                           across all combinations of species.
-#' @param temporal_cor       Correlation structure across time (phi). "none" assumes no temporal dependence
-#'                           in the process errors, "rw" assumes a random walk, and "ar1" fits an
+#' @param temporal_cor       Correlation structure across time (`phi`). `"none"` assumes no temporal dependence
+#'                           in the process errors, `"rw"` assumes a random walk, and `"ar1"` fits an
 #'                           AR1 process, estimating an extra parameter.
-#' @param pe_formula         Formula describing relationship between surplus production (process error)
-#'                           and covariates. Not used if set to NULL.
-#' @param K_formula          Formula describing relationship between K and covariates. Not used if set
-#'                           to NULL.
-#' @param B_groups           Formula used to aggregate biomass across species using specific groupings.
-#'                           All species are summed if set to NULL.
+#' @param K_groups           Formula pointing to the grouping variable to use to estimate `K` and
+#'                           aggregate biomass in the production equation. Biomass from all species
+#'                           (stocks) will be aggregated and one `K` value estimated if set to `NULL`.
+#' @param pe_covariates      Formula describing relationship between surplus production (process error)
+#'                           and covariates. No covariates are applied if set to `NULL`.
 #' @param n_forecast         Number of years to forecast. Assumes status quo landings and covariates
 #'                           (i.e. terminal values assumed through projected years).
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
-#'                           Useful for cross-validation. All data are kept if NULL.
-#' @param light              Skip running sdreport and limit output to speed things up?
+#'                           Useful for cross-validation. All data are kept if `NULL`.
+#' @param light              Skip running [TMB::sdreport()] and limit output to speed things up?
 #' @param silent             Disable tracing information?
 #'
 #' @export
 #'
 
-fit_model <- function(inputs,
+multispic <- function(inputs,
                       scaler = sd(inputs$index$index),
                       log_K_option = par_option(),
                       log_B0_option = par_option(),
@@ -82,9 +80,8 @@ fit_model <- function(inputs,
                       logit_phi_option = par_option(),
                       species_cor = "none",
                       temporal_cor = "none",
-                      pe_formula = NULL,
-                      K_formula = NULL,
-                      B_groups = NULL,
+                      K_groups = NULL,
+                      pe_covariates = NULL,
                       n_forecast = 0,
                       leave_out = NULL,
                       light = FALSE,
@@ -131,24 +128,35 @@ fit_model <- function(inputs,
     index$survey <- factor(index$survey)
 
     ## Set-up model matrix | formula with covariates
-    if (is.null(pe_formula)) {
+    if (is.null(pe_covariates)) {
         pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
-        pe_model_mat <- model.matrix(pe_formula, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by the process errors
+        pe_model_mat <- model.matrix(pe_covariates, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by the process errors
     }
-    if (is.null(K_formula)) {
-        K_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
-    } else {
-        K_model_mat <- model.matrix(K_formula, data = landings)[, -1, drop = FALSE] # drop intercept because that is covered by K
-    }
-    if (is.null(B_groups)) {
+    if (is.null(K_groups)) {
+        K_map <- rep(0, nlevels(landings$species))
         B_group_mat <- matrix(1, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
     } else {
-        f <- as.formula(paste(Reduce(paste, deparse(B_groups)), "-1"))
-        sg <- unique(landings[, c("species", all.vars(B_groups))])
-        mm <- model.matrix(f, data = sg)
+
+        if (length(all.vars(K_groups)) > 1) {
+            stop("Please supply only one variable to the K_groups argument; mapping by more than one variable has yet to be implemented.")
+        }
+
+        sp_group <- unique(landings[, c("species", all.vars(K_groups))])
+        sp_group <- sp_group[order(sp_group$species), ]
+        if (nrow(sp_group) > nlevels(landings$species)) {
+            stop("All species are not nested within the K_groups variable. Please check groupings.")
+        }
+
+        ## Set up a matrix of 0s and 1s to control the summation of biomass
+        f <- as.formula(paste(Reduce(paste, deparse(K_groups)), "-1"))
+        mm <- model.matrix(f, data = sp_group)
         ind <- rep(seq(ncol(mm)), colSums(mm))
         B_group_mat <- unname(mm[, ind])
+
+        ## And set up a map for the K parameters
+        K_map <- as.numeric(factor(sp_group[[2]])) - 1
+
     }
 
     ## Scale index and landings to aid convergence
@@ -157,7 +165,15 @@ fit_model <- function(inputs,
 
     ## Compute total landings by year to inform starting value for K
     ## And mean log index to inform starting values for B
-    total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
+    if (is.null(K_groups)) {
+        total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
+        max_landings <- max(total_landings$landings)
+    } else {
+        total_landings <- aggregate(as.formula(paste("landings ~ year +", all.vars(K_groups))),
+                                    FUN = sum, data = landings)
+        max_landings <- aggregate(as.formula(paste("landings ~", all.vars(K_groups))),
+                                  FUN = max, data = total_landings)$landings
+    }
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
     ## Values to keep
@@ -196,8 +212,6 @@ fit_model <- function(inputs,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_rho_option = as.integer(logit_rho_option$option) - 1,
                 logit_phi_option = as.integer(logit_phi_option$option) - 1,
-                mean_log_K = log_K_option$mean,
-                sd_log_K = log_K_option$sd,
                 lower_log_K = log_K_option$lower,
                 upper_log_K = log_K_option$upper,
                 lower_log_B0 = log_B0_option$lower, # lots of repetition - todo: find better solution
@@ -218,7 +232,7 @@ fit_model <- function(inputs,
                 upper_logit_phi = logit_phi_option$upper,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 pe_covariates = pe_model_mat,
-                K_covariates = K_model_mat,
+                K_map = K_map,
                 B_groups = B_group_mat,
                 keep = keep)
 
@@ -230,10 +244,12 @@ fit_model <- function(inputs,
                 log_sd_logit_rho = log(logit_rho_option$sd),
                 logit_rho = rep(0, n_rho),
                 logit_phi = 0,
+                log_K = ceiling(log(max_landings)),
+                mean_log_K = log_K_option$mean,
+                log_sd_log_K = log(log_K_option$sd),
                 mean_log_B0 = log_B0_option$mean,
                 log_sd_log_B0 = log(log_B0_option$sd),
                 log_B0 = ceiling(mean_log_index$index),
-                log_K = ceiling(log(max(total_landings$landings))),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-1, nlevels(landings$species)),
@@ -244,8 +260,7 @@ fit_model <- function(inputs,
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nlevels(index$survey)),
-                pe_betas =  rep(0, ncol(pe_model_mat)),
-                K_betas =  rep(0, ncol(K_model_mat)))
+                pe_betas =  rep(0, ncol(pe_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
     if (species_cor == "one") {
@@ -264,14 +279,15 @@ fit_model <- function(inputs,
         par$logit_phi <- 15 # results in a value very close to 1
     }
 
-    if (log_K_option$option %in% c("random", "coupled")) {
-        warning("The 'random' or 'coupled' options are not applicable for parametere 'log_K'. Setting option to 'fixed'")
-        dat$log_K_option <- 0
+    if (logit_phi_option$option %in% c("random", "coupled")) {
+        stop("The 'random' or 'coupled' options are not applicable for parametere 'logit_phi'.")
     }
 
-    if (logit_phi_option$option %in% c("random", "coupled")) {
-        warning("The 'random' or 'coupled' options are not applicable for parametere 'logit_phi'. Setting option to 'fixed'")
-        dat$logit_phi_option <- 0
+    if (log_K_option$option != "random") {
+        map$mean_log_K <- map$log_sd_log_K <- factor(NA)
+        if (log_K_option$option == "coupled") {
+            stop("The 'coupled' option is not applicable for parametere 'log_K'. Please control parameter grouping using the K_groups argument.")
+        }
     }
 
     if (log_sd_B_option$option != "random") {
@@ -317,14 +333,14 @@ fit_model <- function(inputs,
         }
     }
 
-    if (is.null(pe_formula)) {
+    if (is.null(pe_covariates)) {
         map$pe_betas <- factor(NA)
-    }
-    if (is.null(K_formula)) {
-        map$K_betas <- factor(NA)
     }
 
     random <- "log_B"
+    if (log_K_option$option == "random") {
+        random <- c(random, "log_K")
+    }
     if (log_sd_B_option$option == "random") {
         random <- c(random, "log_sd_B")
     }
@@ -365,7 +381,13 @@ fit_model <- function(inputs,
     pop <- landings
     pop$pe <- rep$log_B_std_res
 
-    tot_pop <- data.frame(year = sort(unique(landings$year)))
+    if (is.null(K_groups)) {
+        tot_pop <- data.frame(year = sort(unique(landings$year)))
+    } else {
+        tot_pop <- expand.grid(year = unique(landings$year),
+                               group = unique(landings[, all.vars(K_groups)]))
+        names(tot_pop) <- c("year", all.vars(K_groups))
+    }
 
     se <- NA
     sd_rep <- NA
@@ -375,10 +397,19 @@ fit_model <- function(inputs,
         ## Extract ADREPORT objects
         sd_rep <- sdreport(obj)
         par <- as.list(sd_rep, "Est")
+        se <- as.list(sd_rep, "Std. Error")
+        par_lwr <- lapply(seq_along(par), function(i) par[[i]] - 1.96 * se[[i]])
+        par_upr <- lapply(seq_along(par), function(i) par[[i]] + 1.96 * se[[i]])
+        names(par_lwr) <- names(par_upr) <- names(par)
         par$log_B0 <- log(exp(par$log_B0) * scaler)
         par$log_B <- log(exp(par$log_B) * scaler)
         par$log_K <- log(exp(par$log_K) * scaler)
-        se <- as.list(sd_rep, "Std. Error")
+        par_lwr$log_B0 <- log(exp(par_lwr$log_B0) * scaler)
+        par_lwr$log_B <- log(exp(par_lwr$log_B) * scaler)
+        par_lwr$log_K <- log(exp(par_lwr$log_K) * scaler)
+        par_upr$log_B0 <- log(exp(par_upr$log_B0) * scaler)
+        par_upr$log_B <- log(exp(par_upr$log_B) * scaler)
+        par_upr$log_K <- log(exp(par_upr$log_K) * scaler)
 
         ## Extract and append fits
         est <- split(unname(sd_rep$value), names(sd_rep$value))
@@ -404,11 +435,15 @@ fit_model <- function(inputs,
         tot_pop$B_lwr <- exp(lwr$log_tot_B) * scaler
         tot_pop$B_upr <- exp(upr$log_tot_B) * scaler
 
-        ## Add K to tot_pop object if K is shared across all species
-        if (all(apply(rep$K_mat, 1, function(x) length(unique(x)) == 1) == TRUE)) {
-            tot_pop$K <- exp(est$log_tot_K) * scaler
-            tot_pop$K_lwr <- exp(lwr$log_tot_K) * scaler
-            tot_pop$K_upr <- exp(upr$log_tot_K) * scaler
+        if (is.null(K_groups)) {
+            tot_pop$K <- exp(par$log_K)
+            tot_pop$K_lwr <- exp(par_lwr$log_K)
+            tot_pop$K_upr <- exp(par_upr$log_K)
+        } else {
+            ind <- as.numeric(factor(tot_pop[, all.vars(K_groups)]))
+            tot_pop$K <- exp(par$log_K[ind])
+            tot_pop$K_lwr <- exp(par_lwr$log_K[ind])
+            tot_pop$K_upr <- exp(par_upr$log_K[ind])
         }
 
     }
@@ -417,20 +452,21 @@ fit_model <- function(inputs,
     mAIC <- 2 * length(opt$par) + 2 * opt$objective
 
     out <- list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
-         rep = rep, par = par, se = se, index = index, landings = landings,
-         pop = pop, tot_pop = tot_pop, mAIC = mAIC)
+         rep = rep, par = par, se = se, par_lwr = par_lwr, par_upr = par_upr,
+         index = index, landings = landings, pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
 
 #' Function for running leave one out cross-validation
 #'
-#' @param fit  Object from \code{\link{fit_model}}
+#' @param fit  Object from [fit_model()]
 #'
-#' @return Returns a list of four: 1) fit - all fit objects from each setp,
-#'         2) obs - log observations that were left out at each step
-#'         3) pred - log predictions at each step, and 4) mse - mean squared
-#'         error of the predictions (leave one out cross validation score).
+#' @return Returns a list of four:
+#'    1) `fit`  -  all fit objects from each step,
+#'    2) `obs`  -  log observations that were left out at each step
+#'    3) `pred` -  log predictions at each step, and
+#'    4) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
 #'
 #' @export
 #'

@@ -19,7 +19,7 @@ approach infinity.}
 }
 \description{
 Density distribution function for a mollified uniform using the
-             Gaussian distribution.
+Gaussian distribution.
 }
 \examples{
 x <- seq(-1, 1, length = 100)

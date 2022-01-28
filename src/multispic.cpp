@@ -23,8 +23,6 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_rho_option);
     DATA_INTEGER(logit_phi_option);
-    DATA_SCALAR(mean_log_K);
-    DATA_SCALAR(sd_log_K);
     DATA_SCALAR(lower_log_K);
     DATA_SCALAR(upper_log_K);
     DATA_SCALAR(lower_log_sd_B);
@@ -45,7 +43,7 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(upper_logit_phi);
     DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(pe_covariates);
-    DATA_MATRIX(K_covariates);
+    DATA_IVECTOR(K_map);
     DATA_MATRIX(B_groups);
 
     // Parameters
@@ -57,10 +55,12 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_sd_logit_rho);
     PARAMETER_VECTOR(logit_rho);
     PARAMETER(logit_phi);
+    PARAMETER_VECTOR(log_K);
+    PARAMETER(mean_log_K);
+    PARAMETER(log_sd_log_K);
     PARAMETER(mean_log_B0);
     PARAMETER(log_sd_log_B0);
     PARAMETER_VECTOR(log_B0);
-    PARAMETER(log_K);
     PARAMETER(mean_log_r);
     PARAMETER(log_sd_log_r);
     PARAMETER_VECTOR(log_r);
@@ -72,9 +72,9 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
     PARAMETER_VECTOR(pe_betas);
-    PARAMETER_VECTOR(K_betas);
 
     // Dim
+    int nK = log_K.size();         // number of Ks estimated
     int nY = log_B.rows();         // number of years
     int nS = log_B.cols();         // number of species
     int nL = L.size();
@@ -84,8 +84,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
     array<Type> delta(nY, nS); // AR1 function expects an array
-    vector<Type> tot_B(nY);
-    vector<Type> log_tot_B(nY);
+    matrix<Type> tot_B(nY, nK);
+    matrix<Type> log_tot_B(nY, nK);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
     vector<Type> log_B_res(nL);
@@ -99,8 +99,6 @@ Type objective_function<Type>::operator() ()
     matrix<Type> K_mat(nY, nS);
     vector<Type> K_vec(nL);
     vector<Type> log_K_vec(nL);
-    vector<Type> tot_K(nY);
-    vector<Type> log_tot_K(nY);
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -109,11 +107,12 @@ Type objective_function<Type>::operator() ()
     vector<Type> sd_B = exp(log_sd_B);
     vector<Type> rho = 2.0 / (1.0 + exp(-logit_rho)) - 1.0; // want cor to be between -1 and 1
     Type phi = 1.0 / (1.0 + exp(-logit_phi)); // want temporal cor to be between 0 and 1
-    Type K = exp(log_K);
+    vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
     vector<Type> sd_I = exp(log_sd_I);
     Type sd_log_sd_B = exp(log_sd_log_sd_B);
+    Type sd_log_K = exp(log_sd_log_K);
     Type sd_log_B0 = exp(log_sd_log_B0);
     Type sd_log_r = exp(log_sd_log_r);
     Type sd_log_q = exp(log_sd_log_q);
@@ -123,15 +122,12 @@ Type objective_function<Type>::operator() ()
 
     // Set-up a vector of B, landings matrix, and covariate effects
     vector<Type> pe_covar_vec = pe_covariates * pe_betas;
-    vector<Type> K_covar_vec = K_covariates * K_betas;
     matrix<Type> pe_covar_mat(nY, nS);
-    matrix<Type> K_covar_mat(nY, nS);
     for (int i = 0; i < nL; i++) {
         L_mat(L_year(i), L_species(i)) = L(i);
         log_B_vec(i) = log_B(L_year(i), L_species(i));
         B_vec(i) = exp(log_B_vec(i));
         pe_covar_mat(L_year(i), L_species(i)) = pe_covar_vec(i);
-        K_covar_mat(L_year(i), L_species(i)) = K_covar_vec(i);
     }
 
     // Initalize nll
@@ -140,10 +136,12 @@ Type objective_function<Type>::operator() ()
 
     // Priors / random effects
     if (log_K_option > 1) {
-        if (log_K_option == 4) {
-            nll += dmuniform(log_K, lower_log_K, upper_log_K, dmuniform_sd);
-        } else {
-            nll -= dnorm(log_K, mean_log_K, sd_log_K, true);
+        for(int i = 0; i < log_K.size(); i++) {
+            if (log_K_option == 4) {
+                nll += dmuniform(log_K(i), lower_log_K, upper_log_K, dmuniform_sd);
+            } else {
+                nll -= dnorm(log_K(i), mean_log_K, sd_log_K, true);
+            }
         }
     }
     if (log_B0_option > 1) {
@@ -217,7 +215,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> B_groups_row(nS);
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            K_mat(i, j) = K * exp(K_covar_mat(i, j));
+            K_mat(i, j) = K[K_map(j)];
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {
@@ -264,11 +262,16 @@ Type objective_function<Type>::operator() ()
         log_K_vec(i) = log(K_vec(i));
     }
 
-    // Total biomass and K
-    tot_B = B.rowwise().sum();
-    log_tot_B = log(tot_B);
-    tot_K = K_mat.col(0); // only useful when K is equal across species
-    log_tot_K = log(tot_K);
+    // Total biomass by group
+    tot_B.setZero();
+    for (int i = 0; i < nY; i++) {
+        for (int j = 0; j < nS; j++) {
+            for (int k = 0; k < nK; k++) {
+                tot_B(i, K_map(j)) += B(i, j);
+            }
+        }
+    }
+    log_tot_B = log(tot_B.array());
 
     // AD report values
     ADREPORT(log_B_vec);
@@ -276,7 +279,6 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_F);
     ADREPORT(log_K_vec);
     ADREPORT(log_tot_B);
-    ADREPORT(log_tot_K);
 
     REPORT(log_B_res);
     REPORT(log_B_std_res);

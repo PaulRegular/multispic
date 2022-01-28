@@ -7,19 +7,19 @@
 par_option(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 10)
 }
 \arguments{
-\item{option}{Should the parameter be estimated freely ("fixed"), coupled across groups
-("coupled"), revolve around an estimated mean and sd ("random"),
-or a fixed mean and sd ("normal_prior"), or be constrained between
-a lower and upper value ("uniform_prior"). The "coupled" and "random" options
-are not applicable if only one parameter is estimated (e.g. log_K).}
+\item{option}{Should the parameter be estimated freely (\code{"fixed"}), coupled across groups
+(\code{"coupled"}), revolve around an estimated mean and sd (\code{"random"}),
+or a fixed mean and sd (\code{"normal_prior"}), or be constrained between
+a lower and upper value (\code{"uniform_prior"}). The \code{"coupled"} and \code{"random"} options
+are not applicable if only one parameter is estimated (e.g. \code{log_K}).}
 
 \item{mean}{Mean value of the parameter. Treated as a starting value if
-option is "random" or as a prior if option is option is "prior".
-Ignored if option is "fixed", "coupled", or "uniform_prior".}
+option is \code{"random"} or as a prior if option is option is \code{"normal_prior"}.
+Ignored if option is \code{"fixed"}, \code{"coupled"}, or \code{"uniform_prior"}.}
 
 \item{sd}{SD value of the parameter. Treated as a starting value is
-option is "random" or a prior if option is "prior". Ignored
-if option is "fixed", "coupled", or "uniform_prior".}
+option is \code{"random"} or a prior if option is "prior". Ignored
+if option is \code{"fixed"}, \code{"coupled"}, or \code{"uniform_prior"}.}
 
 \item{lower}{Lower range for the parameter.}
 

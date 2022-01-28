@@ -33,17 +33,17 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #' @description Plot prior and posterior distributions.
 #' Currently limited to the normal distribution
 #'
-#' @param prior_mean   Mean of the prior
-#' @param prior_sd     SD of the prior
-#' @param post_mean    Mean of the posterior (can be one or more values)
-#' @param post_sd      SD of the posterior (can be one or more values)
-#' @param post_names   Names for the posterior
-#' @param length_out   Number of points to plot (more points will result in smoother curves)
-#' @param xlab         Label for the x axis
-#' @param ylab         Label for the y axis
-#' @param title        Plot title
-#' @param min_den      Drop points with densities below this threshold
-#' @param trans_fun    Function for transforming values (e.g. exp, inv_logit). Ignored if NULL
+#' @param prior_mean   Mean of the prior.
+#' @param prior_sd     SD of the prior.
+#' @param post_mean    Mean of the posterior (can be one or more values).
+#' @param post_sd      SD of the posterior (can be one or more values).
+#' @param post_names   Names for the posterior.
+#' @param length_out   Number of points to plot (more points will result in smoother curves).
+#' @param xlab         Label for the x axis.
+#' @param ylab         Label for the y axis.
+#' @param title        Plot title.
+#' @param min_den      Drop points with densities below this threshold.
+#' @param trans_fun    Function for transforming values (e.g. `[exp]`, `[inv_logit]`). Ignored if `NULL`.
 #'
 #' @export
 #'

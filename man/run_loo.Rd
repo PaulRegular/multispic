@@ -7,13 +7,16 @@
 run_loo(fit)
 }
 \arguments{
-\item{fit}{Object from \code{\link{fit_model}}}
+\item{fit}{Object from \code{\link[=fit_model]{fit_model()}}}
 }
 \value{
-Returns a list of four: 1) fit - all fit objects from each setp,
-        2) obs - log observations that were left out at each step
-        3) pred - log predictions at each step, and 4) mse - mean squared
-        error of the predictions (leave one out cross validation score).
+Returns a list of four:
+\enumerate{
+\item \code{fit}  -  all fit objects from each step,
+\item \code{obs}  -  log observations that were left out at each step
+\item \code{pred} -  log predictions at each step, and
+\item \code{mse}  -  mean squared error of the predictions (leave one out cross validation score).
+}
 }
 \description{
 Function for running leave one out cross-validation

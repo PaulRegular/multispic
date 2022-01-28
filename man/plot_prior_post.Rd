@@ -19,27 +19,27 @@ plot_prior_post(
 )
 }
 \arguments{
-\item{prior_mean}{Mean of the prior}
+\item{prior_mean}{Mean of the prior.}
 
-\item{prior_sd}{SD of the prior}
+\item{prior_sd}{SD of the prior.}
 
-\item{post_mean}{Mean of the posterior (can be one or more values)}
+\item{post_mean}{Mean of the posterior (can be one or more values).}
 
-\item{post_sd}{SD of the posterior (can be one or more values)}
+\item{post_sd}{SD of the posterior (can be one or more values).}
 
-\item{post_names}{Names for the posterior}
+\item{post_names}{Names for the posterior.}
 
-\item{length_out}{Number of points to plot (more points will result in smoother curves)}
+\item{length_out}{Number of points to plot (more points will result in smoother curves).}
 
-\item{xlab}{Label for the x axis}
+\item{xlab}{Label for the x axis.}
 
-\item{ylab}{Label for the y axis}
+\item{ylab}{Label for the y axis.}
 
-\item{title}{Plot title}
+\item{title}{Plot title.}
 
-\item{min_den}{Drop points with densities below this threshold}
+\item{min_den}{Drop points with densities below this threshold.}
 
-\item{trans_fun}{Function for transforming values (e.g. exp, inv_logit). Ignored if NULL}
+\item{trans_fun}{Function for transforming values (e.g. \verb{[exp]}, \verb{[inv_logit]}). Ignored if \code{NULL}.}
 }
 \description{
 Plot prior and posterior distributions.

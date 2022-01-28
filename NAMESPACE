@@ -2,9 +2,9 @@
 
 export(add_fit)
 export(dmuniform)
-export(fit_model)
 export(inv_logit)
 export(logit)
+export(multispic)
 export(par_option)
 export(plot_prior_post)
 export(run_loo)

@@ -19,24 +19,17 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-## Attempt analysis which includes data from 2J3KLNOPs
-
 index <- multispic::index %>%
-    filter(region %in% c("2J3KL", "3LNOPs")) # Use long-term fall series from 2J3KL and spring
+    filter(region == "2J3K")
 landings <- multispic::landings %>%
-    group_by(year, species) %>%
-    summarise(landings = sum(landings)) ## Aggregate landings across regions
+    filter(region == "2J3K")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
-## Limit analysis start of survey series and to species with index data across all regions
-## (survey data are needed to inform changes in biomass for each species in each region)
+## Limit analysis to start of survey series and to species with indices
+sub_sp <- unique(index$species)
 
-sp_table <- table(index$species, index$region) > 0 # present / absent
-sp_ind <- rowSums(sp_table) == 2                   # found in 2J3KL and 3LNOPs?
-sub_sp <- names(sp_ind)[sp_ind]
-
-# sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
+sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$year >= min(index$year) &
@@ -140,9 +133,11 @@ mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
 sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 
+inputs$landings$grp <- ifelse(inputs$landings$species == "Atlantic Cod", "cod", "not cod")
+
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+fit <- multispic(inputs, scaler = scaler, species_cor = "none", temporal_cor = "none",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, upper = mean_log_K),
                  log_B0_option = par_option(option = "normal_prior",
@@ -159,7 +154,7 @@ fit <- fit_model(inputs, scaler = scaler, species_cor = "all", temporal_cor = "a
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_formula = NULL, B_groups = NULL)
+                 n_forecast = 1, K_groups = ~species)
 
 fit$opt$message
 fit$sd_rep
@@ -180,7 +175,7 @@ post_sd <- as.list(fit$sd_rep, "Std. Error")
 plot_prior_post(prior_mean = mean_log_K, prior_sd = sd_log_K,
                 post_mean = post_mean$log_K,
                 post_sd = post_sd$log_K,
-                post_names = "log(K)",
+                post_names = unique(fit$landings$grp),
                 xlab = "log(K)")
 plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
                 post_mean = post_mean$log_r,
@@ -338,7 +333,7 @@ p <- fit$pop %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
                 alpha = 0.2, showlegend = FALSE) %>%
     add_lines(y = ~B)
-if (is.null(fit$tot_pop)) { # tot_pop object will not be present if K is grouped
+if (!is.null(fit$call$K_groups)) {
     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K")
 } else {
     p <- p %>% add_lines(x = ~year, y = ~K, linetype = I(3), name = "K",
@@ -350,21 +345,16 @@ p %>% layout(yaxis = list(type = "log"))
 
 
 ## Total biomass
+K_groups <- as.formula(fit$call$K_groups)
 p <- fit$tot_pop %>%
-    plot_ly(x = ~year) %>%
+    plot_ly(x = ~year, color = K_groups,
+            legendgroup = K_groups) %>%
     add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE, legendgroup = "B",
-                color = I("steelblue")) %>%
-    add_lines(y = ~B, name = "B", color = I("steelblue"),
-              legendgroup = "B") %>%
-    add_lines(y = ~K, name = "K", legendgroup = "K",
-              linetype = I(1), color = I("black")) %>%
-    add_lines(y = ~K_lwr, legendgroup = "K", showlegend = FALSE,
-              linetype = I(3), color = I("black"), size = I(1)) %>%
-    add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
-              linetype = I(3), color = I("black"), size = I(1)) %>%
-    add_lines(x = ~year, y = ~tot_landings, data = tot_landings, inherit = FALSE,
-              color = I("firebrick"), name = "L") %>%
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~B) %>%
+    add_lines(y = ~K) %>%
+    add_lines(y = ~K_lwr, linetype = I(3)) %>%
+    add_lines(y = ~K_upr, linetype = I(3))
     layout(title = "Total biomass")
 p
 p %>% layout(yaxis = list(type = "log"))
