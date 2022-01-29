@@ -389,8 +389,7 @@ multispic <- function(inputs,
         names(tot_pop) <- c("year", all.vars(K_groups))
     }
 
-    se <- NA
-    sd_rep <- NA
+    se <- sd_rep <- par_lwr <- par_upr <- NA
 
     if (!light) {
 

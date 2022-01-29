@@ -28,7 +28,7 @@ landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
-# sub_sp <- unique(index$species)
+
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
@@ -95,11 +95,16 @@ tot_mean_index <- index %>%
 
 scaler <- sd(tot_mean_index$tot_mean_index)
 
+## Find the smallest max aggregate landings among the groups to inform lower range for K
+
 tot_landings <- landings %>%
     group_by(year, region) %>%
     summarise(tot_landings = sum(landings))
 
-max_tot_landings <- max(tot_landings$tot_landings) / scaler
+max_tot_landings <- tot_landings %>%
+    group_by(region) %>%
+    summarise(max = max(tot_landings)) %>%
+    with(min(max) / scaler)
 
 lower_log_r <- log(0.01)
 upper_log_r <- log(1)
@@ -107,7 +112,7 @@ mean_log_r <- (lower_log_r + upper_log_r) / 2
 sd_log_r <- (upper_log_r - lower_log_r) / 2
 
 lower_log_K <- log(max_tot_landings) - upper_log_r
-upper_log_K <- log(max_tot_landings * 10) - lower_log_r
+upper_log_K <- log(max_tot_landings * 100) - lower_log_r
 mean_log_K <- (lower_log_K + upper_log_K) / 2
 sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -262,6 +267,7 @@ round(rho, 2)
 round(sp_rho, 2)
 phi <- inv_logit(par$logit_phi)
 round(phi, 2)
+fit$par$pe_betas; fit$par_lwr$pe_betas; fit$par_upr$pe_betas
 
 ## Explore parameter correlations
 sd_rep <- fit$sd_rep
@@ -393,17 +399,18 @@ p
 
 ## Compare to accepted assessment model results --------------------------------
 
+## Note: there is a degree of spatial missmatch here as some of these assessments are 3NO
 
 assess <- read.csv("analysis/stock_assessment_estimates.csv")
 names(assess) <- c("species_div", "year", "B", "B_type")
 x <- data.table::tstrsplit(assess$species, split = " ")
 assess$species <- x[[1]]
 unique(assess$species)
-assess$species[assess$species == "Cod"] <- "Atlantic Cod"
-assess$species[assess$species == "Plaice"] <- "American Plaice"
-assess$species[assess$species == "Redfish"] <- "Redfish spp."
-assess$species[assess$species == "Yellowtail"] <- "Yellowtail Flounder"
-assess$species[assess$species == "Witch"] <- "Witch Flounder"
+assess$species[assess$species == "Cod"] <- "Atlantic Cod-3LNO"
+assess$species[assess$species == "Plaice"] <- "American Plaice-3LNO"
+assess$species[assess$species == "Redfish"] <- "Redfish spp.-3LNO"
+assess$species[assess$species == "Yellowtail"] <- "Yellowtail Flounder-3LNO"
+assess$species[assess$species == "Witch"] <- "Witch Flounder-3LNO"
 assess$division <- x[[2]]
 assess$source <- "assessment"
 assess$B_lwr <- NA
@@ -433,110 +440,43 @@ comp %>%
     add_lines(y = ~scaled_B)
 
 
-# ## Model comparison ------------------------------------------------------------
-#
-# null <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-#                   logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-#                   log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-#                   log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-#                   log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-#                   log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-#                   log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1))
-# one <- update(null, cor_str = "one")
-# all <- update(null, cor_str = "all")
-#
-# cil <- fit_model(inputs, survey_group = "survey", cor_str = "none",
-#                  logit_cor_option = par_option(option = "fixed", mean = -1, sd = 1),
-#                  log_B0_option = par_option(option = "fixed", mean = -1, sd = 1),
-#                  log_r_option = par_option(option = "prior", mean = -1, sd = 1),
-#                  log_sd_B_option = par_option(option = "prior", mean = -1, sd = 1),
-#                  log_q_option = par_option(option = "prior", mean = -1, sd = 1),
-#                  log_sd_I_option = par_option(option = "prior", mean = -1, sd = 1),
-#                  K_formula = ~core_cil)
-# cei <- update(cil, K_formula = ~cei)
-# nao <- update(cil, K_formula = ~nao)
-# tice <- update(cil, K_formula = ~tice)
-# cil_one <- update(cil, cor_str = "one")
-# cei_one <- update(cei, cor_str = "one")
-# nao_one <- update(nao, cor_str = "one")
-# tice_one <- update(tice, cor_str = "one")
-#
-# loo_null <- run_loo(null)
-# loo_one <- run_loo(one)
-# loo_all <- run_loo(all)
-# loo_cil <- run_loo(cil)
-# loo_cei <- run_loo(cei)
-# loo_cil_one <- run_loo(cil_one)
-# loo_cei_one <- run_loo(cei_one)
-# loo_nao <- run_loo(nao)
-# loo_nao_one <- run_loo(nao_one)
-# loo_tice <- run_loo(tice)
-# loo_tice_one <- run_loo(tice_one)
-#
-# # write.csv(one$pop, file = "analysis/multispic_estimates.csv", row.names = FALSE)
-#
-# null$mAIC
-# one$mAIC
-# all$mAIC
-# cil$mAIC
-# cei$mAIC
-# nao$mAIC
-# tice$mAIC
-# cil_one$mAIC
-# cei_one$mAIC
-# tice_one$mAIC
-# loo_null$mse
-# loo_one$mse
-# loo_all$mse
-# loo_cil$mse
-# loo_cei$mse
-# loo_nao$mse
-# loo_tice$mse
-# loo_cil_one$mse
-# loo_cei_one$mse
-# loo_nao_one$mse
-# loo_tice_one$mse
-#
-# # > null$mAIC
-# # [1] 946.3922
-# # > one$mAIC
-# # [1] 879.7829
-# # > all$mAIC
-# # [1] 892.2615
-# # > cil$mAIC
-# # [1] 940.034
-# # > cei$mAIC
-# # [1] 940.9621
-# # > nao$mAIC
-# # [1] 941.6836
-# # > tice$mAIC
-# # [1] 938.5548
-# # > cil_one$mAIC
-# # [1] 881.7692
-# # > cei_one$mAIC
-# # [1] 881.1266
-# # > tice_one$mAIC
-# # [1] 877.1522
-# # > loo_null$mse
-# # [1] 0.2546963
-# # > loo_one$mse
-# # [1] 0.2502405
-# # > loo_all$mse
-# # [1] 0.231504
-# # > loo_cil$mse
-# # [1] 0.2536944
-# # > loo_cei$mse
-# # [1] 0.2537975
-# # > loo_nao$mse
-# # [1] 0.2561157
-# # > loo_tice$mse
-# # [1] 0.2556873
-# # > loo_cil_one$mse
-# # [1] 0.2504235
-# # > loo_cei_one$mse
-# # [1] 0.2503321
-# # > loo_nao_one$mse
-# # [1] 0.2504409
-# # > loo_tice_one$mse
-# # [1] 0.2515622
-#
+## Model comparison ------------------------------------------------------------
+
+full <- multispic(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+                  log_K_option = par_option(option = "normal_prior",
+                                            mean = mean_log_K, upper = mean_log_K),
+                  log_B0_option = par_option(option = "normal_prior",
+                                             mean = mean_log_B0, sd = sd_log_B0),
+                  log_r_option = par_option(option = "normal_prior",
+                                            mean = mean_log_r, sd = sd_log_r),
+                  log_sd_B_option = par_option(option = "normal_prior",
+                                               mean = mean_log_sd, sd = sd_log_sd),
+                  log_q_option = par_option(option = "normal_prior",
+                                            mean = mean_log_q, sd = sd_log_q),
+                  log_sd_I_option = par_option(option = "normal_prior",
+                                               mean = mean_log_sd, sd = sd_log_sd),
+                  logit_rho_option = par_option(option = "normal_prior",
+                                                mean = mean_logit_rho, sd = sd_logit_rho),
+                  logit_phi_option = par_option(option = "normal_prior",
+                                                mean = mean_logit_phi, sd = sd_logit_phi),
+                  n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
+
+no_nao <- update(full, pe_covariates = NULL)
+no_temporal_cor <- update(no_nao, temporal_cor = "none")
+no_species_cor <- update(no_temporal_cor, species_cor = "none")
+
+loo_full <- run_loo(full)
+loo_no_nao <- run_loo(no_nao)
+loo_no_temporal_cor <- run_loo(no_temporal_cor)
+loo_no_species_cor <- run_loo(no_species_cor)
+
+full$mAIC
+no_nao$mAIC
+no_temporal_cor$mAIC
+no_species_cor$mAIC
+
+
+
+update(full, leave_out = 1, light = TRUE, silent = FALSE)
+## consider supplying last par to speed up this process
+
