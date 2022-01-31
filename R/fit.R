@@ -32,7 +32,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           parentheses: `landings` (`species`, `year`, `landings`), `index` (`species`, `year`,
 #'                           `survey`, `index`). Covariates can be included in the `landings` data.frame
 #'                           and specified using the `covariates` arguments (optional).
-#' @param scaler             Number to scale values by to aid convergence.
+#' @param center             Center input values to aid convergence?
 #' @param log_K_option       Settings for the estimation of `log_K`; define using [par_option()].
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
 #'                           define using [par_option()].
@@ -69,7 +69,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'
 
 multispic <- function(inputs,
-                      scaler = sd(inputs$index$index),
+                      center = TRUE,
                       log_K_option = par_option(),
                       log_B0_option = par_option(),
                       log_r_option = par_option(),
@@ -159,21 +159,24 @@ multispic <- function(inputs,
 
     }
 
-    ## Scale index and landings to aid convergence
-    index$index <- index$index / scaler
-    landings$landings <- landings$landings / scaler
+    ## Center index and landings by the mean(log(index) ~ K_group) to aid convergence
+    by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
+    by_yr_grp <- paste(c("year", all.vars(K_groups)), collapse = " + ")
+    by_grp <- ifelse(is.null(K_groups), "0", paste(all.vars(K_groups), collapse = " + "))
+    mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
+                            FUN = mean, data = index)
+    total_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
+                                  FUN = sum, data = mean_index)
+    log_center <- ifelse(center, mean(log(total_mean_index$index)), 0)
+    index$index <- exp(log(index$index) - log_center)
+    landings$landings <- exp(log(landings$landings) - log_center)
 
     ## Compute total landings by year to inform starting value for K
     ## And mean log index to inform starting values for B
-    if (is.null(K_groups)) {
-        total_landings <- aggregate(landings ~ year, FUN = sum, data = landings)
-        max_landings <- max(total_landings$landings)
-    } else {
-        total_landings <- aggregate(as.formula(paste("landings ~ year +", all.vars(K_groups))),
-                                    FUN = sum, data = landings)
-        max_landings <- aggregate(as.formula(paste("landings ~", all.vars(K_groups))),
-                                  FUN = max, data = total_landings)$landings
-    }
+    total_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
+                                FUN = sum, data = landings)
+    max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
+                              FUN = max, data = total_landings)$landings
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
     ## Values to keep
@@ -212,10 +215,10 @@ multispic <- function(inputs,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_rho_option = as.integer(logit_rho_option$option) - 1,
                 logit_phi_option = as.integer(logit_phi_option$option) - 1,
-                lower_log_K = log_K_option$lower,
-                upper_log_K = log_K_option$upper,
-                lower_log_B0 = log_B0_option$lower, # lots of repetition - todo: find better solution
-                upper_log_B0 = log_B0_option$upper,
+                lower_log_K = log_K_option$lower - log_center, # lots of repetition - todo: find better solution
+                upper_log_K = log_K_option$upper - log_center,
+                lower_log_B0 = log_B0_option$lower - log_center,
+                upper_log_B0 = log_B0_option$upper - log_center,
                 lower_log_r = log_r_option$lower,
                 upper_log_r = log_r_option$upper,
                 lower_log_sd_B = log_sd_B_option$lower,
@@ -245,9 +248,9 @@ multispic <- function(inputs,
                 logit_rho = rep(0, n_rho),
                 logit_phi = 0,
                 log_K = ceiling(log(max_landings)),
-                mean_log_K = log_K_option$mean,
+                mean_log_K = log_K_option$mean - log_center,
                 log_sd_log_K = log(log_K_option$sd),
-                mean_log_B0 = log_B0_option$mean,
+                mean_log_B0 = log_B0_option$mean - log_center,
                 log_sd_log_B0 = log(log_B0_option$sd),
                 log_B0 = ceiling(mean_log_index$index),
                 mean_log_r = log_r_option$mean,
@@ -367,14 +370,14 @@ multispic <- function(inputs,
                   control = list(eval.max = 1000, iter.max = 1000))
 
     ## Reset scale
-    landings$landings <- landings$landings * scaler
-    index$index <- index$index * scaler
+    landings$landings <- exp(log(landings$landings) + log_center)
+    index$index <- exp(log(index$index) + log_center)
 
     ## Extract REPORT objects
     rep <- obj$report()
 
     index$log_index <- log(index$index)
-    index$log_pred_index <- log(exp(rep$log_pred_I) * scaler)
+    index$log_pred_index <- rep$log_pred_I + log_center
     index$std_res <- rep$log_I_std_res
     index$left_out <- !as.logical(keep)
 
@@ -400,39 +403,39 @@ multispic <- function(inputs,
         par_lwr <- lapply(seq_along(par), function(i) par[[i]] - 1.96 * se[[i]])
         par_upr <- lapply(seq_along(par), function(i) par[[i]] + 1.96 * se[[i]])
         names(par_lwr) <- names(par_upr) <- names(par)
-        par$log_B0 <- log(exp(par$log_B0) * scaler)
-        par$log_B <- log(exp(par$log_B) * scaler)
-        par$log_K <- log(exp(par$log_K) * scaler)
-        par_lwr$log_B0 <- log(exp(par_lwr$log_B0) * scaler)
-        par_lwr$log_B <- log(exp(par_lwr$log_B) * scaler)
-        par_lwr$log_K <- log(exp(par_lwr$log_K) * scaler)
-        par_upr$log_B0 <- log(exp(par_upr$log_B0) * scaler)
-        par_upr$log_B <- log(exp(par_upr$log_B) * scaler)
-        par_upr$log_K <- log(exp(par_upr$log_K) * scaler)
+        par$log_B0 <- par$log_B0 + log_center
+        par$log_B <- par$log_B + log_center
+        par$log_K <- par$log_K + log_center
+        par_lwr$log_B0 <- par_lwr$log_B0 + log_center
+        par_lwr$log_B <- par_lwr$log_B + log_center
+        par_lwr$log_K <- par_lwr$log_K + log_center
+        par_upr$log_B0 <- par_upr$log_B0 + log_center
+        par_upr$log_B <- par_upr$log_B + log_center
+        par_upr$log_K <- par_upr$log_K + log_center
 
         ## Extract and append fits
         est <- split(unname(sd_rep$value), names(sd_rep$value))
         sd <- split(sd_rep$sd, names(sd_rep$value))
         lwr <- split(unname(sd_rep$value) - 1.96 * sd_rep$sd, names(sd_rep$val))
         upr <- split(unname(sd_rep$value) + 1.96 * sd_rep$sd, names(sd_rep$val))
-        index$pred <- exp(est$log_pred_I) * scaler
-        index$pred_lwr <- exp(lwr$log_pred_I) * scaler
-        index$pred_upr <- exp(upr$log_pred_I) * scaler
+        index$pred <- exp(est$log_pred_I + log_center)
+        index$pred_lwr <- exp(lwr$log_pred_I + log_center)
+        index$pred_upr <- exp(upr$log_pred_I + log_center)
 
         ## Extract population estimates
-        pop$B <- exp(est$log_B_vec) * scaler
-        pop$B_lwr <- exp(lwr$log_B_vec) * scaler
-        pop$B_upr <- exp(upr$log_B_vec) * scaler
+        pop$B <- exp(est$log_B_vec + log_center)
+        pop$B_lwr <- exp(lwr$log_B_vec + log_center)
+        pop$B_upr <- exp(upr$log_B_vec + log_center)
         pop$F <- exp(est$log_F)
         pop$F_lwr <- exp(lwr$log_F)
         pop$F_upr <- exp(upr$log_F)
-        pop$K <- exp(est$log_K_vec) * scaler
-        pop$K_lwr <- exp(lwr$log_K_vec) * scaler
-        pop$K_upr <- exp(upr$log_K_vec) * scaler
+        pop$K <- exp(est$log_K_vec + log_center)
+        pop$K_lwr <- exp(lwr$log_K_vec + log_center)
+        pop$K_upr <- exp(upr$log_K_vec + log_center)
 
-        tot_pop$B <- exp(est$log_tot_B) * scaler
-        tot_pop$B_lwr <- exp(lwr$log_tot_B) * scaler
-        tot_pop$B_upr <- exp(upr$log_tot_B) * scaler
+        tot_pop$B <- exp(est$log_tot_B + log_center)
+        tot_pop$B_lwr <- exp(lwr$log_tot_B + log_center)
+        tot_pop$B_upr <- exp(upr$log_tot_B + log_center)
 
         if (is.null(K_groups)) {
             tot_pop$K <- exp(par$log_K)
@@ -450,9 +453,9 @@ multispic <- function(inputs,
     ## Calculate marginal AIC
     mAIC <- 2 * length(opt$par) + 2 * opt$objective
 
-    out <- list(call = call, scaler = scaler, obj = obj, opt = opt, sd_rep = sd_rep,
-         rep = rep, par = par, se = se, par_lwr = par_lwr, par_upr = par_upr,
-         index = index, landings = landings, pop = pop, tot_pop = tot_pop, mAIC = mAIC)
+    out <- list(call = call, log_center = log_center, obj = obj, opt = opt, sd_rep = sd_rep,
+                rep = rep, par = par, se = se, par_lwr = par_lwr, par_upr = par_upr,
+                index = index, landings = landings, pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
@@ -479,10 +482,14 @@ run_loo <- function(fit) {
     pred <- numeric(n)
 
     for (i in seq(n)) {
-        f <- update(fit, leave_out = i, light = TRUE, silent = TRUE)
-        obs[i] <- f$index$log_index[f$index$left_out]
-        pred[i] <- f$index$log_pred_index[f$index$left_out]
-        fits[[i]] <- f
+        f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE))
+        if (class(f) == "try-catch") {
+            obs[i] <- pred[i] <- fits[[i]] <- NA
+        } else {
+            obs[i] <- f$index$log_index[f$index$left_out]
+            pred[i] <- f$index$log_pred_index[f$index$left_out]
+            fits[[i]] <- f
+        }
         setTxtProgressBar(pb, i)
     }
 

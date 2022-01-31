@@ -6,7 +6,7 @@
 \usage{
 multispic(
   inputs,
-  scaler = sd(inputs$index$index),
+  center = TRUE,
   log_K_option = par_option(),
   log_B0_option = par_option(),
   log_r_option = par_option(),
@@ -31,7 +31,7 @@ parentheses: \code{landings} (\code{species}, \code{year}, \code{landings}), \co
 \code{survey}, \code{index}). Covariates can be included in the \code{landings} data.frame
 and specified using the \code{covariates} arguments (optional).}
 
-\item{scaler}{Number to scale values by to aid convergence.}
+\item{center}{Center input values to aid convergence?}
 
 \item{log_K_option}{Settings for the estimation of \code{log_K}; define using \code{\link[=par_option]{par_option()}}.}
 

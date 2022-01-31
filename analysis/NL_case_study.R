@@ -81,19 +81,9 @@ inputs <- list(landings = landings, index = index)
 
 ## Run model -------------------------------------------------------------------
 
-
 ## Set-up prior settings
 ## Note: during testing the fixed, random, and uniform_prior options rarely converged
 
-# scaler <- sd(inputs$index$index)
-
-tot_mean_index <- index %>%
-    group_by(year, species) %>%
-    summarise(mean_index = mean(index)) %>%
-    group_by(year) %>%
-    summarise(tot_mean_index = sum(mean_index))
-
-scaler <- sd(tot_mean_index$tot_mean_index)
 
 ## Find the smallest max aggregate landings among the groups to inform lower range for K
 
@@ -104,7 +94,7 @@ tot_landings <- landings %>%
 max_tot_landings <- tot_landings %>%
     group_by(region) %>%
     summarise(max = max(tot_landings)) %>%
-    with(min(max) / scaler)
+    with(min(max))
 
 lower_log_r <- log(0.01)
 upper_log_r <- log(1)
@@ -144,9 +134,9 @@ sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
 ## Multivariate AR1 process now working
 ## Forcing the RW structure results in unusual process errors for some species
-fit <- multispic(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
-                                           mean = mean_log_K, upper = mean_log_K),
+                                           mean = mean_log_K, sd = sd_log_K),
                  log_B0_option = par_option(option = "normal_prior",
                                             mean = mean_log_B0, sd = sd_log_B0),
                  log_r_option = par_option(option = "normal_prior",
@@ -442,9 +432,9 @@ comp %>%
 
 ## Model comparison ------------------------------------------------------------
 
-full <- multispic(inputs, scaler = scaler, species_cor = "all", temporal_cor = "ar1",
+full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                   log_K_option = par_option(option = "normal_prior",
-                                            mean = mean_log_K, upper = mean_log_K),
+                                            mean = mean_log_K, sd = sd_log_K),
                   log_B0_option = par_option(option = "normal_prior",
                                              mean = mean_log_B0, sd = sd_log_B0),
                   log_r_option = par_option(option = "normal_prior",
@@ -465,6 +455,8 @@ no_nao <- update(full, pe_covariates = NULL)
 no_temporal_cor <- update(no_nao, temporal_cor = "none")
 no_species_cor <- update(no_temporal_cor, species_cor = "none")
 
+## Check try errors!
+
 loo_full <- run_loo(full)
 loo_no_nao <- run_loo(no_nao)
 loo_no_temporal_cor <- run_loo(no_temporal_cor)
@@ -478,5 +470,13 @@ no_species_cor$mAIC
 
 
 update(full, leave_out = 1, light = TRUE, silent = FALSE)
+
 ## consider supplying last par to speed up this process
+## make a tidy_par function and name par using factor levels
+## implement scale and center arguments
+## consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
+## consider using full time series of catch to inform lower bound for K
+## check factor levels and make sure indexing isn't messed up for K when K_groups is used
+
+
 
