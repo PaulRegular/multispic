@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index
-landings <- multispic::landings
+index <- multispic::index %>% filter(region == "3LNO")
+landings <- multispic::landings %>% filter(region == "3LNO")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -151,7 +151,7 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
+                 n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
 
 fit$opt$message
 fit$sd_rep
@@ -473,7 +473,6 @@ update(full, leave_out = 1, light = TRUE, silent = FALSE)
 
 ## consider supplying last par to speed up this process
 ## make a tidy_par function and name par using factor levels
-## implement scale and center arguments
 ## consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
 ## consider using full time series of catch to inform lower bound for K
 ## check factor levels and make sure indexing isn't messed up for K when K_groups is used

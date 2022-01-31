@@ -11,3 +11,5 @@ LinkingTo: TMB, RcppEigen
 Imports: plotly, units
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Suggests: 
+    progress

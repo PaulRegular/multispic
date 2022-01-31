@@ -4,10 +4,12 @@
 \alias{run_loo}
 \title{Function for running leave one out cross-validation}
 \usage{
-run_loo(fit)
+run_loo(fit, progress = TRUE)
 }
 \arguments{
 \item{fit}{Object from \code{\link[=fit_model]{fit_model()}}}
+
+\item{progress}{Display progress bar? (Generated using \link[progress:progress_bar]{progress::progress_bar})}
 }
 \value{
 Returns a list of four:

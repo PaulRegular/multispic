@@ -398,7 +398,7 @@ multispic <- function(inputs,
         names(tot_pop) <- c("year", all.vars(K_groups))
     }
 
-    se <- sd_rep <- par_lwr <- par_upr <- NA
+    se <- sd_rep <- par_lwr <- par_upr <- NULL
 
     if (!light) {
 
@@ -472,7 +472,8 @@ multispic <- function(inputs,
 
 #' Function for running leave one out cross-validation
 #'
-#' @param fit  Object from [fit_model()]
+#' @param fit         Object from [fit_model()]
+#' @param progress    Display progress bar? (Generated using [progress::progress_bar])
 #'
 #' @return Returns a list of four:
 #'    1) `fit`  -  all fit objects from each step,
@@ -483,24 +484,26 @@ multispic <- function(inputs,
 #' @export
 #'
 
-run_loo <- function(fit) {
+run_loo <- function(fit, progress = TRUE) {
 
     n <- length(fit$index$index)
-    pb <- txtProgressBar(min = 0, max = n, style = 3)
     fits <- vector("list", n)
     obs <- numeric(n)
     pred <- numeric(n)
 
-    if (!is.na(fit$sd_rep)) {
+    if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
     } else {
         stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
     }
 
-    units(fit$run_dur) <- "hours"
-    proj_dur <- round(as.numeric(fit$run_dur) * n)
-    if (proj_dur > 2) {
-        warning(paste0("It may take up to ", proj_dur, " hours to produce a leave-one-our cross-validation score."))
+    if (progress) {
+        if (!requireNamespace("progress", quietly = TRUE)) {
+            stop("The progress package is needed to display a progress bar. Please install it.", call. = FALSE)
+        }
+        pb <- progress::progress_bar$new(
+            format = "[:bar] :percent in :elapsed (eta: :eta)",
+            total = n, clear = FALSE, show_after = 0, width = 100)
     }
 
     for (i in seq(n)) {
@@ -513,7 +516,7 @@ run_loo <- function(fit) {
             pred[i] <- f$index$log_pred_index[f$index$left_out]
             fits[[i]] <- f
         }
-        setTxtProgressBar(pb, i)
+        if (progress) pb$tick()
     }
 
     if (any(is.na(pred))) {
