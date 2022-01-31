@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>% filter(region == "3LNO")
-landings <- multispic::landings %>% filter(region == "3LNO")
+index <- multispic::index
+landings <- multispic::landings
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -29,7 +29,7 @@ sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
 
-sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
+# sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$year >= min(index$year) &
@@ -151,7 +151,7 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
+                 n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
@@ -452,26 +452,23 @@ full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                   n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
 
 no_nao <- update(full, pe_covariates = NULL)
-no_temporal_cor <- update(no_nao, temporal_cor = "none")
-no_species_cor <- update(no_temporal_cor, species_cor = "none")
-
-## Check try errors!
+one_species_cor <- update(no_nao, species_cor = "one")
+no_species_cor <- update(one_species_cor, species_cor = "none")
+no_temporal_cor <- update(no_species_cor, temporal_cor = "none")
 
 loo_full <- run_loo(full)
 loo_no_nao <- run_loo(no_nao)
-loo_no_temporal_cor <- run_loo(no_temporal_cor)
+loo_one_species_cor <- run_loo(one_species_cor)
 loo_no_species_cor <- run_loo(no_species_cor)
+loo_no_temporal_cor <- run_loo(no_temporal_cor)
 
 full$mAIC
 no_nao$mAIC
-no_temporal_cor$mAIC
+one_species_cor$mAIC
 no_species_cor$mAIC
+no_temporal_cor$mAIC
 
 
-
-update(full, leave_out = 1, light = TRUE, silent = FALSE)
-
-## consider supplying last par to speed up this process
 ## make a tidy_par function and name par using factor levels
 ## consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
 ## consider using full time series of catch to inform lower bound for K
