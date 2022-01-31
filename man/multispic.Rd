@@ -21,6 +21,7 @@ multispic(
   pe_covariates = NULL,
   n_forecast = 0,
   leave_out = NULL,
+  start_par = NULL,
   light = FALSE,
   silent = FALSE
 )
@@ -75,6 +76,10 @@ and covariates. No covariates are applied if set to \code{NULL}.}
 
 \item{leave_out}{Specific index values to leave out from the analysis (row number).
 Useful for cross-validation. All data are kept if \code{NULL}.}
+
+\item{start_par}{List of starting parameter values. Start parameters are internally
+defined, however, it may be useful to supply parameters from a previous
+model fit to speed up convergence.}
 
 \item{light}{Skip running \code{\link[TMB:sdreport]{TMB::sdreport()}} and limit output to speed things up?}
 

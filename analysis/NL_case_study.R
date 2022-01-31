@@ -29,7 +29,7 @@ sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
 
-# sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
+sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
 landings <- landings[landings$year >= min(index$year) &

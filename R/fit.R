@@ -62,6 +62,9 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           (i.e. terminal values assumed through projected years).
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
 #'                           Useful for cross-validation. All data are kept if `NULL`.
+#' @param start_par          List of starting parameter values. Start parameters are internally
+#'                           defined, however, it may be useful to supply parameters from a previous
+#'                           model fit to speed up convergence.
 #' @param light              Skip running [TMB::sdreport()] and limit output to speed things up?
 #' @param silent             Disable tracing information?
 #'
@@ -84,9 +87,11 @@ multispic <- function(inputs,
                       pe_covariates = NULL,
                       n_forecast = 0,
                       leave_out = NULL,
+                      start_par = NULL,
                       light = FALSE,
                       silent = FALSE) {
 
+    start_time <- Sys.time()
     call <- match.call()
 
     landings <- inputs$landings
@@ -364,6 +369,7 @@ multispic <- function(inputs,
     }
 
     ## Fit model
+    if (!is.null(start_par)) par <- start_par
     obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                      silent = silent)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
@@ -453,9 +459,13 @@ multispic <- function(inputs,
     ## Calculate marginal AIC
     mAIC <- 2 * length(opt$par) + 2 * opt$objective
 
-    out <- list(call = call, log_center = log_center, obj = obj, opt = opt, sd_rep = sd_rep,
-                rep = rep, par = par, se = se, par_lwr = par_lwr, par_upr = par_upr,
-                index = index, landings = landings, pop = pop, tot_pop = tot_pop, mAIC = mAIC)
+    end_time <- Sys.time()
+    run_dur <- end_time - start_time
+
+    out <- list(call = call, run_dur = run_dur, log_center = log_center, obj = obj, opt = opt,
+                sd_rep = sd_rep, rep = rep, par = par, se = se, par_lwr = par_lwr,
+                par_upr = par_upr, index = index, landings = landings,
+                pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
@@ -481,8 +491,21 @@ run_loo <- function(fit) {
     obs <- numeric(n)
     pred <- numeric(n)
 
+    if (!is.na(fit$sd_rep)) {
+        start_par <- as.list(fit$sd_rep, "Est")
+    } else {
+        stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
+    }
+
+    units(fit$run_dur) <- "hours"
+    proj_dur <- round(as.numeric(fit$run_dur) * n)
+    if (proj_dur > 2) {
+        warning(paste0("It may take up to ", proj_dur, " hours to produce a leave-one-our cross-validation score."))
+    }
+
     for (i in seq(n)) {
-        f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE))
+        f <- try(update(fit, leave_out = i, start_par = start_par,
+                        light = TRUE, silent = TRUE))
         if (class(f) == "try-catch") {
             obs[i] <- pred[i] <- fits[[i]] <- NA
         } else {
@@ -493,7 +516,11 @@ run_loo <- function(fit) {
         setTxtProgressBar(pb, i)
     }
 
-    list(fits = fits, obs = obs, pred = pred, mse = mean((obs - pred) ^ 2))
+    if (any(is.na(pred))) {
+        warning(paste("When iterating across ", n, " observations, model fitting failed for ", sum(is.na(pred)), " cases when an observation was left out."))
+    }
+
+    list(fits = fits, obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
 
 }
 
