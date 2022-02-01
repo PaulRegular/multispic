@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>% filter(region == "3LNO")
-landings <- multispic::landings %>% filter(region == "3LNO")
+index <- multispic::index %>% filter(region == "2J3K")
+landings <- multispic::landings %>% filter(region == "2J3K")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
