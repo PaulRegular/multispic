@@ -178,15 +178,11 @@ multispic <- function(inputs,
 
     ## Compute total landings by year to inform starting value for K
     ## And mean log index to inform starting values for B
-    ## And mean log index from the first three years to inform starting values of B0
     total_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
                                 FUN = sum, data = landings)
     max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
                               FUN = max, data = total_landings)$landings
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
-    mean_log_I0 <- aggregate(index ~ species, FUN = function(x) mean(log(x)),
-                             data = index[index$year >= min(index$year) &
-                                              index$year < min(index$year) + 3, ])
 
     ## Values to keep
     keep <- rep(1L, length(index$index))
@@ -261,7 +257,7 @@ multispic <- function(inputs,
                 log_sd_log_K = log(log_K_option$sd),
                 mean_log_B0 = log_B0_option$mean - log_center,
                 log_sd_log_B0 = log(log_B0_option$sd),
-                log_B0 = ceiling(mean_log_I0$index),
+                log_B0 = ceiling(mean_log_index$index),
                 mean_log_r = log_r_option$mean,
                 log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-1, nlevels(landings$species)),

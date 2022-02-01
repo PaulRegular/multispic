@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>% filter(region == "2J3K")
-landings <- multispic::landings %>% filter(region == "2J3K")
+index <- multispic::index
+landings <- multispic::landings
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -29,7 +29,6 @@ sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
 
-sub_sp <- sub_sp[sub_sp != "Silver Hake"]
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
@@ -112,14 +111,10 @@ upper_log_B0 <- upper_log_K
 mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
 sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
-lower_log_sd_B <- log(0.01)
-upper_log_sd_B <- log(1)
-mean_log_sd_B <- (lower_log_sd_B + upper_log_sd_B) / 2
-sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
-
-## Use design-based estimates of CV to inform obs error prior
-mean_log_sd_I <- mean(log(index$cv))
-sd_log_sd_I <- sd(log(index$cv))
+lower_log_sd <- log(0.01)
+upper_log_sd <- log(1)
+mean_log_sd <- (lower_log_sd + upper_log_sd) / 2
+sd_log_sd <- (upper_log_sd - lower_log_sd) / 2
 
 lower_log_q <- log(0.1)
 upper_log_q <- log(1)
@@ -147,16 +142,16 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                  log_r_option = par_option(option = "normal_prior",
                                            mean = mean_log_r, sd = sd_log_r),
                  log_sd_B_option = par_option(option = "normal_prior",
-                                              mean = mean_log_sd_B, sd = sd_log_sd_B),
+                                              mean = mean_log_sd, sd = sd_log_sd),
                  log_q_option = par_option(option = "normal_prior",
                                            mean = mean_log_q, sd = sd_log_q),
                  log_sd_I_option = par_option(option = "normal_prior",
-                                              mean = mean_log_sd_I, sd = sd_log_sd_I),
+                                              mean = mean_log_sd, sd = sd_log_sd),
                  logit_rho_option = par_option(option = "normal_prior",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
+                 n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
@@ -197,7 +192,7 @@ plot_prior_post(prior_mean = mean_log_B0, prior_sd = sd_log_B0,
                 post_sd = post_sd$log_B0,
                 post_names = levels(fit$landings$species),
                 xlab = "log(B0)")
-plot_prior_post(prior_mean = mean_log_sd_B, prior_sd = sd_log_sd_B,
+plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_B,
                 post_sd = post_sd$log_sd_B,
                 post_names = levels(fit$landings$species),
@@ -207,7 +202,7 @@ plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
                 post_sd = post_sd$log_q,
                 post_names = levels(fit$index$survey),
                 xlab = "log(q)")
-plot_prior_post(prior_mean = mean_log_sd_I, prior_sd = sd_log_sd_I,
+plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
                 post_mean = post_mean$log_sd_I,
                 post_sd = post_sd$log_sd_I,
                 post_names = levels(fit$index$survey),
