@@ -170,18 +170,18 @@ multispic <- function(inputs,
     by_grp <- ifelse(is.null(K_groups), "0", paste(all.vars(K_groups), collapse = " + "))
     mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
                             FUN = mean, data = index)
-    total_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
+    tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
                                   FUN = sum, data = mean_index)
-    log_center <- ifelse(center, mean(log(total_mean_index$index)), 0)
+    log_center <- ifelse(center, mean(log(tot_mean_index$index)), 0)
     index$index <- exp(log(index$index) - log_center)
     landings$landings <- exp(log(landings$landings) - log_center)
 
     ## Compute total landings by year to inform starting value for K
     ## And mean log index to inform starting values for B
-    total_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
+    tot_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
                                 FUN = sum, data = landings)
     max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
-                              FUN = max, data = total_landings)$landings
+                              FUN = max, data = tot_landings)$landings
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
     ## Values to keep
@@ -390,13 +390,8 @@ multispic <- function(inputs,
     pop <- landings
     pop$pe <- rep$log_B_std_res
 
-    if (is.null(K_groups)) {
-        tot_pop <- data.frame(year = sort(unique(landings$year)))
-    } else {
-        tot_pop <- expand.grid(year = unique(landings$year),
-                               group = unique(landings[, all.vars(K_groups)]))
-        names(tot_pop) <- c("year", all.vars(K_groups))
-    }
+    tot_pop <- tot_landings
+    tot_pop$landings <- exp(log(tot_pop$landings) + log_center)
 
     se <- sd_rep <- par_lwr <- par_upr <- NULL
 

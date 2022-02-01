@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index
-landings <- multispic::landings
+index <- multispic::index %>% filter(region == "3LNO")
+landings <- multispic::landings  %>% filter(region == "3LNO")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -29,6 +29,7 @@ sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
 
+sub_sp <- sub_sp[sub_sp != "Silver Hake"]
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
@@ -151,7 +152,7 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
+                 n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
 
 fit$opt$message
 fit$sd_rep
@@ -364,6 +365,7 @@ p <- fit$tot_pop %>%
               linetype = I(3), color = I("black"), size = I(1)) %>%
     add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
               linetype = I(3), color = I("black"), size = I(1)) %>%
+    add_lines(y = ~landings, name = "L", color = I("red")) %>%
     layout(title = "Total biomass")
 p
 p %>% layout(yaxis = list(type = "log"))
