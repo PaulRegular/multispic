@@ -14,7 +14,6 @@ run_loo(fit, progress = TRUE)
 \value{
 Returns a list of four:
 \enumerate{
-\item \code{fit}  -  all fit objects from each step,
 \item \code{obs}  -  log observations that were left out at each step
 \item \code{pred} -  log predictions at each step, and
 \item \code{mse}  -  mean squared error of the predictions (leave one out cross validation score).

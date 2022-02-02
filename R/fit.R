@@ -471,10 +471,9 @@ multispic <- function(inputs,
 #' @param progress    Display progress bar? (Generated using [progress::progress_bar])
 #'
 #' @return Returns a list of four:
-#'    1) `fit`  -  all fit objects from each step,
-#'    2) `obs`  -  log observations that were left out at each step
-#'    3) `pred` -  log predictions at each step, and
-#'    4) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
+#'    1) `obs`  -  log observations that were left out at each step
+#'    2) `pred` -  log predictions at each step, and
+#'    3) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
 #'
 #' @export
 #'
@@ -482,9 +481,7 @@ multispic <- function(inputs,
 run_loo <- function(fit, progress = TRUE) {
 
     n <- length(fit$index$index)
-    fits <- vector("list", n)
-    obs <- numeric(n)
-    pred <- numeric(n)
+    obs <- pred <- numeric(n)
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
@@ -497,7 +494,7 @@ run_loo <- function(fit, progress = TRUE) {
             stop("The progress package is needed to display a progress bar. Please install it.", call. = FALSE)
         }
         pb <- progress::progress_bar$new(
-            format = "[:bar] :percent in :elapsed (eta: :eta)",
+            format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
             total = n, clear = FALSE, show_after = 0, width = 100)
     }
 
@@ -505,11 +502,10 @@ run_loo <- function(fit, progress = TRUE) {
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE))
         if (class(f) == "try-catch") {
-            obs[i] <- pred[i] <- fits[[i]] <- NA
+            obs[i] <- pred[i] <- NA
         } else {
             obs[i] <- f$index$log_index[f$index$left_out]
             pred[i] <- f$index$log_pred_index[f$index$left_out]
-            fits[[i]] <- f
         }
         if (progress) pb$tick()
     }
@@ -518,7 +514,7 @@ run_loo <- function(fit, progress = TRUE) {
         warning(paste("When iterating across ", n, " observations, model fitting failed for ", sum(is.na(pred)), " cases when an observation was left out."))
     }
 
-    list(fits = fits, obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
+    list(obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
 
 }
 
