@@ -107,10 +107,14 @@ upper_log_B0 <- upper_log_K
 mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
 sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
-lower_log_sd <- log(0.01)
-upper_log_sd <- log(1)
-mean_log_sd <- (lower_log_sd + upper_log_sd) / 2
-sd_log_sd <- (upper_log_sd - lower_log_sd) / 2
+lower_log_sd_B <- log(0.01)
+upper_log_sd_B <- log(1)
+mean_log_sd_B <- (lower_log_sd_B + upper_log_sd_B) / 2
+sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
+
+## Use design-based estimates of cv to inform prior for observation error
+mean_log_sd_I <- mean(log(index$cv))
+sd_log_sd_I <- sd(log(index$cv))
 
 lower_log_q <- log(0.1)
 upper_log_q <- log(1)
@@ -147,11 +151,11 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                  log_r_option = par_option(option = "normal_prior",
                                            mean = mean_log_r, sd = sd_log_r),
                  log_sd_B_option = par_option(option = "normal_prior",
-                                              mean = mean_log_sd, sd = sd_log_sd),
+                                              mean = mean_log_sd_B, sd = sd_log_sd_B),
                  log_q_option = par_option(option = "normal_prior",
                                            mean = mean_log_q, sd = sd_log_q),
                  log_sd_I_option = par_option(option = "normal_prior",
-                                              mean = mean_log_sd, sd = sd_log_sd),
+                                              mean = mean_log_sd_I, sd = sd_log_sd_I),
                  logit_rho_option = par_option(option = "normal_prior",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
@@ -197,7 +201,7 @@ plot_prior_post(prior_mean = mean_log_B0, prior_sd = sd_log_B0,
                 post_sd = post_sd$log_B0,
                 post_names = levels(fit$landings$species),
                 xlab = "log(B0)")
-plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
+plot_prior_post(prior_mean = mean_log_sd_B, prior_sd = sd_log_sd_B,
                 post_mean = post_mean$log_sd_B,
                 post_sd = post_sd$log_sd_B,
                 post_names = levels(fit$landings$species),
@@ -207,7 +211,7 @@ plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
                 post_sd = post_sd$log_q,
                 post_names = levels(fit$index$survey),
                 xlab = "log(q)")
-plot_prior_post(prior_mean = mean_log_sd, prior_sd = sd_log_sd,
+plot_prior_post(prior_mean = mean_log_sd_I, prior_sd = sd_log_sd_I,
                 post_mean = post_mean$log_sd_I,
                 post_sd = post_sd$log_sd_I,
                 post_names = levels(fit$index$survey),
