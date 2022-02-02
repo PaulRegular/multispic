@@ -4,7 +4,7 @@
 
 ## - Add data from 2J3K and 3Ps eco-regions <-- done
 ## - Fit to each region (single-species, 5 species, 10 species, all species)
-## - Try to combine regions (K_group = ~region)
+## - Try to combine regions (K_group = ~region) <-- possible, but too many correlation parameters, many of which may not make sense to estimate (e.g. cod in 3Ps vs. redfish in 2J3K)
 ## - Calculate species-specific leave one out scores to assess predictive ability of each model
 ## - Hypothesis: multispecies >> single-species inference
 
@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>% filter(region == "3Ps")
-landings <- multispic::landings  %>% filter(region == "3Ps")
+index <- multispic::index %>% filter(region == "2J3K")
+landings <- multispic::landings  %>% filter(region == "2J3K")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -29,7 +29,7 @@ sp_region <- table(index$species, index$region) > 0 # present-absent
 sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
 sub_sp <- rownames(sp_region)[sp_ind]
 
-sub_sp <- sub_sp[sub_sp != "Silver Hake"]
+sub_sp <- sub_sp[sub_sp != "Silver Hake"] # Causing convergence issues...maybe because of noise early in the series
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
@@ -160,7 +160,7 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
+                 n_forecast = 1, K_groups = NULL, pe_covariates = ~winter_nao)
 
 fit$opt$message
 fit$sd_rep
@@ -451,11 +451,11 @@ full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                   log_r_option = par_option(option = "normal_prior",
                                             mean = mean_log_r, sd = sd_log_r),
                   log_sd_B_option = par_option(option = "normal_prior",
-                                               mean = mean_log_sd, sd = sd_log_sd),
+                                               mean = mean_log_sd_B, sd = sd_log_sd_B),
                   log_q_option = par_option(option = "normal_prior",
                                             mean = mean_log_q, sd = sd_log_q),
                   log_sd_I_option = par_option(option = "normal_prior",
-                                               mean = mean_log_sd, sd = sd_log_sd),
+                                               mean = mean_log_sd_I, sd = sd_log_sd_I),
                   logit_rho_option = par_option(option = "normal_prior",
                                                 mean = mean_logit_rho, sd = sd_logit_rho),
                   logit_phi_option = par_option(option = "normal_prior",
@@ -468,25 +468,22 @@ one_species_cor <- update(no_nao, species_cor = "one")
 no_species_cor <- update(one_species_cor, species_cor = "none")
 no_temporal_cor <- update(no_species_cor, temporal_cor = "none")
 
-loo_full <- run_loo(full)
-loo_no_nao <- run_loo(no_nao)
-loo_just_nao <- run_loo(just_nao)
-loo_one_species_cor <- run_loo(one_species_cor)
-loo_no_species_cor <- run_loo(no_species_cor)
-loo_no_temporal_cor <- run_loo(no_temporal_cor)
+full$loo <- run_loo(full)
+no_nao$loo<- run_loo(no_nao)
+just_nao$loo <- run_loo(just_nao)
+one_species_cor$loo  <- run_loo(one_species_cor)
+no_species_cor$loo  <- run_loo(no_species_cor)
+no_temporal_cor$loo  <- run_loo(no_temporal_cor)
 
-full$mAIC
-no_nao$mAIC
-just_nao$mAIC
-one_species_cor$mAIC
-no_species_cor$mAIC
-no_temporal_cor$mAIC
+fits_2J3K <- mget(c("full", "no_nao", "just_nao", "one_species_cor",
+                    "no_species_cor", "no_temporal_cor"))
+
+saveRDS(fits_2J3K, file = "analysis/exports/fits_2J3K.rds")
+
 
 
 ## make a tidy_par function and name par using factor levels
 ## consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
-## consider using full time series of catch to inform lower bound for K
-## check factor levels and make sure indexing isn't messed up for K when K_groups is used
 
 
 
