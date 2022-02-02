@@ -452,21 +452,24 @@ full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                 mean = mean_logit_rho, sd = sd_logit_rho),
                   logit_phi_option = par_option(option = "normal_prior",
                                                 mean = mean_logit_phi, sd = sd_logit_phi),
-                  n_forecast = 1, K_groups = ~region, pe_covariates = ~winter_nao)
+                  n_forecast = 1, K_groups = NULL, pe_covariates = ~winter_nao)
 
 no_nao <- update(full, pe_covariates = NULL)
+just_nao <- update(full, species_cor = "none", temporal_cor = "none")
 one_species_cor <- update(no_nao, species_cor = "one")
 no_species_cor <- update(one_species_cor, species_cor = "none")
 no_temporal_cor <- update(no_species_cor, temporal_cor = "none")
 
 loo_full <- run_loo(full)
 loo_no_nao <- run_loo(no_nao)
+loo_just_nao <- run_loo(just_nao)
 loo_one_species_cor <- run_loo(one_species_cor)
 loo_no_species_cor <- run_loo(no_species_cor)
 loo_no_temporal_cor <- run_loo(no_temporal_cor)
 
 full$mAIC
 no_nao$mAIC
+just_nao$mAIC
 one_species_cor$mAIC
 no_species_cor$mAIC
 no_temporal_cor$mAIC
