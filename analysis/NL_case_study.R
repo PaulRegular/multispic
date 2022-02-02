@@ -116,8 +116,8 @@ sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
 mean_log_sd_I <- mean(log(index$cv))
 sd_log_sd_I <- sd(log(index$cv))
 
-lower_log_q <- log(0.1)
-upper_log_q <- log(1)
+lower_log_q <- log(0.2)
+upper_log_q <- log(1.2)
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
