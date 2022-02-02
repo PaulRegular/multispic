@@ -54,36 +54,40 @@ par <- as.list(fit$sd_rep, "Est")
 hist(unlist(par), breaks = 30)
 
 ## Prior and posterior
-post_mean <- as.list(fit$sd_rep, "Est")
-post_sd <- as.list(fit$sd_rep, "Std. Error")
-plot_prior_post(prior_mean = mean_log_K, prior_sd = sd_log_K,
-                post_mean = post_mean$log_K,
-                post_sd = post_sd$log_K,
+plot_prior_post(prior_mean = fit$par$mean_log_K,
+                prior_sd = exp(fit$par$log_sd_log_K),
+                post_mean = fit$par$log_K,
+                post_sd = fit$se$log_K,
                 post_names = K_label,
                 xlab = "log(K)")
-plot_prior_post(prior_mean = mean_log_r, prior_sd = sd_log_r,
-                post_mean = post_mean$log_r,
-                post_sd = post_sd$log_r,
+plot_prior_post(prior_mean = fit$par$mean_log_r,
+                prior_sd = exp(fit$par$log_sd_log_r),
+                post_mean = fit$par$log_r,
+                post_sd = fit$se$log_r,
                 post_names = levels(fit$landings$species),
                 xlab = "log(r)")
-plot_prior_post(prior_mean = mean_log_B0, prior_sd = sd_log_B0,
-                post_mean = post_mean$log_B0,
-                post_sd = post_sd$log_B0,
+plot_prior_post(prior_mean = fit$par$mean_log_B0,
+                prior_sd = exp(fit$par$log_sd_log_B0),
+                post_mean = fit$par$log_B0,
+                post_sd = fit$se$log_B0,
                 post_names = levels(fit$landings$species),
                 xlab = "log(B0)")
-plot_prior_post(prior_mean = mean_log_sd_B, prior_sd = sd_log_sd_B,
-                post_mean = post_mean$log_sd_B,
-                post_sd = post_sd$log_sd_B,
+plot_prior_post(prior_mean = fit$par$mean_log_sd_B,
+                prior_sd = exp(fit$par$log_sd_log_sd_B),
+                post_mean = fit$par$log_sd_B,
+                post_sd = fit$se$log_sd_B,
                 post_names = levels(fit$landings$species),
                 xlab = "log(SD<sub>B</sub>)")
-plot_prior_post(prior_mean = mean_log_q, prior_sd = sd_log_q,
-                post_mean = post_mean$log_q,
-                post_sd = post_sd$log_q,
+plot_prior_post(prior_mean = fit$par$mean_log_q,
+                prior_sd = exp(fit$par$log_sd_log_q),
+                post_mean = fit$par$log_q,
+                post_sd = fit$se$log_q,
                 post_names = levels(fit$index$survey),
                 xlab = "log(q)")
-plot_prior_post(prior_mean = mean_log_sd_I, prior_sd = sd_log_sd_I,
-                post_mean = post_mean$log_sd_I,
-                post_sd = post_sd$log_sd_I,
+plot_prior_post(prior_mean = fit$par$mean_log_sd_I,
+                prior_sd = exp(fit$par$log_sd_log_sd_I),
+                post_mean = fit$par$log_sd_I,
+                post_sd = fit$se$log_sd_I,
                 post_names = levels(fit$index$survey),
                 xlab = "log(SD<sub>I</sub>)")
 
@@ -100,15 +104,17 @@ for (i in seq(nrow(sp_rho))) {
     }
 }
 
-plot_prior_post(prior_mean = mean_logit_rho, prior_sd = sd_logit_rho,
-                post_mean = post_mean$logit_rho,
-                post_sd = post_sd$logit_rho,
+plot_prior_post(prior_mean = fit$par$mean_logit_rho,
+                prior_sd = exp(fit$par$log_sd_logit_rho),
+                post_mean = fit$par$logit_rho,
+                post_sd = fit$se$logit_rho,
                 post_names = sp_nm_mat[lower.tri(sp_nm_mat)],
                 xlab = "logit(rho)")# , trans_fun = function(x) inv_logit(x, shift = TRUE))
 
-plot_prior_post(prior_mean = mean_logit_phi, prior_sd = sd_logit_phi,
-                post_mean = post_mean$logit_phi,
-                post_sd = post_sd$logit_phi,
+plot_prior_post(prior_mean = fit$obj$env$data$mean_logit_phi,
+                prior_sd = fit$obj$env$data$sd_logit_phi,
+                post_mean = fit$par$logit_phi,
+                post_sd = fit$se$logit_phi,
                 post_names = "logit(phi)",
                 xlab = "logit(phi)")# , trans_fun = inv_logit)
 
