@@ -19,8 +19,8 @@ library(zoo)
 
 ## All regions ------------------------------------------------------------------------------
 
-index <- multispic::index %>% filter(region == "3LNO")
-landings <- multispic::landings  %>% filter(region == "3LNO")
+index <- multispic::index %>% filter(region == "3Ps")
+landings <- multispic::landings  %>% filter(region == "3Ps")
 covariates <- multispic::covariates
 landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
@@ -33,9 +33,7 @@ sub_sp <- sub_sp[sub_sp != "Silver Hake"]
 # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
 index <- index[index$species %in% sub_sp, ]
-landings <- landings[landings$year >= min(index$year) &
-                         landings$year <= max(index$year) &
-                         landings$species %in% sub_sp, ]
+landings <- landings[landings$species %in% sub_sp, ]
 
 ## Survey = species-region-gear-season (i.e. groups for catchability estimates)
 index$survey <- paste0(index$species, "-", index$region, "-", index$season, "-", index$gear)
@@ -75,9 +73,6 @@ landings %>%
     add_lines(y = ~spring_nao, name = "Spring NAO") %>%
     add_lines(y = ~summer_nao, name = "Summer NAO") %>%
     add_lines(y = ~fall_nao, name = "Fall NAO")
-
-
-inputs <- list(landings = landings, index = index)
 
 
 ## Run model -------------------------------------------------------------------
@@ -131,6 +126,15 @@ lower_logit_phi <- logit(0.1)
 upper_logit_phi <- logit(0.9)
 mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
 sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
+
+
+## Use full landings time series to inform prior for K but limit analysis to
+## index time series as there is nothing to inform the process errors prior to the start
+## of the surveys
+landings <- landings[landings$year >= min(index$year) &
+                         landings$year <= max(index$year), ]
+
+inputs <- list(landings = landings, index = index)
 
 
 ## Multivariate AR1 process now working
