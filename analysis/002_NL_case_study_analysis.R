@@ -1,9 +1,46 @@
 
+## TODO:
+## - Calculate one-step ahead residuals
+
+## - Add data from 2J3K and 3Ps eco-regions <-- done
+## - Fit to each region (single-species, 5 species, 10 species, all species)
+## - Try to combine regions (K_group = ~region) <-- possible, but too many correlation parameters, many of which may not make sense to estimate (e.g. cod in 3Ps vs. redfish in 2J3K)
+## - Calculate species-specific leave one out scores to assess predictive ability of each model
+## - Hypothesis: multispecies >> single-species inference
+
+## Consider:
+## - make a tidy_par function and name par using factor levels
+## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
+
+
 source("analysis/001_NL_case_study_helpers.R")
 
-for (r in c("2J3K", "3LNO", "3Ps")) {
+for (r in c("3LNO", "3Ps")) {
 
-    full <- nl_multispic(region = r, species = NULL)
+    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
+
+    ## Dev notes:
+    ## - Forcing the RW structure results in unusual process errors for some species
+    ## - During testing the fixed, random, and uniform_prior options rarely converged
+    full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
+                      log_K_option = par_option(option = "normal_prior",
+                                                mean = mean_log_K, sd = sd_log_K),
+                      log_B0_option = par_option(option = "normal_prior",
+                                                 mean = mean_log_B0, sd = sd_log_B0),
+                      log_r_option = par_option(option = "normal_prior",
+                                                mean = mean_log_r, sd = sd_log_r),
+                      log_sd_B_option = par_option(option = "normal_prior",
+                                                   mean = mean_log_sd_B, sd = sd_log_sd_B),
+                      log_q_option = par_option(option = "normal_prior",
+                                                mean = mean_log_q, sd = sd_log_q),
+                      log_sd_I_option = par_option(option = "normal_prior",
+                                                   mean = mean_log_sd_I, sd = sd_log_sd_I),
+                      logit_rho_option = par_option(option = "normal_prior",
+                                                    mean = mean_logit_rho, sd = sd_logit_rho),
+                      logit_phi_option = par_option(option = "normal_prior",
+                                                    mean = mean_logit_phi, sd = sd_logit_phi),
+                      n_forecast = 1, K_groups = NULL, pe_covariates = ~winter_nao)
+
 
     no_nao <- update(full, pe_covariates = NULL)
     just_nao <- update(full, species_cor = "none", temporal_cor = "none")

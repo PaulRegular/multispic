@@ -1,17 +1,4 @@
 
-## TODO:
-## - Calculate one-step ahead residuals
-
-## - Add data from 2J3K and 3Ps eco-regions <-- done
-## - Fit to each region (single-species, 5 species, 10 species, all species)
-## - Try to combine regions (K_group = ~region) <-- possible, but too many correlation parameters, many of which may not make sense to estimate (e.g. cod in 3Ps vs. redfish in 2J3K)
-## - Calculate species-specific leave one out scores to assess predictive ability of each model
-## - Hypothesis: multispecies >> single-species inference
-
-## Consider:
-## - make a tidy_par function and name par using factor levels
-## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
-
 
 library(units)
 library(plotly)
@@ -21,16 +8,9 @@ library(dplyr)
 library(zoo)
 
 
-#' Wrapper of multispic for NL case study
-#'
-#' @details Helper function for subsetting the NL case study data, defining generic priors, and fitting the multispic model.
-#'
-#' @param region  Subset to this region
-#' @param species Subset to these species. All species with index and landings values will be
-#'                kept if `NULL`
-#'
+## Helper function for subsetting the NL case study data and defining generic priors
 
-nl_multispic <- function(region = "2J3K", species = NULL) {
+nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
 
     ## Subset data ---------------------------------------------------------------------------------
 
@@ -64,10 +44,7 @@ nl_multispic <- function(region = "2J3K", species = NULL) {
     index$species <- paste0(index$species, "-", index$region)
     landings$species <- paste0(landings$species, "-", landings$region)
 
-    ## Run model -----------------------------------------------------------------------------------
-
-    ## Set-up prior settings
-    ## Note: during testing the fixed, random, and uniform_prior options rarely converged
+    ## set-up priors -------------------------------------------------------------------------------
 
     ## Find the smallest max aggregate landings among the groups to inform lower range for K
 
@@ -119,7 +96,6 @@ nl_multispic <- function(region = "2J3K", species = NULL) {
     mean_logit_phi <- (lower_logit_phi + upper_logit_phi) / 2
     sd_logit_phi <- (upper_logit_phi - lower_logit_phi) / 2
 
-
     ## Use full landings time series to inform prior for K but limit analysis to
     ## index time series as there is nothing to inform the process errors prior to the start
     ## of the surveys
@@ -128,29 +104,14 @@ nl_multispic <- function(region = "2J3K", species = NULL) {
 
     inputs <- list(landings = landings, index = index)
 
-
-    ## Multivariate AR1 process now working
-    ## Forcing the RW structure results in unusual process errors for some species
-    fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
-                     log_K_option = par_option(option = "normal_prior",
-                                               mean = mean_log_K, sd = sd_log_K),
-                     log_B0_option = par_option(option = "normal_prior",
-                                                mean = mean_log_B0, sd = sd_log_B0),
-                     log_r_option = par_option(option = "normal_prior",
-                                               mean = mean_log_r, sd = sd_log_r),
-                     log_sd_B_option = par_option(option = "normal_prior",
-                                                  mean = mean_log_sd_B, sd = sd_log_sd_B),
-                     log_q_option = par_option(option = "normal_prior",
-                                               mean = mean_log_q, sd = sd_log_q),
-                     log_sd_I_option = par_option(option = "normal_prior",
-                                                  mean = mean_log_sd_I, sd = sd_log_sd_I),
-                     logit_rho_option = par_option(option = "normal_prior",
-                                                   mean = mean_logit_rho, sd = sd_logit_rho),
-                     logit_phi_option = par_option(option = "normal_prior",
-                                                   mean = mean_logit_phi, sd = sd_logit_phi),
-                     n_forecast = 1, K_groups = NULL, pe_covariates = ~winter_nao)
-
-    fit
-
+    mget(c("inputs",
+           "mean_log_K", "sd_log_K",
+           "mean_log_B0", "sd_log_B0",
+           "mean_log_r", "sd_log_r",
+           "mean_log_sd_B", "sd_log_sd_B",
+           "mean_log_q", "sd_log_q",
+           "mean_log_sd_I", "sd_log_sd_I",
+           "mean_logit_rho", "sd_logit_rho",
+           "mean_logit_phi", "sd_logit_phi"))
 }
 
