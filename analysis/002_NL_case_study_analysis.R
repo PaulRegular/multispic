@@ -77,8 +77,6 @@ fits$no_temporal_cor$loo$mse
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
-    browser()
-
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
     fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))

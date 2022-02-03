@@ -501,7 +501,7 @@ run_loo <- function(fit, progress = TRUE) {
     for (i in seq(n)) {
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE))
-        if (class(f) == "try-catch") {
+        if (class(f) == "try-catch" | fit$opt$message == "false convergence (8)") {
             obs[i] <- pred[i] <- NA
         } else {
             obs[i] <- f$index$log_index[f$index$left_out]
@@ -577,7 +577,7 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
         ##   deterministic values without running sdreport across every fold
         fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
                           light = TRUE, silent = TRUE))
-        if (class(fit) == "try-catch") {
+        if (class(fit) == "try-catch" | fit$opt$message == "false convergence (8)") {
             retro_fits[[i]] <- NA
             forecasts[[i]] <- NULL
         } else {
@@ -590,7 +590,7 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
     }
 
     if (any(is.na(retro_fits))) {
-        warning(paste("While folding back ", n, " years, model fitting failed in ", sum(is.na(retro_fits)), " cases."))
+        warning(paste("While folding back ", folds, " years, model fitting failed in ", sum(is.na(retro_fits)), " cases."))
     }
 
     forecasts <- do.call(rbind, forecasts)
