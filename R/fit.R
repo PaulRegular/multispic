@@ -389,9 +389,13 @@ multispic <- function(inputs,
 
     pop <- landings
     pop$pe <- rep$log_B_std_res
+    pop$B <- exp(log(rep$B_vec) + log_center)
+    pop$F <- rep$F
+    pop$K <- exp(log(rep$K_vec) + log_center)
 
     tot_pop <- tot_landings
     tot_pop$landings <- exp(log(tot_pop$landings) + log_center)
+    tot_pop$B <- exp(log(c(rep$tot_B)) + log_center)
 
     se <- sd_rep <- par_lwr <- par_upr <- NULL
 
@@ -573,8 +577,6 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
 
         ## TODO:
         ## - allow start_par to be used  (requires careful change to par dimensions)
-        ## - add more quantities to the report (e.g., B_vec, tot_B) to ease plotting of
-        ##   deterministic values without running sdreport across every fold
         fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
                           light = TRUE, silent = TRUE))
         if (class(fit) == "try-catch" | fit$opt$message == "false convergence (8)") {

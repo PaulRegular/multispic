@@ -280,6 +280,10 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_K_vec);
     ADREPORT(log_tot_B);
 
+    REPORT(B_vec);
+    REPORT(F);
+    REPORT(K_vec);
+    REPORT(tot_B);
     REPORT(log_B_res);
     REPORT(log_B_std_res);
     REPORT(log_I_res);

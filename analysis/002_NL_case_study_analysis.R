@@ -89,4 +89,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 }
 
+fits <- readRDS("analysis/exports/fits_2J3K.rds")
+
+fits$full$retro$mse
+fits$no_nao$retro$mse
+fits$just_nao$retro$mse
+fits$one_species_cor$retro$mse
+fits$no_species_cor$retro$mse
+fits$no_temporal_cor$retro$mse
+
+
+
 
