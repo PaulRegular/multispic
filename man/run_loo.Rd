@@ -12,7 +12,7 @@ run_loo(fit, progress = TRUE)
 \item{progress}{Display progress bar? (Generated using \link[progress:progress_bar]{progress::progress_bar})}
 }
 \value{
-Returns a list of four:
+Returns a list with three objects:
 \enumerate{
 \item \code{obs}  -  log observations that were left out at each step
 \item \code{pred} -  log predictions at each step, and

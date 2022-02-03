@@ -171,7 +171,7 @@ multispic <- function(inputs,
     mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
                             FUN = mean, data = index)
     tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
-                                  FUN = sum, data = mean_index)
+                                FUN = sum, data = mean_index)
     log_center <- ifelse(center, mean(log(tot_mean_index$index)), 0)
     index$index <- exp(log(index$index) - log_center)
     landings$landings <- exp(log(landings$landings) - log_center)
@@ -179,7 +179,7 @@ multispic <- function(inputs,
     ## Compute total landings by year to inform starting value for K
     ## And mean log index to inform starting values for B
     tot_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
-                                FUN = sum, data = landings)
+                              FUN = sum, data = landings)
     max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
                               FUN = max, data = tot_landings)$landings
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
@@ -470,7 +470,7 @@ multispic <- function(inputs,
 #' @param fit         Object from [fit_model()]
 #' @param progress    Display progress bar? (Generated using [progress::progress_bar])
 #'
-#' @return Returns a list of four:
+#' @return Returns a list with three objects:
 #'    1) `obs`  -  log observations that were left out at each step
 #'    2) `pred` -  log predictions at each step, and
 #'    3) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
@@ -515,6 +515,88 @@ run_loo <- function(fit, progress = TRUE) {
     }
 
     list(obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
+
+}
+
+
+#' Function for running a retrospective analysis
+#'
+#' @details This function runs a retrospective analysis whereby terminal survey index estimates
+#'          are excluded from the analysis.
+#'
+#' @param fit         Object from [fit_model()]
+#' @param folds       Number of years to 'fold' back
+#' @param progress    Display progress bar? (Generated using [progress::progress_bar])
+#'
+#' @return Returns a list with three objects:
+#'    1) `retro_fits`  -  a list including a series of fits from each retrospective fold
+#'    2) `forecasts` -  a data.frame with observed, but left out, and predicted indices from each fold
+#'    3) `mse`  -  mean squared error of the forecasts (measure of forecasting skill)
+#'
+#' @export
+#'
+
+run_retro <- function(fit, folds = 10, progress = TRUE) {
+
+    if (!is.null(fit$sd_rep)) {
+        start_par <- as.list(fit$sd_rep, "Est")
+    } else {
+        stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
+    }
+
+    if (progress) {
+        if (!requireNamespace("progress", quietly = TRUE)) {
+            stop("The progress package is needed to display a progress bar. Please install it.", call. = FALSE)
+        }
+        pb <- progress::progress_bar$new(
+            format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
+            total = folds, clear = FALSE, show_after = 0, width = 100)
+    }
+
+    terminal_year <- max(fit$index$year)
+    retro_years <- terminal_year - seq(folds)
+    retro_fits <- forecasts <- vector("list", folds)
+    names(retro_fits) <- names(forecasts) <- as.character(retro_years)
+
+    for (i in seq(folds)) {
+
+        index <- fit$index
+        landings <- fit$landings
+
+        ## Subset the input data on year at a time, keeping one extra year of indices and landings
+        retro_index <- index[index$year <= retro_years[i] + 1, ]
+        retro_landings <- landings[landings$year <= retro_years[i] + 1, ]
+        retro_inputs <- list(landings = retro_landings, index = retro_index)
+
+        ## Identify observations to leave out, but provide predictions for these values
+        ind <- retro_index$year == retro_years[i] + 1
+
+        ## TODO:
+        ## - allow start_par to be used  (requires careful change to par dimensions)
+        ## - add more quantities to the report (e.g., B_vec, tot_B) to ease plotting of
+        ##   deterministic values without running sdreport across every fold
+        fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
+                          light = TRUE, silent = TRUE))
+        if (class(fit) == "try-catch") {
+            retro_fits[[i]] <- NA
+            forecasts[[i]] <- NULL
+        } else {
+            retro_fits[[i]] <- fit
+            forecasts[[i]] <- fit$index[fit$index$left_out,
+                                        c("year", "survey", "species", "log_index", "log_pred_index")]
+            forecasts[[i]]$retro_year <- retro_years[i]
+        }
+        if (progress) pb$tick()
+    }
+
+    if (any(is.na(retro_fits))) {
+        warning(paste("While folding back ", n, " years, model fitting failed in ", sum(is.na(retro_fits)), " cases."))
+    }
+
+    forecasts <- do.call(rbind, forecasts)
+
+    mse <- mean((forecasts$log_index - forecasts$log_pred_index) ^ 2)
+    list(retro_fits = retro_fits, forecasts = forecasts, mse = mse)
 
 }
 

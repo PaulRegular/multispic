@@ -15,7 +15,7 @@
 
 source("analysis/001_NL_case_study_helpers.R")
 
-for (r in c("3LNO", "3Ps")) {
+for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
@@ -62,5 +62,33 @@ for (r in c("3LNO", "3Ps")) {
 
 }
 
+
+fits <- readRDS("analysis/exports/fits_3LNO.rds")
+
+fits$full$loo$mse
+fits$no_nao$loo$mse
+fits$just_nao$loo$mse
+fits$one_species_cor$loo$mse
+fits$no_species_cor$loo$mse
+fits$no_temporal_cor$loo$mse
+
+
+## Add retrospective analysis
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    browser()
+
+    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
+
+    fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))
+
+    for (i in seq_along(fits)) {
+        fits[[i]]$retro <- run_retro(fits[[i]], folds = 10)
+    }
+
+    saveRDS(fits, file = paste0("analysis/exports/fits_", r, ".rds"))
+
+}
 
 
