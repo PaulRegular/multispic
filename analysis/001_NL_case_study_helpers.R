@@ -16,8 +16,6 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
 
     index <- multispic::index
     landings <- multispic::landings
-    covariates <- multispic::covariates
-    landings <- merge(landings, covariates, by = "year", all.x = TRUE)
 
     index <- index[index$region == region, ]
     landings <- landings[landings$region == region, ]
