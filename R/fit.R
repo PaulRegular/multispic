@@ -526,7 +526,8 @@ run_loo <- function(fit, progress = TRUE) {
 #' Function for running a retrospective analysis
 #'
 #' @details This function runs a retrospective analysis whereby terminal survey index estimates
-#'          are excluded from the analysis.
+#'          are excluded from the analysis. A hindcast is also preformed in each fold where
+#'          observed values are left out but predicted to measure the models forecasting skill.
 #'
 #' @param fit         Object from [fit_model()]
 #' @param folds       Number of years to 'fold' back
@@ -534,8 +535,8 @@ run_loo <- function(fit, progress = TRUE) {
 #'
 #' @return Returns a list with three objects:
 #'    1) `retro_fits`  -  a list including a series of fits from each retrospective fold
-#'    2) `forecasts` -  a data.frame with observed, but left out, and predicted indices from each fold
-#'    3) `mse`  -  mean squared error of the forecasts (measure of forecasting skill)
+#'    2) `hindcasts` -  a data.frame with observed, but left out, and predicted indices from each fold
+#'    3) `mse`  -  mean squared error of the hindcasts (measure of forecasting skill)
 #'
 #' @export
 #'
@@ -559,8 +560,8 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
 
     terminal_year <- max(fit$index$year)
     retro_years <- terminal_year - seq(folds)
-    retro_fits <- forecasts <- vector("list", folds)
-    names(retro_fits) <- names(forecasts) <- as.character(retro_years)
+    retro_fits <- hindcasts <- vector("list", folds)
+    names(retro_fits) <- names(hindcasts) <- as.character(retro_years)
 
     for (i in seq(folds)) {
 
@@ -581,12 +582,12 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
                           light = TRUE, silent = TRUE))
         if (class(fit) == "try-catch" | fit$opt$message == "false convergence (8)") {
             retro_fits[[i]] <- NA
-            forecasts[[i]] <- NULL
+            hindcasts[[i]] <- NULL
         } else {
             retro_fits[[i]] <- fit
-            forecasts[[i]] <- fit$index[fit$index$left_out,
+            hindcasts[[i]] <- fit$index[fit$index$left_out,
                                         c("year", "survey", "species", "log_index", "log_pred_index")]
-            forecasts[[i]]$retro_year <- retro_years[i]
+            hindcasts[[i]]$retro_year <- retro_years[i]
         }
         if (progress) pb$tick()
     }
@@ -595,10 +596,10 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
         warning(paste("While folding back ", folds, " years, model fitting failed in ", sum(is.na(retro_fits)), " cases."))
     }
 
-    forecasts <- do.call(rbind, forecasts)
+    hindcasts <- do.call(rbind, hindcasts)
 
-    mse <- mean((forecasts$log_index - forecasts$log_pred_index) ^ 2)
-    list(retro_fits = retro_fits, forecasts = forecasts, mse = mse)
+    mse <- mean((hindcasts$log_index - hindcasts$log_pred_index) ^ 2)
+    list(retro_fits = retro_fits, hindcasts = hindcasts, mse = mse)
 
 }
 
