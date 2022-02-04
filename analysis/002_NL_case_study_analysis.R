@@ -141,7 +141,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                            mean = mean_logit_phi, sd = sd_logit_phi),
                              n_forecast = 1, K_groups = NULL, pe_covariates = NULL, silent = TRUE))
 
-        if (class(fit) == "try-error" | fit$opt$message == "false convergence (8)") {
+        if (class(fit) == "try-error" || fit$opt$message == "false convergence (8)") {
             null[[sr]] <- "Did not converge"
         } else {
             fit$loo <- run_loo(fit)
