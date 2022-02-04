@@ -61,12 +61,12 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     fits <- mget(c("full", "no_nao", "just_nao", "one_species_cor",
                    "no_species_cor", "no_temporal_cor"))
 
-    saveRDS(fits, file = paste0("analysis/exports/fits_", r, ".rds"))
+    saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
 
 }
 
 
-fits <- readRDS("analysis/exports/fits_3LNO.rds")
+fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
 
 fits$full$loo$mse
 fits$no_nao$loo$mse
@@ -82,17 +82,17 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
-    fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))
+    fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
 
     for (i in seq_along(fits)) {
         fits[[i]]$retro <- run_retro(fits[[i]], folds = 10)
     }
 
-    saveRDS(fits, file = paste0("analysis/exports/fits_", r, ".rds"))
+    saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds"))
 
 }
 
-fits <- readRDS("analysis/exports/fits_2J3K.rds")
+fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
 
 fits$full$retro$mse
 fits$no_nao$retro$mse
@@ -105,11 +105,10 @@ fits$no_temporal_cor$retro$mse
 ## Species-specific analyses -----------------------------------------------------------------------
 
 
-# for (r in c("2J3K", "3LNO", "3Ps")) {
-for (r in c("2J3K")) {
+for (r in c("2J3K", "3LNO", "3Ps")) {
 
-    multispp_fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))
-    spp_region <- levels(multispp_fits$full$landings$species)
+    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
+    spp_region <- levels(spp_fits$full$landings$species)
     spp <- gsub(paste0("-", r), "", spp_region)
     names(spp) <- spp_region
 
@@ -119,28 +118,28 @@ for (r in c("2J3K")) {
 
     for (sr in spp_region) {
 
-        message(sr, "\n")
+        message("\n", sr)
 
         list2env(nl_inputs_and_priors(region = r, species = spp[sr]), envir = globalenv())
 
         fit <- try(multispic(inputs, species_cor = "none", temporal_cor = "none",
-                                log_K_option = par_option(option = "normal_prior",
-                                                          mean = mean_log_K, sd = sd_log_K),
-                                log_B0_option = par_option(option = "normal_prior",
-                                                           mean = mean_log_B0, sd = sd_log_B0),
-                                log_r_option = par_option(option = "normal_prior",
-                                                          mean = mean_log_r, sd = sd_log_r),
-                                log_sd_B_option = par_option(option = "normal_prior",
-                                                             mean = mean_log_sd_B, sd = sd_log_sd_B),
-                                log_q_option = par_option(option = "normal_prior",
-                                                          mean = mean_log_q, sd = sd_log_q),
-                                log_sd_I_option = par_option(option = "normal_prior",
-                                                             mean = mean_log_sd_I, sd = sd_log_sd_I),
-                                logit_rho_option = par_option(option = "normal_prior",
-                                                              mean = mean_logit_rho, sd = sd_logit_rho),
-                                logit_phi_option = par_option(option = "normal_prior",
-                                                              mean = mean_logit_phi, sd = sd_logit_phi),
-                                n_forecast = 1, K_groups = NULL, pe_covariates = NULL, silent = TRUE))
+                             log_K_option = par_option(option = "normal_prior",
+                                                       mean = mean_log_K, sd = sd_log_K),
+                             log_B0_option = par_option(option = "normal_prior",
+                                                        mean = mean_log_B0, sd = sd_log_B0),
+                             log_r_option = par_option(option = "normal_prior",
+                                                       mean = mean_log_r, sd = sd_log_r),
+                             log_sd_B_option = par_option(option = "normal_prior",
+                                                          mean = mean_log_sd_B, sd = sd_log_sd_B),
+                             log_q_option = par_option(option = "normal_prior",
+                                                       mean = mean_log_q, sd = sd_log_q),
+                             log_sd_I_option = par_option(option = "normal_prior",
+                                                          mean = mean_log_sd_I, sd = sd_log_sd_I),
+                             logit_rho_option = par_option(option = "normal_prior",
+                                                           mean = mean_logit_rho, sd = sd_logit_rho),
+                             logit_phi_option = par_option(option = "normal_prior",
+                                                           mean = mean_logit_phi, sd = sd_logit_phi),
+                             n_forecast = 1, K_groups = NULL, pe_covariates = NULL, silent = TRUE))
 
         if (class(fit) == "try-error" | fit$opt$message == "false convergence (8)") {
             null[[sr]] <- "Did not converge"
@@ -152,8 +151,8 @@ for (r in c("2J3K")) {
 
     }
 
-
-
-
+    saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
 
 }
+
+
