@@ -17,8 +17,8 @@ run_retro(fit, folds = 10, progress = TRUE)
 Returns a list with three objects:
 \enumerate{
 \item \code{retro_fits}  -  a list including a series of fits from each retrospective fold
-\item \code{forecasts} -  a data.frame with observed, but left out, and predicted indices from each fold
-\item \code{mse}  -  mean squared error of the forecasts (measure of forecasting skill)
+\item \code{hindcasts} -  a data.frame with observed, but left out, and predicted indices from each fold
+\item \code{mse}  -  mean squared error of the hindcasts (measure of forecasting skill)
 }
 }
 \description{
@@ -26,5 +26,6 @@ Function for running a retrospective analysis
 }
 \details{
 This function runs a retrospective analysis whereby terminal survey index estimates
-are excluded from the analysis.
+are excluded from the analysis. A hindcast is also preformed in each fold where
+observed values are left out but predicted to measure the models forecasting skill.
 }

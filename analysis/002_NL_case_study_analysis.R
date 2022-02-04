@@ -15,6 +15,9 @@
 
 source("analysis/001_NL_case_study_helpers.R")
 
+
+## Multispecies analysis ---------------------------------------------------------------------------
+
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
@@ -99,40 +102,49 @@ fits$no_species_cor$retro$mse
 fits$no_temporal_cor$retro$mse
 
 
+## Species-specific analyses -----------------------------------------------------------------------
 
-## Run species-specific analyses
 
-for (r in c("2J3K", "3LNO", "3Ps")) {
+# for (r in c("2J3K", "3LNO", "3Ps")) {
+for (r in c("2J3K")) {
 
-    fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))
-    spp <- levels(fits$full$landings$species)
+    multispp_fits <- readRDS(paste0("analysis/exports/fits_", r, ".rds"))
+    spp_region <- levels(multispp_fits$full$landings$species)
+    spp <- gsub(paste0("-", r), "", spp_region)
+    names(spp) <- spp_region
 
-    for (sp in spp) {
+    ## Single-species fits = NULL model
+    null <- vector("list", length(spp))
+    names(null) <- spp_region
 
-        sp <- gsub(paste0("-", r), "", sp)
-        sp <- c("Atlantic Cod", "American Plaice")
-        sp <- "Atlantic Cod"
-        r <- "2J3K"
-        list2env(nl_inputs_and_priors(region = r, species = sp), envir = globalenv())
+    for (sr in spp_region) {
 
-        null <- multispic(inputs, species_cor = "none", temporal_cor = "none",
-                          log_K_option = par_option(option = "normal_prior",
-                                                    mean = mean_log_K, sd = sd_log_K),
-                          log_B0_option = par_option(option = "normal_prior",
-                                                     mean = mean_log_B0, sd = sd_log_B0),
-                          log_r_option = par_option(option = "normal_prior",
-                                                    mean = mean_log_r, sd = sd_log_r),
-                          log_sd_B_option = par_option(option = "normal_prior",
-                                                       mean = mean_log_sd_B, sd = sd_log_sd_B),
-                          log_q_option = par_option(option = "normal_prior",
-                                                    mean = mean_log_q, sd = sd_log_q),
-                          log_sd_I_option = par_option(option = "normal_prior",
-                                                       mean = mean_log_sd_I, sd = sd_log_sd_I),
-                          logit_rho_option = par_option(option = "normal_prior",
-                                                        mean = mean_logit_rho, sd = sd_logit_rho),
-                          logit_phi_option = par_option(option = "normal_prior",
-                                                        mean = mean_logit_phi, sd = sd_logit_phi),
-                          n_forecast = 1, K_groups = NULL, pe_covariates = NULL)
+        list2env(nl_inputs_and_priors(region = r, species = spp[sr]), envir = globalenv())
+
+        fit <- try(multispic(inputs, species_cor = "none", temporal_cor = "none",
+                                log_K_option = par_option(option = "normal_prior",
+                                                          mean = mean_log_K, sd = sd_log_K),
+                                log_B0_option = par_option(option = "normal_prior",
+                                                           mean = mean_log_B0, sd = sd_log_B0),
+                                log_r_option = par_option(option = "normal_prior",
+                                                          mean = mean_log_r, sd = sd_log_r),
+                                log_sd_B_option = par_option(option = "normal_prior",
+                                                             mean = mean_log_sd_B, sd = sd_log_sd_B),
+                                log_q_option = par_option(option = "normal_prior",
+                                                          mean = mean_log_q, sd = sd_log_q),
+                                log_sd_I_option = par_option(option = "normal_prior",
+                                                             mean = mean_log_sd_I, sd = sd_log_sd_I),
+                                logit_rho_option = par_option(option = "normal_prior",
+                                                              mean = mean_logit_rho, sd = sd_logit_rho),
+                                logit_phi_option = par_option(option = "normal_prior",
+                                                              mean = mean_logit_phi, sd = sd_logit_phi),
+                                n_forecast = 1, K_groups = NULL, pe_covariates = NULL))
+
+        if (class(fit) == "try-error" | fit$opt$message == "false convergence (8)") {
+            null[[sr]] <- "Did not converge"
+        } else {
+            null[[sr]] <- fit
+        }
 
     }
 
