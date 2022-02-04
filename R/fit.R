@@ -244,7 +244,8 @@ multispic <- function(inputs,
                 B_groups = B_group_mat,
                 keep = keep)
 
-    par <- list(log_B = t(replicate(dat$nY, ceiling(mean_log_index$index))),
+    par <- list(log_B = matrix(ceiling(mean_log_index$index),
+                               ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
                 mean_log_sd_B = log_sd_B_option$mean,
                 log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
