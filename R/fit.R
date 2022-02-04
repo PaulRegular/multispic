@@ -581,16 +581,28 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
         ## - allow start_par to be used  (requires careful change to par dimensions)
         fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
                           light = TRUE, silent = TRUE))
+
         if (class(fit) == "try-catch" | fit$opt$message == "false convergence (8)") {
+
             retro_fits[[i]] <- NA
             hindcasts[[i]] <- NULL
+
         } else {
             retro_fits[[i]] <- fit
-            hindcasts[[i]] <- fit$index[fit$index$left_out,
-                                        c("year", "survey", "species", "log_index", "log_pred_index")]
-            hindcasts[[i]]$retro_year <- retro_years[i]
+
+            if (sum(ind) > 0) {
+                hindcasts[[i]] <- fit$index[fit$index$left_out,
+                                            c("year", "survey", "species", "log_index", "log_pred_index")]
+                hindcasts[[i]]$retro_year <- retro_years[i]
+            } else {
+                hindcasts[[i]] <- NULL
+                warning(paste("A hindcast is moot for", retro_years[i], "as there is no index to predict."))
+            }
+
         }
+
         if (progress) pb$tick()
+
     }
 
     if (any(is.na(retro_fits))) {

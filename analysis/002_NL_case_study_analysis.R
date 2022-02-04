@@ -119,6 +119,8 @@ for (r in c("2J3K")) {
 
     for (sr in spp_region) {
 
+        message(sr, "\n")
+
         list2env(nl_inputs_and_priors(region = r, species = spp[sr]), envir = globalenv())
 
         fit <- try(multispic(inputs, species_cor = "none", temporal_cor = "none",
@@ -138,11 +140,13 @@ for (r in c("2J3K")) {
                                                               mean = mean_logit_rho, sd = sd_logit_rho),
                                 logit_phi_option = par_option(option = "normal_prior",
                                                               mean = mean_logit_phi, sd = sd_logit_phi),
-                                n_forecast = 1, K_groups = NULL, pe_covariates = NULL))
+                                n_forecast = 1, K_groups = NULL, pe_covariates = NULL, silent = TRUE))
 
         if (class(fit) == "try-error" | fit$opt$message == "false convergence (8)") {
             null[[sr]] <- "Did not converge"
         } else {
+            fit$loo <- run_loo(fit)
+            fit$retro <- run_retro(fit, folds = 10)
             null[[sr]] <- fit
         }
 

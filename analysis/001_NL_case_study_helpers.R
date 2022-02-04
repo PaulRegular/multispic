@@ -7,6 +7,7 @@ library(multispic)
 library(dplyr)
 library(zoo)
 
+options(dplyr.summarise.inform = FALSE)
 
 ## Helper function for subsetting the NL case study data and defining generic priors
 
