@@ -53,11 +53,17 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' @param temporal_cor       Correlation structure across time (`phi`). `"none"` assumes no temporal dependence
 #'                           in the process errors, `"rw"` assumes a random walk, and `"ar1"` fits an
 #'                           AR1 process, estimating an extra parameter.
-#' @param K_groups           Formula pointing to the grouping variable to use to estimate `K` and
+#' @param K_groups           Formula specifying a grouping variable to use to estimate `K` and
 #'                           aggregate biomass in the production equation. Biomass from all species
-#'                           (stocks) will be aggregated and one `K` value estimated if set to `NULL`.
+#'                           (stocks) will be aggregated and one `K` value estimated if set to `~1`.
+#' @param survey_groups      Formula specifying the grouping variables to use to estimate catchability,
+#'                           `log_q`, and observation error, `log_sd_I`. For example, a two-factor
+#'                           main-effects model will be assumed by supplying `~survey + species`, and
+#'                           interactive-effects will be assumed by supplying `~survey * species`. One
+#'                           parameter will be estimated if set to `~1`.
 #' @param pe_covariates      Formula describing relationship between surplus production (process error)
-#'                           and covariates. No covariates are applied if set to `NULL`.
+#'                           and covariates. Note that intercepts are not estimated. No covariates are
+#'                           applied if set to `~0`.
 #' @param n_forecast         Number of years to forecast. Assumes status quo landings and covariates
 #'                           (i.e. terminal values assumed through projected years).
 #' @param leave_out          Specific index values to leave out from the analysis (row number).
@@ -83,8 +89,9 @@ multispic <- function(inputs,
                       logit_phi_option = par_option(),
                       species_cor = "none",
                       temporal_cor = "none",
-                      K_groups = NULL,
-                      pe_covariates = NULL,
+                      K_groups = ~1,
+                      survey_groups = ~survey,
+                      pe_covariates = ~0,
                       n_forecast = 0,
                       leave_out = NULL,
                       start_par = NULL,
@@ -133,12 +140,12 @@ multispic <- function(inputs,
     index$survey <- factor(index$survey)
 
     ## Set-up model matrix | formula with covariates
-    if (is.null(pe_covariates)) {
+    if (pe_covariates == ~0) {
         pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
         pe_model_mat <- model.matrix(pe_covariates, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by the process errors
     }
-    if (is.null(K_groups)) {
+    if (K_groups == ~1) {
         K_map <- rep(0, nlevels(landings$species))
         B_group_mat <- matrix(1, nrow = nlevels(landings$species), ncol = nlevels(landings$species))
     } else {
@@ -167,7 +174,7 @@ multispic <- function(inputs,
     ## Center index and landings by the mean(log(index) ~ K_group) to aid convergence
     by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
     by_yr_grp <- paste(c("year", all.vars(K_groups)), collapse = " + ")
-    by_grp <- ifelse(is.null(K_groups), "0", paste(all.vars(K_groups), collapse = " + "))
+    by_grp <- ifelse(K_groups == ~1, "0", paste(all.vars(K_groups), collapse = " + "))
     mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
                             FUN = mean, data = index)
     tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
@@ -342,7 +349,7 @@ multispic <- function(inputs,
         }
     }
 
-    if (is.null(pe_covariates)) {
+    if (pe_covariates == ~0) {
         map$pe_betas <- factor(NA)
     }
 
@@ -443,7 +450,7 @@ multispic <- function(inputs,
         tot_pop$B_lwr <- exp(lwr$log_tot_B + log_center)
         tot_pop$B_upr <- exp(upr$log_tot_B + log_center)
 
-        if (is.null(K_groups)) {
+        if (K_groups == ~1) {
             tot_pop$K <- exp(par$log_K)
             tot_pop$K_lwr <- exp(par_lwr$log_K)
             tot_pop$K_upr <- exp(par_upr$log_K)

@@ -42,10 +42,10 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_logit_rho, sd = sd_logit_rho),
                       logit_phi_option = par_option(option = "normal_prior",
                                                     mean = mean_logit_phi, sd = sd_logit_phi),
-                      n_forecast = 1, K_groups = NULL, pe_covariates = ~winter_nao)
+                      n_forecast = 1, K_groups = ~1, pe_covariates = ~winter_nao)
 
 
-    no_nao <- update(full, pe_covariates = NULL)
+    no_nao <- update(full, pe_covariates = ~0)
     just_nao <- update(full, species_cor = "none", temporal_cor = "none")
     one_species_cor <- update(no_nao, species_cor = "one")
     no_species_cor <- update(one_species_cor, species_cor = "none")
@@ -139,7 +139,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                            mean = mean_logit_rho, sd = sd_logit_rho),
                              logit_phi_option = par_option(option = "normal_prior",
                                                            mean = mean_logit_phi, sd = sd_logit_phi),
-                             n_forecast = 1, K_groups = NULL, pe_covariates = NULL, silent = TRUE))
+                             n_forecast = 1, K_groups = ~1, pe_covariates = ~0, silent = TRUE))
 
         if (class(fit) == "try-error" || fit$opt$message == "false convergence (8)") {
             null[[sr]] <- "Did not converge"

@@ -6,7 +6,7 @@ fits <- readRDS("analysis/exports/fits_2J3K.rds")
 
 fit <- fits$one_species_cor
 
-if (is.null(fit$call$K_groups)) {
+if (fit$call$K_groups == ~1) {
     K_groups <- NULL
     if (length(unique(fit$landings$species)) == 1) {
         K_label <- "K"
