@@ -3,6 +3,8 @@ library(plotly)
 library(dplyr)
 library(ggplot2)
 
+normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
+
 ## Leave-one-out results ---------------------------------------------------------------------------
 
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
@@ -49,31 +51,107 @@ loo_scores <- loo_dat %>%
     summarise(n = n(), n_species = length(unique(species)),
               rmse = sqrt(mean((obs - pred) ^ 2, na.rm = TRUE))) %>%
     group_by(species, region) %>%
-    mutate(scaled_rmse = scale(rmse)[, 1]) %>%
+    mutate(scaled_rmse = normalize(rmse),
+           delta_rmse = rmse - min(rmse)) %>%
     ungroup()
 
+sp_loo_groups <- loo_dat %>%
+    filter(model == "Single-species") %>%
+    mutate(ysr = paste0(year, "-", species, "-", region))
+sp_loo_groups <- unique(sp_loo_groups$ysr)
+
 overall_loo_scores <- loo_dat %>%
+    mutate(ysr = paste0(year, "-", species, "-", region)) %>%
+    filter(ysr %in% sp_loo_groups) %>%  # limit to species that converged in the single-species analysis
     group_by(model, region) %>%
     summarise(n = n(), n_species = length(unique(species)),
               rmse = sqrt(mean((obs - pred) ^ 2, na.rm = TRUE))) %>%
     group_by(region) %>%
-    mutate(scaled_rmse = scale(rmse)[, 1]) %>%
+    mutate(scaled_rmse = normalize(rmse),
+           delta_rmse = rmse - min(rmse)) %>%
     ungroup()
 
-## Not a perfect comparison because some species are missing
-overall_loo_scores %>%
-    filter(region == "3Ps")
-
-spp_names <- sort(unique(loo_dat$species))
-loo_scores$species <- factor(loo_scores$species, levels = c("Overall", spp_names))
-
+## May not be plotting correctly given different species in different regions
 loo_scores %>%
-    plot_ly(x = ~model, y = ~scaled_rmse, color = ~species, frame = ~region) %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+            colors = viridis::viridis(100)) %>%
     add_lines()
-
 
 overall_loo_scores %>%
-    plot_ly(x = ~model, y = ~scaled_rmse, color = ~region) %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~region,
+            colors = viridis::viridis(100)) %>%
     add_lines()
 
+
+## Hindcast results ---------------------------------------------------------------------------
+
+hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
+
+    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
+    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    models <- names(spp_fits)
+    names(models) <- c("Full", "No NAO", "Just NAO", "Shared correlation",
+                       "Just temporal correlation", "No correlation")
+
+    spp_hind_dat <- lapply(models, function (m) {
+        data.frame(model = names(models)[models == m], spp_fits[[m]]$retro$hindcasts)
+    })
+    spp_hind_dat <- do.call(rbind, spp_hind_dat)
+
+    species <- names(sp_fits)
+    sp_hind_dat <- lapply(species, function (sp) {
+        sp_fit <- sp_fits[[sp]]
+        if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
+            data.frame(model = "Single-species", sp_fits[[sp]]$retro$hindcasts)
+        }
+    })
+    sp_hind_dat <- do.call(rbind, sp_hind_dat)
+
+    r_hind_dat <- rbind(spp_hind_dat, sp_hind_dat)
+    r_hind_dat$model <- factor(r_hind_dat$model, levels = c(names(models), "Single-species"))
+    r_hind_dat
+
+})
+hind_dat <- do.call(rbind, hind_dat)
+rownames(hind_dat) <- NULL
+
+sr <- do.call(rbind, strsplit(as.character(hind_dat$species), "-"))
+hind_dat$species <- sr[, 1]
+hind_dat$region <- sr[, 2]
+
+hind_scores <- hind_dat %>%
+    group_by(model, species, region) %>%
+    summarise(n = n(), n_species = length(unique(species)),
+              rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
+    group_by(species, region) %>%
+    mutate(scaled_rmse = normalize(rmse),
+           delta_rmse = rmse - min(rmse)) %>%
+    ungroup()
+
+sp_hind_groups <- hind_dat %>%
+    filter(model == "Single-species") %>%
+    mutate(ysr = paste0(year, "-", species, "-", region))
+sp_hind_groups <- unique(sp_hind_groups$ysr)
+
+overall_hind_scores <- hind_dat %>%
+    mutate(ysr = paste0(year, "-", species, "-", region)) %>%
+    filter(ysr %in% sp_hind_groups) %>%  # limit to species that converged in the single-species analysis
+    group_by(model, region) %>%
+    summarise(n = n(), n_species = length(unique(species)),
+              rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
+    group_by(region) %>%
+    mutate(scaled_rmse = normalize(rmse),
+           delta_rmse = rmse - min(rmse)) %>%
+    ungroup()
+
+## May not be plotting correctly given different species in different regions
+hind_scores %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+            colors = viridis::viridis(100)) %>%
+    add_lines()
+
+overall_hind_scores %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~region,
+            colors = viridis::viridis(100)) %>%
+    add_lines()
 
