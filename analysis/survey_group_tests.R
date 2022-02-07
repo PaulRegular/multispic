@@ -2,7 +2,7 @@
 source("analysis/001_NL_case_study_helpers.R")
 
 
-list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
+list2env(nl_inputs_and_priors(region = "2J3K", species = NULL), envir = globalenv())
 
 ## Dev notes:
 ## - Forcing the RW structure results in unusual process errors for some species
@@ -39,13 +39,13 @@ main_eff$loo <- run_loo(main_eff)
 int_eff$loo$mse
 main_eff$loo$mse
 
-# ## TODO: fix retro
-# int_eff$retro <- run_retro(int_eff, folds = 10)
-# main_eff$retro <- run_retro(main_eff, folds = 10)
-#
-# int_eff$retro$mse
-# main_eff$retro$mse
+int_eff$retro <- run_retro(int_eff, folds = 10)
+main_eff$retro <- run_retro(main_eff, folds = 10)
 
+int_eff$retro$mse
+main_eff$retro$mse
+
+fit <- main_eff
 
 if (fit$call$K_groups == ~1) {
     K_groups <- NULL
@@ -209,6 +209,9 @@ p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
 p %>% add_markers(x = ~species, y = ~std_res)
+p %>% add_markers(x = ~season, y = ~std_res)
+p %>% add_markers(x = ~gear, y = ~std_res)
+
 
 fit$index %>%
     plot_ly(x = ~year, y = ~std_res, color = ~survey,

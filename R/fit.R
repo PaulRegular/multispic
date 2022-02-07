@@ -598,6 +598,7 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
 
         ## Subset the input data on year at a time, keeping one extra year of indices and landings
         retro_index <- index[index$year <= retro_years[i] + 1, ]
+        retro_index$survey_id <- NULL # avoid duplicate as this will be re-created in the update
         retro_landings <- landings[landings$year <= retro_years[i] + 1, ]
         retro_inputs <- list(landings = retro_landings, index = retro_index)
 
