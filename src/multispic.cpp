@@ -42,6 +42,7 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(lower_logit_phi);
     DATA_SCALAR(upper_logit_phi);
     DATA_SCALAR(dmuniform_sd);
+    DATA_MATRIX(survey_covariates);
     DATA_MATRIX(pe_covariates);
     DATA_IVECTOR(K_map);
     DATA_MATRIX(B_groups);
@@ -68,9 +69,11 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_log_q);
     PARAMETER(log_sd_log_q);
     PARAMETER_VECTOR(log_q);
+    PARAMETER_VECTOR(log_q_betas);
     PARAMETER(mean_log_sd_I);
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
+    PARAMETER_VECTOR(log_sd_I_betas);
     PARAMETER_VECTOR(pe_betas);
 
     // Dim
@@ -79,6 +82,7 @@ Type objective_function<Type>::operator() ()
     int nS = log_B.cols();         // number of species
     int nL = L.size();
     int nI = I.size();
+    int n_surveys = survey_covariates.rows();
 
     // Containers
     matrix<Type> pred_B(nY, nS);
@@ -99,6 +103,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> K_mat(nY, nS);
     vector<Type> K_vec(nL);
     vector<Type> log_K_vec(nL);
+    vector<Type> pred_log_q(n_surveys);
+    vector<Type> pred_log_sd_I(n_surveys);
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -110,7 +116,6 @@ Type objective_function<Type>::operator() ()
     vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
-    vector<Type> sd_I = exp(log_sd_I);
     Type sd_log_sd_B = exp(log_sd_log_sd_B);
     Type sd_log_K = exp(log_sd_log_K);
     Type sd_log_B0 = exp(log_sd_log_B0);
@@ -120,7 +125,7 @@ Type objective_function<Type>::operator() ()
     Type sd_logit_rho = exp(log_sd_logit_rho);
 
 
-    // Set-up a vector of B, landings matrix, and covariate effects
+    // Set-up a vector of B, landings matrix, and pe covariate effects
     vector<Type> pe_covar_vec = pe_covariates * pe_betas;
     matrix<Type> pe_covar_mat(nY, nS);
     for (int i = 0; i < nL; i++) {
@@ -171,21 +176,33 @@ Type objective_function<Type>::operator() ()
             }
         }
     }
+
+    if (log_q_option == 2) {
+        pred_log_q = log_q;
+    } else {
+        pred_log_q = survey_covariates * log_q_betas;
+    }
     if (log_q_option > 1) {
-        for(int i = 0; i < log_q.size(); i++) {
+        for(int i = 0; i < pred_log_q.size(); i++) {
             if (log_q_option == 4) {
-                nll += dmuniform(log_q(i), lower_log_q, upper_log_q, dmuniform_sd);
+                nll += dmuniform(pred_log_q(i), lower_log_q, upper_log_q, dmuniform_sd);
             } else {
-                nll -= dnorm(log_q(i), mean_log_q, sd_log_q, true);
+                nll -= dnorm(pred_log_q(i), mean_log_q, sd_log_q, true);
             }
         }
     }
+
+    if (log_sd_I_option == 2) {
+        pred_log_sd_I = log_sd_I;
+    } else {
+        pred_log_sd_I = survey_covariates * log_sd_I_betas;
+    }
     if (log_sd_I_option > 1) {
-        for(int i = 0; i < log_sd_I.size(); i++) {
+        for(int i = 0; i < pred_log_sd_I.size(); i++) {
             if (log_sd_I_option == 4) {
-                nll += dmuniform(log_sd_I(i), lower_log_sd_I, upper_log_sd_I, dmuniform_sd);
+                nll += dmuniform(pred_log_sd_I(i), lower_log_sd_I, upper_log_sd_I, dmuniform_sd);
             } else {
-                nll -= dnorm(log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
+                nll -= dnorm(pred_log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
             }
         }
     }
@@ -243,12 +260,12 @@ Type objective_function<Type>::operator() ()
 
     // Observation equations
     for (int i = 0; i < nI; i++){
-        log_pred_I(i) = log_q(I_survey(i)) + log_B_vec(I_sy(i));
+        log_pred_I(i) = pred_log_q(I_survey(i)) + log_B_vec(I_sy(i));
         if (keep(i) == 1) {
-            nll -= dnorm(log_I(i), log_pred_I(i), sd_I(I_survey(i)), true);
+            nll -= dnorm(log_I(i), log_pred_I(i), exp(pred_log_sd_I(I_survey(i))), true);
         }
         log_I_res(i) = log_I(i) - log_pred_I(i);
-        log_I_std_res(i) = log_I_res(i) / sd_I(I_survey(i));
+        log_I_std_res(i) = log_I_res(i) / exp(pred_log_sd_I(I_survey(i)));
     }
 
 
@@ -279,6 +296,8 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_F);
     ADREPORT(log_K_vec);
     ADREPORT(log_tot_B);
+    ADREPORT(pred_log_q);
+    ADREPORT(pred_log_sd_I);
 
     REPORT(B_vec);
     REPORT(F);

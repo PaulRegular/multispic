@@ -30,8 +30,10 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'
 #' @param inputs             List that includes the following data.frames with required columns in
 #'                           parentheses: `landings` (`species`, `year`, `landings`), `index` (`species`, `year`,
-#'                           `survey`, `index`). Covariates can be included in the `landings` data.frame
-#'                           and specified using the `covariates` arguments (optional).
+#'                           `index`). Process error covariates can be included in the `landings`
+#'                           data.frame and specified using the `pe_covariates` arguments (optional). Additional
+#'                           columns can also be included in the `index` data.frame to define `survey_groups`
+#'                           (i.e. effects for catchability and observation error).
 #' @param center             Center input values to aid convergence?
 #' @param log_K_option       Settings for the estimation of `log_K`; define using [par_option()].
 #' @param log_B0_option      Settings for the estimation of the starting biomass;
@@ -137,7 +139,6 @@ multispic <- function(inputs,
     landings <- landings[order(landings$sy), ]
     index$sy <- factor(paste0(index$species, "-", index$year), levels = levels(landings$sy))
     index$species <- factor(index$species, levels = levels(landings$species))
-    index$survey <- factor(index$survey)
 
     ## Set-up model matrix | formula with covariates
     if (pe_covariates == ~0) {
@@ -170,6 +171,10 @@ multispic <- function(inputs,
         K_map <- as.numeric(factor(sp_group[[2]])) - 1
 
     }
+    unique_surveys <- unique(index[, all.vars(survey_groups)])
+    unique_surveys$survey_id <- seq(nrow(unique_surveys)) - 1
+    survey_model_mat <- model.matrix(survey_groups, data = unique_surveys)
+    index <- merge(index, unique_surveys, by = all.vars(survey_groups))
 
     ## Center index and landings by the mean(log(index) ~ K_group) to aid convergence
     by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
@@ -214,7 +219,7 @@ multispic <- function(inputs,
                 L_year = as.numeric(landings$y) - 1,
                 I = as.numeric(index$index),
                 I_species = as.numeric(index$species) - 1,
-                I_survey = as.numeric(index$survey) - 1,
+                I_survey = index$survey_id,
                 I_sy = as.numeric(index$sy) - 1,
                 min_B = 0.0001,
                 nY = nlevels(landings$y),
@@ -246,6 +251,7 @@ multispic <- function(inputs,
                 lower_logit_phi = logit_phi_option$lower,
                 upper_logit_phi = logit_phi_option$upper,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
+                survey_covariates = survey_model_mat,
                 pe_covariates = pe_model_mat,
                 K_map = K_map,
                 B_groups = B_group_mat,
@@ -272,10 +278,12 @@ multispic <- function(inputs,
                 log_m = rep(log(2), nlevels(landings$species)),
                 mean_log_q = log_q_option$mean,
                 log_sd_log_q = log(log_q_option$sd),
-                log_q = rep(-1, nlevels(index$survey)),
+                log_q = rep(-1, nrow(unique_surveys)),
+                log_q_betas = rep(0, ncol(survey_model_mat)),
                 mean_log_sd_I = log_sd_I_option$mean,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
-                log_sd_I = rep(-1, nlevels(index$survey)),
+                log_sd_I = rep(-1, nrow(unique_surveys)),
+                log_sd_I_betas = rep(0, ncol(survey_model_mat)),
                 pe_betas =  rep(0, ncol(pe_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
@@ -330,15 +338,27 @@ multispic <- function(inputs,
 
     if (log_q_option$option != "random") {
         map$mean_log_q <- map$log_sd_log_q <- factor(NA)
+        map$log_q <- factor(rep(NA, length(par$log_q)))
         if (log_q_option$option == "coupled") {
-            map$log_q <- factor(rep(1, length(par$log_q)))
+            stop("Estimates of log_q should be coupled using the survey_groups argument (i.e., survey_groups = ~1).")
+        }
+    } else {
+        map$log_q_betas <- factor(NA)
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main effects and random effects are currently not possible)")
         }
     }
 
     if (log_sd_I_option$option != "random") {
         map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
+        map$log_sd_I <- factor(rep(NA, length(par$log_sd_I)))
         if (log_sd_I_option$option == "coupled") {
-            map$log_sd_I <- factor(rep(1, length(par$log_sd_I)))
+            stop("Estimates of log_sd_I should be coupled using the survey_groups argument (i.e., survey_groups = ~1).")
+        }
+    } else {
+        map$log_sd_I_betas <- factor(NA)
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main-effects and random effects are currently not possible)")
         }
     }
 
