@@ -481,6 +481,17 @@ multispic <- function(inputs,
             tot_pop$K_upr <- exp(par_upr$log_K[ind])
         }
 
+        ## Replace log_q and log_sd_I with reported pred values
+        ## (will be same values if option is "random")
+        par$log_q <- est$pred_log_q
+        se$log_q <- sd$pred_log_q
+        par_lwr$log_q <- lwr$pred_log_q
+        par_upr$log_q <- upr$pred_log_q
+        par$log_sd_I <- est$pred_log_sd_I
+        se$log_sd_I <- sd$pred_log_sd_I
+        par_lwr$log_sd_I <- lwr$pred_log_sd_I
+        par_upr$log_sd_I <- upr$pred_log_sd_I
+
     }
 
     ## Calculate marginal AIC

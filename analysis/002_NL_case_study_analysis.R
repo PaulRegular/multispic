@@ -22,6 +22,12 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
+    if (r == "3LNO") {
+        survey_formula <- ~gear + season * species
+    } else {
+        survey_formula <- ~gear + species
+    }
+
     ## Dev notes:
     ## - Forcing the RW structure results in unusual process errors for some species
     ## - During testing the fixed, random, and uniform_prior options rarely converged
@@ -42,7 +48,8 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_logit_rho, sd = sd_logit_rho),
                       logit_phi_option = par_option(option = "normal_prior",
                                                     mean = mean_logit_phi, sd = sd_logit_phi),
-                      n_forecast = 1, K_groups = ~1, pe_covariates = ~winter_nao)
+                      n_forecast = 1, K_groups = ~1, survey_groups = survey_formula,
+                      pe_covariates = ~winter_nao)
 
 
     no_nao <- update(full, pe_covariates = ~0)
