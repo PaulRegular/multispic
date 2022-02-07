@@ -93,9 +93,9 @@ plot_prior_post(prior_mean = fit$par$mean_log_sd_I,
 
 sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
 rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
-sp_rho[lower.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
+sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
 sp_rho <- t(sp_rho)
-sp_rho[lower.tri(sp_rho)] <- inv_logit(post_mean$logit_rho, shift = TRUE)
+sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
 diag(sp_rho) <- 1
 round(sp_rho, 2)
 for (i in seq(nrow(sp_rho))) {
@@ -167,7 +167,13 @@ p <- fit$index %>%
 p %>% add_markers(x = ~year, y = ~std_res)
 p %>% add_markers(x = ~log(pred), y = ~std_res)
 p %>% add_markers(x = ~survey, y = ~std_res)
+p %>% add_markers(x = ~survey_id, y = ~std_res)
 p %>% add_markers(x = ~species, y = ~std_res)
+p %>% add_markers(x = ~season, y = ~std_res)
+p %>% add_markers(x = ~gear, y = ~std_res)
+p %>% add_markers(x = ~paste(gear, season), y = ~std_res)
+p %>% add_markers(x = ~paste(species, season), y = ~std_res)
+p %>% add_markers(x = ~paste(species, gear), y = ~std_res)
 
 fit$index %>%
     plot_ly(x = ~year, y = ~std_res, color = ~survey,
