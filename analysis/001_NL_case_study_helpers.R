@@ -35,9 +35,6 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     index <- index[index$species %in% sub_sp, ]
     landings <- landings[landings$species %in% sub_sp, ]
 
-    ## Survey = species-region-gear-season (i.e. groups for catchability estimates)
-    index$survey <- paste0(index$species, "-", index$region, "-", index$season, "-", index$gear)
-
     ## Species (stock) = species-region
     index$species <- paste0(index$species, "-", index$region)
     landings$species <- paste0(landings$species, "-", landings$region)

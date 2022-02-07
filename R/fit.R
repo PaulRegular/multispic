@@ -173,6 +173,8 @@ multispic <- function(inputs,
     }
     unique_surveys <- unique(index[, all.vars(survey_groups)])
     unique_surveys$survey_id <- seq(nrow(unique_surveys)) - 1
+    unique_surveys$survey <- do.call(paste, c(unique_surveys[, all.vars(survey_groups)], sep = "-"))
+    unique_surveys$survey <- factor(unique_surveys$survey, levels = unique_surveys$survey)
     survey_model_mat <- model.matrix(survey_groups, data = unique_surveys)
     index <- merge(index, unique_surveys, by = all.vars(survey_groups))
 
