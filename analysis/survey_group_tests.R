@@ -46,7 +46,7 @@ mix_eff$loo$mse
 main_eff$loo$mse
 
 int_eff$retro <- run_retro(int_eff, folds = 10)
-mix_eff$retro <- run_retro(int_eff, folds = 10)
+mix_eff$retro <- run_retro(mix_eff, folds = 10)
 main_eff$retro <- run_retro(main_eff, folds = 10)
 
 int_eff$retro$mse

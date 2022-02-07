@@ -32,27 +32,46 @@ index <- lapply(seq_along(regions), function(i) {
 })
 index <- do.call(rbind, index)
 
-## Early values are not applicable to many species. Manually define start of each series.
-# plot_ly(index, x = ~year, y = ~index, color = ~species, frame = ~region) %>% add_markers()
+index %>%
+    group_by(gear, species, season) %>%
+    plot_ly(x = ~year, y = ~index, color = ~species, frame = ~region,
+            legendgroup = ~species, hoverinfo = "x+y+text", hovertext = ~paste(season, gear)) %>%
+    add_lines() %>%
+    layout(title = "Pre-processed indices")
+
+## Manually unify the start year for 2J3KL
 index <- index %>%
-    filter(region == "2J3K" & year >= 1978 |
-               region != "2J3K" & year >= 1983)
+    filter(region == "2J3K" & year >= 1978 | region != "2J3K")
 
 ## Drop Grenadier as there has been poor coverage of this deep water species
 index <- index %>%
     filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
 
-## Drop species with a partial series (less than 30 years of data)
+## Drop species with a partial series
+## (less than 30 years of data or if species isn't present across each series)
 ## Zeros are also an occasional problem, especially early in the time series.
 ## It is hard to know if these are true zeros or simply because they were not sampled.
 # index %>% group_by(region, species) %>% summarise(n_years = length(unique(year))) %>% as.data.frame()
 index <- index %>%
     filter(index > 0) %>%
     group_by(region, species) %>%
-    mutate(n_years = length(unique(year))) %>%
-    filter(n_years > 30) %>%
+    mutate(n_years = length(unique(year)),
+           n_series = length(unique(gear))) %>%
+    filter(n_years > 30,
+           (region == "2J3K" & n_series == 2 |
+                region != "2J3K" & n_series == 3)) %>%
     as.data.frame()
 index$n_years <- NULL
+index$n_series <- NULL
+
+p <- index %>%
+    group_by(gear, species, season) %>%
+    plot_ly(x = ~year, y = ~index, color = ~species, frame = ~region,
+            legendgroup = ~species, hoverinfo = "x+y+text", hovertext = ~paste(season, gear)) %>%
+    add_lines()  %>%
+    layout(title = "Processed indices")
+p
+p %>% layout(yaxis = list(type = "log"))
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 

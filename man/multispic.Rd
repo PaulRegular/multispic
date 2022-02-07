@@ -17,8 +17,9 @@ multispic(
   logit_phi_option = par_option(),
   species_cor = "none",
   temporal_cor = "none",
-  K_groups = NULL,
-  pe_covariates = NULL,
+  K_groups = ~1,
+  survey_groups = ~survey,
+  pe_covariates = ~0,
   n_forecast = 0,
   leave_out = NULL,
   start_par = NULL,
@@ -29,8 +30,10 @@ multispic(
 \arguments{
 \item{inputs}{List that includes the following data.frames with required columns in
 parentheses: \code{landings} (\code{species}, \code{year}, \code{landings}), \code{index} (\code{species}, \code{year},
-\code{survey}, \code{index}). Covariates can be included in the \code{landings} data.frame
-and specified using the \code{covariates} arguments (optional).}
+\code{index}). Process error covariates can be included in the \code{landings}
+data.frame and specified using the \code{pe_covariates} arguments (optional). Additional
+columns can also be included in the \code{index} data.frame to define \code{survey_groups}
+(i.e. effects for catchability and observation error).}
 
 \item{center}{Center input values to aid convergence?}
 
@@ -64,12 +67,19 @@ across all combinations of species.}
 in the process errors, \code{"rw"} assumes a random walk, and \code{"ar1"} fits an
 AR1 process, estimating an extra parameter.}
 
-\item{K_groups}{Formula pointing to the grouping variable to use to estimate \code{K} and
+\item{K_groups}{Formula specifying a grouping variable to use to estimate \code{K} and
 aggregate biomass in the production equation. Biomass from all species
-(stocks) will be aggregated and one \code{K} value estimated if set to \code{NULL}.}
+(stocks) will be aggregated and one \code{K} value estimated if set to \code{~1}.}
+
+\item{survey_groups}{Formula specifying the grouping variables to use to estimate catchability,
+\code{log_q}, and observation error, \code{log_sd_I}. For example, a two-factor
+main-effects model will be assumed by supplying \code{~survey + species}, and
+interactive-effects will be assumed by supplying \code{~survey * species}. One
+parameter will be estimated if set to \code{~1}.}
 
 \item{pe_covariates}{Formula describing relationship between surplus production (process error)
-and covariates. No covariates are applied if set to \code{NULL}.}
+and covariates. Note that intercepts are not estimated. No covariates are
+applied if set to \code{~0}.}
 
 \item{n_forecast}{Number of years to forecast. Assumes status quo landings and covariates
 (i.e. terminal values assumed through projected years).}

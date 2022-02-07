@@ -10,9 +10,6 @@ region_data <- function(divisions) {
     sub_setdet <- Rstrap::setdet %>%
         filter(NAFOdiv %in% divisions)
 
-    ## Treat Yankee and Engel as equivalent
-    sub_setdet$data.series[sub_setdet$data.series == "Yankee"] <- "Yankee-Engel"
-
     ## Treat winter as spring survey for 3Ps as is done in the assessment
     ## Gear change roughly corresponds to change in survey timing
     sub_setdet$season[!is.na(sub_setdet$season) &
@@ -154,14 +151,15 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
 
 stack_strat <- function(setdet, NAFOdiv, species, species_name, region) {
 
+    spring_yankee <- one_strat(setdet, "spring", "Yankee", NAFOdiv, species, species_name, region)
     spring_engel <- one_strat(setdet, "spring", "Engel", NAFOdiv, species, species_name, region)
     spring_campelen <- one_strat(setdet, "spring", "Campelen", NAFOdiv, species, species_name, region)
 
+    fall_yankee <- one_strat(setdet, "fall", "Yankee", NAFOdiv, species, species_name, region)
     fall_engel <- one_strat(setdet, "fall", "Engel", NAFOdiv, species, species_name, region)
     fall_campelen <- one_strat(setdet, "fall", "Campelen", NAFOdiv, species, species_name, region)
 
-    dat <- rbind(spring_engel, spring_campelen, fall_engel, fall_campelen)
-    dat$gear[dat$gear == "Engel"] <- "Yankee-Engel" # little indicator that these are combined
+    dat <- rbind(spring_yankee, spring_engel, spring_campelen, fall_yankee, fall_engel, fall_campelen)
     dat
 
 }

@@ -26,7 +26,6 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     sp_ind <- rowSums(sp_region) == max(rowSums(sp_region))
     sub_sp <- rownames(sp_region)[sp_ind]
 
-    sub_sp <- sub_sp[sub_sp != "Silver Hake"] # Causing convergence issues...maybe because of noise early in the series
     # sub_sp <- c("American Plaice", "Atlantic Cod", "Greenland Halibut", "Redfish spp.")
 
     if (!is.null(species)) {
