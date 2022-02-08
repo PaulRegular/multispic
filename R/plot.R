@@ -28,13 +28,14 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 
 
 
-#' Plot prior and posterior distributions
+#' Plot parameter distributions
 #'
-#' @description Plot prior and posterior distributions.
-#' Currently limited to the normal distribution
+#' @description Plot posterior and prior (optional) distributions.
+#' Currently limited to the normal distribution.
 #'
 #' @param prior_mean   Mean of the prior.
 #' @param prior_sd     SD of the prior.
+#' @param show_prior   Display prior distribution?
 #' @param post_mean    Mean of the posterior (can be one or more values).
 #' @param post_sd      SD of the posterior (can be one or more values).
 #' @param post_names   Names for the posterior.
@@ -51,18 +52,25 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #'
 #'
 
-plot_prior_post <- function(prior_mean = 0, prior_sd = 1,
+plot_post <- function(prior_mean = 0, prior_sd = 1, show_prior = TRUE,
                             post_mean = 0, post_sd = 1, post_names = "Posterior",
-                            length_out = 500, xlab = "x", ylab = "Density", title = NULL,
-                            min_den = 0.0001, trans_fun = NULL) {
+                            length_out = 1000, xlab = "x", ylab = "Density", title = NULL,
+                            min_den = 0.00001, trans_fun = NULL) {
 
     if (length(post_names) != length(post_mean)) {
         stop("length(post_names) != length(post_mean) - Please specify a name for each posterior distribution")
     }
 
-    x_min <- prior_mean - (4 * prior_sd)
-    x_max <- prior_mean + (4 * prior_sd)
-    x <- seq(x_min, x_max, length.out = length_out)
+    if (show_prior) {
+        den_min <- prior_mean - (10 * prior_sd)
+        den_max <- prior_mean + (10 * prior_sd)
+    } else {
+        den_min <- min(post_mean) - (10 * max(post_sd))
+        den_max <- max(post_mean) + (10 * max(post_sd))
+    }
+    x_min <- min(post_mean) - (4 * max(post_sd))
+    x_max <- max(post_mean) + (4 * max(post_sd))
+    x <- seq(den_min, den_max, length.out = length_out)
     prior_y <- dnorm(x, mean = prior_mean, sd = prior_sd)
 
     names(post_mean) <- names(post_sd) <- post_names
@@ -86,9 +94,10 @@ plot_prior_post <- function(prior_mean = 0, prior_sd = 1,
 
     plot_ly(x = ~x, y = ~y, color = ~lab) %>%
         add_lines(data = prior, name = "Prior", line = list(width = 3),
-                  color = I("black"), colors = viridis::viridis(length(post_mean))) %>%
+                  color = I("black"), colors = viridis::viridis(length(post_mean)),
+                  visible = show_prior) %>%
         add_lines(data = post, line = list(width = 1)) %>%
-        layout(xaxis = list(title = xlab),
+        layout(xaxis = list(title = xlab, range = list(x_min, x_max)),
                yaxis = list(title = ylab),
                title = title)
 
