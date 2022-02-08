@@ -4,12 +4,18 @@ Version: 0.0.0.9000
 Authors@R: person("Paul", "Regular", email = "Paul.Regular@dfo-mpo.gc.ca", role = c("aut", "cre"))
 Description: This is a research compendium for explorations of a multispecies surplus production model.
 Depends: R (>= 3.4.2), TMB, RcppEigen
-License: NA
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 LinkingTo: TMB, RcppEigen
-Imports: plotly, units
+Imports: 
+    plotly, 
+    units
+Suggests: 
+    rmarkdown,
+    progress,
+    shiny,
+    flexdashboard,
+    viridis
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Suggests: 
-    progress

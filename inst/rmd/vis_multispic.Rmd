@@ -1,0 +1,43 @@
+---
+title: "multispic diagnostics and results"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r setup, echo=FALSE}
+library(plotly)
+library(viridis)
+knitr::opts_chunk$set(echo = FALSE, fig.height = 7, fig.width = 8, cache = FALSE)
+```
+
+
+Residuals
+================================================================================
+
+Row {.tabset}
+--------------------------------------------------------------------------------
+
+### Index
+
+```{r}
+
+```
+
+
+Parameters
+================================================================================
+
+## Estimates
+
+```{r}
+## Prior posterior plots (turn off prior if not used)
+```
+
+
+Population trends
+================================================================================
+
+```{r}
+
+```
+
