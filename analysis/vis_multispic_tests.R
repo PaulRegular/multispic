@@ -6,7 +6,7 @@ list2env(nl_inputs_and_priors(region = "3LNO",
                               species = c("Atlantic Cod", "American Plaice", "Redfish spp.")), envir = globalenv())
 
 
-fit <- multispic(inputs, species_cor = "none", temporal_cor = "ar1",
+fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                      log_K_option = par_option(option = "normal_prior",
                                                mean = mean_log_K, sd = sd_log_K),
                      log_B0_option = par_option(option = "normal_prior",

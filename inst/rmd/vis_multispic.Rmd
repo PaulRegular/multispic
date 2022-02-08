@@ -27,6 +27,29 @@ if (fit$call$K_groups == ~1) {
 
 n_covar <-  length(all.vars(fit$call$pe_covariates))
 
+
+if (fit$call$species_cor != "none") {
+    
+    n_spp_cor <- length(fit$par$logit_rho)
+    sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
+    rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    sp_rho <- t(sp_rho)
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    diag(sp_rho) <- 1
+    round(sp_rho, 2)
+    for (i in seq(nrow(sp_rho))) {
+        for (j in seq(ncol(sp_rho))) {
+            sp_nm_mat[i, j] <- paste(levels(fit$pop$species)[i], "-", levels(fit$pop$species)[j])
+        }
+    }
+    
+} else {
+    n_spp_cor <- 0
+}
+
+n_time_cor <- as.numeric(fit$call$temporal_cor == "ar1")
+
 add_labels <- function(p, xlab = "", ylab = "", log_linear_button = TRUE) {
     
     if (log_linear_button) {
@@ -174,6 +197,80 @@ plot_post(prior_mean = fit$par$mean_log_B0,
           xlab = "log(B0)",
           show_prior = fit$call$log_B0_option$option == "normal_prior")
 ```
+
+### log(SD<sub>B</sub>)
+
+```{r}
+plot_post(prior_mean = fit$par$mean_log_sd_B,
+          prior_sd = exp(fit$par$log_sd_log_sd_B),
+          post_mean = fit$par$log_sd_B,
+          post_sd = fit$se$log_sd_B,
+          post_names = levels(fit$landings$species),
+          xlab = "log(SD<sub>B</sub>)",
+          show_prior = fit$call$log_sd_B_option$option == "normal_prior")
+
+```
+
+
+### logit(rho)
+
+`r if (n_spp_cor == 0) "N/A; correlation of process errors across species was not estimated."`
+
+```{r, eval = n_spp_cor > 0}
+plot_post(prior_mean = fit$par$mean_logit_rho,
+          prior_sd = exp(fit$par$log_sd_logit_rho),
+          post_mean = fit$par$logit_rho,
+          post_sd = fit$se$logit_rho,
+          post_names = sp_nm_mat[lower.tri(sp_nm_mat)],
+          xlab = "logit(rho)", # trans_fun = function(x) inv_logit(x, shift = TRUE),
+          show_prior = fit$call$logit_rho_option$option == "normal_prior")
+```
+
+
+
+### logit(phi)
+
+`r if (n_time_cor == 0) "N/A; correlation of process errors across time was not estimated."`
+
+```{r, eval = n_time_cor == 1}
+plot_post(prior_mean = fit$obj$env$data$mean_logit_phi,
+          prior_sd = fit$obj$env$data$sd_logit_phi,
+          post_mean = fit$par$logit_phi,
+          post_sd = fit$se$logit_phi,
+          post_names = "logit(phi)",
+          xlab = "logit(phi)", # trans_fun = inv_logit,
+          show_prior = fit$call$logit_phi_option$option == "normal_prior")
+
+```
+
+
+### log(q)
+
+```{r}
+plot_post(prior_mean = fit$par$mean_log_q,
+          prior_sd = exp(fit$par$log_sd_log_q),
+          post_mean = fit$par$log_q,
+          post_sd = fit$se$log_q,
+          post_names = levels(fit$index$survey),
+          xlab = "log(q)",
+          show_prior = fit$call$log_q_option$option == "normal_prior")
+```
+
+
+### log(SD<sub>I</sub>)
+
+```{r}
+plot_post(prior_mean = fit$par$mean_log_sd_I,
+          prior_sd = exp(fit$par$log_sd_log_sd_I),
+          post_mean = fit$par$log_sd_I,
+          post_sd = fit$se$log_sd_I,
+          post_names = levels(fit$index$survey),
+          xlab = "log(SD<sub>I</sub>)",
+          show_prior = fit$call$log_sd_I_option$option == "normal_prior")
+
+```
+
+
 
 
 
