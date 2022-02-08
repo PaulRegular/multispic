@@ -25,13 +25,14 @@ if (fit$call$K_groups == ~1) {
     K_label <- unique(fit$landings[, all.vars(K_groups)])
 }
 
+n_covar <-  length(all.vars(fit$call$pe_covariates))
+
 add_labels <- function(p, xlab = "", ylab = "", log_linear_button = TRUE) {
   
   if (log_linear_button) {
     ## Modified from https://stackoverflow.com/a/60551263/4055438
     buttons <- list(list(
       active = 0,
-      x = -0.2,
       type = "buttons",
       buttons= list(
         list(label = 'linear',
@@ -57,6 +58,9 @@ add_labels <- function(p, xlab = "", ylab = "", log_linear_button = TRUE) {
 
 Inputs
 ================================================================================
+
+Row {.tabset}
+--------------------------------------------------------------------------------
 
 ### Index
 
@@ -84,9 +88,17 @@ fit$landings %>%
 
 ### Covariates
 
-```{r}
-covariates <- fit$landings[, c("year", all.vars(fit$call$pe_covariates))]
-## ^ pivot wider then plot
+`r if (n_covar == 0) "N/A; no process error covariates supplied"`
+`r if (n_covar > 1) "Plotting of more than one covariate not yet implemented"`
+
+```{r, eval = n_covar == 1}
+covariates <- unique(fit$landings[, c("year", all.vars(fit$call$pe_covariates)), drop = FALSE])
+names(covariates) <- c("year", "covariate")
+covariates %>% 
+    plot_ly(x = ~year, y = ~covariate) %>% 
+    add_trace(mode = "markers+lines") %>% 
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = all.vars(fit$call$pe_covariates)))
 ```
 
 
