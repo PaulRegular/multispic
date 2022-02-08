@@ -132,10 +132,31 @@ Residuals
 Row {.tabset}
 --------------------------------------------------------------------------------
 
-### Index
+### Residuals ~ predicted value
 
 ```{r}
+p <- fit$index %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100)) %>% 
+    layout(yaxis = list(title = "Standardized residuals"))
+p %>% add_markers(x = ~log(pred), y = ~std_res)
+```
 
+### ~ year
+
+```{r}
+p %>% add_markers(x = ~year, y = ~std_res)
+```
+
+### ~ survey
+
+```{r}
+p %>% add_markers(x = ~survey, y = ~std_res)
+```
+
+### ~ species
+
+```{r}
+p %>% add_markers(x = ~species, y = ~std_res)
 ```
 
 
@@ -270,8 +291,33 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 
 ```
 
+### Estimates
 
+```{r, results = "asis"}
 
+name_par <- c("log_K", "log_r", "log_B0", "log_sd_B",
+              "logit_rho", "logit_phi", "log_q", "log_sd_I")
+named_par <- lapply(name_par, 
+                    function(nm) {
+                        if (grepl("log_", nm)) return(exp(fit$par[[nm]]))
+                        if (nm == "logit_rho") return(inv_logit(fit$par[[nm]], shift = TRUE))
+                        if (nm == "logit_phi") return(inv_logit(fit$par[[nm]], shift = FALSE))
+                    })
+names(named_par) <- gsub("log_|logit_", "", name_par)
+names(named_par$q) <- levels(fit$index$survey)
+names(named_par$sd_I) <- levels(fit$index$survey)
+names(named_par$K) <- K_label
+names(named_par$r) <- levels(fit$index$species)
+names(named_par$sd_B) <- levels(fit$index$species)
+names(named_par$B0) <- levels(fit$index$species)
+names(named_par$phi) <- ""
+names(named_par$rho) <- sp_nm_mat[lower.tri(sp_nm_mat)]
+
+## TODO: convert to table with se and upper lower vals. Add betas
+
+knitr::kable(named_par, "pipe")
+
+```
 
 
 Population trends
@@ -280,4 +326,5 @@ Population trends
 ```{r}
 
 ```
+
 
