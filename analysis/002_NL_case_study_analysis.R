@@ -73,16 +73,6 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 }
 
 
-fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
-
-fits$full$loo$mse
-fits$no_nao$loo$mse
-fits$just_nao$loo$mse
-fits$one_species_cor$loo$mse
-fits$no_species_cor$loo$mse
-fits$no_temporal_cor$loo$mse
-
-
 ## Add retrospective analysis
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
@@ -105,20 +95,18 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 }
 
-fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
-
-fits$full$retro$mse
-fits$no_nao$retro$mse
-fits$just_nao$retro$mse
-fits$one_species_cor$retro$mse
-fits$no_species_cor$retro$mse
-fits$no_temporal_cor$retro$mse
 
 
 ## Species-specific analyses -----------------------------------------------------------------------
 
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    if (r == "3LNO") {
+        survey_formula <- ~gear + season
+    } else {
+        survey_formula <- ~gear
+    }
 
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
     spp_region <- levels(spp_fits$full$landings$species)
@@ -152,7 +140,8 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                            mean = mean_logit_rho, sd = sd_logit_rho),
                              logit_phi_option = par_option(option = "normal_prior",
                                                            mean = mean_logit_phi, sd = sd_logit_phi),
-                             n_forecast = 1, K_groups = ~1, pe_covariates = ~0, silent = TRUE))
+                             n_forecast = 1, K_groups = ~1, survey_groups = survey_formula,
+                             pe_covariates = ~0, silent = TRUE))
 
         if (class(fit) == "try-error" || fit$opt$message == "false convergence (8)") {
             null[[sr]] <- "Did not converge"
