@@ -89,6 +89,12 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
+    if (r == "3LNO") {
+        survey_formula <- ~gear + season * species
+    } else {
+        survey_formula <- ~gear + species
+    }
+
     fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
 
     for (i in seq_along(fits)) {
