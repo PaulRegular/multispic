@@ -11,6 +11,86 @@ knitr::opts_chunk$set(echo = FALSE, fig.height = 7, fig.width = 8, cache = FALSE
 ```
 
 
+```{r options}
+
+if (fit$call$K_groups == ~1) {
+    K_groups <- NULL
+    if (length(unique(fit$landings$species)) == 1) {
+        K_label <- "K"
+    } else {
+        K_label <- "All species"
+    }
+} else {
+    K_groups <- as.formula(fit$call$K_groups)
+    K_label <- unique(fit$landings[, all.vars(K_groups)])
+}
+
+add_labels <- function(p, xlab = "", ylab = "", log_linear_button = TRUE) {
+  
+  if (log_linear_button) {
+    ## Modified from https://stackoverflow.com/a/60551263/4055438
+    buttons <- list(list(
+      active = 0,
+      x = -0.2,
+      type = "buttons",
+      buttons= list(
+        list(label = 'linear',
+             method = 'relayout',
+             args = list(list(yaxis = list(type = 'linear', title = ylab)))),
+        list(label = 'log',
+             method = 'relayout', 
+             args = list(list(yaxis = list(type = 'log', title = ylab)))))))
+  } else {
+    buttons <- NULL
+  }
+  
+  layout(p, 
+         xaxis = list(title = xlab),
+         yaxis = list(title = ylab),
+         updatemenus = buttons)
+  
+}
+
+
+```
+
+
+Inputs
+================================================================================
+
+### Index
+
+```{r}
+fit$index %>%
+  plot_ly() %>%
+  add_trace(x = ~year, y = ~index, color = ~survey,
+            colors = viridis::viridis(100), mode = "markers+lines",
+            type = "scatter") %>% 
+  add_labels(xlab = "Year", ylab = "Index")
+```
+
+
+### Landings
+
+```{r}
+fit$landings %>%
+    plot_ly() %>%
+    add_trace(x = ~year, y = ~landings, color = ~species,
+              colors = viridis::viridis(100), mode = "markers+lines",
+              type = "scatter") %>% 
+  add_labels(xlab = "Year", ylab = "Landings")
+```
+
+
+### Covariates
+
+```{r}
+covariates <- fit$landings[, c("year", all.vars(fit$call$pe_covariates))]
+## ^ pivot wider then plot
+```
+
+
+
 Residuals
 ================================================================================
 

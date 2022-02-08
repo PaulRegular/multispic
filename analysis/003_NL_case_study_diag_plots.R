@@ -2,9 +2,12 @@
 library(plotly)
 library(dplyr)
 
-fits <- readRDS("analysis/exports/fits_2J3K.rds")
+fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
 
-fit <- fits$one_species_cor
+fit <- fits$full
+
+vis_multispic(fit)
+
 
 if (fit$call$K_groups == ~1) {
     K_groups <- NULL
