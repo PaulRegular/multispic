@@ -4,12 +4,16 @@
 \alias{vis_multispic}
 \title{Make a flexdashboard for visualizing the model fits}
 \usage{
-vis_multispic(fit, ...)
+vis_multispic(fit, output_file, ...)
 }
 \arguments{
 \item{fit}{Object produced by \code{\link[=multispic]{multispic()}}.}
 
-\item{...}{Additional arguments to send to \code{\link[rmarkdown:run]{rmarkdown::run()}}}
+\item{output_file}{Name of file to export using \code{\link[rmarkdown:render]{rmarkdown::render()}}.
+If \code{NULL}, flexdashboard will be rendered using \code{\link[rmarkdown:run]{rmarkdown::run()}}}
+
+\item{...}{Additional arguments to send to \code{\link[rmarkdown:run]{rmarkdown::run()}} or
+\code{\link[rmarkdown:render]{rmarkdown::render()}}.}
 }
 \description{
 Make a flexdashboard for visualizing the model fits
