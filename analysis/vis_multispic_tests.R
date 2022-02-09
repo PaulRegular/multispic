@@ -2,8 +2,7 @@
 source("analysis/001_NL_case_study_helpers.R")
 
 
-list2env(nl_inputs_and_priors(region = "3LNO",
-                              species = c("Atlantic Cod", "American Plaice", "Redfish spp.")), envir = globalenv())
+list2env(nl_inputs_and_priors(region = "2J3K", species = NULL), envir = globalenv())
 
 
 fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
@@ -23,8 +22,8 @@ fit <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                                                    mean = mean_logit_rho, sd = sd_logit_rho),
                      logit_phi_option = par_option(option = "normal_prior",
                                                    mean = mean_logit_phi, sd = sd_logit_phi),
-                     n_forecast = 1, K_groups = ~1, survey_groups = ~gear + season * species,
-                     pe_covariates = ~0)
+                     n_forecast = 1, K_groups = ~1, survey_groups = ~gear + species,
+                     pe_covariates = ~winter_nao)
 
 vis_multispic(fit)
 

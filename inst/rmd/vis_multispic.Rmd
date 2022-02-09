@@ -291,18 +291,23 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 
 ```
 
-### Estimates
+### Estimates (plot)
 
-```{r, results = "asis"}
+```{r}
 
 name_par <- c("log_K", "log_r", "log_B0", "log_sd_B",
-              "logit_rho", "logit_phi", "log_q", "log_sd_I")
-named_par <- lapply(name_par, 
-                    function(nm) {
-                        if (grepl("log_", nm)) return(exp(fit$par[[nm]]))
-                        if (nm == "logit_rho") return(inv_logit(fit$par[[nm]], shift = TRUE))
-                        if (nm == "logit_phi") return(inv_logit(fit$par[[nm]], shift = FALSE))
-                    })
+              "logit_rho", "logit_phi", "log_q", "log_sd_I",
+              "pe_betas")
+par_fun <- function(nm, select = "par") {
+    if (grepl("beta", nm)) return(fit[[select]][[nm]])
+    if (grepl("log_", nm)) return(exp(fit[[select]][[nm]]))
+    if (nm == "logit_rho") return(inv_logit(fit[[select]][[nm]], shift = TRUE))
+    if (nm == "logit_phi") return(inv_logit(fit[[select]][[nm]], shift = FALSE))
+}
+named_par <- lapply(name_par, par_fun, select = "par")
+named_par_cv <- lapply(name_par, par_fun, select = "se")
+named_par_lwr <- lapply(name_par, par_fun, select = "par_lwr")
+named_par_upr <- lapply(name_par, par_fun, select = "par_upr")
 names(named_par) <- gsub("log_|logit_", "", name_par)
 names(named_par$q) <- levels(fit$index$survey)
 names(named_par$sd_I) <- levels(fit$index$survey)
@@ -313,11 +318,31 @@ names(named_par$B0) <- levels(fit$index$species)
 names(named_par$phi) <- ""
 names(named_par$rho) <- sp_nm_mat[lower.tri(sp_nm_mat)]
 
-## TODO: convert to table with se and upper lower vals. Add betas
+par_tab <- data.frame(parameter = rep(names(named_par), sapply(named_par, length)),
+                      group = names(unlist(unname(named_par))),
+                      estimate = unlist(unname(named_par)),
+                      CV = unlist(named_par_cv),
+                      lower = unlist(named_par_lwr),
+                      upper = unlist(named_par_upr))
 
-knitr::kable(named_par, "pipe")
+par_tab %>% 
+    plot_ly(color = ~parameter, colors = viridis::viridis(100),
+            legendgroup = ~parameter, y = ~paste(parameter, "-", group)) %>% 
+    add_segments(x = ~lower, xend = ~upper, yend = ~paste(parameter, "-", group), 
+                 showlegend = FALSE) %>% 
+    add_markers(x = ~estimate) %>% 
+    layout(xaxis = list(title = ""), yaxis = list(title = ""))
 
 ```
+
+
+### Estimates (table)
+
+```{r}
+par_tab$parameter[duplicated(par_tab$parameter)] <- ""
+knitr::kable(par_tab, digits = 2)
+```
+
 
 
 Population trends
