@@ -187,7 +187,9 @@ colnames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
 # corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 plot_ly(x = rownames(cor_mat), y = colnames(cor_mat), z = cor_mat) %>% 
     add_heatmap(colors = c("#B2182B", "white", "#2166AC")) %>% 
-    colorbar(limits = c(-1.001, 1.001))
+    colorbar(limits = c(-1.001, 1.001)) %>% 
+    layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
+           xaxis = list(constrain = "domain"))
 
 ```
 
@@ -253,7 +255,7 @@ plot_post(prior_mean = fit$par$mean_logit_rho,
           post_sd = fit$se$logit_rho,
           post_names = species_cor_label,
           xlab = "logit(rho)", # trans_fun = function(x) inv_logit(x, shift = TRUE),
-          show_prior = fit$call$logit_rho_option$option == "normal_prior")
+          show_prior = fit$call$logit_rho_option$option == "normal_prior") 
 ```
 
 
@@ -394,7 +396,9 @@ p %>% add_lines(x = ~year, y = ~pe) %>%
 ```{r, eval = n_spp_cor > 1}
 plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
         colors = c("#B2182B", "white", "#2166AC")) %>%
-    add_heatmap() %>% colorbar(limits = c(-1.001, 1.001), title = "ρ")
+    add_heatmap() %>% colorbar(limits = c(-1.001, 1.001), title = "ρ") %>% 
+    layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
+           xaxis = list(constrain = "domain"))
 ```
 
 ### Biomass

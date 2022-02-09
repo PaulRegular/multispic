@@ -30,7 +30,7 @@ inputs$index <- inputs$index %>%
                                  "Skate spp.-3LNO" = "other"))
 
 
-fit <- multispic(inputs, species_cor = "one", temporal_cor = "AR1",
+fit <- multispic(inputs, species_cor = "one", temporal_cor = "ar1",
                  log_K_option = par_option(option = "normal_prior",
                                            mean = mean_log_K, sd = sd_log_K),
                  log_B0_option = par_option(option = "normal_prior",
