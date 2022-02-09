@@ -10,7 +10,7 @@ normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
 
 spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
 fit <- spp_fits$one_species_cor
-vis_multispic(fit, output_file = "analysis/exports/spp_fit_2J3KL_one_species_cor.html")
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
 
 
 ## Leave-one-out results ---------------------------------------------------------------------------
