@@ -1,6 +1,10 @@
 ---
 title: "multispic diagnostics and results"
-output: flexdashboard::flex_dashboard
+output:
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 4
+      bootswatch: litera
 runtime: shiny
 ---
 
