@@ -157,6 +157,7 @@ multispic <- function(inputs,
 
         sp_group <- unique(landings[, c("species", all.vars(K_groups))])
         sp_group <- sp_group[order(sp_group$species), ]
+        sp_group[, all.vars(K_groups)] <- factor(sp_group[, all.vars(K_groups)])
         if (nrow(sp_group) > nlevels(landings$species)) {
             stop("All species are not nested within the K_groups variable. Please check groupings.")
         }
@@ -164,8 +165,9 @@ multispic <- function(inputs,
         ## Set up a matrix of 0s and 1s to control the summation of biomass
         f <- as.formula(paste(Reduce(paste, deparse(K_groups)), "-1"))
         mm <- model.matrix(f, data = sp_group)
-        ind <- rep(seq(ncol(mm)), colSums(mm))
-        B_group_mat <- unname(mm[, ind])
+        colnames(mm) <- levels(sp_group[, all.vars(K_groups)])
+        rownames(mm) <- levels(sp_group$species)
+        B_group_mat <- mm[, sp_group[, all.vars(K_groups)]]
 
         ## And set up a map for the K parameters
         K_map <- as.numeric(factor(sp_group[[2]])) - 1
@@ -511,9 +513,9 @@ multispic <- function(inputs,
     end_time <- Sys.time()
     run_dur <- end_time - start_time
 
-    out <- list(call = call, run_dur = run_dur, log_center = log_center, obj = obj, opt = opt,
-                sd_rep = sd_rep, rep = rep, par = par, se = se, par_lwr = par_lwr,
-                par_upr = par_upr, index = index, landings = landings,
+    out <- list(call = call, run_dur = run_dur, log_center = log_center, tmb_dat = dat,
+                obj = obj, opt = opt, sd_rep = sd_rep, rep = rep, par = par, se = se,
+                par_lwr = par_lwr, par_upr = par_upr, index = index, landings = landings,
                 pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }

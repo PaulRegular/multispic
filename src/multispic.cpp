@@ -88,6 +88,7 @@ Type objective_function<Type>::operator() ()
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
     array<Type> delta(nY, nS); // AR1 function expects an array
+    matrix<Type> tot_B_mat(nY, nS);
     matrix<Type> tot_B(nY, nK);
     matrix<Type> log_tot_B(nY, nK);
     vector<Type> B_vec(nL);
@@ -238,9 +239,9 @@ Type objective_function<Type>::operator() ()
             } else {
                 B_row = B.row(i - 1);
                 B_groups_row = B_groups.row(j);
-                grouped_B = B_row * B_groups_row; // use 0s and 1s to group B sum
+                tot_B_mat(i - 1, j) = (B_row * B_groups_row).sum(); // use 0s and 1s to group B sum
                 pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow((grouped_B.sum() / K_mat(i, j)), m(j) - 1.0)) -
+                    (1.0 - pow((tot_B_mat(i - 1, j) / K_mat(i, j)), m(j) - 1.0)) -
                     L_mat(i - 1, j)) * exp(pe_covar_mat(i, j));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
@@ -283,9 +284,7 @@ Type objective_function<Type>::operator() ()
     tot_B.setZero();
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            for (int k = 0; k < nK; k++) {
-                tot_B(i, K_map(j)) += B(i, j);
-            }
+            tot_B(i, K_map(j)) += B(i, j);
         }
     }
     log_tot_B = log(tot_B.array());
@@ -299,6 +298,7 @@ Type objective_function<Type>::operator() ()
     ADREPORT(pred_log_q);
     ADREPORT(pred_log_sd_I);
 
+    REPORT(B);
     REPORT(B_vec);
     REPORT(F);
     REPORT(K_vec);
@@ -309,6 +309,7 @@ Type objective_function<Type>::operator() ()
     REPORT(log_I_std_res);
     REPORT(log_pred_I);
     REPORT(K_mat);
+    REPORT(tot_B_mat);
 
     REPORT(pen);
 
