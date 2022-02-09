@@ -358,8 +358,102 @@ knitr::kable(par_tab, digits = 3, row.names = FALSE)
 Population trends
 ================================================================================
 
+
+Row {.tabset}
+--------------------------------------------------------------------------------
+
+### Observed and predicted index
+
+```{r}
+fit$index %>%
+    plot_ly(x = ~year, color = ~survey, colors = viridis::viridis(100),
+            legendgroup = ~survey) %>%
+    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~pred) %>%
+    add_markers(y = ~index, showlegend = FALSE) %>% 
+    add_labels(xlab = "Year", ylab = "Index")
+```
+
+
+### Process error
+
+```{r}
+p <- fit$pop %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_lines(x = ~year, y = ~pe) %>% 
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Process error"))
+```
+
+### Process error correlation
+
+`r if (n_spp_cor == 0) "N/A; correlation of process errors across species was not estimated."`
+`r if (n_spp_cor == 1) "N/A; matrix of correlation was not estimated as rho was coupled across species."`
+
+```{r, eval = n_spp_cor > 1}
+plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
+        colors = c("#B2182B", "white", "#2166AC")) %>%
+    add_heatmap() %>% colorbar(limits = c(-1.001, 1.001), title = "ρ")
+```
+
+### Biomass
+
 ```{r}
 
+tots <- fit$tot_pop
+if (is.null(K_groups)) {
+    tots$group <- "K"
+} else {
+    tots$group <- paste0("K", "-", tots[, all.vars(K_groups)])
+}
+
+fit$pop %>%
+    ungroup() %>% 
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~B) %>% 
+    add_lines(data = tots, x = ~year, y = ~K, 
+              linetype = ~group, color = I("black"), inherit = FALSE) %>% 
+    add_labels(xlab = "Year", ylab = "Biomass")
+
+
+```
+
+### Total biomass
+
+```{r}
+three_cols <- viridis::viridis(3)
+fit$tot_pop %>%
+    plot_ly(x = ~year, frame = K_groups) %>%
+    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE, legendgroup = "B",
+                color = I(three_cols[2])) %>%
+    add_lines(y = ~B, name = "B", color = I(three_cols[2]),
+              legendgroup = "B") %>%
+    add_lines(y = ~K, name = "K", legendgroup = "K",
+              linetype = I(1), color = I(three_cols[1])) %>%
+    add_lines(y = ~K_lwr, legendgroup = "K", showlegend = FALSE,
+              linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
+    add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
+              linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
+    add_lines(y = ~landings, name = "L", color = I(three_cols[3])) %>%
+    add_labels(xlab = "Year", ylab = "Biomass")
+```
+
+
+### Harvest rate
+
+```{r}
+fit$pop %>%
+    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+            legendgroup = ~species) %>%
+    add_ribbons(ymin = ~F_lwr, ymax = ~F_upr, line = list(width = 0),
+                alpha = 0.2, showlegend = FALSE) %>%
+    add_lines(y = ~F) %>%
+    add_labels(xlab = "Year", ylab = "Harvest Rate")
 ```
 
 
