@@ -495,6 +495,14 @@ multispic <- function(inputs,
         par_lwr$log_sd_I <- lwr$pred_log_sd_I
         par_upr$log_sd_I <- upr$pred_log_sd_I
 
+        ## Simplify logit_rho if coupled
+        if (species_cor != "all") {
+            par$logit_rho <- par$logit_rho[1]
+            se$logit_rho <- se$logit_rho[1]
+            par_lwr$logit_rho <- par_lwr$logit_rho[1]
+            par_upr$logit_rho <- par_upr$logit_rho[1]
+        }
+
     }
 
     ## Calculate marginal AIC
