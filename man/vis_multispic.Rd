@@ -4,7 +4,7 @@
 \alias{vis_multispic}
 \title{Make a flexdashboard for visualizing the model fits}
 \usage{
-vis_multispic(fit, output_file, ...)
+vis_multispic(fit, output_file = NULL, ...)
 }
 \arguments{
 \item{fit}{Object produced by \code{\link[=multispic]{multispic()}}.}

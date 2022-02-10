@@ -9,7 +9,7 @@
 #' @export
 #'
 
-vis_multispic <- function(fit, output_file, ...) {
+vis_multispic <- function(fit, output_file = NULL, ...) {
 
   pkg <- c("rmarkdown", "shiny", "flexdashboard", "plotly", "viridis")
   for (p in pkg) {
