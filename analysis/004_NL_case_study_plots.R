@@ -35,9 +35,11 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     sp_loo_dat <- lapply(species, function (sp) {
         sp_fit <- sp_fits[[sp]]
         if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
-            data.frame(model = "Single-species",
-                       year = sp_fit$index$year, species = sp_fit$index$species,
-                       obs = sp_fit$loo$obs, pred = sp_fit$loo$pred)
+            if (sp_fit$sd_rep$pdHess) {
+                data.frame(model = "Single-species",
+                           year = sp_fit$index$year, species = sp_fit$index$species,
+                           obs = sp_fit$loo$obs, pred = sp_fit$loo$pred)
+            }
         }
     })
     sp_loo_dat <- do.call(rbind, sp_loo_dat)
@@ -79,13 +81,34 @@ overall_loo_scores <- loo_dat %>%
            delta_rmse = rmse - min(rmse)) %>%
     ungroup()
 
-## May not be plotting correctly given different species in different regions
 loo_scores %>%
+    filter(region == "2J3K") %>%
+    filter(!model %in% c("No NAO", "Just NAO")) %>%
+    mutate(model = factor(model)) %>%
     plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
+loo_scores %>%
+    filter(region == "3LNO") %>%
+    filter(!model %in% c("No NAO", "Just NAO")) %>%
+    mutate(model = factor(model)) %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+            colors = viridis::viridis(100)) %>%
+    add_lines()
+
+loo_scores %>%
+    filter(region == "3Ps") %>%
+    filter(!model %in% c("No NAO", "Just NAO")) %>%
+    mutate(model = factor(model)) %>%
+    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+            colors = viridis::viridis(100)) %>%
+    add_lines()
+
+
 overall_loo_scores %>%
+    filter(!model %in% c("No NAO", "Just NAO")) %>%
+    mutate(model = factor(model)) %>%
     plot_ly(x = ~model, y = ~delta_rmse, color = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
