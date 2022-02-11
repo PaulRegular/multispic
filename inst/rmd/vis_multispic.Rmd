@@ -269,8 +269,8 @@ plot_post(prior_mean = fit$par$mean_logit_rho,
 `r if (n_time_cor == 0) "N/A; correlation of process errors across time was not estimated."`
 
 ```{r, eval = n_time_cor == 1}
-plot_post(prior_mean = fit$tmb_data$mean_logit_phi,
-          prior_sd = fit$tmb_data$sd_logit_phi,
+plot_post(prior_mean = fit$tmb_dat$mean_logit_phi,
+          prior_sd = fit$tmb_dat$sd_logit_phi,
           post_mean = fit$par$logit_phi,
           post_sd = fit$se$logit_phi,
           post_names = "logit(phi)",
@@ -311,8 +311,8 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 `r if (n_covar == 0) "N/A; no process error covariates supplied"`
 
 ```{r, eval = n_covar > 1}
-plot_post(prior_mean = fit$tmb_data$mean_pe_betas,
-          prior_sd = fit$tmb_data$sd_pe_betas,
+plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
+          prior_sd = fit$tmb_dat$sd_pe_betas,
           post_mean = fit$par$pe_betas,
           post_sd = fit$se$pe_betas,
           post_names = "pe_betas",
