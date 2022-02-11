@@ -48,6 +48,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           [par_option()].
 #' @param logit_phi_option   Setting for the estimation of temporal correlation in the process errors;
 #'                           define using [par_option()].
+#' @param pe_betas_option    Setting for the estimation of covariate effects on the process errors;
+#'                           define using [par_option()].
 #' @param species_cor        Correlation structure across species (`rho`). `"none"` will not estimate
 #'                           correlations across species, `"one"` will estimate one shared correlation
 #'                           parameter across species, and `"all"` will estimate correlation parameters
@@ -89,6 +91,7 @@ multispic <- function(inputs,
                       log_sd_I_option = par_option(),
                       logit_rho_option = par_option(),
                       logit_phi_option = par_option(),
+                      pe_betas_option = par_option(),
                       species_cor = "none",
                       temporal_cor = "none",
                       K_groups = ~1,
@@ -237,6 +240,7 @@ multispic <- function(inputs,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_rho_option = as.integer(logit_rho_option$option) - 1,
                 logit_phi_option = as.integer(logit_phi_option$option) - 1,
+                pe_betas_option = as.integer(pe_betas_option$option) - 1,
                 lower_log_K = log_K_option$lower - log_center, # lots of repetition - todo: find better solution
                 upper_log_K = log_K_option$upper - log_center,
                 lower_log_B0 = log_B0_option$lower - log_center,
@@ -255,6 +259,10 @@ multispic <- function(inputs,
                 sd_logit_phi = logit_phi_option$sd,
                 lower_logit_phi = logit_phi_option$lower,
                 upper_logit_phi = logit_phi_option$upper,
+                lower_pe_betas = pe_betas_option$lower,
+                upper_pe_betas = pe_betas_option$upper,
+                mean_pe_betas = pe_betas_option$mean,
+                sd_pe_betas = pe_betas_option$sd,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 survey_covariates = survey_model_mat,
                 pe_covariates = pe_model_mat,
@@ -310,6 +318,10 @@ multispic <- function(inputs,
 
     if (logit_phi_option$option %in% c("random", "coupled")) {
         stop("The 'random' or 'coupled' options are not applicable for parametere 'logit_phi'.")
+    }
+
+    if (pe_betas_option$option %in% c("random", "coupled")) {
+        stop("The 'random' or 'coupled' options are not applicable for parametere 'pe_betas'.")
     }
 
     if (log_K_option$option != "random") {

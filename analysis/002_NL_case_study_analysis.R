@@ -43,8 +43,10 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_logit_rho, sd = sd_logit_rho),
                       logit_phi_option = par_option(option = "normal_prior",
                                                     mean = mean_logit_phi, sd = sd_logit_phi),
+                      pe_betas_option = par_option(option = "normal_prior",
+                                                   mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~winter_nao)
+                      pe_covariates = ~winter_nao, silent = FALSE)
 
 
     no_nao <- update(full, pe_covariates = ~0)

@@ -15,6 +15,7 @@ multispic(
   log_sd_I_option = par_option(),
   logit_rho_option = par_option(),
   logit_phi_option = par_option(),
+  pe_betas_option = par_option(),
   species_cor = "none",
   temporal_cor = "none",
   K_groups = ~1,
@@ -56,6 +57,9 @@ define using \code{\link[=par_option]{par_option()}}.}
 \code{\link[=par_option]{par_option()}}.}
 
 \item{logit_phi_option}{Setting for the estimation of temporal correlation in the process errors;
+define using \code{\link[=par_option]{par_option()}}.}
+
+\item{pe_betas_option}{Setting for the estimation of covariate effects on the process errors;
 define using \code{\link[=par_option]{par_option()}}.}
 
 \item{species_cor}{Correlation structure across species (\code{rho}). \code{"none"} will not estimate

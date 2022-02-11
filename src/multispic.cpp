@@ -23,6 +23,7 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_rho_option);
     DATA_INTEGER(logit_phi_option);
+    DATA_INTEGER(pe_betas_option);
     DATA_SCALAR(lower_log_K);
     DATA_SCALAR(upper_log_K);
     DATA_SCALAR(lower_log_sd_B);
@@ -41,6 +42,10 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(sd_logit_phi);
     DATA_SCALAR(lower_logit_phi);
     DATA_SCALAR(upper_logit_phi);
+    DATA_SCALAR(mean_pe_betas);
+    DATA_SCALAR(sd_pe_betas);
+    DATA_SCALAR(lower_pe_betas);
+    DATA_SCALAR(upper_pe_betas);
     DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(survey_covariates);
     DATA_MATRIX(pe_covariates);
@@ -221,6 +226,15 @@ Type objective_function<Type>::operator() ()
             nll += dmuniform(logit_phi, lower_logit_phi, upper_logit_phi, dmuniform_sd);
         } else {
             nll -= dnorm(logit_phi, mean_logit_phi, sd_logit_phi, true);
+        }
+    }
+    if (pe_betas_option > 1) {
+        for(int i = 0; i < pe_betas.size(); i++) {
+            if (pe_betas_option == 4) {
+                nll += dmuniform(pe_betas(i), lower_pe_betas, upper_pe_betas, dmuniform_sd);
+            } else {
+                nll -= dnorm(pe_betas(i), mean_pe_betas, sd_pe_betas, true);
+            }
         }
     }
 
