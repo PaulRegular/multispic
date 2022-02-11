@@ -176,7 +176,10 @@ multispic <- function(inputs,
         K_map <- as.numeric(factor(sp_group[[2]])) - 1
 
     }
-    unique_surveys <- unique(index[, all.vars(survey_groups), drop = FALSE])
+
+    ## Arrange data by survey groups and identify unique surveys
+    unique_surveys <- index[do.call(order, index[, all.vars(survey_groups), drop = FALSE]), ]
+    unique_surveys <- unique(unique_surveys[, all.vars(survey_groups), drop = FALSE])
     unique_surveys$survey_id <- seq(nrow(unique_surveys)) - 1
     unique_surveys$survey <- do.call(paste, c(unique_surveys[, all.vars(survey_groups), drop = FALSE],
                                               sep = "-"))

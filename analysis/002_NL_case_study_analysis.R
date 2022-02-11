@@ -21,6 +21,8 @@ source("analysis/001_NL_case_study_helpers.R")
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
+    message("\n", r)
+
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
     ## Dev notes:
@@ -46,7 +48,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "normal_prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~winter_nao, silent = FALSE)
+                      pe_covariates = ~winter_nao, silent = TRUE)
 
 
     no_nao <- update(full, pe_covariates = ~0)
