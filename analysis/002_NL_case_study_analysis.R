@@ -11,6 +11,7 @@
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
+## - use parallel processing for loo function
 
 
 source("analysis/001_NL_case_study_helpers.R")
@@ -21,12 +22,6 @@ source("analysis/001_NL_case_study_helpers.R")
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
-
-    if (r == "3LNO") {
-        survey_formula <- ~gear + season * species
-    } else {
-        survey_formula <- ~gear + species
-    }
 
     ## Dev notes:
     ## - Forcing the RW structure results in unusual process errors for some species
@@ -48,7 +43,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_logit_rho, sd = sd_logit_rho),
                       logit_phi_option = par_option(option = "normal_prior",
                                                     mean = mean_logit_phi, sd = sd_logit_phi),
-                      n_forecast = 1, K_groups = ~1, survey_groups = survey_formula,
+                      n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
                       pe_covariates = ~winter_nao)
 
 
@@ -65,33 +60,17 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     no_species_cor$loo  <- run_loo(no_species_cor)
     no_temporal_cor$loo  <- run_loo(no_temporal_cor)
 
+    full$retro <- run_retro(full)
+    no_nao$retro<- run_retro(no_nao)
+    just_nao$retro <- run_retro(just_nao)
+    one_species_cor$retro  <- run_retro(one_species_cor)
+    no_species_cor$retro  <- run_retro(no_species_cor)
+    no_temporal_cor$retro  <- run_retro(no_temporal_cor)
+
     fits <- mget(c("full", "no_nao", "just_nao", "one_species_cor",
                    "no_species_cor", "no_temporal_cor"))
 
     saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
-
-}
-
-
-## Add retrospective analysis
-
-for (r in c("2J3K", "3LNO", "3Ps")) {
-
-    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
-
-    if (r == "3LNO") {
-        survey_formula <- ~gear + season * species
-    } else {
-        survey_formula <- ~gear + species
-    }
-
-    fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
-
-    for (i in seq_along(fits)) {
-        fits[[i]]$retro <- run_retro(fits[[i]], folds = 10)
-    }
-
-    saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds"))
 
 }
 
@@ -101,12 +80,6 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
-
-    if (r == "3LNO") {
-        survey_formula <- ~gear + season
-    } else {
-        survey_formula <- ~gear
-    }
 
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
     spp_region <- levels(spp_fits$full$landings$species)
@@ -140,7 +113,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                            mean = mean_logit_rho, sd = sd_logit_rho),
                              logit_phi_option = par_option(option = "normal_prior",
                                                            mean = mean_logit_phi, sd = sd_logit_phi),
-                             n_forecast = 1, K_groups = ~1, survey_groups = survey_formula,
+                             n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
                              pe_covariates = ~0, silent = TRUE))
 
         if (class(fit) == "try-error" ||
@@ -156,62 +129,6 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     }
 
     saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
-
-}
-
-
-### Update model outputs (because improvements) but keep loo and retro objects ---------------------
-
-
-for (r in c("2J3K", "3LNO", "3Ps")) {
-
-    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
-
-    if (r == "3LNO") {
-        survey_formula <- ~gear + season * species
-    } else {
-        survey_formula <- ~gear + species
-    }
-
-    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
-
-    for (i in seq_along(spp_fits)) {
-        new_fit <- update(spp_fits[[i]])
-        new_fit$loo <- spp_fits[[i]]$loo
-        new_fit$retro <- spp_fits[[i]]$retro
-        spp_fits[[i]] <- new_fit
-    }
-
-    saveRDS(spp_fits, file = paste0("analysis/exports/spp_fits_", r, ".rds"))
-}
-
-
-
-for (r in c("2J3K", "3LNO", "3Ps")) {
-
-    if (r == "3LNO") {
-        survey_formula <- ~gear + season
-    } else {
-        survey_formula <- ~gear
-    }
-
-    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
-
-    for (i in seq_along(sp_fits)) {
-
-        sp_name <- gsub(paste0("-", r), "", names(sp_fits[i]))
-        list2env(nl_inputs_and_priors(region = r, species = sp_name), envir = globalenv())
-
-        if (length(sp_fits[[i]]) == 1 && sp_fits[[i]] != "Did not converge") {
-            new_fit <- update(sp_fits[[i]])
-            new_fit$loo <- sp_fits[[i]]$loo
-            new_fit$retro <- sp_fits[[i]]$retro
-            sp_fits[[i]] <- new_fit
-        }
-
-    }
-
-    saveRDS(sp_fits, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
 
 }
 

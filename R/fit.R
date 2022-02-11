@@ -301,11 +301,11 @@ multispic <- function(inputs,
     }
     if (temporal_cor == "none") {
         map$logit_phi <- factor(NA)
-        par$logit_phi <- -15 # results in a value very close to 0
+        par$logit_phi <- -10 # results in a value very close to 0
     }
     if (temporal_cor == "rw") {
         map$logit_phi <- factor(NA)
-        par$logit_phi <- 15 # results in a value very close to 1
+        par$logit_phi <- 10 # results in a value very close to 1
     }
 
     if (logit_phi_option$option %in% c("random", "coupled")) {
