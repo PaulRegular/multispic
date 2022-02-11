@@ -143,7 +143,9 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                              n_forecast = 1, K_groups = ~1, survey_groups = survey_formula,
                              pe_covariates = ~0, silent = TRUE))
 
-        if (class(fit) == "try-error" || fit$opt$message == "false convergence (8)") {
+        if (class(fit) == "try-error" ||
+            fit$opt$message == "false convergence (8)" ||
+            !fit$sd_rep$pdHess) {
             null[[sr]] <- "Did not converge"
         } else {
             fit$loo <- run_loo(fit)
@@ -157,4 +159,59 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 }
 
+
+### Update model outputs (because improvements) but keep loo and retro objects ---------------------
+
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
+
+    if (r == "3LNO") {
+        survey_formula <- ~gear + season * species
+    } else {
+        survey_formula <- ~gear + species
+    }
+
+    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
+
+    for (i in seq_along(spp_fits)) {
+        new_fit <- update(spp_fits[[i]])
+        new_fit$loo <- spp_fits[[i]]$loo
+        new_fit$retro <- spp_fits[[i]]$retro
+        spp_fits[[i]] <- new_fit
+    }
+
+    saveRDS(spp_fits, file = paste0("analysis/exports/spp_fits_", r, ".rds"))
+}
+
+
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    if (r == "3LNO") {
+        survey_formula <- ~gear + season
+    } else {
+        survey_formula <- ~gear
+    }
+
+    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+
+    for (i in seq_along(sp_fits)) {
+
+        sp_name <- gsub(paste0("-", r), "", names(sp_fits[i]))
+        list2env(nl_inputs_and_priors(region = r, species = sp_name), envir = globalenv())
+
+        if (length(sp_fits[[i]]) == 1 && sp_fits[[i]] != "Did not converge") {
+            new_fit <- update(sp_fits[[i]])
+            new_fit$loo <- sp_fits[[i]]$loo
+            new_fit$retro <- sp_fits[[i]]$retro
+            sp_fits[[i]] <- new_fit
+        }
+
+    }
+
+    saveRDS(sp_fits, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
+
+}
 
