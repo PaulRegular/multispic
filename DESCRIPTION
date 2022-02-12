@@ -16,6 +16,8 @@ Suggests:
     progress,
     shiny,
     flexdashboard,
-    viridis
+    viridis,
+    furrr,
+    progressr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

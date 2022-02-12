@@ -539,7 +539,7 @@ multispic <- function(inputs,
 #' Function for running leave one out cross-validation
 #'
 #' @param fit         Object from [fit_model()]
-#' @param progress    Display progress bar? (Generated using [progress::progress_bar])
+#' @param progress    Display progress bar? (Generated using the progressr and progress packages)
 #'
 #' @return Returns a list with three objects:
 #'    1) `obs`  -  log observations that were left out at each step
@@ -551,8 +551,15 @@ multispic <- function(inputs,
 
 run_loo <- function(fit, progress = TRUE) {
 
+    ## TODO: recover previous loop approach to allow a base approach
+    pkg <- c("furrr", "progressr", "progress")
+    for (p in pkg) {
+        if (!requireNamespace(p, quietly = TRUE)) {
+            stop(paste(p, "is needed for run_loo to work. Please install it."), call. = FALSE)
+        }
+    }
+
     n <- length(fit$index$index)
-    obs <- pred <- numeric(n)
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
@@ -560,30 +567,37 @@ run_loo <- function(fit, progress = TRUE) {
         stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
     }
 
-    if (progress) {
-        if (!requireNamespace("progress", quietly = TRUE)) {
-            stop("The progress package is needed to display a progress bar. Please install it.", call. = FALSE)
-        }
-        pb <- progress::progress_bar$new(
-            format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
-            total = n, clear = FALSE, show_after = 0, width = 100)
-    }
-
-    for (i in seq(n)) {
+    loo <- function(i, fit, start_par, p = NULL) {
+        if (!is.null(p)) p()
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE))
         if (class(f) == "try-catch" || fit$opt$message == "false convergence (8)") {
-            obs[i] <- pred[i] <- NA
+            obs <- pred <- NA
         } else {
-            obs[i] <- f$index$log_index[f$index$left_out]
-            pred[i] <- f$index$log_pred_index[f$index$left_out]
+            obs <- f$index$log_index[f$index$left_out]
+            pred <- f$index$log_pred_index[f$index$left_out]
         }
-        if (progress) pb$tick()
+        data.frame(obs = obs, pred = pred)
     }
 
-    if (any(is.na(pred))) {
-        warning(paste("When iterating across ", n, " observations, model fitting failed for ", sum(is.na(pred)), " cases when an observation was left out."))
-    }
+    progressr::with_progress({
+        progressr::handlers(list(
+            progressr::handler_progress(
+                format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
+                width  = 100, clear = FALSE
+            )))
+        if (progress) {
+            p <- progressr::progressor(steps = n)
+        } else {
+            p <- NULL
+        }
+        obs_pred <- furrr::future_map(seq(n), loo, fit = fit, start_par = start_par, p = p,
+                                      .options = furrr::furrr_options(packages = "multispic"))
+    })
+
+    obs_pred <- do.call(rbind, obs_pred)
+    obs <- obs_pred$obs
+    pred <- obs_pred$pred
 
     list(obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
 
@@ -609,6 +623,8 @@ run_loo <- function(fit, progress = TRUE) {
 #'
 
 run_retro <- function(fit, folds = 10, progress = TRUE) {
+
+    ## TODO: apply furrr approach
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")

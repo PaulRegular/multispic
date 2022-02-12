@@ -13,6 +13,8 @@
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
 ## - use parallel processing for loo function
 
+library(future)
+plan(multisession, workers = 6)
 
 source("analysis/001_NL_case_study_helpers.R")
 
