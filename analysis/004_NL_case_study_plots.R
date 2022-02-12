@@ -25,10 +25,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     spp_loo_dat <- lapply(models, function (m) {
         spp_fit <- spp_fits[[m]]
-        data.frame(model = names(models)[models == m],
-                   year = spp_fit$index$year, species = spp_fit$index$species,
-                   survey = spp_fit$index$survey,
-                   obs = spp_fit$loo$obs, pred = spp_fit$loo$pred)
+        data.frame(model = names(models)[models == m], spp_fit$loo$preds)
     })
     spp_loo_dat <- do.call(rbind, spp_loo_dat)
 
@@ -37,10 +34,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
         sp_fit <- sp_fits[[sp]]
         if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
             if (sp_fit$sd_rep$pdHess) {
-                data.frame(model = "Single-species",
-                           year = sp_fit$index$year, species = sp_fit$index$species,
-                           survey = sp_fit$index$survey,
-                           obs = sp_fit$loo$obs, pred = sp_fit$loo$pred)
+                data.frame(model = "Single-species", sp_fit$loo$preds)
             }
         }
     })
@@ -71,7 +65,7 @@ loo_dat <- loo_dat %>%
 loo_scores <- loo_dat %>%
     group_by(model, species, region) %>%
     summarise(n = n(), n_species = length(unique(species)),
-              rmse = sqrt(mean((obs - pred) ^ 2, na.rm = TRUE))) %>%
+              rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
     group_by(species, region) %>%
     mutate(scaled_rmse = normalize(rmse),
            delta_rmse = rmse - min(rmse)) %>%
@@ -80,7 +74,7 @@ loo_scores <- loo_dat %>%
 overall_loo_scores <- loo_dat %>%
     group_by(model, region) %>%
     summarise(n = n(), n_species = length(unique(species)),
-              rmse = sqrt(mean((obs - pred) ^ 2, na.rm = TRUE))) %>%
+              rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
     group_by(region) %>%
     mutate(scaled_rmse = normalize(rmse),
            delta_rmse = rmse - min(rmse)) %>%

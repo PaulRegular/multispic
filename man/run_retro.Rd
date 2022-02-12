@@ -4,14 +4,14 @@
 \alias{run_retro}
 \title{Function for running a retrospective analysis}
 \usage{
-run_retro(fit, folds = 10, progress = TRUE)
+run_retro(fit, folds, progress = TRUE)
 }
 \arguments{
 \item{fit}{Object from \code{\link[=fit_model]{fit_model()}}}
 
 \item{folds}{Number of years to 'fold' back}
 
-\item{progress}{Display progress bar? (Generated using \link[progress:progress_bar]{progress::progress_bar})}
+\item{progress}{Display progress bar?  (Generated using the progressr and progress packages)}
 }
 \value{
 Returns a list with three objects:

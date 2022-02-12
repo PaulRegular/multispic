@@ -542,16 +542,15 @@ multispic <- function(inputs,
 #' @param progress    Display progress bar? (Generated using the progressr and progress packages)
 #'
 #' @return Returns a list with three objects:
-#'    1) `obs`  -  log observations that were left out at each step
-#'    2) `pred` -  log predictions at each step, and
-#'    3) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
+#'    1) `preds`  -  log observations that were left out at each step with log predictions, and
+#'    2) `mse`  -  mean squared error of the predictions (leave one out cross validation score).
 #'
 #' @export
 #'
 
 run_loo <- function(fit, progress = TRUE) {
 
-    ## TODO: recover previous loop approach to allow a base approach
+    ## Consider adding previous loop approach to allow a base approach as an alternate option
     pkg <- c("furrr", "progressr", "progress")
     for (p in pkg) {
         if (!requireNamespace(p, quietly = TRUE)) {
@@ -596,10 +595,14 @@ run_loo <- function(fit, progress = TRUE) {
     })
 
     obs_pred <- do.call(rbind, obs_pred)
-    obs <- obs_pred$obs
-    pred <- obs_pred$pred
+    names(obs_pred) <- c("log_index", "log_pred_index")
+    preds <- cbind(fit$index[, c("year", "survey", "species")], obs_pred)
 
-    list(obs = obs, pred = pred, mse = mean((obs - pred) ^ 2, na.rm = TRUE))
+    if (any(is.na(obs_pred$pred))) {
+        warning(paste("When iterating across ", n, " observations, model fitting failed for ", sum(is.na(obs_pred$pred)), " cases when an observation was left out."))
+    }
+
+    list(preds = preds, mse = mean((preds$log_index - preds$log_pred_index) ^ 2, na.rm = TRUE))
 
 }
 
@@ -612,7 +615,7 @@ run_loo <- function(fit, progress = TRUE) {
 #'
 #' @param fit         Object from [fit_model()]
 #' @param folds       Number of years to 'fold' back
-#' @param progress    Display progress bar? (Generated using [progress::progress_bar])
+#' @param progress    Display progress bar?  (Generated using the progressr and progress packages)
 #'
 #' @return Returns a list with three objects:
 #'    1) `retro_fits`  -  a list including a series of fits from each retrospective fold
@@ -622,9 +625,15 @@ run_loo <- function(fit, progress = TRUE) {
 #' @export
 #'
 
-run_retro <- function(fit, folds = 10, progress = TRUE) {
+run_retro <- function(fit, folds, progress = TRUE) {
 
-    ## TODO: apply furrr approach
+    ## Consider adding previous loop approach to allow a base approach as an alternate option
+    pkg <- c("furrr", "progressr", "progress")
+    for (p in pkg) {
+        if (!requireNamespace(p, quietly = TRUE)) {
+            stop(paste(p, "is needed for run_loo to work. Please install it."), call. = FALSE)
+        }
+    }
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
@@ -632,21 +641,9 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
         stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
     }
 
-    if (progress) {
-        if (!requireNamespace("progress", quietly = TRUE)) {
-            stop("The progress package is needed to display a progress bar. Please install it.", call. = FALSE)
-        }
-        pb <- progress::progress_bar$new(
-            format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
-            total = folds, clear = FALSE, show_after = 0, width = 100)
-    }
+    retro <- function(i, fit, p = NULL) {
 
-    terminal_year <- max(fit$index$year)
-    retro_years <- terminal_year - seq(folds)
-    retro_fits <- hindcasts <- vector("list", folds)
-    names(retro_fits) <- names(hindcasts) <- as.character(retro_years)
-
-    for (i in seq(folds)) {
+        if (!is.null(p)) p()
 
         index <- fit$index
         landings <- fit$landings
@@ -668,32 +665,52 @@ run_retro <- function(fit, folds = 10, progress = TRUE) {
 
         if (class(fit) == "try-catch" || fit$opt$message == "false convergence (8)") {
 
-            retro_fits[[i]] <- NA
-            hindcasts[[i]] <- NULL
+            retro_fit <- NA
+            hindcast <- NULL
 
         } else {
-            retro_fits[[i]] <- fit
+            retro_fit <- fit
 
             if (sum(ind) > 0) {
-                hindcasts[[i]] <- fit$index[fit$index$left_out,
+                hindcast <- fit$index[fit$index$left_out,
                                             c("year", "survey", "species", "log_index", "log_pred_index")]
-                hindcasts[[i]]$retro_year <- retro_years[i]
+                hindcast$retro_year <- retro_years[i]
             } else {
-                hindcasts[[i]] <- NULL
+                hindcast <- NULL
                 warning(paste("A hindcast is moot for", retro_years[i], "as there is no index to predict."))
             }
 
         }
 
-        if (progress) pb$tick()
+        list(retro_fit = retro_fit, hindcast = hindcast)
 
     }
+
+    progressr::with_progress({
+        progressr::handlers(list(
+            progressr::handler_progress(
+                format = "[:bar] :percent (:current / :total) in :elapsed (eta: :eta)",
+                width  = 100, clear = FALSE
+            )))
+        if (progress) {
+            p <- progressr::progressor(steps = folds)
+        } else {
+            p <- NULL
+        }
+        terminal_year <- max(fit$index$year)
+        retro_years <- terminal_year - seq(folds)
+        retro_hind <- furrr::future_map(seq(folds), retro, fit = fit, p = p,
+                                      .options = furrr::furrr_options(packages = "multispic"))
+    })
+
+    retro_fits <- lapply(retro_hind, `[[`, "retro_fit")
+    names(retro_fits) <- retro_years
+    hindcasts <- lapply(retro_hind, `[[`, "hindcast")
+    hindcasts <- do.call(rbind, hindcasts)
 
     if (any(is.na(retro_fits))) {
         warning(paste("While folding back ", folds, " years, model fitting failed in ", sum(is.na(retro_fits)), " cases."))
     }
-
-    hindcasts <- do.call(rbind, hindcasts)
 
     mse <- mean((hindcasts$log_index - hindcasts$log_pred_index) ^ 2)
     list(retro_fits = retro_fits, hindcasts = hindcasts, mse = mse)

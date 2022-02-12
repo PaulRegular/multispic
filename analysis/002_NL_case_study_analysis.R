@@ -11,8 +11,8 @@
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
-## - use parallel processing for loo function
 
+library(progress) ## need to load progress to get progress handler to work...not sure why?
 library(future)
 plan(multisession, workers = 6)
 
@@ -66,12 +66,12 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     no_species_cor$loo  <- run_loo(no_species_cor)
     no_temporal_cor$loo  <- run_loo(no_temporal_cor)
 
-    full$retro <- run_retro(full)
-    no_nao$retro<- run_retro(no_nao)
-    just_nao$retro <- run_retro(just_nao)
-    one_species_cor$retro  <- run_retro(one_species_cor)
-    no_species_cor$retro  <- run_retro(no_species_cor)
-    no_temporal_cor$retro  <- run_retro(no_temporal_cor)
+    full$retro <- run_retro(full, folds = 15)
+    no_nao$retro<- run_retro(no_nao, folds = 15)
+    just_nao$retro <- run_retro(just_nao, folds = 15)
+    one_species_cor$retro  <- run_retro(one_species_cor, folds = 15)
+    no_species_cor$retro  <- run_retro(no_species_cor, folds = 15)
+    no_temporal_cor$retro  <- run_retro(no_temporal_cor, folds = 15)
 
     fits <- mget(c("full", "no_nao", "just_nao", "one_species_cor",
                    "no_species_cor", "no_temporal_cor"))
@@ -128,7 +128,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
             null[[sr]] <- "Did not converge"
         } else {
             fit$loo <- run_loo(fit)
-            fit$retro <- run_retro(fit, folds = 10)
+            fit$retro <- run_retro(fit, folds = 15)
             null[[sr]] <- fit
         }
 
