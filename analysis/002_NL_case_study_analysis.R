@@ -8,6 +8,13 @@
 ## - Calculate species-specific leave one out scores to assess predictive ability of each model
 ## - Hypothesis: multispecies >> single-species inference
 
+## - Write ecological oriented paper; aim for PNAS or Fish and Fisheries
+
+## - Introduce break point for the K @ 1991
+## - Add NL climate index
+## - Add capelin??
+## - Fix Campelen index to 1 for cod?
+
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)

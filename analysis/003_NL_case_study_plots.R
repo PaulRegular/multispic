@@ -5,14 +5,6 @@ library(ggplot2)
 
 normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
 
-
-## Export select dashboards ------------------------------------------------------------------------
-
-# spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
-# fit <- spp_fits$one_species_cor
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
-
-
 ## Leave-one-out results ---------------------------------------------------------------------------
 
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
@@ -25,7 +17,11 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     spp_loo_dat <- lapply(models, function (m) {
         spp_fit <- spp_fits[[m]]
-        data.frame(model = names(models)[models == m], spp_fit$loo$preds)
+        data.frame(model = names(models)[models == m],
+                   n_index = nrow(spp_fit$index),
+                   n_random = length(spp_fit$sd_rep$par.random),
+                   n_fixed = length(spp_fit$sd_rep$par.fixed),
+                   spp_fit$loo$preds)
     })
     spp_loo_dat <- do.call(rbind, spp_loo_dat)
 
@@ -34,11 +30,20 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
         sp_fit <- sp_fits[[sp]]
         if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
             if (sp_fit$sd_rep$pdHess) {
-                data.frame(model = "Single-species", sp_fit$loo$preds)
+                data.frame(model = "Single-species",
+                           n_index = nrow(sp_fit$index),
+                           n_random = length(sp_fit$sd_rep$par.random),
+                           n_fixed = length(sp_fit$sd_rep$par.fixed),
+                           sp_fit$loo$preds)
             }
         }
     })
     sp_loo_dat <- do.call(rbind, sp_loo_dat)
+
+    sp_n <- unique(sp_loo_dat[, c("species", "n_index", "n_random", "n_fixed")])
+    sp_loo_dat$n_index <- sum(sp_n$n_index)
+    sp_loo_dat$n_random <- sum(sp_n$n_random)
+    sp_loo_dat$n_fixed <- sum(sp_n$n_fixed)
 
     r_loo_dat <- rbind(spp_loo_dat, sp_loo_dat)
     r_loo_dat$model <- factor(r_loo_dat$model, levels = c(names(models), "Single-species"))
@@ -74,6 +79,8 @@ loo_scores <- loo_dat %>%
 overall_loo_scores <- loo_dat %>%
     group_by(model, region) %>%
     summarise(n = n(), n_species = length(unique(species)),
+              n_index = unique(n_index), n_random = unique(n_random),
+              n_fixed = unique(n_fixed),
               rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
     group_by(region) %>%
     mutate(scaled_rmse = normalize(rmse),
@@ -103,11 +110,12 @@ loo_scores %>%
     add_lines()
 
 
+## Need to fix n's because of exclusion of species that didn't converge for 3Ps
 overall_loo_scores %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~region,
             colors = viridis::viridis(100)) %>%
-    add_lines()
+    add_lines() # %>% add_text(text = ~n_fixed)
 
 
 ## Hindcast results ---------------------------------------------------------------------------
@@ -197,7 +205,50 @@ hind_scores %>%
     add_lines()
 
 overall_hind_scores %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
+
+## Combined plot -----------------------------------------------------------------------------------
+
+
+loo_p <- overall_loo_scores %>%
+    mutate(model = factor(model)) %>%
+    plot_ly(x = ~model, y = ~rmse, color = ~region,
+            colors = viridis::viridis(100),
+            legendgroup = ~region) %>%
+    add_lines() %>%
+    layout(yaxis = list(title = "LOO-CV Score"))
+
+hind_p <- overall_hind_scores %>%
+    plot_ly(x = ~model, y = ~rmse, color = ~region,
+            colors = viridis::viridis(100),
+            legendgroup = ~region, showlegend = FALSE) %>%
+    add_lines() %>%
+    layout(yaxis = list(title = "Hind-CV Score"))
+
+subplot(loo_p, hind_p, nrows = 2, shareX = TRUE, titleY = TRUE, titleX = FALSE)
+
+
+
+## Export select dashboards ------------------------------------------------------------------------
+
+spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
+fit <- spp_fits$one_species_cor
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
+
+spp_fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
+fit <- spp_fits$no_nao
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_no_nao.html")
+fit <- spp_fits$one_species_cor
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_one_species_cor.html")
+
+spp_fits <- readRDS("analysis/exports/spp_fits_3Ps.rds")
+fit <- spp_fits$full
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_full.html")
+fit <- spp_fits$full
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_just_nao.html")
+fit <- spp_fits$no_nao
+vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_no_nao.html")
+
 
