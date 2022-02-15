@@ -2,6 +2,8 @@
 library(data.table)
 library(dplyr)
 
+## NAO ---------------------------------------------------------------------------------------------
+
 ## Import monthly NAO index
 monthly_nao <- fread("https://www.cpc.ncep.noaa.gov/products/precip/CWlink/pna/norm.nao.monthly.b5001.current.ascii.table")
 names(monthly_nao) <- c("year", month.abb)
@@ -15,6 +17,18 @@ nao <- data.frame(year = monthly_nao$year,
                   spring_nao = rowMeans(monthly_nao[, c("Mar", "Apr", "May")]),
                   summer_nao = rowMeans(monthly_nao[, c("Jun", "Jul", "Aug")]),
                   fall_nao = rowMeans(monthly_nao[, c("Sep", "Oct", "Nov")]))
-covariates <- nao
+
+
+## NL climate index --------------------------------------------------------------------------------
+
+nlci <- fread("data-raw/covariates/NL_climate_index.csv") %>% as.data.frame()
+names(nlci) <- c("year", "nlci")
+
+
+## Merge and export --------------------------------------------------------------------------------
+
+covariates <- merge(nao, nlci, by = "year", all = TRUE)
 
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)
+
+
