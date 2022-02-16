@@ -18,6 +18,14 @@ vis_multispic <- function(fit, output_file = NULL, ...) {
     }
   }
 
+  if (is.null(fit$sd_rep)) {
+    stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
+  }
+
+  if (fit$opt$message == "false convergence (8)" || !fit$sd_rep$pdHess) {
+    stop("Model output questionable as there are signs of model convergence issues. See 'fit$opt$message' and/or 'fit$sd_rep'")
+  }
+
   rmd_file <- system.file("rmd", "vis_multispic.Rmd", package = "multispic")
 
   rmd_env <- new.env()
