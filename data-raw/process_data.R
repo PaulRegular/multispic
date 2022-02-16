@@ -1,4 +1,6 @@
 
+## index and landings units = kt
+
 index <- read.csv("data-raw/index.csv")
 
 landings <- read.csv("data-raw/landings.csv")

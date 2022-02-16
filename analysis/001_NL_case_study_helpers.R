@@ -98,6 +98,9 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     mean_pe_betas <- 0
     sd_pe_betas <- 10
 
+    mean_K_betas <- 0
+    sd_K_betas <- 10
+
     ## Use full landings time series to inform prior for K but limit analysis to
     ## index time series as there is nothing to inform the process errors prior to the start
     ## of the surveys
@@ -115,6 +118,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
            "mean_log_sd_I", "sd_log_sd_I",
            "mean_logit_rho", "sd_logit_rho",
            "mean_logit_phi", "sd_logit_phi",
-           "mean_pe_betas", "sd_pe_betas"))
+           "mean_pe_betas", "sd_pe_betas",
+           "mean_K_betas", "sd_K_betas"))
 }
 
