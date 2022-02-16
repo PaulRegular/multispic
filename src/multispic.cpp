@@ -98,8 +98,9 @@ Type objective_function<Type>::operator() ()
     matrix<Type> log_tot_B(nY, nK);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
-    vector<Type> log_B_res(nL);
-    vector<Type> log_B_std_res(nL);
+    vector<Type> log_res_pe(nL);
+    vector<Type> log_std_res_pe(nL);
+    vector<Type> log_pe(nL);
     vector<Type> log_pred_I(nI);
     vector<Type> log_I_res(nI);
     vector<Type> log_I_std_res(nI);
@@ -286,8 +287,9 @@ Type objective_function<Type>::operator() ()
 
     // Calculate process residuals (aka process error, aka delta) and F
     for (int i = 0; i < nL; i++) {
-        log_B_res(i) = delta(L_year(i), L_species(i));
-        log_B_std_res(i) = log_B_res(i) / sd_B(L_species(i));
+        log_pe(i) = pe_covar_mat(L_year(i), L_species(i)) + delta(L_year(i), L_species(i)); // process error = covariate effect + residual process error
+        log_res_pe(i) = delta(L_year(i), L_species(i));                                     // residual process error not explained by the covariate
+        log_std_res_pe(i) = log_res_pe(i) / sd_B(L_species(i));
         F(i) = L(i) / B_vec(i);
         log_F(i) = log(F(i));
         K_vec(i) = K_mat(L_year(i), L_species(i));
@@ -317,8 +319,9 @@ Type objective_function<Type>::operator() ()
     REPORT(F);
     REPORT(K_vec);
     REPORT(tot_B);
-    REPORT(log_B_res);
-    REPORT(log_B_std_res);
+    REPORT(log_res_pe);
+    REPORT(log_std_res_pe);
+    REPORT(log_pe);
     REPORT(log_I_res);
     REPORT(log_I_std_res);
     REPORT(log_pred_I);

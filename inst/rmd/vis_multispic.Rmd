@@ -310,7 +310,7 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 
 `r if (n_covar == 0) "N/A; no process error covariates supplied"`
 
-```{r, eval = n_covar > 1}
+```{r, eval = n_covar >= 1}
 plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
           prior_sd = fit$tmb_dat$sd_pe_betas,
           post_mean = fit$par$pe_betas,
@@ -403,9 +403,24 @@ fit$index %>%
 p <- fit$pop %>%
     plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe) %>% 
-    layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Process error"))
+    add_labels(xlab = "Year", ylab = "Process error")
 ```
+
+`r if (n_covar >= 1) "> Includes covariate effects"`
+
+
+### Standardized process error
+
+```{r}
+p <- fit$pop %>%
+    plot_ly(color = ~species, colors = viridis::viridis(100))
+p %>% add_lines(x = ~year, y = ~log_std_res_pe) %>% 
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Standardized process error"))
+```
+
+`r if (n_covar >= 1) "> Standardized process error = residual process error, in log space, not explained by the covariate effects divided by the standard deviation of the process." else "> Standardized process error = process error, in log space, divided by the standard deviation of the process."`
+
 
 ### Process error correlation
 
@@ -419,6 +434,9 @@ plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
     layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
            xaxis = list(constrain = "domain"))
 ```
+
+`r if (n_spp_cor > 1 && n_covar >= 1) "> Represents correlation in residual process error not explained by the covariate effects."`
+
 
 ### Biomass
 

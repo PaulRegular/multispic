@@ -57,30 +57,30 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "normal_prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~winter_nao, silent = TRUE)
+                      pe_covariates = ~nlci, silent = TRUE)
 
 
-    no_nao <- update(full, pe_covariates = ~0)
-    just_nao <- update(full, species_cor = "none", temporal_cor = "none")
-    one_species_cor <- update(no_nao, species_cor = "one")
+    no_nlci <- update(full, pe_covariates = ~0)
+    just_nlci <- update(full, species_cor = "none", temporal_cor = "none")
+    one_species_cor <- update(no_nlci, species_cor = "one")
     no_species_cor <- update(one_species_cor, species_cor = "none")
     no_temporal_cor <- update(no_species_cor, temporal_cor = "none")
 
     full$loo <- run_loo(full)
-    no_nao$loo<- run_loo(no_nao)
-    just_nao$loo <- run_loo(just_nao)
+    no_nlci$loo<- run_loo(no_nlci)
+    just_nlci$loo <- run_loo(just_nlci)
     one_species_cor$loo  <- run_loo(one_species_cor)
     no_species_cor$loo  <- run_loo(no_species_cor)
     no_temporal_cor$loo  <- run_loo(no_temporal_cor)
 
     full$retro <- run_retro(full, folds = 15)
-    no_nao$retro<- run_retro(no_nao, folds = 15)
-    just_nao$retro <- run_retro(just_nao, folds = 15)
+    no_nlci$retro<- run_retro(no_nlci, folds = 15)
+    just_nlci$retro <- run_retro(just_nlci, folds = 15)
     one_species_cor$retro  <- run_retro(one_species_cor, folds = 15)
     no_species_cor$retro  <- run_retro(no_species_cor, folds = 15)
     no_temporal_cor$retro  <- run_retro(no_temporal_cor, folds = 15)
 
-    fits <- mget(c("full", "no_nao", "just_nao", "one_species_cor",
+    fits <- mget(c("full", "no_nlci", "just_nlci", "one_species_cor",
                    "no_species_cor", "no_temporal_cor"))
 
     saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species

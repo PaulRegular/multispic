@@ -436,7 +436,9 @@ multispic <- function(inputs,
     index$left_out <- !as.logical(keep)
 
     pop <- landings
-    pop$pe <- rep$log_B_std_res
+    pop$pe <- exp(rep$log_pe)
+    pop$res_pe <- exp(rep$log_res_pe)
+    pop$log_std_res_pe <- rep$log_std_res_pe
     pop$B <- exp(log(rep$B_vec) + log_center)
     pop$F <- rep$F
     pop$K <- exp(log(rep$K_vec) + log_center)
