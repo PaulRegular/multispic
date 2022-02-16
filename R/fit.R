@@ -48,6 +48,8 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #'                           [par_option()].
 #' @param logit_phi_option   Setting for the estimation of temporal correlation in the process errors;
 #'                           define using [par_option()].
+#' @param K_betas_option    Setting for the estimation of covariate effects on K;
+#'                           define using [par_option()].
 #' @param pe_betas_option    Setting for the estimation of covariate effects on the process errors;
 #'                           define using [par_option()].
 #' @param species_cor        Correlation structure across species (`rho`). `"none"` will not estimate
@@ -57,14 +59,16 @@ par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 
 #' @param temporal_cor       Correlation structure across time (`phi`). `"none"` assumes no temporal dependence
 #'                           in the process errors, `"rw"` assumes a random walk, and `"ar1"` fits an
 #'                           AR1 process, estimating an extra parameter.
-#' @param K_groups           Formula specifying a grouping variable to use to estimate `K` and
-#'                           aggregate biomass in the production equation. Biomass from all species
-#'                           (stocks) will be aggregated and one `K` value estimated if set to `~1`.
 #' @param survey_groups      Formula specifying the grouping variables to use to estimate catchability,
 #'                           `log_q`, and observation error, `log_sd_I`. For example, a two-factor
 #'                           main-effects model will be assumed by supplying `~survey + species`, and
 #'                           interactive-effects will be assumed by supplying `~survey * species`. One
 #'                           parameter will be estimated if set to `~1`.
+#' @param K_groups           Formula specifying a grouping variable to use to estimate `K` and
+#'                           aggregate biomass in the production equation. Biomass from all species
+#'                           (stocks) will be aggregated and one `K` value estimated if set to `~1`.
+#' @param K_covariates       Formula describing covariate effects on carrying capacity, K. Intercepts
+#'                           are not estimated. No covariates are applied if set to `~0`.
 #' @param pe_covariates      Formula describing relationship between surplus production (process error)
 #'                           and covariates. Note that intercepts are not estimated. No covariates are
 #'                           applied if set to `~0`.
@@ -91,11 +95,13 @@ multispic <- function(inputs,
                       log_sd_I_option = par_option(),
                       logit_rho_option = par_option(),
                       logit_phi_option = par_option(),
+                      K_betas_option = par_option(),
                       pe_betas_option = par_option(),
                       species_cor = "none",
                       temporal_cor = "none",
-                      K_groups = ~1,
                       survey_groups = ~survey,
+                      K_groups = ~1,
+                      K_covariates = ~0,
                       pe_covariates = ~0,
                       n_forecast = 0,
                       leave_out = NULL,
@@ -148,6 +154,11 @@ multispic <- function(inputs,
         pe_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
     } else {
         pe_model_mat <- model.matrix(pe_covariates, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by the process errors
+    }
+    if (K_covariates == ~0) {
+        K_model_mat <- matrix(rep(0, nrow(landings)), ncol = 1)
+    } else {
+        K_model_mat <- model.matrix(K_covariates, data = landings)[, -1, drop = FALSE] # drop intercept because that is defined by K
     }
     if (K_groups == ~1) {
         K_map <- rep(0, nlevels(landings$species))
@@ -243,6 +254,7 @@ multispic <- function(inputs,
                 log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
                 logit_rho_option = as.integer(logit_rho_option$option) - 1,
                 logit_phi_option = as.integer(logit_phi_option$option) - 1,
+                K_betas_option = as.integer(K_betas_option$option) - 1,
                 pe_betas_option = as.integer(pe_betas_option$option) - 1,
                 lower_log_K = log_K_option$lower - log_center, # lots of repetition - todo: find better solution
                 upper_log_K = log_K_option$upper - log_center,
@@ -262,12 +274,17 @@ multispic <- function(inputs,
                 sd_logit_phi = logit_phi_option$sd,
                 lower_logit_phi = logit_phi_option$lower,
                 upper_logit_phi = logit_phi_option$upper,
+                lower_K_betas = K_betas_option$lower,
+                upper_K_betas = K_betas_option$upper,
+                mean_K_betas = K_betas_option$mean,
+                sd_K_betas = K_betas_option$sd,
                 lower_pe_betas = pe_betas_option$lower,
                 upper_pe_betas = pe_betas_option$upper,
                 mean_pe_betas = pe_betas_option$mean,
                 sd_pe_betas = pe_betas_option$sd,
                 dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 survey_covariates = survey_model_mat,
+                K_covariates = K_model_mat,
                 pe_covariates = pe_model_mat,
                 K_map = K_map,
                 B_groups = B_group_mat,
@@ -300,6 +317,7 @@ multispic <- function(inputs,
                 log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nrow(unique_surveys)),
                 log_sd_I_betas = rep(0, ncol(survey_model_mat)),
+                K_betas = rep(0, ncol(K_model_mat)),
                 pe_betas =  rep(0, ncol(pe_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
@@ -325,6 +343,10 @@ multispic <- function(inputs,
 
     if (pe_betas_option$option %in% c("random", "coupled")) {
         stop("The 'random' or 'coupled' options are not applicable for parametere 'pe_betas'.")
+    }
+
+    if (K_betas_option$option %in% c("random", "coupled")) {
+        stop("The 'random' or 'coupled' options are not applicable for parametere 'K_betas'.")
     }
 
     if (log_K_option$option != "random") {

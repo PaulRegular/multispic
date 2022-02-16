@@ -23,6 +23,7 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(log_sd_I_option);
     DATA_INTEGER(logit_rho_option);
     DATA_INTEGER(logit_phi_option);
+    DATA_INTEGER(K_betas_option);
     DATA_INTEGER(pe_betas_option);
     DATA_SCALAR(lower_log_K);
     DATA_SCALAR(upper_log_K);
@@ -42,6 +43,10 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(sd_logit_phi);
     DATA_SCALAR(lower_logit_phi);
     DATA_SCALAR(upper_logit_phi);
+    DATA_SCALAR(mean_K_betas);
+    DATA_SCALAR(sd_K_betas);
+    DATA_SCALAR(lower_K_betas);
+    DATA_SCALAR(upper_K_betas);
     DATA_SCALAR(mean_pe_betas);
     DATA_SCALAR(sd_pe_betas);
     DATA_SCALAR(lower_pe_betas);
@@ -49,6 +54,7 @@ Type objective_function<Type>::operator() ()
     DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(survey_covariates);
     DATA_MATRIX(pe_covariates);
+    DATA_MATRIX(K_covariates);
     DATA_IVECTOR(K_map);
     DATA_MATRIX(B_groups);
 
@@ -79,6 +85,7 @@ Type objective_function<Type>::operator() ()
     PARAMETER(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
     PARAMETER_VECTOR(log_sd_I_betas);
+    PARAMETER_VECTOR(K_betas);
     PARAMETER_VECTOR(pe_betas);
 
     // Dim
@@ -134,12 +141,15 @@ Type objective_function<Type>::operator() ()
 
     // Set-up a vector of B, landings matrix, and pe covariate effects
     vector<Type> pe_covar_vec = pe_covariates * pe_betas;
+    vector<Type> K_covar_vec = K_covariates * K_betas;
     matrix<Type> pe_covar_mat(nY, nS);
+    matrix<Type> K_covar_mat(nY, nS);
     for (int i = 0; i < nL; i++) {
         L_mat(L_year(i), L_species(i)) = L(i);
         log_B_vec(i) = log_B(L_year(i), L_species(i));
         B_vec(i) = exp(log_B_vec(i));
         pe_covar_mat(L_year(i), L_species(i)) = pe_covar_vec(i);
+        K_covar_mat(L_year(i), L_species(i)) = K_covar_vec(i);
     }
 
     // Initalize nll
@@ -238,6 +248,15 @@ Type objective_function<Type>::operator() ()
             }
         }
     }
+    if (K_betas_option > 1) {
+        for(int i = 0; i < K_betas.size(); i++) {
+            if (K_betas_option == 4) {
+                nll += dmuniform(K_betas(i), lower_K_betas, upper_K_betas, dmuniform_sd);
+            } else {
+                nll -= dnorm(K_betas(i), mean_K_betas, sd_K_betas, true);
+            }
+        }
+    }
 
 
     // Process equation
@@ -248,7 +267,7 @@ Type objective_function<Type>::operator() ()
     vector<Type> B_groups_row(nS);
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
-            K_mat(i, j) = K(K_map(j));
+            K_mat(i, j) = K(K_map(j)) * exp(K_covar_mat(i, j));
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {

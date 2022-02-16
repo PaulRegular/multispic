@@ -15,11 +15,13 @@ multispic(
   log_sd_I_option = par_option(),
   logit_rho_option = par_option(),
   logit_phi_option = par_option(),
+  K_betas_option = par_option(),
   pe_betas_option = par_option(),
   species_cor = "none",
   temporal_cor = "none",
-  K_groups = ~1,
   survey_groups = ~survey,
+  K_groups = ~1,
+  K_covariates = ~0,
   pe_covariates = ~0,
   n_forecast = 0,
   leave_out = NULL,
@@ -59,6 +61,9 @@ define using \code{\link[=par_option]{par_option()}}.}
 \item{logit_phi_option}{Setting for the estimation of temporal correlation in the process errors;
 define using \code{\link[=par_option]{par_option()}}.}
 
+\item{K_betas_option}{Setting for the estimation of covariate effects on K;
+define using \code{\link[=par_option]{par_option()}}.}
+
 \item{pe_betas_option}{Setting for the estimation of covariate effects on the process errors;
 define using \code{\link[=par_option]{par_option()}}.}
 
@@ -71,15 +76,18 @@ across all combinations of species.}
 in the process errors, \code{"rw"} assumes a random walk, and \code{"ar1"} fits an
 AR1 process, estimating an extra parameter.}
 
-\item{K_groups}{Formula specifying a grouping variable to use to estimate \code{K} and
-aggregate biomass in the production equation. Biomass from all species
-(stocks) will be aggregated and one \code{K} value estimated if set to \code{~1}.}
-
 \item{survey_groups}{Formula specifying the grouping variables to use to estimate catchability,
 \code{log_q}, and observation error, \code{log_sd_I}. For example, a two-factor
 main-effects model will be assumed by supplying \code{~survey + species}, and
 interactive-effects will be assumed by supplying \code{~survey * species}. One
 parameter will be estimated if set to \code{~1}.}
+
+\item{K_groups}{Formula specifying a grouping variable to use to estimate \code{K} and
+aggregate biomass in the production equation. Biomass from all species
+(stocks) will be aggregated and one \code{K} value estimated if set to \code{~1}.}
+
+\item{K_covariates}{Formula describing covariate effects on carrying capacity, K. Intercepts
+are not estimated. No covariates are applied if set to \code{~0}.}
 
 \item{pe_covariates}{Formula describing relationship between surplus production (process error)
 and covariates. Note that intercepts are not estimated. No covariates are

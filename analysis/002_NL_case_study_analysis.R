@@ -18,6 +18,7 @@
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
+## - consider dropping approximate uniform prior option
 
 library(progress) ## need to load progress to get progress handler to work...not sure why?
 library(future)
