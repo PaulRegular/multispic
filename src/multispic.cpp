@@ -103,6 +103,7 @@ Type objective_function<Type>::operator() ()
     matrix<Type> tot_B_mat(nY, nS);
     matrix<Type> tot_B(nY, nK);
     matrix<Type> log_tot_B(nY, nK);
+    matrix<Type> log_grouped_K(nY, nK);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
     vector<Type> log_res_pe(nL);
@@ -324,6 +325,13 @@ Type objective_function<Type>::operator() ()
     }
     log_tot_B = log(tot_B.array());
 
+    // K by group
+    for (int i = 0; i < nY; i++) {
+        for (int j = 0; j < nS; j++) {
+            log_grouped_K(i, K_map(j)) = log(K_mat(i, j));
+        }
+    }
+
     // AD report values
     ADREPORT(log_B_vec);
     ADREPORT(log_pred_I);
@@ -332,6 +340,7 @@ Type objective_function<Type>::operator() ()
     ADREPORT(log_tot_B);
     ADREPORT(pred_log_q);
     ADREPORT(pred_log_sd_I);
+    ADREPORT(log_grouped_K);
 
     REPORT(B);
     REPORT(B_vec);

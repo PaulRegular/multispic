@@ -414,6 +414,9 @@ multispic <- function(inputs,
     if (pe_covariates == ~0) {
         map$pe_betas <- factor(NA)
     }
+    if (K_covariates == ~0) {
+        map$K_betas <- factor(NA)
+    }
 
     random <- "log_B"
     if (log_K_option$option == "random") {
@@ -514,16 +517,9 @@ multispic <- function(inputs,
         tot_pop$B_lwr <- exp(lwr$log_tot_B + log_center)
         tot_pop$B_upr <- exp(upr$log_tot_B + log_center)
 
-        if (K_groups == ~1) {
-            tot_pop$K <- exp(par$log_K)
-            tot_pop$K_lwr <- exp(par_lwr$log_K)
-            tot_pop$K_upr <- exp(par_upr$log_K)
-        } else {
-            ind <- as.numeric(factor(tot_pop[, all.vars(K_groups)]))
-            tot_pop$K <- exp(par$log_K[ind])
-            tot_pop$K_lwr <- exp(par_lwr$log_K[ind])
-            tot_pop$K_upr <- exp(par_upr$log_K[ind])
-        }
+        tot_pop$K <- exp(est$log_grouped_K + log_center)
+        tot_pop$K_lwr <- exp(lwr$log_grouped_K + log_center)
+        tot_pop$K_upr <- exp(upr$log_grouped_K + log_center)
 
         ## Replace log_q and log_sd_I with reported pred values
         ## (will be same values if option is "random")

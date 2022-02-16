@@ -47,7 +47,7 @@ fit <- multispic(inputs, species_cor = "one", temporal_cor = "ar1",
                                                mean = mean_logit_rho, sd = sd_logit_rho),
                  logit_phi_option = par_option(option = "normal_prior",
                                                mean = mean_logit_phi, sd = sd_logit_phi),
-                 n_forecast = 1, K_groups = ~three_groups, survey_groups = ~species * season + gear,
+                 n_forecast = 1, K_groups = ~three_groups, survey_groups = ~species_survey,
                  pe_covariates = ~0)
 
 vis_multispic(fit)
