@@ -18,74 +18,74 @@ knitr::opts_chunk$set(echo = FALSE, fig.height = 7, fig.width = 8, cache = FALSE
 ```{r options}
 
 if (fit$call$K_groups == ~1) {
-    K_groups <- NULL
-    if (length(unique(fit$landings$species)) == 1) {
-        K_label <- "K"
-    } else {
-        K_label <- "All species"
-    }
+  K_groups <- NULL
+  if (length(unique(fit$landings$species)) == 1) {
+    K_label <- "K"
+  } else {
+    K_label <- "All species"
+  }
 } else {
-    K_groups <- as.formula(fit$call$K_groups)
-    K_label <- unique(fit$landings[, all.vars(K_groups)])
+  K_groups <- as.formula(fit$call$K_groups)
+  K_label <- unique(fit$landings[, all.vars(K_groups)])
 }
 
-n_covar <-  length(all.vars(fit$call$pe_covariates))
-
+n_pe_covar <-  length(all.vars(fit$call$pe_covariates))
+n_K_covar <-  length(all.vars(fit$call$K_covariates))
 
 if (fit$call$species_cor != "none") {
-    
-    n_spp_cor <- length(fit$par$logit_rho)
-    if (n_spp_cor > 1) {
-        sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
-        rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
-        sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
-        sp_rho <- t(sp_rho)
-        sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
-        diag(sp_rho) <- 1
-        round(sp_rho, 2)
-        for (i in seq(nrow(sp_rho))) {
-            for (j in seq(ncol(sp_rho))) {
-                sp_nm_mat[i, j] <- paste(levels(fit$pop$species)[i], "-", levels(fit$pop$species)[j])
-            }
-        }
-        species_cor_label <- sp_nm_mat[lower.tri(sp_nm_mat)]
-    } else {
-        species_cor_label <- "All species"
+  
+  n_spp_cor <- length(fit$par$logit_rho)
+  if (n_spp_cor > 1) {
+    sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
+    rownames(sp_rho) <- colnames(sp_rho) <- levels(fit$pop$species)
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    sp_rho <- t(sp_rho)
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    diag(sp_rho) <- 1
+    round(sp_rho, 2)
+    for (i in seq(nrow(sp_rho))) {
+      for (j in seq(ncol(sp_rho))) {
+        sp_nm_mat[i, j] <- paste(levels(fit$pop$species)[i], "-", levels(fit$pop$species)[j])
+      }
     }
-    
+    species_cor_label <- sp_nm_mat[lower.tri(sp_nm_mat)]
+  } else {
+    species_cor_label <- "All species"
+  }
+  
 } else {
-    
-    n_spp_cor <- 0
-    species_cor_label <- "N/A"
-    
+  
+  n_spp_cor <- 0
+  species_cor_label <- "N/A"
+  
 }
 
 n_time_cor <- as.numeric(fit$call$temporal_cor == "ar1")
 temporal_cor_label <- ifelse(n_time_cor == 1, "All species", "N/A")
 
 add_labels <- function(p, xlab = "", ylab = "", log_linear_button = TRUE) {
-    
-    if (log_linear_button) {
-        ## Modified from https://stackoverflow.com/a/60551263/4055438
-        buttons <- list(list(
-            active = 0,
-            type = "buttons",
-            buttons= list(
-                list(label = 'linear',
-                     method = 'relayout',
-                     args = list(list(yaxis = list(type = 'linear', title = ylab)))),
-                list(label = 'log',
-                     method = 'relayout', 
-                     args = list(list(yaxis = list(type = 'log', title = ylab)))))))
-    } else {
-        buttons <- NULL
-    }
-    
-    layout(p, 
-           xaxis = list(title = xlab),
-           yaxis = list(title = ylab),
-           updatemenus = buttons)
-    
+  
+  if (log_linear_button) {
+    ## Modified from https://stackoverflow.com/a/60551263/4055438
+    buttons <- list(list(
+      active = 0,
+      type = "buttons",
+      buttons= list(
+        list(label = 'linear',
+             method = 'relayout',
+             args = list(list(yaxis = list(type = 'linear', title = ylab)))),
+        list(label = 'log',
+             method = 'relayout', 
+             args = list(list(yaxis = list(type = 'log', title = ylab)))))))
+  } else {
+    buttons <- NULL
+  }
+  
+  layout(p, 
+         xaxis = list(title = xlab),
+         yaxis = list(title = ylab),
+         updatemenus = buttons)
+  
 }
 
 
@@ -102,11 +102,11 @@ Row {.tabset}
 
 ```{r}
 fit$index %>%
-    plot_ly() %>%
-    add_trace(x = ~year, y = ~index, color = ~survey,
-              colors = viridis::viridis(100), mode = "markers+lines",
-              type = "scatter") %>% 
-    add_labels(xlab = "Year", ylab = "Index")
+  plot_ly() %>%
+  add_trace(x = ~year, y = ~index, color = ~survey,
+            colors = viridis::viridis(100), mode = "markers+lines",
+            type = "scatter") %>% 
+  add_labels(xlab = "Year", ylab = "Index")
 ```
 
 
@@ -114,29 +114,35 @@ fit$index %>%
 
 ```{r}
 fit$landings %>%
-    plot_ly() %>%
-    add_trace(x = ~year, y = ~landings, color = ~species,
-              colors = viridis::viridis(100), mode = "markers+lines",
-              type = "scatter") %>% 
-    add_labels(xlab = "Year", ylab = "Landings")
+  plot_ly() %>%
+  add_trace(x = ~year, y = ~landings, color = ~species,
+            colors = viridis::viridis(100), mode = "markers+lines",
+            type = "scatter") %>% 
+  add_labels(xlab = "Year", ylab = "Landings")
 ```
 
 
 ### Covariates
 
-`r if (n_covar == 0) "N/A; no process error covariates supplied"`
-`r if (n_covar > 1) "Plotting of more than one covariate not yet implemented"`
+`r if (n_pe_covar == 0 && n_K_covar == 0) "N/A; no process error or K covariates supplied"`
+`r if ((n_pe_covar + n_K_covar) > 1) "Plotting of more than one covariate not yet implemented"`
 
-```{r, eval = n_covar == 1}
-covariates <- unique(fit$landings[, c("year", all.vars(fit$call$pe_covariates)), drop = FALSE])
+```{r, eval = (n_pe_covar + n_K_covar) == 1}
+if (n_pe_covar == 1) {
+  covar_name <- all.vars(fit$call$pe_covariates)
+  covariates <- unique(fit$landings[, c("year", covar_name), drop = FALSE])
+}
+if (n_K_covar == 1) {
+  covar_name <- all.vars(fit$call$K_covariates)
+  covariates <- unique(fit$landings[, c("year", covar_name), drop = FALSE])
+}
 names(covariates) <- c("year", "covariate")
 covariates %>% 
-    plot_ly(x = ~year, y = ~covariate) %>% 
-    add_trace(mode = "markers+lines") %>% 
-    layout(xaxis = list(title = "Year"),
-           yaxis = list(title = all.vars(fit$call$pe_covariates)))
+  plot_ly(x = ~year, y = ~covariate) %>% 
+  add_lines() %>% 
+  layout(xaxis = list(title = "Year"),
+         yaxis = list(title = covar_name))
 ```
-
 
 
 Residuals
@@ -149,8 +155,8 @@ Row {.tabset}
 
 ```{r}
 p <- fit$index %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100)) %>% 
-    layout(yaxis = list(title = "Standardized residuals"))
+  plot_ly(color = ~species, colors = viridis::viridis(100)) %>% 
+  layout(yaxis = list(title = "Standardized residuals"))
 p %>% add_markers(x = ~log(pred), y = ~std_res)
 ```
 
@@ -190,10 +196,10 @@ rownames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
 colnames(cor_mat) <- paste0(seq(nrow(cor_mat)), ":", names(dsd))
 # corrplot::corrplot.mixed(cor_mat, diag = "n", lower = "ellipse", upper = "number")
 plot_ly(x = rownames(cor_mat), y = colnames(cor_mat), z = cor_mat) %>% 
-    add_heatmap(colors = c("#B2182B", "white", "#2166AC")) %>% 
-    colorbar(limits = c(-1.001, 1.001)) %>% 
-    layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
-           xaxis = list(constrain = "domain"))
+  add_heatmap(colors = c("#B2182B", "white", "#2166AC")) %>% 
+  colorbar(limits = c(-1.001, 1.001)) %>% 
+  layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
+         xaxis = list(constrain = "domain"))
 
 ```
 
@@ -308,9 +314,9 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 
 ### beta<sub>pe</sub>
 
-`r if (n_covar == 0) "N/A; no process error covariates supplied"`
+`r if (n_pe_covar == 0) "N/A; no process error covariates supplied"`
 
-```{r, eval = n_covar >= 1}
+```{r, eval = n_pe_covar >= 1}
 plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
           prior_sd = fit$tmb_dat$sd_pe_betas,
           post_mean = fit$par$pe_betas,
@@ -320,6 +326,20 @@ plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
           show_prior = fit$call$pe_betas_option$option == "normal_prior")
 ```
 
+### beta<sub>K</sub>
+
+`r if (n_K_covar == 0) "N/A; no K covariates supplied"`
+
+```{r, eval = n_K_covar >= 1}
+plot_post(prior_mean = fit$tmb_dat$mean_K_betas,
+          prior_sd = fit$tmb_dat$sd_K_betas,
+          post_mean = fit$par$K_betas,
+          post_sd = fit$se$K_betas,
+          post_names = "K_betas",
+          xlab = "K_betas",
+          show_prior = fit$call$K_betas_option$option == "normal_prior")
+```
+
 
 ### Estimates (plot)
 
@@ -327,12 +347,12 @@ plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
 
 name_par <- c("log_K", "log_r", "log_B0", "log_sd_B",
               "logit_rho", "logit_phi", "log_q", "log_sd_I",
-              "pe_betas")
+              "pe_betas", "K_betas")
 par_fun <- function(nm, select = "par") {
-    if (grepl("beta", nm)) return(fit[[select]][[nm]])
-    if (grepl("log_", nm)) return(exp(fit[[select]][[nm]]))
-    if (nm == "logit_rho") return(inv_logit(fit[[select]][[nm]], shift = TRUE))
-    if (nm == "logit_phi") return(inv_logit(fit[[select]][[nm]], shift = FALSE))
+  if (grepl("beta", nm)) return(fit[[select]][[nm]])
+  if (grepl("log_", nm)) return(exp(fit[[select]][[nm]]))
+  if (nm == "logit_rho") return(inv_logit(fit[[select]][[nm]], shift = TRUE))
+  if (nm == "logit_phi") return(inv_logit(fit[[select]][[nm]], shift = FALSE))
 }
 named_par <- lapply(name_par, par_fun, select = "par")
 named_par_cv <- lapply(name_par, par_fun, select = "se")
@@ -347,6 +367,8 @@ names(named_par$sd_B) <- levels(fit$index$species)
 names(named_par$B0) <- levels(fit$index$species)
 names(named_par$phi) <- temporal_cor_label
 names(named_par$rho) <- species_cor_label
+names(named_par$pe_betas) <- colnames(fit$tmb_dat$pe_covariates)
+names(named_par$K_betas) <- colnames(fit$tmb_dat$K_covariates)
 
 par_tab <- data.frame(parameter = rep(names(named_par), sapply(named_par, length)),
                       group = names(unlist(unname(named_par))),
@@ -357,12 +379,12 @@ par_tab <- data.frame(parameter = rep(names(named_par), sapply(named_par, length
 par_tab <- na.omit(par_tab) # will drop par lacking CV estimates (i.e. not estimated)
 
 par_tab %>% 
-    plot_ly(color = ~parameter, colors = viridis::viridis(100),
-            legendgroup = ~parameter, y = ~paste(parameter, "-", group)) %>% 
-    add_segments(x = ~lower, xend = ~upper, yend = ~paste(parameter, "-", group), 
-                 showlegend = FALSE) %>% 
-    add_markers(x = ~estimate) %>% 
-    layout(xaxis = list(title = ""), yaxis = list(title = ""))
+  plot_ly(color = ~parameter, colors = viridis::viridis(100),
+          legendgroup = ~parameter, y = ~paste(parameter, "-", group)) %>% 
+  add_segments(x = ~lower, xend = ~upper, yend = ~paste(parameter, "-", group), 
+               showlegend = FALSE) %>% 
+  add_markers(x = ~estimate) %>% 
+  layout(xaxis = list(title = ""), yaxis = list(title = ""))
 
 ```
 
@@ -387,13 +409,13 @@ Row {.tabset}
 
 ```{r}
 fit$index %>%
-    plot_ly(x = ~year, color = ~survey, colors = viridis::viridis(100),
-            legendgroup = ~survey) %>%
-    add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~pred) %>%
-    add_markers(y = ~index, showlegend = FALSE) %>% 
-    add_labels(xlab = "Year", ylab = "Index")
+  plot_ly(x = ~year, color = ~survey, colors = viridis::viridis(100),
+          legendgroup = ~survey) %>%
+  add_ribbons(ymin = ~pred_lwr, ymax = ~pred_upr, line = list(width = 0),
+              alpha = 0.2, showlegend = FALSE) %>%
+  add_lines(y = ~pred) %>%
+  add_markers(y = ~index, showlegend = FALSE) %>% 
+  add_labels(xlab = "Year", ylab = "Index")
 ```
 
 
@@ -401,25 +423,25 @@ fit$index %>%
 
 ```{r}
 p <- fit$pop %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
+  plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~pe) %>% 
-    add_labels(xlab = "Year", ylab = "Process error")
+  add_labels(xlab = "Year", ylab = "Process error")
 ```
 
-`r if (n_covar >= 1) "> Includes covariate effects"`
+`r if (n_pe_covar >= 1) "> Includes covariate effects"`
 
 
 ### Standardized process error
 
 ```{r}
 p <- fit$pop %>%
-    plot_ly(color = ~species, colors = viridis::viridis(100))
+  plot_ly(color = ~species, colors = viridis::viridis(100))
 p %>% add_lines(x = ~year, y = ~log_std_res_pe) %>% 
-    layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Standardized process error"))
+  layout(xaxis = list(title = "Year"),
+         yaxis = list(title = "Standardized process error"))
 ```
 
-`r if (n_covar >= 1) "> Standardized process error = residual process error, in log space, not explained by the covariate effects divided by the standard deviation of the process." else "> Standardized process error = process error, in log space, divided by the standard deviation of the process."`
+`r if (n_pe_covar >= 1) "> Standardized process error = residual process error, in log space, not explained by the covariate effects divided by the standard deviation of the process." else "> Standardized process error = process error, in log space, divided by the standard deviation of the process."`
 
 
 ### Process error correlation
@@ -430,12 +452,12 @@ p %>% add_lines(x = ~year, y = ~log_std_res_pe) %>%
 ```{r, eval = n_spp_cor > 1}
 plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
         colors = c("#B2182B", "white", "#2166AC")) %>%
-    add_heatmap() %>% colorbar(limits = c(-1.001, 1.001), title = "ρ") %>% 
-    layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
-           xaxis = list(constrain = "domain"))
+  add_heatmap() %>% colorbar(limits = c(-1.001, 1.001), title = "ρ") %>% 
+  layout(yaxis = list(scaleanchor = "x", scaleratio = 1),
+         xaxis = list(constrain = "domain"))
 ```
 
-`r if (n_spp_cor > 1 && n_covar >= 1) "> Represents correlation in residual process error not explained by the covariate effects."`
+`r if (n_spp_cor > 1 && n_pe_covar >= 1) "> Represents correlation in residual process error not explained by the covariate effects."`
 
 
 ### Biomass
@@ -444,21 +466,21 @@ plot_ly(x = rownames(sp_rho), y = rownames(sp_rho), z = ~sp_rho,
 
 tots <- fit$tot_pop
 if (is.null(K_groups)) {
-    tots$group <- "K"
+  tots$group <- "K"
 } else {
-    tots$group <- paste0("K", "-", tots[, all.vars(K_groups)])
+  tots$group <- paste0("K", "-", tots[, all.vars(K_groups)])
 }
 
 fit$pop %>%
-    ungroup() %>% 
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
-    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~B) %>% 
-    add_lines(data = tots, x = ~year, y = ~K, 
-              linetype = ~group, color = I("black"), inherit = FALSE) %>% 
-    add_labels(xlab = "Year", ylab = "Biomass")
+  ungroup() %>% 
+  plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+          legendgroup = ~species) %>%
+  add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
+              alpha = 0.2, showlegend = FALSE) %>%
+  add_lines(y = ~B) %>% 
+  add_lines(data = tots, x = ~year, y = ~K, 
+            linetype = ~group, color = I("black"), inherit = FALSE) %>% 
+  add_labels(xlab = "Year", ylab = "Biomass")
 
 
 ```
@@ -468,20 +490,20 @@ fit$pop %>%
 ```{r}
 three_cols <- viridis::viridis(3)
 fit$tot_pop %>%
-    plot_ly(x = ~year, frame = K_groups) %>%
-    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE, legendgroup = "B",
-                color = I(three_cols[2])) %>%
-    add_lines(y = ~B, name = "B", color = I(three_cols[2]),
-              legendgroup = "B") %>%
-    add_lines(y = ~K, name = "K", legendgroup = "K",
-              linetype = I(1), color = I(three_cols[1])) %>%
-    add_lines(y = ~K_lwr, legendgroup = "K", showlegend = FALSE,
-              linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
-    add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
-              linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
-    add_lines(y = ~landings, name = "L", color = I(three_cols[3])) %>%
-    add_labels(xlab = "Year", ylab = "Biomass")
+  plot_ly(x = ~year, frame = K_groups) %>%
+  add_ribbons(ymin = ~B_lwr, ymax = ~B_upr, line = list(width = 0),
+              alpha = 0.2, showlegend = FALSE, legendgroup = "B",
+              color = I(three_cols[2])) %>%
+  add_lines(y = ~B, name = "B", color = I(three_cols[2]),
+            legendgroup = "B") %>%
+  add_lines(y = ~K, name = "K", legendgroup = "K",
+            linetype = I(1), color = I(three_cols[1])) %>%
+  add_lines(y = ~K_lwr, legendgroup = "K", showlegend = FALSE,
+            linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
+  add_lines(y = ~K_upr, legendgroup = "K", showlegend = FALSE,
+            linetype = I(3), color = I(three_cols[1]), size = I(1)) %>%
+  add_lines(y = ~landings, name = "L", color = I(three_cols[3])) %>%
+  add_labels(xlab = "Year", ylab = "Biomass")
 ```
 
 
@@ -489,12 +511,12 @@ fit$tot_pop %>%
 
 ```{r}
 fit$pop %>%
-    plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
-            legendgroup = ~species) %>%
-    add_ribbons(ymin = ~F_lwr, ymax = ~F_upr, line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) %>%
-    add_lines(y = ~F) %>%
-    add_labels(xlab = "Year", ylab = "Harvest Rate")
+  plot_ly(x = ~year, color = ~species, colors = viridis::viridis(100),
+          legendgroup = ~species) %>%
+  add_ribbons(ymin = ~F_lwr, ymax = ~F_upr, line = list(width = 0),
+              alpha = 0.2, showlegend = FALSE) %>%
+  add_lines(y = ~F) %>%
+  add_labels(xlab = "Year", ylab = "Harvest Rate")
 ```
 
 
