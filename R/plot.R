@@ -61,29 +61,27 @@ plot_post <- function(prior_mean = 0, prior_sd = 1, show_prior = TRUE,
         stop("length(post_names) != length(post_mean) - Please specify a name for each posterior distribution")
     }
 
-    if (show_prior) {
-        den_min <- prior_mean - (10 * prior_sd)
-        den_max <- prior_mean + (10 * prior_sd)
-    } else {
-        den_min <- min(post_mean) - (10 * max(post_sd))
-        den_max <- max(post_mean) + (10 * max(post_sd))
-    }
-    x_min <- min(post_mean) - (4 * max(post_sd))
-    x_max <- max(post_mean) + (4 * max(post_sd))
-    x <- seq(den_min, den_max, length.out = length_out)
-    prior_y <- dnorm(x, mean = prior_mean, sd = prior_sd)
+    prior_den_min <- prior_mean - (10 * prior_sd)
+    prior_den_max <- prior_mean + (10 * prior_sd)
+
+    prior_x <- seq(prior_den_min, prior_den_max, length.out = length_out)
+    prior_y <- dnorm(prior_x, mean = prior_mean, sd = prior_sd)
+
+    post_den_min <- min(post_mean) - (10 * max(post_sd))
+    post_den_max <- max(post_mean) + (10 * max(post_sd))
 
     names(post_mean) <- names(post_sd) <- post_names
-
     post_lab <- rep(post_names, each = length_out)
+
+    post_x <- seq(post_den_min, post_den_max, length.out = length_out)
     post_y <- lapply(post_names, function(nm) {
-        dnorm(x, mean = post_mean[nm], sd = post_sd[nm])
+        dnorm(post_x, mean = post_mean[nm], sd = post_sd[nm])
     })
 
-    post <- data.frame(x = rep(x, length(post_mean)),
+    post <- data.frame(x = rep(post_x, length(post_mean)),
                        y = unlist(post_y),
                        lab = as.character(post_lab))
-    prior <- data.frame(x = x, y = prior_y, lab = "prior")
+    prior <- data.frame(x = prior_x, y = prior_y, lab = "prior")
 
     prior <- prior[prior$y > min_den, ]
     post <- post[post$y > min_den, ]
@@ -91,6 +89,9 @@ plot_post <- function(prior_mean = 0, prior_sd = 1, show_prior = TRUE,
         prior$x <- trans_fun(prior$x)
         post$x <- trans_fun(post$x)
     }
+
+    x_min <- min(post_mean) - (4 * max(post_sd))
+    x_max <- max(post_mean) + (4 * max(post_sd))
 
     plot_ly(x = ~x, y = ~y, color = ~lab) %>%
         add_lines(data = prior, name = "Prior", line = list(width = 3),
