@@ -469,6 +469,8 @@ multispic <- function(inputs,
 
         ## Simplify logit_rho if coupled
         if (species_cor != "all") {
+            par$mean_logit_rho <- par$mean_logit_rho[1]
+            par$log_sd_logit_rho <- par$log_sd_logit_rho[1]
             par$logit_rho <- par$logit_rho[1]
             se$logit_rho <- se$logit_rho[1]
             par_lwr$logit_rho <- par_lwr$logit_rho[1]

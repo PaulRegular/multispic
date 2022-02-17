@@ -36,9 +36,9 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #' @param prior_mean   Mean of the prior.
 #' @param prior_sd     SD of the prior.
 #' @param show_prior   Display prior distribution?
-#' @param post_mean    Mean of the posterior (can be one or more values).
-#' @param post_sd      SD of the posterior (can be one or more values).
-#' @param post_names   Names for the posterior.
+#' @param post_mean    Mean of the posterior.
+#' @param post_sd      SD of the posterior.
+#' @param names        Names of the posteriors (and priors) when multiple values are provided.
 #' @param length_out   Number of points to plot (more points will result in smoother curves).
 #' @param xlab         Label for the x axis.
 #' @param ylab         Label for the y axis.
@@ -53,35 +53,48 @@ add_fit <- function(p, x = NULL, yline = NULL, ymarker = NULL,
 #'
 
 plot_post <- function(prior_mean = 0, prior_sd = 1, show_prior = TRUE,
-                            post_mean = 0, post_sd = 1, post_names = "Posterior",
-                            length_out = 1000, xlab = "x", ylab = "Density", title = NULL,
-                            min_den = 0.00001, trans_fun = NULL) {
+                      post_mean = 0, post_sd = 1, names = NULL,
+                      length_out = 1000, xlab = "x", ylab = "Density", title = NULL,
+                      min_den = 0.00001, trans_fun = NULL) {
 
-    if (length(post_names) != length(post_mean)) {
-        stop("length(post_names) != length(post_mean) - Please specify a name for each posterior distribution")
+    if (!is.null(names)) {
+        if (length(names) != length(prior_mean) |
+            length(names) != length(post_mean)) {
+            stop("The number of names provided do not equal the number of mean values supplied.")
+        }
+    } else {
+        names <- "noname"
     }
 
-    prior_den_min <- prior_mean - (10 * prior_sd)
-    prior_den_max <- prior_mean + (10 * prior_sd)
+    names(prior_mean) <- names(prior_sd) <- names
+    prior_lab <- rep(names, each = length_out)
+
+    prior_den_min <- min(prior_mean) - (10 * max(prior_sd))
+    prior_den_max <- max(prior_mean) + (10 * max(prior_sd))
 
     prior_x <- seq(prior_den_min, prior_den_max, length.out = length_out)
-    prior_y <- dnorm(prior_x, mean = prior_mean, sd = prior_sd)
+    prior_y <- lapply(names, function(nm) {
+        dnorm(prior_x, mean = prior_mean[nm], sd = prior_sd[nm])
+    })
+
+    prior <- data.frame(x = rep(prior_x, length(prior_mean)),
+                        y = unlist(prior_y),
+                        name = as.character(prior_lab))
+
+    names(post_mean) <- names(post_sd) <- names
+    post_lab <- rep(names, each = length_out)
 
     post_den_min <- min(post_mean) - (10 * max(post_sd))
     post_den_max <- max(post_mean) + (10 * max(post_sd))
 
-    names(post_mean) <- names(post_sd) <- post_names
-    post_lab <- rep(post_names, each = length_out)
-
     post_x <- seq(post_den_min, post_den_max, length.out = length_out)
-    post_y <- lapply(post_names, function(nm) {
+    post_y <- lapply(names, function(nm) {
         dnorm(post_x, mean = post_mean[nm], sd = post_sd[nm])
     })
 
     post <- data.frame(x = rep(post_x, length(post_mean)),
                        y = unlist(post_y),
-                       lab = as.character(post_lab))
-    prior <- data.frame(x = prior_x, y = prior_y, lab = "prior")
+                       name = as.character(post_lab))
 
     prior <- prior[prior$y > min_den, ]
     post <- post[post$y > min_den, ]
@@ -93,14 +106,20 @@ plot_post <- function(prior_mean = 0, prior_sd = 1, show_prior = TRUE,
     x_min <- min(post_mean) - (4 * max(post_sd))
     x_max <- max(post_mean) + (4 * max(post_sd))
 
-    plot_ly(x = ~x, y = ~y, color = ~lab) %>%
-        add_lines(data = prior, name = "Prior", line = list(width = 3),
-                  color = I("black"), colors = viridis::viridis(length(post_mean)),
-                  visible = show_prior) %>%
-        add_lines(data = post, line = list(width = 1)) %>%
+    cols <- viridis::viridis(2)
+    p <- plot_ly(x = ~x, y = ~y, frame = ~name) %>%
+        add_lines(data = prior, line = list(width = 3), visible = show_prior,
+                  color = I(cols[2]), name = "Prior") %>%
+        add_lines(data = post, line = list(width = 1),
+                  color = I(cols[1]), name = "Posterior", showlegend = show_prior) %>%
         layout(xaxis = list(title = xlab, range = list(x_min, x_max)),
                yaxis = list(title = ylab),
                title = title)
+    if (length(post_mean) > 1) {
+        p <- p %>% animation_button(visible = FALSE)
+    }
+    p
+
 
 }
 

@@ -210,7 +210,7 @@ plot_post(prior_mean = fit$par$mean_log_K,
           prior_sd = exp(fit$par$log_sd_log_K),
           post_mean = fit$par$log_K,
           post_sd = fit$se$log_K,
-          post_names = K_label,
+          names = K_label,
           xlab = "log(K)",
           show_prior = fit$call$log_K_option$option == "prior")
 ```
@@ -222,7 +222,7 @@ plot_post(prior_mean = fit$par$mean_log_r,
           prior_sd = exp(fit$par$log_sd_log_r),
           post_mean = fit$par$log_r,
           post_sd = fit$se$log_r,
-          post_names = levels(fit$landings$species),
+          names = levels(fit$landings$species),
           xlab = "log(r)",
           show_prior = fit$call$log_r_option$option == "prior")
 ```
@@ -235,7 +235,7 @@ plot_post(prior_mean = fit$par$mean_log_B0,
           prior_sd = exp(fit$par$log_sd_log_B0),
           post_mean = fit$par$log_B0,
           post_sd = fit$se$log_B0,
-          post_names = levels(fit$landings$species),
+          names = levels(fit$landings$species),
           xlab = "log(B0)",
           show_prior = fit$call$log_B0_option$option == "prior")
 ```
@@ -247,7 +247,7 @@ plot_post(prior_mean = fit$par$mean_log_sd_B,
           prior_sd = exp(fit$par$log_sd_log_sd_B),
           post_mean = fit$par$log_sd_B,
           post_sd = fit$se$log_sd_B,
-          post_names = levels(fit$landings$species),
+          names = levels(fit$landings$species),
           xlab = "log(SD<sub>B</sub>)",
           show_prior = fit$call$log_sd_B_option$option == "prior")
 
@@ -263,7 +263,7 @@ plot_post(prior_mean = fit$par$mean_logit_rho,
           prior_sd = exp(fit$par$log_sd_logit_rho),
           post_mean = fit$par$logit_rho,
           post_sd = fit$se$logit_rho,
-          post_names = species_cor_label,
+          names = species_cor_label,
           xlab = "logit(rho)", # trans_fun = function(x) inv_logit(x, shift = TRUE),
           show_prior = fit$call$logit_rho_option$option == "prior") 
 ```
@@ -275,11 +275,11 @@ plot_post(prior_mean = fit$par$mean_logit_rho,
 `r if (n_time_cor == 0) "N/A; correlation of process errors across time was not estimated."`
 
 ```{r, eval = n_time_cor == 1}
-plot_post(prior_mean = fit$tmb_dat$mean_logit_phi,
-          prior_sd = fit$tmb_dat$sd_logit_phi,
+plot_post(prior_mean = fit$par$mean_logit_phi,
+          prior_sd = exp(fit$par$log_sd_logit_phi),
           post_mean = fit$par$logit_phi,
           post_sd = fit$se$logit_phi,
-          post_names = "logit(phi)",
+          names = "logit(phi)",
           xlab = "logit(phi)", # trans_fun = inv_logit,
           show_prior = fit$call$logit_phi_option$option == "prior")
 
@@ -293,7 +293,7 @@ plot_post(prior_mean = fit$par$mean_log_q,
           prior_sd = exp(fit$par$log_sd_log_q),
           post_mean = fit$par$log_q,
           post_sd = fit$se$log_q,
-          post_names = levels(fit$index$survey),
+          names = levels(fit$index$survey),
           xlab = "log(q)",
           show_prior = fit$call$log_q_option$option == "prior")
 ```
@@ -306,7 +306,7 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
           prior_sd = exp(fit$par$log_sd_log_sd_I),
           post_mean = fit$par$log_sd_I,
           post_sd = fit$se$log_sd_I,
-          post_names = levels(fit$index$survey),
+          names = levels(fit$index$survey),
           xlab = "log(SD<sub>I</sub>)",
           show_prior = fit$call$log_sd_I_option$option == "prior")
 
@@ -317,11 +317,11 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
 `r if (n_pe_covar == 0) "N/A; no process error covariates supplied"`
 
 ```{r, eval = n_pe_covar >= 1}
-plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
-          prior_sd = fit$tmb_dat$sd_pe_betas,
+plot_post(prior_mean = fit$par$mean_pe_betas,
+          prior_sd = exp(fit$par$log_sd_pe_betas),
           post_mean = fit$par$pe_betas,
           post_sd = fit$se$pe_betas,
-          post_names = "pe_betas",
+          names = "pe_betas",
           xlab = "pe_betas",
           show_prior = fit$call$pe_betas_option$option == "prior")
 ```
@@ -331,11 +331,11 @@ plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
 `r if (n_K_covar == 0) "N/A; no K covariates supplied"`
 
 ```{r, eval = n_K_covar >= 1}
-plot_post(prior_mean = fit$tmb_dat$mean_K_betas,
-          prior_sd = fit$tmb_dat$sd_K_betas,
+plot_post(prior_mean = fit$par$mean_K_betas,
+          prior_sd = exp(fit$par$log_sd_K_betas),
           post_mean = fit$par$K_betas,
           post_sd = fit$se$K_betas,
-          post_names = "K_betas",
+          names = "K_betas",
           xlab = "K_betas",
           show_prior = fit$call$K_betas_option$option == "prior")
 ```

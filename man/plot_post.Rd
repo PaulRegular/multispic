@@ -10,7 +10,7 @@ plot_post(
   show_prior = TRUE,
   post_mean = 0,
   post_sd = 1,
-  post_names = "Posterior",
+  names = NULL,
   length_out = 1000,
   xlab = "x",
   ylab = "Density",
@@ -26,11 +26,11 @@ plot_post(
 
 \item{show_prior}{Display prior distribution?}
 
-\item{post_mean}{Mean of the posterior (can be one or more values).}
+\item{post_mean}{Mean of the posterior.}
 
-\item{post_sd}{SD of the posterior (can be one or more values).}
+\item{post_sd}{SD of the posterior.}
 
-\item{post_names}{Names for the posterior.}
+\item{names}{Names of the posteriors (and priors) when multiple values are provided.}
 
 \item{length_out}{Number of points to plot (more points will result in smoother curves).}
 
