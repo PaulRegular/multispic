@@ -212,7 +212,7 @@ plot_post(prior_mean = fit$par$mean_log_K,
           post_sd = fit$se$log_K,
           post_names = K_label,
           xlab = "log(K)",
-          show_prior = fit$call$log_K_option$option == "normal_prior")
+          show_prior = fit$call$log_K_option$option == "prior")
 ```
 
 ### log(r)
@@ -224,7 +224,7 @@ plot_post(prior_mean = fit$par$mean_log_r,
           post_sd = fit$se$log_r,
           post_names = levels(fit$landings$species),
           xlab = "log(r)",
-          show_prior = fit$call$log_r_option$option == "normal_prior")
+          show_prior = fit$call$log_r_option$option == "prior")
 ```
 
 
@@ -237,7 +237,7 @@ plot_post(prior_mean = fit$par$mean_log_B0,
           post_sd = fit$se$log_B0,
           post_names = levels(fit$landings$species),
           xlab = "log(B0)",
-          show_prior = fit$call$log_B0_option$option == "normal_prior")
+          show_prior = fit$call$log_B0_option$option == "prior")
 ```
 
 ### log(SD<sub>B</sub>)
@@ -249,7 +249,7 @@ plot_post(prior_mean = fit$par$mean_log_sd_B,
           post_sd = fit$se$log_sd_B,
           post_names = levels(fit$landings$species),
           xlab = "log(SD<sub>B</sub>)",
-          show_prior = fit$call$log_sd_B_option$option == "normal_prior")
+          show_prior = fit$call$log_sd_B_option$option == "prior")
 
 ```
 
@@ -265,7 +265,7 @@ plot_post(prior_mean = fit$par$mean_logit_rho,
           post_sd = fit$se$logit_rho,
           post_names = species_cor_label,
           xlab = "logit(rho)", # trans_fun = function(x) inv_logit(x, shift = TRUE),
-          show_prior = fit$call$logit_rho_option$option == "normal_prior") 
+          show_prior = fit$call$logit_rho_option$option == "prior") 
 ```
 
 
@@ -281,7 +281,7 @@ plot_post(prior_mean = fit$tmb_dat$mean_logit_phi,
           post_sd = fit$se$logit_phi,
           post_names = "logit(phi)",
           xlab = "logit(phi)", # trans_fun = inv_logit,
-          show_prior = fit$call$logit_phi_option$option == "normal_prior")
+          show_prior = fit$call$logit_phi_option$option == "prior")
 
 ```
 
@@ -295,7 +295,7 @@ plot_post(prior_mean = fit$par$mean_log_q,
           post_sd = fit$se$log_q,
           post_names = levels(fit$index$survey),
           xlab = "log(q)",
-          show_prior = fit$call$log_q_option$option == "normal_prior")
+          show_prior = fit$call$log_q_option$option == "prior")
 ```
 
 
@@ -308,7 +308,7 @@ plot_post(prior_mean = fit$par$mean_log_sd_I,
           post_sd = fit$se$log_sd_I,
           post_names = levels(fit$index$survey),
           xlab = "log(SD<sub>I</sub>)",
-          show_prior = fit$call$log_sd_I_option$option == "normal_prior")
+          show_prior = fit$call$log_sd_I_option$option == "prior")
 
 ```
 
@@ -323,7 +323,7 @@ plot_post(prior_mean = fit$tmb_dat$mean_pe_betas,
           post_sd = fit$se$pe_betas,
           post_names = "pe_betas",
           xlab = "pe_betas",
-          show_prior = fit$call$pe_betas_option$option == "normal_prior")
+          show_prior = fit$call$pe_betas_option$option == "prior")
 ```
 
 ### beta<sub>K</sub>
@@ -337,7 +337,7 @@ plot_post(prior_mean = fit$tmb_dat$mean_K_betas,
           post_sd = fit$se$K_betas,
           post_names = "K_betas",
           xlab = "K_betas",
-          show_prior = fit$call$K_betas_option$option == "normal_prior")
+          show_prior = fit$call$K_betas_option$option == "prior")
 ```
 
 

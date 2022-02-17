@@ -4,27 +4,26 @@
 \alias{par_option}
 \title{Helper for defining the settings of a parameter}
 \usage{
-par_option(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 10)
+par_option(option = "fixed", mean = 0, sd = 1)
 }
 \arguments{
 \item{option}{Should the parameter be estimated freely (\code{"fixed"}), coupled across groups
 (\code{"coupled"}), revolve around an estimated mean and sd (\code{"random"}),
-or a fixed mean and sd (\code{"normal_prior"}), or be constrained between
-a lower and upper value (\code{"uniform_prior"}). The \code{"coupled"} and \code{"random"} options
+or a fixed mean and sd (\code{"prior"}). The \code{"coupled"} and \code{"random"} options
 are not applicable if only one parameter is estimated (e.g. \code{log_K}).}
 
 \item{mean}{Mean value of the parameter. Treated as a starting value if
-option is \code{"random"} or as a prior if option is option is \code{"normal_prior"}.
-Ignored if option is \code{"fixed"}, \code{"coupled"}, or \code{"uniform_prior"}.}
+option is \code{"random"} or as a prior if option is option is \code{"prior"}.
+Ignored if option is \code{"fixed"}, or \code{"coupled"}.}
 
-\item{sd}{SD value of the parameter. Treated as a starting value is
-option is \code{"random"} or a prior if option is "prior". Ignored
-if option is \code{"fixed"}, \code{"coupled"}, or \code{"uniform_prior"}.}
-
-\item{lower}{Lower range for the parameter.}
-
-\item{upper}{Upper range for the parameter.}
+\item{sd}{SD value of the parameter. Treated as a starting value if
+option is \code{"random"} or a prior if option is \code{"prior"}. Ignored
+if option is \code{"fixed"}, or \code{"coupled"}.}
 }
 \description{
 Helper for defining the settings of a parameter
+}
+\details{
+\code{mean} and \code{sd}inputs can be a vector of equal length as the number
+of parameter values if priors are being defined.
 }

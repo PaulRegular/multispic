@@ -1,5 +1,11 @@
 #include <TMB.hpp>
-#include "utils.hpp" // Atomic functions positive function and for censored likelihoods
+
+// Function for keeping values positive
+template<class Type>
+Type pos_fun(Type x, Type eps, Type &pen) {
+    pen += CppAD::CondExpLt(x, eps, Type(0.01) * pow(x - eps, 2), Type(0));
+    return CppAD::CondExpGe(x, eps, x, eps / (Type(2) - x / eps));
+}
 
 template<class Type>
 Type objective_function<Type>::operator() ()
@@ -25,33 +31,12 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(logit_phi_option);
     DATA_INTEGER(K_betas_option);
     DATA_INTEGER(pe_betas_option);
-    DATA_SCALAR(lower_log_K);
-    DATA_SCALAR(upper_log_K);
-    DATA_SCALAR(lower_log_sd_B);
-    DATA_SCALAR(upper_log_sd_B);
-    DATA_SCALAR(lower_log_B0);
-    DATA_SCALAR(upper_log_B0);
-    DATA_SCALAR(lower_log_r);
-    DATA_SCALAR(upper_log_r);
-    DATA_SCALAR(lower_log_q);
-    DATA_SCALAR(upper_log_q);
-    DATA_SCALAR(lower_log_sd_I);
-    DATA_SCALAR(upper_log_sd_I);
-    DATA_SCALAR(lower_logit_rho);
-    DATA_SCALAR(upper_logit_rho);
     DATA_SCALAR(mean_logit_phi);
     DATA_SCALAR(sd_logit_phi);
-    DATA_SCALAR(lower_logit_phi);
-    DATA_SCALAR(upper_logit_phi);
     DATA_SCALAR(mean_K_betas);
     DATA_SCALAR(sd_K_betas);
-    DATA_SCALAR(lower_K_betas);
-    DATA_SCALAR(upper_K_betas);
     DATA_SCALAR(mean_pe_betas);
     DATA_SCALAR(sd_pe_betas);
-    DATA_SCALAR(lower_pe_betas);
-    DATA_SCALAR(upper_pe_betas);
-    DATA_SCALAR(dmuniform_sd);
     DATA_MATRIX(survey_covariates);
     DATA_MATRIX(pe_covariates);
     DATA_MATRIX(K_covariates);
@@ -160,38 +145,22 @@ Type objective_function<Type>::operator() ()
     // Priors / random effects
     if (log_K_option > 1) {
         for(int i = 0; i < log_K.size(); i++) {
-            if (log_K_option == 4) {
-                nll += dmuniform(log_K(i), lower_log_K, upper_log_K, dmuniform_sd);
-            } else {
-                nll -= dnorm(log_K(i), mean_log_K, sd_log_K, true);
-            }
+            nll -= dnorm(log_K(i), mean_log_K, sd_log_K, true);
         }
     }
     if (log_B0_option > 1) {
         for(int i = 0; i < log_B0.size(); i++) {
-            if (log_B0_option == 4) {
-                nll += dmuniform(log_B0(i), lower_log_B0, upper_log_B0, dmuniform_sd);
-            } else {
-                nll -= dnorm(log_B0(i), mean_log_B0, sd_log_B0, true);
-            }
+            nll -= dnorm(log_B0(i), mean_log_B0, sd_log_B0, true);
         }
     }
     if (log_sd_B_option > 1) {
         for(int i = 0; i < log_sd_B.size(); i++) {
-            if (log_sd_B_option == 4) {
-                nll += dmuniform(log_sd_B(i), lower_log_sd_B, upper_log_sd_B, dmuniform_sd);
-            } else {
-                nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
-            }
+            nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
         }
     }
     if (log_r_option > 1) {
         for(int i = 0; i < log_r.size(); i++) {
-            if (log_r_option == 4) {
-                nll += dmuniform(log_r(i), lower_log_r, upper_log_r, dmuniform_sd);
-            } else {
-                nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
-            }
+            nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
         }
     }
 
@@ -202,11 +171,7 @@ Type objective_function<Type>::operator() ()
     }
     if (log_q_option > 1) {
         for(int i = 0; i < pred_log_q.size(); i++) {
-            if (log_q_option == 4) {
-                nll += dmuniform(pred_log_q(i), lower_log_q, upper_log_q, dmuniform_sd);
-            } else {
-                nll -= dnorm(pred_log_q(i), mean_log_q, sd_log_q, true);
-            }
+            nll -= dnorm(pred_log_q(i), mean_log_q, sd_log_q, true);
         }
     }
 
@@ -217,45 +182,25 @@ Type objective_function<Type>::operator() ()
     }
     if (log_sd_I_option > 1) {
         for(int i = 0; i < pred_log_sd_I.size(); i++) {
-            if (log_sd_I_option == 4) {
-                nll += dmuniform(pred_log_sd_I(i), lower_log_sd_I, upper_log_sd_I, dmuniform_sd);
-            } else {
-                nll -= dnorm(pred_log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
-            }
+            nll -= dnorm(pred_log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
         }
     }
     if (logit_rho_option > 1) {
         for(int i = 0; i < logit_rho.size(); i++) {
-            if (logit_rho_option == 4) {
-                nll += dmuniform(logit_rho(i), lower_logit_rho, upper_logit_rho, dmuniform_sd);
-            } else {
-                nll -= dnorm(logit_rho(i), mean_logit_rho, sd_logit_rho, true);
-            }
+            nll -= dnorm(logit_rho(i), mean_logit_rho, sd_logit_rho, true);
         }
     }
     if (logit_phi_option > 1) {
-        if (logit_phi_option == 4) {
-            nll += dmuniform(logit_phi, lower_logit_phi, upper_logit_phi, dmuniform_sd);
-        } else {
-            nll -= dnorm(logit_phi, mean_logit_phi, sd_logit_phi, true);
-        }
+        nll -= dnorm(logit_phi, mean_logit_phi, sd_logit_phi, true);
     }
     if (pe_betas_option > 1) {
         for(int i = 0; i < pe_betas.size(); i++) {
-            if (pe_betas_option == 4) {
-                nll += dmuniform(pe_betas(i), lower_pe_betas, upper_pe_betas, dmuniform_sd);
-            } else {
-                nll -= dnorm(pe_betas(i), mean_pe_betas, sd_pe_betas, true);
-            }
+            nll -= dnorm(pe_betas(i), mean_pe_betas, sd_pe_betas, true);
         }
     }
     if (K_betas_option > 1) {
         for(int i = 0; i < K_betas.size(); i++) {
-            if (K_betas_option == 4) {
-                nll += dmuniform(K_betas(i), lower_K_betas, upper_K_betas, dmuniform_sd);
-            } else {
-                nll -= dnorm(K_betas(i), mean_K_betas, sd_K_betas, true);
-            }
+            nll -= dnorm(K_betas(i), mean_K_betas, sd_K_betas, true);
         }
     }
 

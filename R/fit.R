@@ -4,25 +4,30 @@
 #'
 #' @param option    Should the parameter be estimated freely (`"fixed"`), coupled across groups
 #'                  (`"coupled"`), revolve around an estimated mean and sd (`"random"`),
-#'                  or a fixed mean and sd (`"normal_prior"`), or be constrained between
-#'                  a lower and upper value (`"uniform_prior"`). The `"coupled"` and `"random"` options
+#'                  or a fixed mean and sd (`"prior"`). The `"coupled"` and `"random"` options
 #'                  are not applicable if only one parameter is estimated (e.g. `log_K`).
 #' @param mean      Mean value of the parameter. Treated as a starting value if
-#'                  option is `"random"` or as a prior if option is option is `"normal_prior"`.
-#'                  Ignored if option is `"fixed"`, `"coupled"`, or `"uniform_prior"`.
-#' @param sd        SD value of the parameter. Treated as a starting value is
-#'                  option is `"random"` or a prior if option is "prior". Ignored
-#'                  if option is `"fixed"`, `"coupled"`, or `"uniform_prior"`.
-#' @param lower     Lower range for the parameter.
-#' @param upper     Upper range for the parameter.
+#'                  option is `"random"` or as a prior if option is option is `"prior"`.
+#'                  Ignored if option is `"fixed"`, or `"coupled"`.
+#' @param sd        SD value of the parameter. Treated as a starting value if
+#'                  option is `"random"` or a prior if option is `"prior"`. Ignored
+#'                  if option is `"fixed"`, or `"coupled"`.
+#'
+#' @details `mean` and `sd`inputs can be a vector of equal length as the number
+#'           of parameter values if priors are being defined.
 #'
 #' @export
 #'
 
-par_option <- function(option = "fixed", mean = 0, sd = 1, lower = -10, upper = 10) {
-    list(option = factor(option, levels = c("fixed", "coupled", "random",
-                                            "normal_prior", "uniform_prior")),
-         mean = mean, sd = sd, lower = lower, upper = upper)
+par_option <- function(option = "fixed", mean = 0, sd = 1) {
+
+    if (option == "random" && (length(mean) > 1 | length(sd) > 1)) {
+        stop("Only one mean or sd starting value is expected using the 'random' option")
+    }
+
+    list(option = factor(option, levels = c("fixed", "coupled", "random", "prior")),
+         mean = mean, sd = sd)
+
 }
 
 
@@ -256,33 +261,12 @@ multispic <- function(inputs,
                 logit_phi_option = as.integer(logit_phi_option$option) - 1,
                 K_betas_option = as.integer(K_betas_option$option) - 1,
                 pe_betas_option = as.integer(pe_betas_option$option) - 1,
-                lower_log_K = log_K_option$lower - log_center, # lots of repetition - todo: find better solution
-                upper_log_K = log_K_option$upper - log_center,
-                lower_log_B0 = log_B0_option$lower - log_center,
-                upper_log_B0 = log_B0_option$upper - log_center,
-                lower_log_r = log_r_option$lower,
-                upper_log_r = log_r_option$upper,
-                lower_log_sd_B = log_sd_B_option$lower,
-                upper_log_sd_B = log_sd_B_option$upper,
-                lower_log_q = log_q_option$lower,
-                upper_log_q = log_q_option$upper,
-                lower_log_sd_I = log_sd_I_option$lower,
-                upper_log_sd_I = log_sd_I_option$upper,
-                lower_logit_rho = logit_rho_option$lower,
-                upper_logit_rho = logit_rho_option$upper,
                 mean_logit_phi = logit_phi_option$mean,
                 sd_logit_phi = logit_phi_option$sd,
-                lower_logit_phi = logit_phi_option$lower,
-                upper_logit_phi = logit_phi_option$upper,
-                lower_K_betas = K_betas_option$lower,
-                upper_K_betas = K_betas_option$upper,
                 mean_K_betas = K_betas_option$mean,
                 sd_K_betas = K_betas_option$sd,
-                lower_pe_betas = pe_betas_option$lower,
-                upper_pe_betas = pe_betas_option$upper,
                 mean_pe_betas = pe_betas_option$mean,
                 sd_pe_betas = pe_betas_option$sd,
-                dmuniform_sd = 0.1, # controls how sharp the approximate uniform distribution is
                 survey_covariates = survey_model_mat,
                 K_covariates = K_model_mat,
                 pe_covariates = pe_model_mat,
