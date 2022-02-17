@@ -45,6 +45,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     ## set-up priors -------------------------------------------------------------------------------
 
     ## Find the smallest max aggregate landings among the groups to inform lower range for K
+    ## And use landings in year 1 to inform starting values for the biomass
 
     tot_landings <- landings %>%
         group_by(year, region) %>%
@@ -65,8 +66,11 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
-    lower_log_B0 <- log(0.01 * exp(lower_log_K) / length(unique(landings$species)))
-    upper_log_B0 <- upper_log_K
+    L0 <- landings[landings$year == min(index$year), ]
+    L0$species <- factor(L0$species)
+    L0 <- L0[order(L0$species), ]
+    lower_log_B0 <- log(L0$landings) - upper_log_r
+    upper_log_B0 <- log(L0$landings * 100) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
@@ -76,8 +80,12 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
 
     ## Use design-based estimates of cv to inform prior for observation error
-    mean_log_sd_I <- mean(log(index$cv))
-    sd_log_sd_I <- sd(log(index$cv))
+    log_cv_stats <- aggregate(cv ~ species_survey, data = index,
+                              FUN = function(x) {
+                                  c(mean = mean(log(x)), sd = sd(log(x)))
+                              })
+    mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
+    sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
 
     ## Relax lower range if Yankee data are included
     if (region == "2J3K") lower_log_q <- log(0.2) else lower_log_q <- log(0.1)
