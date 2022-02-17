@@ -31,12 +31,6 @@ Type objective_function<Type>::operator() ()
     DATA_INTEGER(logit_phi_option);
     DATA_INTEGER(K_betas_option);
     DATA_INTEGER(pe_betas_option);
-    DATA_SCALAR(mean_logit_phi);
-    DATA_SCALAR(sd_logit_phi);
-    DATA_SCALAR(mean_K_betas);
-    DATA_SCALAR(sd_K_betas);
-    DATA_SCALAR(mean_pe_betas);
-    DATA_SCALAR(sd_pe_betas);
     DATA_MATRIX(survey_covariates);
     DATA_MATRIX(pe_covariates);
     DATA_MATRIX(K_covariates);
@@ -45,32 +39,38 @@ Type objective_function<Type>::operator() ()
 
     // Parameters
     PARAMETER_MATRIX(log_B);
-    PARAMETER(mean_log_sd_B);
-    PARAMETER(log_sd_log_sd_B);
+    PARAMETER_VECTOR(mean_log_sd_B);
+    PARAMETER_VECTOR(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
-    PARAMETER(mean_logit_rho);
-    PARAMETER(log_sd_logit_rho);
+    PARAMETER_VECTOR(mean_logit_rho);
+    PARAMETER_VECTOR(log_sd_logit_rho);
     PARAMETER_VECTOR(logit_rho);
+    PARAMETER(mean_logit_phi);
+    PARAMETER(log_sd_logit_phi);
     PARAMETER(logit_phi);
+    PARAMETER_VECTOR(mean_log_K);
+    PARAMETER_VECTOR(log_sd_log_K);
     PARAMETER_VECTOR(log_K);
-    PARAMETER(mean_log_K);
-    PARAMETER(log_sd_log_K);
-    PARAMETER(mean_log_B0);
-    PARAMETER(log_sd_log_B0);
+    PARAMETER_VECTOR(mean_log_B0);
+    PARAMETER_VECTOR(log_sd_log_B0);
     PARAMETER_VECTOR(log_B0);
-    PARAMETER(mean_log_r);
-    PARAMETER(log_sd_log_r);
+    PARAMETER_VECTOR(mean_log_r);
+    PARAMETER_VECTOR(log_sd_log_r);
     PARAMETER_VECTOR(log_r);
     PARAMETER_VECTOR(log_m);
-    PARAMETER(mean_log_q);
-    PARAMETER(log_sd_log_q);
+    PARAMETER_VECTOR(mean_log_q);
+    PARAMETER_VECTOR(log_sd_log_q);
     PARAMETER_VECTOR(log_q);
     PARAMETER_VECTOR(log_q_betas);
-    PARAMETER(mean_log_sd_I);
-    PARAMETER(log_sd_log_sd_I);
+    PARAMETER_VECTOR(mean_log_sd_I);
+    PARAMETER_VECTOR(log_sd_log_sd_I);
     PARAMETER_VECTOR(log_sd_I);
     PARAMETER_VECTOR(log_sd_I_betas);
+    PARAMETER_VECTOR(mean_K_betas);
+    PARAMETER_VECTOR(log_sd_K_betas);
     PARAMETER_VECTOR(K_betas);
+    PARAMETER_VECTOR(mean_pe_betas);
+    PARAMETER_VECTOR(log_sd_pe_betas);
     PARAMETER_VECTOR(pe_betas);
 
     // Dim
@@ -116,14 +116,16 @@ Type objective_function<Type>::operator() ()
     vector<Type> K = exp(log_K);
     vector<Type> r = exp(log_r);
     vector<Type> m = exp(log_m);
-    Type sd_log_sd_B = exp(log_sd_log_sd_B);
-    Type sd_log_K = exp(log_sd_log_K);
-    Type sd_log_B0 = exp(log_sd_log_B0);
-    Type sd_log_r = exp(log_sd_log_r);
-    Type sd_log_q = exp(log_sd_log_q);
-    Type sd_log_sd_I = exp(log_sd_log_sd_I);
-    Type sd_logit_rho = exp(log_sd_logit_rho);
-
+    vector<Type> sd_log_sd_B = exp(log_sd_log_sd_B);
+    vector<Type> sd_log_K = exp(log_sd_log_K);
+    vector<Type> sd_log_B0 = exp(log_sd_log_B0);
+    vector<Type> sd_log_r = exp(log_sd_log_r);
+    vector<Type> sd_log_q = exp(log_sd_log_q);
+    vector<Type> sd_log_sd_I = exp(log_sd_log_sd_I);
+    vector<Type> sd_logit_rho = exp(log_sd_logit_rho);
+    Type sd_logit_phi = exp(log_sd_logit_phi);
+    vector<Type> sd_K_betas = exp(log_sd_K_betas);
+    vector<Type> sd_pe_betas = exp(log_sd_pe_betas);
 
     // Set-up a vector of B, landings matrix, and pe covariate effects
     vector<Type> pe_covar_vec = pe_covariates * pe_betas;
@@ -145,22 +147,22 @@ Type objective_function<Type>::operator() ()
     // Priors / random effects
     if (log_K_option > 1) {
         for(int i = 0; i < log_K.size(); i++) {
-            nll -= dnorm(log_K(i), mean_log_K, sd_log_K, true);
+            nll -= dnorm(log_K(i), mean_log_K(i), sd_log_K(i), true);
         }
     }
     if (log_B0_option > 1) {
         for(int i = 0; i < log_B0.size(); i++) {
-            nll -= dnorm(log_B0(i), mean_log_B0, sd_log_B0, true);
+            nll -= dnorm(log_B0(i), mean_log_B0(i), sd_log_B0(i), true);
         }
     }
     if (log_sd_B_option > 1) {
         for(int i = 0; i < log_sd_B.size(); i++) {
-            nll -= dnorm(log_sd_B(i), mean_log_sd_B, sd_log_sd_B, true);
+            nll -= dnorm(log_sd_B(i), mean_log_sd_B(i), sd_log_sd_B(i), true);
         }
     }
     if (log_r_option > 1) {
         for(int i = 0; i < log_r.size(); i++) {
-            nll -= dnorm(log_r(i), mean_log_r, sd_log_r, true);
+            nll -= dnorm(log_r(i), mean_log_r(i), sd_log_r(i), true);
         }
     }
 
@@ -171,7 +173,7 @@ Type objective_function<Type>::operator() ()
     }
     if (log_q_option > 1) {
         for(int i = 0; i < pred_log_q.size(); i++) {
-            nll -= dnorm(pred_log_q(i), mean_log_q, sd_log_q, true);
+            nll -= dnorm(pred_log_q(i), mean_log_q(i), sd_log_q(i), true);
         }
     }
 
@@ -182,12 +184,12 @@ Type objective_function<Type>::operator() ()
     }
     if (log_sd_I_option > 1) {
         for(int i = 0; i < pred_log_sd_I.size(); i++) {
-            nll -= dnorm(pred_log_sd_I(i), mean_log_sd_I, sd_log_sd_I, true);
+            nll -= dnorm(pred_log_sd_I(i), mean_log_sd_I(i), sd_log_sd_I(i), true);
         }
     }
     if (logit_rho_option > 1) {
         for(int i = 0; i < logit_rho.size(); i++) {
-            nll -= dnorm(logit_rho(i), mean_logit_rho, sd_logit_rho, true);
+            nll -= dnorm(logit_rho(i), mean_logit_rho(i), sd_logit_rho(i), true);
         }
     }
     if (logit_phi_option > 1) {
@@ -195,12 +197,12 @@ Type objective_function<Type>::operator() ()
     }
     if (pe_betas_option > 1) {
         for(int i = 0; i < pe_betas.size(); i++) {
-            nll -= dnorm(pe_betas(i), mean_pe_betas, sd_pe_betas, true);
+            nll -= dnorm(pe_betas(i), mean_pe_betas(i), sd_pe_betas(i), true);
         }
     }
     if (K_betas_option > 1) {
         for(int i = 0; i < K_betas.size(); i++) {
-            nll -= dnorm(K_betas(i), mean_K_betas, sd_K_betas, true);
+            nll -= dnorm(K_betas(i), mean_K_betas(i), sd_K_betas(i), true);
         }
     }
 

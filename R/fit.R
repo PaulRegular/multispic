@@ -21,12 +21,59 @@
 
 par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
-    if (option == "random" && (length(mean) > 1 | length(sd) > 1)) {
-        stop("Only one mean or sd starting value is expected using the 'random' option")
-    }
+    ## When used inside the multispic function, key lists for TMB are edited
+    function (env, par_name, is_option = c("fixed", "coupled", "random", "prior"),
+              center = FALSE) {
 
-    list(option = factor(option, levels = c("fixed", "coupled", "random", "prior")),
-         mean = mean, sd = sd)
+        par_length <- length(env$par[[par_name]])
+
+        if (option == "random" && (length(mean) > 1 | length(sd) > 1)) {
+            stop("Only one mean or sd starting value is expected using the 'random' option")
+        }
+
+        if (!option %in% is_option) {
+            stop(paste0("The '", option, "' option is not applicable for parametere '", par_name, "'."))
+        }
+
+        options <- factor(option, levels = c("fixed", "coupled", "random", "prior"))
+        env$dat[[paste0(par_name, "_option")]] <- as.numeric(options) - 1
+
+        if (center) mean <- mean - env$log_center
+
+        if (length(mean) == 1) {
+            env$par[[paste0("mean_", par_name)]] <- rep(mean, par_length)
+        } else {
+            if (length(mean) == par_length) {
+                env$par[[paste0("mean_", par_name)]] <- mean
+            } else {
+                stop("The number of mean values supplied to par_option for parameter '", par_name, "' does not equal the number of '", par_name, "' parameters.")
+            }
+        }
+
+        if (length(sd) == 1) {
+            env$par[[paste0("log_sd_", par_name)]] <- rep(log(sd), par_length)
+        } else {
+            if (length(sd) == par_length) {
+                env$par[[paste0("log_sd_", par_name)]] <- log(sd)
+            } else {
+                stop("The number of sd values supplied to par_option for parameter '", par_name, "' does not equal the number of '", par_name, "' parameters.")
+            }
+        }
+
+        if (option == "coupled") {
+            env$map[[par_name]] <- factor(rep(1, par_length))
+        }
+
+        if (option == "random") {
+            env$map[[paste0("mean_", par_name)]] <- factor(rep(1, par_length))
+            env$map[[paste0("log_sd_", par_name)]] <- factor(rep(1, par_length))
+            env$random <- c(env$random, par_name)
+        } else {
+            env$map[[paste0("mean_", par_name)]] <- factor(rep(NA, par_length))
+            env$map[[paste0("log_sd_", par_name)]] <- factor(rep(NA, par_length))
+        }
+
+    }
 
 }
 
@@ -251,22 +298,6 @@ multispic <- function(inputs,
                 min_B = 0.0001,
                 nY = nlevels(landings$y),
                 nS = nlevels(landings$species),
-                log_K_option = as.integer(log_K_option$option) - 1,
-                log_B0_option = as.integer(log_B0_option$option) - 1,
-                log_r_option = as.integer(log_r_option$option) - 1,
-                log_sd_B_option = as.integer(log_sd_B_option$option) - 1,
-                log_q_option = as.integer(log_q_option$option) - 1,
-                log_sd_I_option = as.integer(log_sd_I_option$option) - 1,
-                logit_rho_option = as.integer(logit_rho_option$option) - 1,
-                logit_phi_option = as.integer(logit_phi_option$option) - 1,
-                K_betas_option = as.integer(K_betas_option$option) - 1,
-                pe_betas_option = as.integer(pe_betas_option$option) - 1,
-                mean_logit_phi = logit_phi_option$mean,
-                sd_logit_phi = logit_phi_option$sd,
-                mean_K_betas = K_betas_option$mean,
-                sd_K_betas = K_betas_option$sd,
-                mean_pe_betas = pe_betas_option$mean,
-                sd_pe_betas = pe_betas_option$sd,
                 survey_covariates = survey_model_mat,
                 K_covariates = K_model_mat,
                 pe_covariates = pe_model_mat,
@@ -276,29 +307,15 @@ multispic <- function(inputs,
 
     par <- list(log_B = matrix(ceiling(mean_log_index$index),
                                ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
-                mean_log_sd_B = log_sd_B_option$mean,
-                log_sd_log_sd_B = log(log_sd_B_option$sd),
                 log_sd_B = rep(-1, nlevels(landings$species)),
-                mean_logit_rho = logit_rho_option$mean,
-                log_sd_logit_rho = log(logit_rho_option$sd),
                 logit_rho = rep(0, n_rho),
                 logit_phi = 0,
                 log_K = ceiling(log(max_landings)),
-                mean_log_K = log_K_option$mean - log_center,
-                log_sd_log_K = log(log_K_option$sd),
-                mean_log_B0 = log_B0_option$mean - log_center,
-                log_sd_log_B0 = log(log_B0_option$sd),
                 log_B0 = ceiling(mean_log_index$index),
-                mean_log_r = log_r_option$mean,
-                log_sd_log_r = log(log_r_option$sd),
                 log_r = rep(-1, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
-                mean_log_q = log_q_option$mean,
-                log_sd_log_q = log(log_q_option$sd),
                 log_q = rep(-1, nrow(unique_surveys)),
                 log_q_betas = rep(0, ncol(survey_model_mat)),
-                mean_log_sd_I = log_sd_I_option$mean,
-                log_sd_log_sd_I = log(log_sd_I_option$sd),
                 log_sd_I = rep(-1, nrow(unique_surveys)),
                 log_sd_I_betas = rep(0, ncol(survey_model_mat)),
                 K_betas = rep(0, ncol(K_model_mat)),
@@ -320,81 +337,6 @@ multispic <- function(inputs,
         map$logit_phi <- factor(NA)
         par$logit_phi <- 10 # results in a value very close to 1
     }
-
-    if (logit_phi_option$option %in% c("random", "coupled")) {
-        stop("The 'random' or 'coupled' options are not applicable for parametere 'logit_phi'.")
-    }
-
-    if (pe_betas_option$option %in% c("random", "coupled")) {
-        stop("The 'random' or 'coupled' options are not applicable for parametere 'pe_betas'.")
-    }
-
-    if (K_betas_option$option %in% c("random", "coupled")) {
-        stop("The 'random' or 'coupled' options are not applicable for parametere 'K_betas'.")
-    }
-
-    if (log_K_option$option != "random") {
-        map$mean_log_K <- map$log_sd_log_K <- factor(NA)
-        if (log_K_option$option == "coupled") {
-            stop("The 'coupled' option is not applicable for parametere 'log_K'. Please control parameter grouping using the K_groups argument.")
-        }
-    }
-
-    if (log_sd_B_option$option != "random") {
-        map$mean_log_sd_B <- map$log_sd_log_sd_B <- factor(NA)
-        if (log_sd_B_option$option == "coupled") {
-            map$log_sd_B <- factor(rep(1, length(par$log_sd_B)))
-        }
-    }
-
-
-    if (log_B0_option$option != "random") {
-        map$mean_log_B0 <- map$log_sd_log_B0 <- factor(NA)
-        if (log_B0_option$option == "coupled") {
-            map$log_B0 <- factor(rep(1, length(par$log_B0)))
-        }
-    }
-
-    if (log_r_option$option != "random") {
-        map$mean_log_r <- map$log_sd_log_r <- factor(NA)
-        if (log_r_option$option == "coupled") {
-            map$log_r <- factor(rep(1, length(par$log_r)))
-        }
-    }
-
-    if (log_q_option$option != "random") {
-        map$mean_log_q <- map$log_sd_log_q <- factor(NA)
-        map$log_q <- factor(rep(NA, length(par$log_q)))
-        if (log_q_option$option == "coupled") {
-            stop("Estimates of log_q should be coupled using the survey_groups argument (i.e., survey_groups = ~1).")
-        }
-    } else {
-        map$log_q_betas <- factor(NA)
-        if (length(all.vars(survey_groups)) > 1) {
-            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main effects and random effects are currently not possible)")
-        }
-    }
-
-    if (log_sd_I_option$option != "random") {
-        map$mean_log_sd_I <- map$log_sd_log_sd_I <- factor(NA)
-        map$log_sd_I <- factor(rep(NA, length(par$log_sd_I)))
-        if (log_sd_I_option$option == "coupled") {
-            stop("Estimates of log_sd_I should be coupled using the survey_groups argument (i.e., survey_groups = ~1).")
-        }
-    } else {
-        map$log_sd_I_betas <- factor(NA)
-        if (length(all.vars(survey_groups)) > 1) {
-            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main-effects and random effects are currently not possible)")
-        }
-    }
-
-    if (logit_rho_option$option != "random") {
-        map$mean_logit_rho <- map$log_sd_logit_rho <- factor(NA)
-        if (logit_rho_option$option == "coupled") {
-            map$logit_rho <- factor(rep(1, length(par$logit_rho)))
-        }
-    }
-
     if (pe_covariates == ~0) {
         map$pe_betas <- factor(NA)
     }
@@ -403,32 +345,41 @@ multispic <- function(inputs,
     }
 
     random <- "log_B"
-    if (log_K_option$option == "random") {
-        random <- c(random, "log_K")
+
+    ## Augment dat, par, map, and random objects using par_option closures
+    log_K_option(environment(), "log_K", center = TRUE)
+    log_B0_option(environment(), "log_B0", center = TRUE)
+    log_r_option(environment(), "log_r")
+    log_sd_B_option(environment(), "log_sd_B")
+    log_q_option(environment(), "log_q", is_option = c("fixed", "random", "prior"))
+    log_sd_I_option(environment(), "log_sd_I", is_option = c("fixed", "random", "prior"))
+    logit_rho_option(environment(), "logit_rho")
+    logit_phi_option(environment(), "logit_phi", is_option = c("fixed", "prior"))
+    K_betas_option(environment(), "K_betas", is_option = c("fixed", "prior"))
+    pe_betas_option(environment(), "pe_betas", is_option = c("fixed", "prior"))
+
+    ## Extra tweaks for q and sd_I
+    if (dat$log_q_option != 2) { # != "random"
+        map$log_q <- factor(rep(NA, length(par$log_q)))
+    } else {
+        map$log_q_betas <- factor(rep(NA, length(par$log_q_betas)))
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main effects and random effects are currently not possible)")
+        }
     }
-    if (log_sd_B_option$option == "random") {
-        random <- c(random, "log_sd_B")
-    }
-    if (log_B0_option$option == "random") {
-        random <- c(random, "log_B0")
-    }
-    if (log_r_option$option == "random") {
-        random <- c(random, "log_r")
-    }
-    if (log_q_option$option == "random") {
-        random <- c(random, "log_q")
-    }
-    if (log_sd_I_option$option == "random") {
-        random <- c(random, "log_sd_I")
-    }
-    if (logit_rho_option$option == "random") {
-        random <- c(random, "logit_rho")
+    if (dat$log_sd_I_option != 2) {
+        map$log_sd_I <- factor(rep(NA, length(par$log_sd_I)))
+    } else {
+        map$log_sd_I_betas <- factor(rep(NA, length(par$log_sd_I_betas)))
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main-effects and random effects are currently not possible)")
+        }
     }
 
     ## Fit model
     if (!is.null(start_par)) par <- start_par
-    obj <- MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
-                     silent = silent)
+    obj <- TMB::MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
+                          silent = silent, checkParameterOrder = FALSE)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
 
@@ -677,7 +628,7 @@ run_retro <- function(fit, folds, progress = TRUE) {
 
             if (sum(ind) > 0) {
                 hindcast <- fit$index[fit$index$left_out,
-                                            c("year", "survey", "species", "log_index", "log_pred_index")]
+                                      c("year", "survey", "species", "log_index", "log_pred_index")]
                 hindcast$retro_year <- retro_years[i]
             } else {
                 hindcast <- NULL
@@ -704,7 +655,7 @@ run_retro <- function(fit, folds, progress = TRUE) {
         terminal_year <- max(fit$index$year)
         retro_years <- terminal_year - seq(folds)
         retro_hind <- furrr::future_map(seq(folds), retro, fit = fit, p = p,
-                                      .options = furrr::furrr_options(packages = "multispic"))
+                                        .options = furrr::furrr_options(packages = "multispic"))
     })
 
     retro_fits <- lapply(retro_hind, `[[`, "retro_fit")
