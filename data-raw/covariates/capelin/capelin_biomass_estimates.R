@@ -133,7 +133,7 @@ fit <- multispic(inputs, species_cor = "none", temporal_cor = "ar1",
                  pe_covariates = ~0, K_covariates = ~0)
 fit$sd_rep
 
-vis_multispic(fit, output_file = "data-raw/covariates/capelin/capelin_biomass.html")
+vis_multispic(fit, output_file = "data-raw/covariates/capelin/capelin_biomass_estimates.html")
 
 capelin <- fit$tot_pop[, c("year", "B")]
 names(capelin) <- c("year", "capelin")
