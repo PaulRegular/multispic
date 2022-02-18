@@ -31,12 +31,13 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_pe_betas, sd = sd_pe_betas),
                        n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
                        pe_covariates = ~0, K_covariates = ~0)
-
-    two_K <- update(one_K, K_covariates = ~shift)
-
     vis_multispic(one_K, output_file = paste0("analysis/K_shift/one_K_", r, ".html"))
 
+    two_K <- update(one_K, K_covariates = ~shift)
     vis_multispic(two_K, output_file = paste0("analysis/K_shift/two_K_", r, ".html"))
+
+    two_K_nlci <- update(two_K, pe_covariates = ~nlci)
+    vis_multispic(two_K_nlci, output_file = paste0("analysis/K_shift/two_K_nlci_", r, ".html"))
 
 }
 
