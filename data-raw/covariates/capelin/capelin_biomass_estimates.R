@@ -5,7 +5,7 @@ library(dplyr)
 
 ## Capelin data ------------------------------------------------------------------------------------
 
-index <- read.csv("data-raw/covariates/capelin/capelin_biomass.csv") %>%
+index <- read.csv("data-raw/covariates/capelin/capelin_biomass_index.csv") %>%
     filter(survey != "Trinity Bay (3L)",  # too small of an area
            !is.na(biomass)) %>%
     rename(index = biomass)
@@ -60,13 +60,22 @@ upper_log_sd_B <- log(1)
 mean_log_sd_B <- (lower_log_sd_B + upper_log_sd_B) / 2
 sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
 
-lower_log_sd_I <- log(0.01)
-upper_log_sd_I <- log(1)
-mean_log_sd_I <- (lower_log_sd_I + upper_log_sd_I) / 2
-sd_log_sd_I <- (upper_log_sd_I - lower_log_sd_I) / 2
 
-lower_log_q <- log(0.5)
-upper_log_q <- log(1)
+## Approximate sd of log index from confidence limits generated from the 3L survey
+lsd <- (log(index$index) - log(index$lcl)) / -1.96
+usd <- (log(index$index) - log(index$ucl)) / 1.96
+log_sd <- log((lsd + usd) / 2)
+mean_log_sd_I <- mean(log_sd, na.rm = TRUE)
+sd_log_sd_I <- sd(log_sd, na.rm = TRUE) * 5 # widen range as other surveys may be more noisy
+
+# lower_log_sd_I <- log(0.01)
+# upper_log_sd_I <- log(1)
+# mean_log_sd_I <- (lower_log_sd_I + upper_log_sd_I) / 2
+# sd_log_sd_I <- (upper_log_sd_I - lower_log_sd_I) / 2
+
+## Apply wider prior for Fall surveys as their spatial coverage was smaller / more narrow
+lower_log_q <- log(c(0.1, 0.1, 0.5, 0.5)) # levels(factor(index$survey))
+upper_log_q <- log(rep(1, 4))
 mean_log_q <- (lower_log_q + upper_log_q) / 2
 sd_log_q <- (upper_log_q - lower_log_q) / 2
 
@@ -124,6 +133,11 @@ fit <- multispic(inputs, species_cor = "none", temporal_cor = "ar1",
                  pe_covariates = ~0, K_covariates = ~0)
 fit$sd_rep
 
-vis_multispic(fit)
+vis_multispic(fit, output_file = "data-raw/covariates/capelin/capelin_biomass.html")
+
+capelin <- fit$tot_pop[, c("year", "B")]
+names(capelin) <- c("year", "capelin")
+
+write.csv(capelin, "data-raw/covariates/capelin/capelin_biomass_estimates.csv", row.names = FALSE)
 
 

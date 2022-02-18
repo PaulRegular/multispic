@@ -24,10 +24,15 @@ nao <- data.frame(year = monthly_nao$year,
 nlci <- fread("data-raw/covariates/climate/NL_climate_index.csv") %>% as.data.frame()
 names(nlci) <- c("year", "nlci")
 
+## Capelin biomass estimates -----------------------------------------------------------------------
+
+capelin <- read.csv("data-raw/covariates/capelin/capelin_biomass_estimates.csv")
+
 
 ## Merge and export --------------------------------------------------------------------------------
 
 covariates <- merge(nao, nlci, by = "year", all = TRUE)
+covariates <- merge(covariates, capelin, by = "year", all = TRUE)
 
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)
 
