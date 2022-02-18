@@ -21,7 +21,7 @@ nao <- data.frame(year = monthly_nao$year,
 
 ## NL climate index --------------------------------------------------------------------------------
 
-nlci <- fread("data-raw/covariates/NL_climate_index.csv") %>% as.data.frame()
+nlci <- fread("data-raw/covariates/climate/NL_climate_index.csv") %>% as.data.frame()
 names(nlci) <- c("year", "nlci")
 
 
