@@ -3,7 +3,7 @@ library(dplyr)
 
 ## Import STATLANT 21A landings data from https://www.nafo.int/Data/STATLANT-21A
 ## Note the landings data are in tonnes
-landings <- read.csv("data-raw/STATLANT_21A_data/STATLANT21A_Extraction.csv")
+landings <- read.csv("data-raw/landings/STATLANT21A_Extraction.csv")
 names(landings) <- c("year", "country", "division", "species", "landings")
 
 ## Filter to focal area
