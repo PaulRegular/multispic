@@ -249,6 +249,7 @@ multispic <- function(inputs,
     unique_surveys$survey <- factor(unique_surveys$survey, levels = unique_surveys$survey)
     survey_model_mat <- model.matrix(survey_groups, data = unique_surveys)
     index <- merge(index, unique_surveys, by = all.vars(survey_groups))
+    index$survey <- factor(index$survey, levels = unique_surveys$survey) # ensure survey is a factor
 
     ## Center index and landings by the mean(log(index) ~ K_group) to aid convergence
     by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
