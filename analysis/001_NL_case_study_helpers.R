@@ -44,8 +44,8 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
 
     ## set-up priors -------------------------------------------------------------------------------
 
-    ## Find the smallest max aggregate landings among the groups to inform lower range for K
-    ## And use landings in year 1 to inform starting values for the biomass
+    ## Use max aggregate landings to inform prior for K,
+    ## and landings in year 1 to inform prior for the biomass
 
     tot_landings <- landings %>%
         group_by(year, region) %>%
@@ -87,9 +87,17 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
 
-    ## Relax lower range if Yankee data are included
-    if (region == "2J3K") lower_log_q <- log(0.2) else lower_log_q <- log(0.1)
-    upper_log_q <- log(1.2)
+    ## Use survey coverage to inform lower bound for q
+    ## Reduce by an extra 25% to account for selectivity
+    ## Apply an additional 50% reduction to GHL as coverage of their deep-water range is incomplete
+    coverage_stats <- aggregate(coverage ~ species_survey, data = index,
+                                FUN = function(x) {
+                                    round(unique(x), 1)
+                                })
+    lower_log_q <- log(coverage_stats$coverage * 0.75)
+    ind <- grepl("Greenland Halibut", coverage_stats$species_survey)
+    lower_log_q[ind] <- lower_log_q[ind] + log(0.5)
+    upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2
     sd_log_q <- (upper_log_q - lower_log_q) / 2
 
