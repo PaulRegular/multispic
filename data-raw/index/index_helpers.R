@@ -98,7 +98,7 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
 
             tab <- data.frame(species = species_name, region = region, gear = series,
                               season = Hmisc::capitalize(season),
-                              year = years, index = 0, cv = 0)
+                              year = years, index = 0, cv = 0, survey_area = 0)
 
         } else {
 
@@ -128,12 +128,18 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
                                    season = season, NAFOdiv = NAFOdiv,
                                    export = NULL, plot.results = FALSE)
 
+            survey_area <- sub_strat$strat2$biomass$details %>%
+                group_by(survey.year) %>%
+                summarise(total_area = sum(strat.area)) %>%
+                pull(total_area) %>%
+                mean()
+
             tab <- sub_strat$strat2$biomass$summary[, c("survey.year", "var", "mean", "total")]
 
             tab <- data.frame(species = species_name, region = region, gear = series,
                               season = Hmisc::capitalize(season),
                               year = tab$survey.year, index = tab$total / 1000000,
-                              cv = sqrt(tab$var) / tab$mean)
+                              cv = sqrt(tab$var) / tab$mean, survey_area = survey_area)
             tab
 
         }

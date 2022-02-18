@@ -5,6 +5,14 @@ source("data-raw/index/index_helpers.R")
 landings <- read.csv("data-raw/landings.csv")
 keep_sp <- sort(unique(landings$Species))
 
+## Load strat areas file to calculate total area in each region
+library(vroom)
+sa <- vroom::vroom_fwf("data-raw/index/stratum_areas.pc4",
+                       col_positions = fwf_widths(widths = c(3, 4, 4, 3),
+                                                  col_names = c("strat", "area", "max_depth", "div")),
+                       col_types = cols(strat = "i", area = "i", max_depth = "c", div = "c"))
+sa$div[sa$div == "3PS"] <- "3P"
+
 
 regions <- list("2J3K" = c("2J", "3K"),
                 "3LNO" = c("3L", "3N", "3O"),
@@ -13,6 +21,8 @@ regions <- list("2J3K" = c("2J", "3K"),
 index <- lapply(seq_along(regions), function(i) {
 
     sub_setdet <- region_data(regions[[i]])
+
+    total_area <- sum(sa$area[sa$div %in% regions[[i]]])
 
     focal_sp <- unique(na.omit(sub_setdet[sub_setdet$common.name %in% keep_sp, c("spec", "common.name")]))
 
@@ -26,6 +36,9 @@ index <- lapply(seq_along(regions), function(i) {
     })
     region_index <- do.call(rbind, region_index)
     rownames(region_index) <- NULL
+
+    region_index$total_area <- total_area
+    region_index$coverage <- region_index$survey_area / region_index$total_area
 
     region_index
 
