@@ -10,15 +10,20 @@
 
 ## - Write ecological oriented paper; aim for PNAS or Fish and Fisheries
 
-## - Introduce break point for the K @ 1991
-## - Add NL climate index
-## - Add capelin??
-## - Fix Campelen index to 1 for cod?
+## - Introduce break point for the K @ 1991 <-- done
+## - Add NL climate index <-- done
+## - Add capelin?? <-- limited by spatial and temporal coverage of survey
+## - Fix Campelen index to 1 for cod? <-- would not converge, but did improve priors for catchability
 
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
 ## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
 ## - consider dropping approximate uniform prior option
+
+## Dev notes:
+## - Forcing the RW structure results in unusual process errors for some species
+## - During testing the fixed, random, and uniform_prior options rarely converged
+
 
 library(progress) ## need to load progress to get progress handler to work...not sure why?
 library(future)
@@ -35,9 +40,9 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
 
-    ## Dev notes:
-    ## - Forcing the RW structure results in unusual process errors for some species
-    ## - During testing the fixed, random, and uniform_prior options rarely converged
+    ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
+    ##             by climate, and residual variation is temporally correlated with
+    ##             unstructured species by species correlations.
     full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                       log_K_option = par_option(option = "prior",
                                                 mean = mean_log_K, sd = sd_log_K),
@@ -55,34 +60,70 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                     mean = mean_logit_rho, sd = sd_logit_rho),
                       logit_phi_option = par_option(option = "prior",
                                                     mean = mean_logit_phi, sd = sd_logit_phi),
+                      K_betas_option = par_option(option = "prior",
+                                                  mean = mean_K_betas, sd = sd_K_betas),
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~nlci, silent = TRUE)
+                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE)
 
+    ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
+    ##             by climate, and residual variation is simple noise. (i.e., temporal
+    ##             and species correlations are explained by the shift and climate)
+    just_covar <- update(full, species_cor = "none", temporal_cor = "none")
 
-    no_nlci <- update(full, pe_covariates = ~0)
-    just_nlci <- update(full, species_cor = "none", temporal_cor = "none")
-    one_species_cor <- update(no_nlci, species_cor = "one")
-    no_species_cor <- update(one_species_cor, species_cor = "none")
-    no_temporal_cor <- update(no_species_cor, temporal_cor = "none")
+    ## Hypothesis: energy flow was affected by the 1991 shift and process error is
+    ##             simple noise. (i.e., temporal and species correlations are explained by
+    ##             the shift)
+    just_shift <- update(just_covar, pe_covariates = ~0)
 
-    full$loo <- run_loo(full)
-    no_nlci$loo<- run_loo(no_nlci)
-    just_nlci$loo <- run_loo(just_nlci)
-    one_species_cor$loo  <- run_loo(one_species_cor)
-    no_species_cor$loo  <- run_loo(no_species_cor)
-    no_temporal_cor$loo  <- run_loo(no_temporal_cor)
+    ## Hypothesis: process errors are affected by climate. (i.e., temporal and species
+    ##             correlations are explained by climate)
+    just_nlci <- update(just_covar, K_covariates = ~0)
 
-    full$retro <- run_retro(full, folds = 15)
-    no_nlci$retro<- run_retro(no_nlci, folds = 15)
-    just_nlci$retro <- run_retro(just_nlci, folds = 15)
-    one_species_cor$retro  <- run_retro(one_species_cor, folds = 15)
-    no_species_cor$retro  <- run_retro(no_species_cor, folds = 15)
-    no_temporal_cor$retro  <- run_retro(no_temporal_cor, folds = 15)
+    ## Hypothesis: population dynamics are affected by a common carrying capacity
+    ##             and process error is temporally correlated with unstructured
+    ##             species by species correlations.
+    just_cor <- update(full, pe_covariates = ~0, K_covariates = ~0)
 
-    fits <- mget(c("full", "no_nlci", "just_nlci", "one_species_cor",
-                   "no_species_cor", "no_temporal_cor"))
+    ## Hypothesis: population dynamics are affected by a common carrying capacity
+    ##             and correlation in residual variation is shared across species
+    ##             and over time. (i.e., there is a common but unknown environmental
+    ##             process affecting all species)
+    shared_cor <- update(just_cor, species_cor = "one", temporal_cor = "ar1")
+
+    ## Hypothesis: population dynamics are affected by a common carrying capacity
+    ##             and correlation in residual variation is shared across species.
+    ##             (i.e., there is a common but unknown environmental process affecting
+    ##             all species and the process is noisy with no temporal dependence)
+    just_species_cor <- update(shared_cor, temporal_cor = "none")
+
+    ## Hypothesis: population dynamics are affected by a common carrying capacity
+    ##             and correlation in residual variation is temporally correlated.
+    ##             (i.e., environmental processes affect each species differently
+    ##             but there are carry-over effects from one year to the next)
+    just_temporal_cor <- update(shared_cor, species_cor = "none")
+
+    # full$loo <- run_loo(full)
+    # just_covar$loo<- run_loo(just_covar)
+    # just_shift$loo <- run_loo(just_shift)
+    # just_nlci$loo  <- run_loo(just_nlci)
+    # just_cor$loo  <- run_loo(just_cor)
+    # shared_cor$loo  <- run_loo(shared_cor)
+    # just_species_cor$loo  <- run_loo(just_species_cor)
+    # just_temporal_cor$loo  <- run_loo(just_temporal_cor)
+    #
+    # full$retro <- run_retro(full, folds = 15)
+    # just_covar$retro<- run_retro(just_covar, folds = 15)
+    # just_shift$retro <- run_retro(just_shift, folds = 15)
+    # just_nlci$retro  <- run_retro(just_nlci, folds = 15)
+    # just_cor$retro  <- run_retro(just_cor, folds = 15)
+    # shared_cor$retro  <- run_retro(shared_cor, folds = 15)
+    # just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
+    # just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
+
+    fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
+                   "shared_cor", "just_species_cor", "just_temporal_cor"))
 
     saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
 
