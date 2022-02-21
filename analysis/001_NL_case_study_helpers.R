@@ -89,13 +89,14 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
 
     ## Use survey coverage to inform lower bound for q
     ## Reduce by an extra 25% to account for selectivity
-    ## Apply an additional 50% reduction to GHL as coverage of their deep-water range is incomplete
+    ## Apply an additional 50% reduction to Greenland Halibut
+    ## and Witch Flounder as coverage of their deep-water range is incomplete
     coverage_stats <- aggregate(coverage ~ species_survey, data = index,
                                 FUN = function(x) {
                                     round(unique(x), 1)
                                 })
     lower_log_q <- log(coverage_stats$coverage * 0.75)
-    ind <- grepl("Greenland Halibut", coverage_stats$species_survey)
+    ind <- grepl("Greenland Halibut|Witch Flounder", coverage_stats$species_survey)
     lower_log_q[ind] <- lower_log_q[ind] + log(0.5)
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2

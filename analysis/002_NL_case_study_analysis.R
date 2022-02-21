@@ -32,13 +32,81 @@ plan(multisession, workers = 6)
 source("analysis/001_NL_case_study_helpers.R")
 
 
+## Species-specific analyses -----------------------------------------------------------------------
+
+## Run single-species analysis first to limit all analyses to species that converge using the
+## NULL model.
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    spp <- multispic::index %>%
+        filter(region == r) %>%
+        with(unique(species))
+    spp_region <- paste0(spp, "-", r)
+    names(spp) <- spp_region
+
+    ## Single-species fits = NULL model
+    null <- vector("list", length(spp))
+    names(null) <- spp_region
+
+    for (sr in spp_region) {
+
+        message("\n", sr)
+
+        list2env(nl_inputs_and_priors(region = r, species = spp[sr]), envir = globalenv())
+
+        fit <- try(multispic(inputs, species_cor = "none", temporal_cor = "none",
+                             log_K_option = par_option(option = "prior",
+                                                       mean = mean_log_K, sd = sd_log_K),
+                             log_B0_option = par_option(option = "prior",
+                                                        mean = mean_log_B0, sd = sd_log_B0),
+                             log_r_option = par_option(option = "prior",
+                                                       mean = mean_log_r, sd = sd_log_r),
+                             log_sd_B_option = par_option(option = "prior",
+                                                          mean = mean_log_sd_B, sd = sd_log_sd_B),
+                             log_q_option = par_option(option = "prior",
+                                                       mean = mean_log_q, sd = sd_log_q),
+                             log_sd_I_option = par_option(option = "prior",
+                                                          mean = mean_log_sd_I, sd = sd_log_sd_I),
+                             logit_rho_option = par_option(option = "prior",
+                                                           mean = mean_logit_rho, sd = sd_logit_rho),
+                             logit_phi_option = par_option(option = "prior",
+                                                           mean = mean_logit_phi, sd = sd_logit_phi),
+                             n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
+                             pe_covariates = ~0, silent = TRUE))
+
+        if (class(fit) == "try-error" ||
+            fit$opt$message == "false convergence (8)" ||
+            !fit$sd_rep$pdHess) {
+            message(paste(sr, "did not converge."))
+            null[[sr]] <- NULL
+        } else {
+            fit$loo <- run_loo(fit)
+            fit$retro <- run_retro(fit, folds = 15)
+            null[[sr]] <- fit
+        }
+
+    }
+
+    saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
+
+}
+
+
+
+
+
 ## Multispecies analysis ---------------------------------------------------------------------------
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
     message("\n", r)
 
-    list2env(nl_inputs_and_priors(region = r, species = NULL), envir = globalenv())
+    null <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    spp <- names(null)
+    spp <- gsub(paste0("-", r), "", spp)
+
+    list2env(nl_inputs_and_priors(region = r, species = spp), envir = globalenv())
 
     ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
     ##             by climate, and residual variation is temporally correlated with
@@ -104,23 +172,23 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     ##             but there are carry-over effects from one year to the next)
     just_temporal_cor <- update(shared_cor, species_cor = "none")
 
-    # full$loo <- run_loo(full)
-    # just_covar$loo<- run_loo(just_covar)
-    # just_shift$loo <- run_loo(just_shift)
-    # just_nlci$loo  <- run_loo(just_nlci)
-    # just_cor$loo  <- run_loo(just_cor)
-    # shared_cor$loo  <- run_loo(shared_cor)
-    # just_species_cor$loo  <- run_loo(just_species_cor)
-    # just_temporal_cor$loo  <- run_loo(just_temporal_cor)
-    #
-    # full$retro <- run_retro(full, folds = 15)
-    # just_covar$retro<- run_retro(just_covar, folds = 15)
-    # just_shift$retro <- run_retro(just_shift, folds = 15)
-    # just_nlci$retro  <- run_retro(just_nlci, folds = 15)
-    # just_cor$retro  <- run_retro(just_cor, folds = 15)
-    # shared_cor$retro  <- run_retro(shared_cor, folds = 15)
-    # just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
-    # just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
+    full$loo <- run_loo(full)
+    just_covar$loo<- run_loo(just_covar)
+    just_shift$loo <- run_loo(just_shift)
+    just_nlci$loo  <- run_loo(just_nlci)
+    just_cor$loo  <- run_loo(just_cor)
+    shared_cor$loo  <- run_loo(shared_cor)
+    just_species_cor$loo  <- run_loo(just_species_cor)
+    just_temporal_cor$loo  <- run_loo(just_temporal_cor)
+
+    full$retro <- run_retro(full, folds = 15)
+    just_covar$retro<- run_retro(just_covar, folds = 15)
+    just_shift$retro <- run_retro(just_shift, folds = 15)
+    just_nlci$retro  <- run_retro(just_nlci, folds = 15)
+    just_cor$retro  <- run_retro(just_cor, folds = 15)
+    shared_cor$retro  <- run_retro(shared_cor, folds = 15)
+    just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
+    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
                    "shared_cor", "just_species_cor", "just_temporal_cor"))
@@ -129,61 +197,4 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 }
 
-
-
-## Species-specific analyses -----------------------------------------------------------------------
-
-
-for (r in c("2J3K", "3LNO", "3Ps")) {
-
-    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
-    spp_region <- levels(spp_fits$full$landings$species)
-    spp <- gsub(paste0("-", r), "", spp_region)
-    names(spp) <- spp_region
-
-    ## Single-species fits = NULL model
-    null <- vector("list", length(spp))
-    names(null) <- spp_region
-
-    for (sr in spp_region) {
-
-        message("\n", sr)
-
-        list2env(nl_inputs_and_priors(region = r, species = spp[sr]), envir = globalenv())
-
-        fit <- try(multispic(inputs, species_cor = "none", temporal_cor = "none",
-                             log_K_option = par_option(option = "prior",
-                                                       mean = mean_log_K, sd = sd_log_K),
-                             log_B0_option = par_option(option = "prior",
-                                                        mean = mean_log_B0, sd = sd_log_B0),
-                             log_r_option = par_option(option = "prior",
-                                                       mean = mean_log_r, sd = sd_log_r),
-                             log_sd_B_option = par_option(option = "prior",
-                                                          mean = mean_log_sd_B, sd = sd_log_sd_B),
-                             log_q_option = par_option(option = "prior",
-                                                       mean = mean_log_q, sd = sd_log_q),
-                             log_sd_I_option = par_option(option = "prior",
-                                                          mean = mean_log_sd_I, sd = sd_log_sd_I),
-                             logit_rho_option = par_option(option = "prior",
-                                                           mean = mean_logit_rho, sd = sd_logit_rho),
-                             logit_phi_option = par_option(option = "prior",
-                                                           mean = mean_logit_phi, sd = sd_logit_phi),
-                             n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                             pe_covariates = ~0, silent = TRUE))
-
-        if (class(fit) == "try-error" ||
-            fit$opt$message == "false convergence (8)" ||
-            !fit$sd_rep$pdHess) {
-            null[[sr]] <- "Did not converge"
-        } else {
-            fit$loo <- run_loo(fit)
-            fit$retro <- run_retro(fit, folds = 15)
-            null[[sr]] <- fit
-        }
-
-    }
-
-    saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
-
-}
 
