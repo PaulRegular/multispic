@@ -198,3 +198,26 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 }
 
 
+## Update retro runs - some 3Ps retro analyses failed - improved run_retro
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+
+    message("\n", r)
+
+    fits <- readRDS(file = paste0("analysis/exports/spp_fits_", r, ".rds"))
+    spp <- unique(fits$full$landings$species)
+    spp <- gsub(paste0("-", r), "", spp)
+
+    list2env(nl_inputs_and_priors(region = r, species = spp), envir = globalenv())
+
+    for (i in seq_along(fits)) {
+        fits[[i]]$retro <- run_retro(fits[[i]], folds = 15)
+    }
+
+    saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
+
+}
+
+
+
+

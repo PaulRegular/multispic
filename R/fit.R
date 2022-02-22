@@ -520,6 +520,7 @@ run_loo <- function(fit, progress = TRUE) {
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
+        fit$sd_rep <- NULL # drop large object b/c it is no longer needed and does not need to be sent to workers
     } else {
         stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
     }
@@ -595,30 +596,33 @@ run_retro <- function(fit, folds, progress = TRUE) {
 
     if (!is.null(fit$sd_rep)) {
         start_par <- as.list(fit$sd_rep, "Est")
+        fit$sd_rep <- NULL # drop large object b/c it is no longer needed and does not need to be sent to workers
     } else {
         stop("Object sd_rep is NA in the supplied fit object. Please re-run model with light = FALSE.")
     }
 
-    retro <- function(i, fit, p = NULL) {
+    retro <- function(i, fit, start_par, p = NULL) {
 
         if (!is.null(p)) p()
 
-        index <- fit$index
-        landings <- fit$landings
+        inputs <- get(fit$call$inputs)
+        index <- inputs$index
+        landings <- inputs$landings
 
         ## Subset the input data on year at a time, keeping one extra year of indices and landings
         retro_index <- index[index$year <= retro_years[i] + 1, ]
-        retro_index$survey_id <- NULL # avoid duplicate as this will be re-created in the update
-        retro_index$survey <- NULL
         retro_landings <- landings[landings$year <= retro_years[i] + 1, ]
         retro_inputs <- list(landings = retro_landings, index = retro_index)
 
         ## Identify observations to leave out, but provide predictions for these values
         ind <- retro_index$year == retro_years[i] + 1
 
-        ## TODO:
-        ## - allow start_par to be used  (requires careful change to par dimensions)
-        fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
+        ## Use start_par to aid convergence and speed up loops (need to adjust log_B dimensions)
+        nY <- length(unique(retro_landings$year)) + 1
+        retro_start_par <- start_par
+        retro_start_par$log_B <- retro_start_par$log_B[seq(nY), ]
+
+        fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
                           light = TRUE, silent = TRUE))
 
         if (class(fit) == "try-catch" || fit$opt$message == "false convergence (8)") {
@@ -657,7 +661,7 @@ run_retro <- function(fit, folds, progress = TRUE) {
         }
         terminal_year <- max(fit$index$year)
         retro_years <- terminal_year - seq(folds)
-        retro_hind <- furrr::future_map(seq(folds), retro, fit = fit, p = p,
+        retro_hind <- furrr::future_map(seq(folds), retro, fit = fit, p = p, start_par = start_par,
                                         .options = furrr::furrr_options(packages = "multispic"))
     })
 
