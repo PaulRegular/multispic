@@ -11,7 +11,7 @@ options(dplyr.summarise.inform = FALSE)
 
 ## Helper function for subsetting the NL case study data and defining generic priors
 
-nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
+nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~region) {
 
     ## Subset data ---------------------------------------------------------------------------------
 
@@ -47,14 +47,11 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL) {
     ## Use max aggregate landings to inform prior for K,
     ## and landings in year 1 to inform prior for the biomass
 
-    tot_landings <- landings %>%
-        group_by(year, region) %>%
-        summarise(tot_landings = sum(landings))
-
-    max_tot_landings <- tot_landings %>%
-        group_by(region) %>%
-        summarise(max = max(tot_landings)) %>%
-        with(min(max))
+    by_yr_grp <- paste(c("year", all.vars(K_groups)), collapse = " + ")
+    by_grp <- ifelse(K_groups == ~1, "0", paste(all.vars(K_groups), collapse = " + "))
+    tot_landings <- aggregate(as.formula(paste("landings ~", by_yr_grp)), data = landings, FUN = sum)
+    max_tot_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
+                                  data = tot_landings, FUN = max) %>% with(landings)
 
     lower_log_r <- log(0.01)
     upper_log_r <- log(1)
