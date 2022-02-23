@@ -82,7 +82,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
             null[[sr]] <- NULL
         } else {
             fit$loo <- run_loo(fit)
-            fit$retro <- run_retro(fit, folds = 12)
+            fit$retro <- run_retro(fit, folds = 15)
             null[[sr]] <- fit
         }
 
@@ -172,6 +172,10 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     ##             but there are carry-over effects from one year to the next)
     just_temporal_cor <- update(shared_cor, species_cor = "none")
 
+    ## Hypothesis: population dynamics are affected by a common carrying capacity
+    ##             and process errors are independent across time and species
+    no_cor <- update(shared_cor, species_cor = "none", temporal_cor = "none")
+
     full$loo <- run_loo(full)
     just_covar$loo<- run_loo(just_covar)
     just_shift$loo <- run_loo(just_shift)
@@ -180,44 +184,22 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     shared_cor$loo  <- run_loo(shared_cor)
     just_species_cor$loo  <- run_loo(just_species_cor)
     just_temporal_cor$loo  <- run_loo(just_temporal_cor)
+    no_cor$loo  <- run_loo(no_cor)
 
-    full$retro <- run_retro(full, folds = 12)
-    just_covar$retro<- run_retro(just_covar, folds = 12)
-    just_shift$retro <- run_retro(just_shift, folds = 12)
-    just_nlci$retro  <- run_retro(just_nlci, folds = 12)
-    just_cor$retro  <- run_retro(just_cor, folds = 12)
-    shared_cor$retro  <- run_retro(shared_cor, folds = 12)
-    just_species_cor$retro  <- run_retro(just_species_cor, folds = 12)
-    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 12)
+    full$retro <- run_retro(full, folds = 15)
+    just_covar$retro<- run_retro(just_covar, folds = 15)
+    just_shift$retro <- run_retro(just_shift, folds = 15)
+    just_nlci$retro  <- run_retro(just_nlci, folds = 15)
+    just_cor$retro  <- run_retro(just_cor, folds = 15)
+    shared_cor$retro  <- run_retro(shared_cor, folds = 15)
+    just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
+    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
+    no_cor$retro  <- run_retro(no_cor, folds = 15)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
-                   "shared_cor", "just_species_cor", "just_temporal_cor"))
+                   "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
 
     saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
 
 }
 
-
-# ## Update retro runs - some 3Ps retro analyses failed - improved run_retro
-#
-# for (r in c("2J3K", "3LNO", "3Ps")) {
-#
-#     message("\n", r)
-#
-#     fits <- readRDS(file = paste0("analysis/exports/spp_fits_", r, ".rds"))
-#     spp <- unique(fits$full$landings$species)
-#     spp <- gsub(paste0("-", r), "", spp)
-#
-#     list2env(nl_inputs_and_priors(region = r, species = spp), envir = globalenv())
-#
-#     for (i in seq_along(fits)) {
-#         fits[[i]]$retro <- run_retro(fits[[i]], folds = 14)
-#     }
-#
-#     saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
-#
-# }
-#
-#
-#
-#

@@ -14,7 +14,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     models <- names(spp_fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation")
+                       "Just temporal correlation", "No correlation")
 
     spp_loo_dat <- lapply(models, function (m) {
         spp_fit <- spp_fits[[m]]
@@ -112,7 +112,7 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     models <- names(spp_fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation")
+                       "Just temporal correlation", "No correlation")
 
     spp_hind_dat <- lapply(models, function (m) {
         data.frame(model = names(models)[models == m], spp_fits[[m]]$retro$hindcasts)
