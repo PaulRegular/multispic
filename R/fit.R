@@ -172,6 +172,12 @@ multispic <- function(inputs,
         stop("NA landings or index values are not permitted in the current model.")
     }
 
+    ## Values to keep (define here before any filtering or ordering below)
+    index$left_out <- rep(FALSE, length(index$index))
+    if (!is.null(leave_out)) {
+        index$left_out[leave_out] <- TRUE
+    }
+
     ## Drop zeros
     ind <- index$index == 0
     if (sum(ind) > 0) {
@@ -271,12 +277,6 @@ multispic <- function(inputs,
                               FUN = max, data = tot_landings)$landings
     mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
-    ## Values to keep
-    keep <- rep(1L, length(index$index))
-    if (!is.null(leave_out)) {
-        keep[leave_out] <- 0L
-    }
-
     ## Set-up the objects for TMB
     if (nlevels(landings$species) == 1) {
         n_rho <- 1
@@ -304,7 +304,7 @@ multispic <- function(inputs,
                 pe_covariates = pe_model_mat,
                 K_map = K_map,
                 B_groups = B_group_mat,
-                keep = keep)
+                keep = as.numeric(!index$left_out))
 
     par <- list(log_B = matrix(ceiling(mean_log_index$index),
                                ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
@@ -394,7 +394,6 @@ multispic <- function(inputs,
     index$log_index <- log(index$index)
     index$log_pred_index <- rep$log_pred_I + log_center
     index$std_res <- rep$log_I_std_res
-    index$left_out <- !as.logical(keep)
 
     pop <- landings
     pop$pe <- exp(rep$log_pe)
@@ -615,27 +614,26 @@ run_retro <- function(fit, folds, progress = TRUE) {
         retro_inputs <- list(landings = retro_landings, index = retro_index)
 
         ## Identify observations to leave out, but provide predictions for these values
-        ind <- retro_index$year == retro_years[i] + 1
+        ind <- which(retro_index$year == retro_years[i] + 1)
 
         ## Use start_par to aid convergence and speed up loops (need to adjust log_B dimensions)
         nY <- length(unique(retro_landings$year)) + 1
         retro_start_par <- start_par
-        retro_start_par$log_B <- retro_start_par$log_B[seq(nY), ]
+        retro_start_par$log_B <- retro_start_par$log_B[seq(nY), , drop = FALSE]
 
-        fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
-                          light = TRUE, silent = TRUE))
+        retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
+                                light = TRUE, silent = TRUE))
 
-        if (class(fit) == "try-catch" || fit$opt$message == "false convergence (8)") {
+        if (class(retro_fit) == "try-catch" || fit$opt$message == "false convergence (8)") {
 
             retro_fit <- NA
             hindcast <- NULL
 
         } else {
-            retro_fit <- fit
 
             if (sum(ind) > 0) {
-                hindcast <- fit$index[fit$index$left_out,
-                                      c("year", "survey", "species", "log_index", "log_pred_index")]
+                hindcast <- retro_fit$index[retro_fit$index$left_out,
+                                            c("year", "survey", "species", "log_index", "log_pred_index")]
                 hindcast$retro_year <- retro_years[i]
             } else {
                 hindcast <- NULL
