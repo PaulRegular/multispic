@@ -59,7 +59,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_r <- (upper_log_r - lower_log_r) / 2
 
     lower_log_K <- log(max_tot_landings) - upper_log_r
-    upper_log_K <- log(max_tot_landings * 100) - lower_log_r
+    upper_log_K <- log(max_tot_landings * 10) - lower_log_r
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -67,7 +67,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     L0$species <- factor(L0$species)
     L0 <- L0[order(L0$species), ]
     lower_log_B0 <- log(L0$landings) - upper_log_r
-    upper_log_B0 <- log(L0$landings * 100) - lower_log_r
+    upper_log_B0 <- log(L0$landings * 10) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
