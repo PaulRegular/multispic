@@ -12,8 +12,9 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
     sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
     models <- names(spp_fits)
-    names(models) <- c("Full", "No NAO", "Just NAO", "Shared correlation",
-                       "Just temporal correlation", "No correlation")
+    names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
+                       "Just correlation", "Shared correlation", "Just species correlation",
+                       "Just temporal correlation")
 
     spp_loo_dat <- lapply(models, function (m) {
         spp_fit <- spp_fits[[m]]
@@ -28,15 +29,11 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     species <- names(sp_fits)
     sp_loo_dat <- lapply(species, function (sp) {
         sp_fit <- sp_fits[[sp]]
-        if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
-            if (sp_fit$sd_rep$pdHess) {
-                data.frame(model = "Single-species",
-                           n_index = nrow(sp_fit$index),
-                           n_random = length(sp_fit$sd_rep$par.random),
-                           n_fixed = length(sp_fit$sd_rep$par.fixed),
-                           sp_fit$loo$preds)
-            }
-        }
+        data.frame(model = "Single-species",
+                   n_index = nrow(sp_fit$index),
+                   n_random = length(sp_fit$sd_rep$par.random),
+                   n_fixed = length(sp_fit$sd_rep$par.fixed),
+                   sp_fit$loo$preds)
     })
     sp_loo_dat <- do.call(rbind, sp_loo_dat)
 
@@ -56,16 +53,6 @@ rownames(loo_dat) <- NULL
 sr <- do.call(rbind, strsplit(as.character(loo_dat$species), "-"))
 loo_dat$species <- sr[, 1]
 loo_dat$region <- sr[, 2]
-
-## limit to species that converged in the single-species analysis
-sp_loo_groups <- loo_dat %>%
-    filter(model == "Single-species") %>%
-    mutate(ysr = paste0(year, "-", species, "-", region))
-sp_loo_groups <- unique(sp_loo_groups$ysr)
-
-loo_dat <- loo_dat %>%
-    mutate(ysr = paste0(year, "-", species, "-", region)) %>%
-    filter(ysr %in% sp_loo_groups)
 
 loo_scores <- loo_dat %>%
     group_by(model, species, region) %>%
@@ -91,31 +78,29 @@ overall_loo_scores <- loo_dat %>%
 loo_scores %>%
     filter(region == "2J3K") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
 loo_scores %>%
     filter(region == "3LNO") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
 loo_scores %>%
     filter(region == "3Ps") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
-
-## Need to fix n's because of exclusion of species that didn't converge for 3Ps
 overall_loo_scores %>%
     mutate(model = factor(model)) %>%
     plot_ly(x = ~model, y = ~rmse, color = ~region,
             colors = viridis::viridis(100)) %>%
-    add_lines() # %>% add_text(text = ~n_fixed)
+    add_lines() %>% add_text(text = ~n_fixed)
 
 
 ## Hindcast results ---------------------------------------------------------------------------
@@ -125,8 +110,9 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
     sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
     models <- names(spp_fits)
-    names(models) <- c("Full", "No NAO", "Just NAO", "Shared correlation",
-                       "Just temporal correlation", "No correlation")
+    names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
+                       "Just correlation", "Shared correlation", "Just species correlation",
+                       "Just temporal correlation")
 
     spp_hind_dat <- lapply(models, function (m) {
         data.frame(model = names(models)[models == m], spp_fits[[m]]$retro$hindcasts)
@@ -136,9 +122,7 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     species <- names(sp_fits)
     sp_hind_dat <- lapply(species, function (sp) {
         sp_fit <- sp_fits[[sp]]
-        if (!(length(sp_fit) == 1 && sp_fit == "Did not converge")) {
-            data.frame(model = "Single-species", sp_fits[[sp]]$retro$hindcasts)
-        }
+        data.frame(model = "Single-species", sp_fits[[sp]]$retro$hindcasts)
     })
     sp_hind_dat <- do.call(rbind, sp_hind_dat)
 
@@ -153,16 +137,6 @@ rownames(hind_dat) <- NULL
 sr <- do.call(rbind, strsplit(as.character(hind_dat$species), "-"))
 hind_dat$species <- sr[, 1]
 hind_dat$region <- sr[, 2]
-
-## limit to species that converged in the single-species analysis
-sp_hind_groups <- hind_dat %>%
-    filter(model == "Single-species") %>%
-    mutate(ysr = paste0(year, "-", species, "-", region))
-sp_hind_groups <- unique(sp_hind_groups$ysr)
-
-hind_dat <- hind_dat %>%
-    mutate(ysr = paste0(year, "-", species, "-", region)) %>%
-    filter(ysr %in% sp_hind_groups)
 
 hind_scores <- hind_dat %>%
     group_by(model, species, region) %>%
@@ -186,21 +160,21 @@ overall_hind_scores <- hind_dat %>%
 hind_scores %>%
     filter(region == "2J3K") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
 hind_scores %>%
     filter(region == "3LNO") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
 hind_scores %>%
     filter(region == "3Ps") %>%
     mutate(model = factor(model)) %>%
-    plot_ly(x = ~model, y = ~delta_rmse, color = ~species, frame = ~region,
+    plot_ly(x = ~model, y = ~rmse, color = ~species, frame = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
 
@@ -208,6 +182,8 @@ overall_hind_scores %>%
     plot_ly(x = ~model, y = ~rmse, color = ~region,
             colors = viridis::viridis(100)) %>%
     add_lines()
+
+
 
 ## Combined plot -----------------------------------------------------------------------------------
 
@@ -233,22 +209,22 @@ subplot(loo_p, hind_p, nrows = 2, shareX = TRUE, titleY = TRUE, titleX = FALSE)
 
 ## Export select dashboards ------------------------------------------------------------------------
 
-spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
-fit <- spp_fits$one_species_cor
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
-
-spp_fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
-fit <- spp_fits$no_nao
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_no_nao.html")
-fit <- spp_fits$one_species_cor
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_one_species_cor.html")
-
-spp_fits <- readRDS("analysis/exports/spp_fits_3Ps.rds")
-fit <- spp_fits$full
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_full.html")
-fit <- spp_fits$full
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_just_nao.html")
-fit <- spp_fits$no_nao
-vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_no_nao.html")
+# spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
+# fit <- spp_fits$one_species_cor
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
+#
+# spp_fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
+# fit <- spp_fits$no_nao
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_no_nao.html")
+# fit <- spp_fits$one_species_cor
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_one_species_cor.html")
+#
+# spp_fits <- readRDS("analysis/exports/spp_fits_3Ps.rds")
+# fit <- spp_fits$full
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_full.html")
+# fit <- spp_fits$full
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_just_nao.html")
+# fit <- spp_fits$no_nao
+# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_no_nao.html")
 
 
