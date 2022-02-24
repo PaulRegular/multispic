@@ -2,7 +2,11 @@
 
 source("analysis/001_NL_case_study_helpers.R")
 
-list2env(nl_inputs_and_priors(region = "3Ps", species = NULL, K_groups = ~species), envir = globalenv())
+list2env(nl_inputs_and_priors(region = "3Ps", species = c("American Plaice", "Greenland Halibut",
+                                                          "Skate spp.", "Witch Flounder", "Haddock",
+                                                          "Monkfish", "White Hake", "Atlantic Halibut",
+                                                          "Yellowtail Flounder", "Silver Hake"),
+                              K_groups = ~species), envir = globalenv())
 
 fit <- multispic(inputs, species_cor = "none", temporal_cor = "none",
                  log_K_option = par_option(option = "prior",
@@ -39,6 +43,10 @@ vis_multispic(fit)
 
 list2env(nl_inputs_and_priors(region = "3Ps", species = "Atlantic Cod", K_groups = ~species), envir = globalenv())
 
+inputs$index %>%
+    plot_ly(x = ~year, y = ~index, color = ~species_survey) %>%
+    add_lines()
+
 fit <- multispic(inputs, species_cor = "none", temporal_cor = "none",
                  log_K_option = par_option(option = "prior",
                                            mean = mean_log_K, sd = sd_log_K),
@@ -63,7 +71,13 @@ fit <- multispic(inputs, species_cor = "none", temporal_cor = "none",
                  n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
                  pe_covariates = ~0, K_covariates = ~0)
 
+fit$sd_rep
+
 vis_multispic(fit)
 
 
+fit <- multispic(inputs, species_cor = "none", temporal_cor = "none",
+                 n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
+                 pe_covariates = ~0, K_covariates = ~0)
+vis_multispic(fit)
 

@@ -10,7 +10,6 @@ normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
-    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
     models <- names(spp_fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
@@ -26,21 +25,12 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     })
     spp_loo_dat <- do.call(rbind, spp_loo_dat)
 
-    species <- names(sp_fits)
-    sp_loo_dat <- lapply(species, function (sp) {
-        sp_fit <- sp_fits[[sp]]
-        data.frame(model = "Single-species",
-                   n_index = nrow(sp_fit$index),
-                   n_random = length(sp_fit$sd_rep$par.random),
-                   n_fixed = length(sp_fit$sd_rep$par.fixed),
-                   sp_fit$loo$preds)
-    })
-    sp_loo_dat <- do.call(rbind, sp_loo_dat)
-
-    sp_n <- unique(sp_loo_dat[, c("species", "n_index", "n_random", "n_fixed")])
-    sp_loo_dat$n_index <- sum(sp_n$n_index)
-    sp_loo_dat$n_random <- sum(sp_n$n_random)
-    sp_loo_dat$n_fixed <- sum(sp_n$n_fixed)
+    sp_fit <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    sp_loo_dat <- data.frame(model = "Single-species",
+                             n_index = nrow(sp_fit$index),
+                             n_random = length(sp_fit$sd_rep$par.random),
+                             n_fixed = length(sp_fit$sd_rep$par.fixed),
+                             sp_fit$loo$preds)
 
     r_loo_dat <- rbind(spp_loo_dat, sp_loo_dat)
     r_loo_dat$model <- factor(r_loo_dat$model, levels = c(names(models), "Single-species"))
@@ -108,7 +98,6 @@ overall_loo_scores %>%
 hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
-    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
     models <- names(spp_fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
@@ -119,12 +108,8 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     })
     spp_hind_dat <- do.call(rbind, spp_hind_dat)
 
-    species <- names(sp_fits)
-    sp_hind_dat <- lapply(species, function (sp) {
-        sp_fit <- sp_fits[[sp]]
-        data.frame(model = "Single-species", sp_fits[[sp]]$retro$hindcasts)
-    })
-    sp_hind_dat <- do.call(rbind, sp_hind_dat)
+    sp_fit <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    sp_hind_dat <- data.frame(model = "Single-species", sp_fit$retro$hindcasts)
 
     r_hind_dat <- rbind(spp_hind_dat, sp_hind_dat)
     r_hind_dat$model <- factor(r_hind_dat$model, levels = c(names(models), "Single-species"))
