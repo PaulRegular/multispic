@@ -68,9 +68,9 @@ region_data <- function(divisions) {
 
 
 ## Under one_strat
-## If more than 5 years of data are present for a survey, the core strata are identified (those
-## covered in > 90% of unique survey years) and years where > 10% of the biomass were potentially
-## missing because of poor survey coverage are excluded.
+## If more than 5 years of data are present for a survey, and if the species is found in more than
+## 10% of surveyed strata, identify strata covered across more than 80% of the time series and
+## utilize years where > 80% of the biomass were likely covered.
 ## Note: index converted to kt
 
 one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, region) {
@@ -94,31 +94,33 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
         all_setdet <- all_strat$raw.data$set.details
         all_means <- all_strat$strat2$biomass$details
 
-        if (all(all_means$totals == 0)) {
+        if (mean(all_means$totals == 0) > 0.9) {
 
-            tab <- data.frame(species = species_name, region = region, gear = series,
-                              season = Hmisc::capitalize(season),
-                              year = years, index = 0, cv = 0, survey_area = 0)
+            warning(paste0("Index was not calculated because ", species_name, " was rarely encountered in ", region, " during the ", season, " ", series, " survey (present in less than 10% of surveyed strata)"))
+            tab <- NULL
 
         } else {
 
             ## Calculate percent biomass in each strata using grand totals
-            ## Limit to strata covered across more than 90% of survey years (i.e., keep core strata)
+            ## Bump up totals by percent of years the strata were covered
+            ## Limit to strata present in more than 80% of the series (i.e. core strata)
             strat_percents <- all_means %>%
                 group_by(strat) %>%
-                summarise(strat_total = sum(totals), n = n(), percent_years = n() / length(years)) %>%
+                summarise(n = n(), percent_years = n() / length(years),
+                          strat_total = sum(totals) / percent_years) %>%
                 ungroup() %>%
-                mutate(grand_total = sum(strat_total), mean_percent = strat_total / sum(strat_total)) %>%
-                filter(percent_years > 0.9)
+                filter(percent_years > 0.8) %>%
+                mutate(grand_total = sum(strat_total), mean_percent = strat_total / grand_total)
             keep_strat <- strat_percents$strat
 
-            ## Identify years where more than 10% of the biomass was likely to be missing because of poor coverage
+            ## Identify years where more than 20% of the biomass was likely to be missing because
+            ## of poor coverage
             coverage <- table(all_setdet$strat, all_setdet$survey.year) == 0
             coverage <- coverage[rownames(coverage) %in% as.character(keep_strat), ]
             percents <- replicate(ncol(coverage), matrix(strat_percents$mean_percent, ncol = 1), simplify = TRUE)
             coverage <- coverage * percents
             percent_missing <- colSums(coverage)
-            drop_years <- percent_missing > 0.1
+            drop_years <- percent_missing > 0.2
 
             keep_years <- as.numeric(names(percent_missing)[!drop_years])
 

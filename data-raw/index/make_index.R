@@ -18,7 +18,7 @@ regions <- list("2J3K" = c("2J", "3K"),
                 "3LNO" = c("3L", "3N", "3O"),
                 "3Ps" = c("3P"))
 
-index <- lapply(seq_along(regions), function(i) {
+lindex <- lapply(seq_along(regions), function(i) {
 
     sub_setdet <- region_data(regions[[i]])
 
@@ -43,20 +43,26 @@ index <- lapply(seq_along(regions), function(i) {
     region_index
 
 })
-index <- do.call(rbind, index)
+index <- do.call(rbind, lindex)
 
-index %>%
-    group_by(gear, species, season) %>%
-    plot_ly(x = ~year, y = ~index, color = ~species, frame = ~region,
-            legendgroup = ~species, hoverinfo = "x+y+text", hovertext = ~paste(season, gear)) %>%
-    add_lines() %>%
-    layout(title = "Pre-processed indices")
+gindex <- index %>% group_by(gear, season)
+p <- plot_ly(x = ~year, y = ~index, color = ~species, colors = viridis::viridis(100),
+             text = ~paste(gear, season), hoverinfo = "x+y+text")
+p %>% add_trace(data = gindex %>% filter(region == "2J3K"), mode = "markers+lines") %>%
+    layout(title = "2J3K")
+p %>% add_trace(data = gindex %>% filter(region == "3LNO"), mode = "markers+lines") %>%
+    layout(title = "3LNO")
+p %>% add_trace(data = gindex %>% filter(region == "3Ps"), mode = "markers+lines") %>%
+    layout(title = "3Ps")
 
-## Manually unify the start year for 2J3KL
+## Manually unify the start year for each region
 index <- index %>%
-    filter(region == "2J3K" & year >= 1978 | region != "2J3K")
+    filter((region == "2J3K" & year >= 1978) |
+               (region == "3LNO" & year >= 1976) |
+               (region == "3Ps" & year >= 1972))
 
 ## Drop Grenadier as there has been poor coverage of this deep water species
+## and the fishery is relatively small
 index <- index %>%
     filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
 
@@ -77,14 +83,15 @@ index <- index %>%
 index$n_years <- NULL
 index$n_series <- NULL
 
-p <- index %>%
-    group_by(gear, species, season) %>%
-    plot_ly(x = ~year, y = ~index, color = ~species, frame = ~region,
-            legendgroup = ~species, hoverinfo = "x+y+text", hovertext = ~paste(season, gear)) %>%
-    add_lines()  %>%
-    layout(title = "Processed indices")
-p
-p %>% layout(yaxis = list(type = "log"))
+gindex <- index %>% group_by(gear, season)
+p <- plot_ly(x = ~year, y = ~index, color = ~species, colors = viridis::viridis(100),
+             text = ~paste(gear, season), hoverinfo = "x+y+text")
+p %>% add_trace(data = gindex %>% filter(region == "2J3K"), mode = "markers+lines") %>%
+    layout(title = "2J3K")
+p %>% add_trace(data = gindex %>% filter(region == "3LNO"), mode = "markers+lines") %>%
+    layout(title = "3LNO")
+p %>% add_trace(data = gindex %>% filter(region == "3Ps"), mode = "markers+lines") %>%
+    layout(title = "3Ps")
 
 write.csv(index, file = "data-raw/index.csv", row.names = FALSE)
 
