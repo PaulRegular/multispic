@@ -59,7 +59,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_r <- (upper_log_r - lower_log_r) / 2
 
     lower_log_K <- log(max_tot_landings) - upper_log_r
-    upper_log_K <- log(max_tot_landings * 10) - lower_log_r
+    upper_log_K <- log(max_tot_landings * 100) - lower_log_r
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -67,7 +67,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     L0$species <- factor(L0$species)
     L0 <- L0[order(L0$species), ]
     lower_log_B0 <- log(L0$landings) - upper_log_r
-    upper_log_B0 <- log(L0$landings * 10) - lower_log_r
+    upper_log_B0 <- log(L0$landings * 100) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
@@ -84,21 +84,24 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
                               })
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
+    # plot_ly(y = exp(mean_log_sd_I), x = log_cv_stats$species_survey)
 
     ## Use survey coverage to inform lower bound for q
-    ## Reduce by an extra 25% to account for selectivity
-    ## Apply an additional 50% reduction to Greenland Halibut
-    ## and Witch Flounder as coverage of their deep-water range is incomplete
+    ## Reduce by an extra 50% to account for selectivity
+    ## Apply an additional reduction to deep-water species as the survey does not capture
+    ## their full depth range
     coverage_stats <- aggregate(coverage ~ species_survey, data = index,
                                 FUN = function(x) {
                                     round(unique(x), 1)
                                 })
-    lower_log_q <- log(coverage_stats$coverage * 0.75)
-    ind <- grepl("Greenland Halibut|Witch Flounder", coverage_stats$species_survey)
-    lower_log_q[ind] <- lower_log_q[ind] + log(0.5)
+    lower_log_q <- log(coverage_stats$coverage * 0.5)
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
+    ind <- grepl("Greenland Halibut|Atlantic Halibut|Witch Flounder",
+                 coverage_stats$species_survey)
+    lower_log_q[ind] <- lower_log_q[ind] + log(0.5)
     mean_log_q <- (lower_log_q + upper_log_q) / 2
     sd_log_q <- (upper_log_q - lower_log_q) / 2
+    # plot_ly(y = exp(mean_log_q), x = coverage_stats$species_survey)
 
     lower_logit_rho <- logit(-0.9, shift = TRUE)
     upper_logit_rho <- logit(0.9, shift = TRUE)

@@ -76,7 +76,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE)
 
     null$loo <- run_loo(null)
-    null$retro <- run_retro(null, folds = 20)
+    null$retro <- run_retro(null, folds = 15)
 
     saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
 
@@ -176,15 +176,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     just_temporal_cor$loo  <- run_loo(just_temporal_cor)
     no_cor$loo  <- run_loo(no_cor)
 
-    full$retro <- run_retro(full, folds = 20)
-    just_covar$retro<- run_retro(just_covar, folds = 20)
-    just_shift$retro <- run_retro(just_shift, folds = 20)
-    just_nlci$retro  <- run_retro(just_nlci, folds = 20)
-    just_cor$retro  <- run_retro(just_cor, folds = 20)
-    shared_cor$retro  <- run_retro(shared_cor, folds = 20)
-    just_species_cor$retro  <- run_retro(just_species_cor, folds = 20)
-    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 20)
-    no_cor$retro  <- run_retro(no_cor, folds = 20)
+    full$retro <- run_retro(full, folds = 15)
+    just_covar$retro<- run_retro(just_covar, folds = 15)
+    just_shift$retro <- run_retro(just_shift, folds = 15)
+    just_nlci$retro  <- run_retro(just_nlci, folds = 15)
+    just_cor$retro  <- run_retro(just_cor, folds = 15)
+    shared_cor$retro  <- run_retro(shared_cor, folds = 15)
+    just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
+    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
+    no_cor$retro  <- run_retro(no_cor, folds = 15)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
                    "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
