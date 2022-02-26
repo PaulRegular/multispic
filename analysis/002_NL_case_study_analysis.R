@@ -39,15 +39,16 @@ source("analysis/001_NL_case_study_helpers.R")
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
 
-    if (r == "3Ps") {
-        ## There were convergence issues with several species in 3Ps
-        spp <- c("American Plaice", "Greenland Halibut",
-                 "Skate spp.", "Witch Flounder", "Haddock",
-                 "Monkfish", "White Hake", "Atlantic Halibut",
-                 "Yellowtail Flounder", "Silver Hake")
-    } else {
-        spp <- NULL
-    }
+    ## Limit to top 7 most commonly caught species by region
+    ## (exception: cod and redfish in 3Ps as there were convergence issues)
+    top_spp <- multispic::landings %>%
+        filter(region == r, !grepl("Grenadier", species),
+               !(region == "3Ps" & species %in% c("Atlantic Cod", "Redfish spp."))) %>%
+        group_by(species) %>%
+        summarise(total_landings = sum(landings)) %>%
+        arrange(-total_landings)
+
+    spp <- head(top_spp$species, 7)
 
     list2env(nl_inputs_and_priors(region = r, species = spp, K_groups = ~species), envir = globalenv())
 
