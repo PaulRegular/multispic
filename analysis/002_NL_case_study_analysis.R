@@ -3,7 +3,7 @@
 ## - Calculate one-step ahead residuals
 
 ## - Add data from 2J3K and 3Ps eco-regions <-- done
-## - Fit to each region (single-species, 5 species, 10 species, all species)
+## - Fit to each region (single-species, 5 species, 10 species, all species) <-- limited by number of species in 2J3K. Kept it simple, focusing on 7 species in each region
 ## - Try to combine regions (K_group = ~region) <-- possible, but too many correlation parameters, many of which may not make sense to estimate (e.g. cod in 3Ps vs. redfish in 2J3K)
 ## - Calculate species-specific leave one out scores to assess predictive ability of each model
 ## - Hypothesis: multispecies >> single-species inference
@@ -31,6 +31,8 @@ plan(multisession, workers = 6)
 
 source("analysis/001_NL_case_study_helpers.R")
 
+year_gear_tab <- table(multispic::index$year, multispic::index$gear)
+sum(year_gear_tab[, "Campelen"] > 0) - 10 # number of years to fold back, leaving 10 years in the Cameplen series
 
 ## Species-specific analyses -----------------------------------------------------------------------
 
@@ -77,7 +79,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE)
 
     null$loo <- run_loo(null)
-    null$retro <- run_retro(null, folds = 15)
+    null$retro <- run_retro(null, folds = 16)
 
     saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
 
@@ -177,15 +179,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     just_temporal_cor$loo  <- run_loo(just_temporal_cor)
     no_cor$loo  <- run_loo(no_cor)
 
-    full$retro <- run_retro(full, folds = 15)
-    just_covar$retro<- run_retro(just_covar, folds = 15)
-    just_shift$retro <- run_retro(just_shift, folds = 15)
-    just_nlci$retro  <- run_retro(just_nlci, folds = 15)
-    just_cor$retro  <- run_retro(just_cor, folds = 15)
-    shared_cor$retro  <- run_retro(shared_cor, folds = 15)
-    just_species_cor$retro  <- run_retro(just_species_cor, folds = 15)
-    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 15)
-    no_cor$retro  <- run_retro(no_cor, folds = 15)
+    full$retro <- run_retro(full, folds = 16)
+    just_covar$retro<- run_retro(just_covar, folds = 16)
+    just_shift$retro <- run_retro(just_shift, folds = 16)
+    just_nlci$retro  <- run_retro(just_nlci, folds = 16)
+    just_cor$retro  <- run_retro(just_cor, folds = 16)
+    shared_cor$retro  <- run_retro(shared_cor, folds = 16)
+    just_species_cor$retro  <- run_retro(just_species_cor, folds = 16)
+    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 16)
+    no_cor$retro  <- run_retro(no_cor, folds = 16)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
                    "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
