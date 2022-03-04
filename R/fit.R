@@ -528,7 +528,7 @@ run_loo <- function(fit, progress = TRUE) {
         if (!is.null(p)) p()
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE))
-        if (class(f) == "try-catch" || fit$opt$message == "false convergence (8)") {
+        if (class(f) == "try-catch" || f$opt$message == "false convergence (8)") {
             obs <- pred <- NA
         } else {
             obs <- f$index$log_index[f$index$left_out]
@@ -624,7 +624,7 @@ run_retro <- function(fit, folds, progress = TRUE) {
         retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
                                 light = TRUE, silent = TRUE))
 
-        if (class(retro_fit) == "try-catch" || fit$opt$message == "false convergence (8)") {
+        if (class(retro_fit) == "try-catch" || retro_fit$opt$message == "false convergence (8)") {
 
             retro_fit <- NA
             hindcast <- NULL
