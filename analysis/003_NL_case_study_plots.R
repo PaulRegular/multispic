@@ -134,8 +134,7 @@ hind_scores <- hind_dat %>%
 
 overall_hind_scores <- hind_dat %>%
     group_by(model, region) %>%
-    summarise(n = n(), n_species = length(unique(species)),
-              rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
+    summarise(rmse = sqrt(mean((log_index - log_pred_index) ^ 2, na.rm = TRUE))) %>%
     group_by(region) %>%
     mutate(scaled_rmse = normalize(rmse),
            delta_rmse = rmse - min(rmse)) %>%
@@ -189,6 +188,66 @@ hind_p <- overall_hind_scores %>%
     layout(yaxis = list(title = "Hind-CV Score"))
 
 subplot(loo_p, hind_p, nrows = 2, shareX = TRUE, titleY = TRUE, titleX = FALSE)
+
+
+
+scores <- merge(overall_loo_scores, overall_hind_scores, by = c("model", "region"),
+      suffixes = c("_loo", "_hind"))
+
+
+scores %>%
+  plot_ly(y = ~model, frame = ~region) %>%
+  add_markers(x = ~rmse_loo, name = "LOO") %>%
+  add_markers(x = ~rmse_hind, name = "hindcast")
+
+scores <- scores %>%
+    group_by(model, region) %>%
+    mutate(mean_score = mean(c(rmse_loo, rmse_hind))) %>%
+    group_by(model) %>%
+    mutate(overall_mean_score = mean(mean_score)) %>%
+    arrange(-overall_mean_score) %>%
+    ungroup() %>%
+    mutate(model = factor(model, levels = unique(model))) %>%
+    as.data.frame()
+
+
+scores %>%
+  filter(region == "3Ps") %>%
+  plot_ly(y = ~model, text = ~round(rmse_loo, 1),
+          size = ~n_fixed, sizes = c(50, 500)) %>%
+  add_paths(x = ~rmse_loo, name = "LOO-CV") %>%
+  add_paths(x = ~rmse_hind, name = "Hind-CV") %>%
+  # add_markers(x = ~rmse_hind, name = "Hind-CV") %>%
+  # add_trace(type = "scatter", mode = "markers+text",
+  #           textfont = list(size = 10, color = "white"),
+  #           showlegend = FALSE) %>%
+  layout(yaxis = list(title = "",
+                      categoryorder = "array",
+                      categoryarray = levels(scores$model)))
+
+
+## Figure idea: http://www.dataplusscience.com/images/PewAlt2.PNG
+## Think better / worse predictive performance | forecasting skill over single-species approach
+
+scores <- merge(overall_loo_scores, overall_hind_scores, by = c("model", "region"),
+                suffixes = c("_loo", "_hind"))
+
+## Scores relative to single-species model
+rel_scores <- scores %>%
+  group_by(region) %>%
+  mutate(ss_rmse_loo = rmse_loo[model == "Single-species"],
+         rel_rmse_loo = ss_rmse_loo - rmse_loo,
+         ss_rmse_hind = rmse_hind[model == "Single-species"],
+         rel_rmse_hind = ss_rmse_hind - rmse_hind) %>%
+  filter(model != "Single-species") %>%
+  arrange(region, n_fixed) %>%
+  ungroup() %>%
+  mutate(model = factor(model, levels = unique(model))) %>%
+  as.data.frame()
+
+rel_scores %>%
+  plot_ly(y = ~model, x = ~rel_rmse_hind, color = ~region) %>%
+  add_markers(size = I(100))
 
 
 
