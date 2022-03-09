@@ -50,7 +50,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
         summarise(total_landings = sum(landings)) %>%
         arrange(-total_landings)
 
-    spp <- head(top_spp$species, 7)
+    spp <- head(top_spp$species, 5)
 
     list2env(nl_inputs_and_priors(region = r, species = spp, K_groups = ~species), envir = globalenv())
 
