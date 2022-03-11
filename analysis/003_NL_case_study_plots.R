@@ -176,141 +176,39 @@ overall_hind_scores |>
 ## Combined plot -----------------------------------------------------------------------------------
 
 
-loo_p <- overall_loo_scores |>
-    plot_ly(y = ~model, x = ~ranked_rmse, color = ~region,
-            colors = viridis::viridis(100),
-            legendgroup = ~region) |>
-    add_paths() |>
-    layout(xaxis = list(title = "Loo-CV Rank"),
-           yaxis = list(autorange = "reversed"))
-
-hind_p <- overall_hind_scores |>
-    plot_ly(y = ~model, x = ~ranked_rmse, color = ~region,
-            colors = viridis::viridis(100),
-            legendgroup = ~region, showlegend = FALSE) |>
-    add_paths() |>
-    layout(xaxis = list(title = "Hind-CV Rank"),
-           yaxis = list(autorange = "reversed"))
-
-subplot(loo_p, hind_p, nrows = 1, shareY = TRUE, titleY = FALSE, titleX = TRUE)
-
-
-
 scores <- merge(overall_loo_scores, overall_hind_scores,
                 by = c("model", "region"),
                 suffixes = c("_loo", "_hind"))
 
-
-scores |>
+a <- scores |>
     arrange(model) |>
-    plot_ly(y = ~model, frame = ~region) |>
-    add_paths(x = ~ranked_rmse_loo, name = "LOO") |>
-    add_paths(x = ~ranked_rmse_hind, name = "hindcast") |>
-    layout(yaxis = list(title = "", autorange = "reversed"))
+    plot_ly(y = ~model, color = ~region, legendgroup = ~region,
+            colors = viridis::viridis(3)) |>
+    add_paths(x = ~rmse_loo) |>
+    add_trace(x = ~rmse_loo, text = ~ranked_rmse_loo,
+              type = "scatter", mode = "lines+markers+text",
+              marker = list(color = "white", size = 20,
+                            line = list(width = 2)),
+              textfont = list(size = 10),
+              showlegend = FALSE) |>
+    layout(yaxis = list(title = "", autorange = "reversed"),
+           xaxis = list(title = "LOO-CV Score", side ="top"))
 
 
-## Rank makes sense but don't like overlapping scores
+b <- scores |>
+    arrange(model) |>
+    plot_ly(y = ~model, color = ~region, legendgroup = ~region,
+            colors = viridis::viridis(3), showlegend = FALSE) |>
+    add_paths(x = ~rmse_hind) |>
+    add_trace(x = ~rmse_hind, text = ~ranked_rmse_hind,
+              type = "scatter", mode = "lines+markers+text",
+              marker = list(color = "white", size = 20,
+                            line = list(width = 2)),
+              textfont = list(size = 10)) |>
+    layout(yaxis = list(title = "", autorange = "reversed"),
+           xaxis = list(title = "Hindcast-CV Score", side ="top"))
 
-one_plot <- function(r = "2J3K", xlab = "Rank", ...) {
-    # cols <- viridis::viridis(2)
-    cols <- c("#1f77b4", "#d62728")
-    scores |>
-        filter(region == r) |>
-        arrange(model) |>
-        plot_ly(y = ~model, ...) |>
-        add_paths(x = ~ranked_rmse_hind, ,
-                  name = "Hindcast",
-                  legendgroup = "Hindcast", color = I(cols[2])) |>
-        add_trace(x = ~ranked_rmse_hind, text = ~round(rmse_hind, 2),
-                  color = I(cols[2]),
-                  type = "scatter", mode = "markers+text",
-                  marker = list(color = "white", size = 25,
-                                line = list(width = 2)),
-                  textfont = list(size = 8),
-                  showlegend = FALSE) |>
-        add_paths(x = ~ranked_rmse_loo, name = "LOO",
-                  legendgroup = "LOO", color = I(cols[1])) |>
-        add_trace(x = ~ranked_rmse_loo, text = ~round(rmse_loo, 2),
-                  color = I(cols[1]),
-                  type = "scatter", mode = "markers+text",
-                  marker = list(color = "white", size = 25,
-                                line = list(width = 2)),
-                  textfont = list(size = 8),
-                  showlegend = FALSE) |>
-        layout(yaxis = list(title = "", autorange = "reversed"),
-               xaxis = list(title = xlab),
-               annotations = list(
-                   list(
-                       x = 0.5,
-                       y = 1,
-                       text = r,
-                       xref = "paper",
-                       yref = "paper",
-                       xanchor = "center",
-                       yanchor = "bottom",
-                       showarrow = FALSE
-                   )))
-}
-
-a <- one_plot("2J3K", xlab = "")
-b <- one_plot("3LNO", xlab = "Rank", showlegend = FALSE)
-c <- one_plot("3Ps", xlab = "", showlegend = FALSE)
-
-subplot(list(a, b, c), nrows = 1, shareY = TRUE, titleX = TRUE)
-
-
-
-
-
-scores <- scores |>
-    group_by(model, region) |>
-    mutate(mean_score = mean(c(rmse_loo, rmse_hind))) |>
-    group_by(model) |>
-    mutate(overall_mean_score = mean(mean_score)) |>
-    arrange(-overall_mean_score) |>
-    ungroup() |>
-    mutate(model = factor(model, levels = unique(model))) |>
-    as.data.frame()
-
-
-scores |>
-    filter(region == "3Ps") |>
-    plot_ly(y = ~model, text = ~round(rmse_loo, 1),
-            size = ~n_fixed, sizes = c(50, 500)) |>
-    add_paths(x = ~rmse_loo, name = "LOO-CV") |>
-    add_paths(x = ~rmse_hind, name = "Hind-CV") |>
-    # add_markers(x = ~rmse_hind, name = "Hind-CV") |>
-    # add_trace(type = "scatter", mode = "markers+text",
-    #           textfont = list(size = 10, color = "white"),
-    #           showlegend = FALSE) |>
-    layout(yaxis = list(title = "",
-                        categoryorder = "array",
-                        categoryarray = levels(scores$model)))
-
-
-## Figure idea: http://www.dataplusscience.com/images/PewAlt2.PNG
-## Think better / worse predictive performance | forecasting skill over single-species approach
-
-scores <- merge(overall_loo_scores, overall_hind_scores, by = c("model", "region"),
-                suffixes = c("_loo", "_hind"))
-
-## Scores relative to single-species model
-rel_scores <- scores |>
-    group_by(region) |>
-    mutate(ss_rmse_loo = rmse_loo[model == "Single-species"],
-           rel_rmse_loo = ss_rmse_loo - rmse_loo,
-           ss_rmse_hind = rmse_hind[model == "Single-species"],
-           rel_rmse_hind = ss_rmse_hind - rmse_hind) |>
-    filter(model != "Single-species") |>
-    arrange(region, n_fixed) |>
-    ungroup() |>
-    mutate(model = factor(model, levels = unique(model))) |>
-    as.data.frame()
-
-rel_scores |>
-    plot_ly(y = ~model, x = ~rel_rmse_loo, color = ~region) |>
-    add_markers(size = I(100))
-
+subplot(a, b, nrows = 1, shareY = TRUE, titleX = TRUE)
 
 
 
