@@ -21,6 +21,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
                    n_index = nrow(spp_fit$index),
                    n_random = length(spp_fit$sd_rep$par.random),
                    n_fixed = length(spp_fit$sd_rep$par.fixed),
+                   rec_id = seq(nrow(spp_fit$loo$preds)),
                    spp_fit$loo$preds)
     })
     spp_loo_dat <- do.call(rbind, spp_loo_dat)
@@ -30,6 +31,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
                              n_index = nrow(sp_fit$index),
                              n_random = length(sp_fit$sd_rep$par.random),
                              n_fixed = length(sp_fit$sd_rep$par.fixed),
+                             rec_id = seq(nrow(sp_fit$loo$preds)),
                              sp_fit$loo$preds)
 
     r_loo_dat <- rbind(spp_loo_dat, sp_loo_dat)
@@ -43,6 +45,14 @@ rownames(loo_dat) <- NULL
 sr <- do.call(rbind, strsplit(as.character(loo_dat$species), "-"))
 loo_dat$species <- sr[, 1]
 loo_dat$region <- sr[, 2]
+
+## Drop cases with convergence issues to ensure metrics are comparable across all cases
+ind <- is.na(loo_dat$log_pred_index)
+sum(ind)
+drop_recs <- unique(loo_dat[ind, c("region", "rec_id")])
+ind <- paste0(loo_dat$region, "-", loo_dat$rec_id) %in%
+    paste0(drop_recs$region, "-", drop_recs$rec_id)
+loo_dat <- loo_dat[!ind, ]
 
 loo_scores <- loo_dat |>
     group_by(model, species, region) |>
@@ -97,6 +107,7 @@ overall_loo_scores |>
 
 ## Hindcast results ---------------------------------------------------------------------------
 
+drop_years <- vector(mode = "character")
 hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
@@ -106,12 +117,20 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
                        "Just temporal correlation", "No correlation")
 
     spp_hind_dat <- lapply(models, function (m) {
+        missing_years <<- is.na(spp_fits[[m]]$retro$retro_fits) |> which() |> names()
+        if (length(missing_years) > 0) missing_years <<- paste0(r, "-", missing_years)
+        drop_years <<- c(drop_years, missing_years)
+        # cat(r, "|", m, "| missing years:", missing_years, "\n\n")
         data.frame(model = names(models)[models == m], spp_fits[[m]]$retro$hindcasts)
     })
     spp_hind_dat <- do.call(rbind, spp_hind_dat)
 
     sp_fit <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
     sp_hind_dat <- data.frame(model = "Single-species", sp_fit$retro$hindcasts)
+
+    missing_years <<- is.na(sp_fit$retro$retro_fits) |> which() |> names()
+    if (length(missing_years) > 0) missing_years <<- paste0(r, "-", missing_years)
+    drop_years <<- c(drop_years, missing_years)
 
     r_hind_dat <- rbind(spp_hind_dat, sp_hind_dat)
     r_hind_dat$model <- factor(r_hind_dat$model, levels = c(names(models), "Single-species"))
@@ -124,6 +143,12 @@ rownames(hind_dat) <- NULL
 sr <- do.call(rbind, strsplit(as.character(hind_dat$species), "-"))
 hind_dat$species <- sr[, 1]
 hind_dat$region <- sr[, 2]
+
+## Drop cases with convergence issues to ensure metrics are comparable across all cases
+drop_years <- unique(drop_years)
+drop_years
+ind <- paste0(hind_dat$region, "-", hind_dat$retro_year) %in% drop_years
+hind_dat <- hind_dat[!ind, ]
 
 hind_scores <- hind_dat |>
     group_by(model, species, region) |>
