@@ -29,6 +29,12 @@ names(nlci) <- c("year", "nlci")
 
 covariates <- merge(nao, nlci, by = "year", all = TRUE)
 
+## Add 1991 breakpoint covariate - this is when the system change.
+## Hypothesis is that energy flow to higher trophic levels have been hampered since
+## the collapse of mid-trophic level forage fish such as capelin.
+covariates$shift <- ifelse(covariates$year < 1991, "pre-1991", "post-1991")
+covariates$shift <- factor(covariates$shift, levels = c("pre-1991", "post-1991"))
+
 write.csv(covariates, file = "data-raw/covariates.csv", row.names = FALSE)
 
 

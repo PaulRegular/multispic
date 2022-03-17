@@ -126,11 +126,6 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     landings <- landings[landings$year >= min(index$year) &
                              landings$year <= max(index$year), ]
 
-    ## Add 1991 breakpoint covariate - this is when the system change.
-    ## Hypothesis is that energy flow to higher trophic levels have been hampered since
-    ## the collapse of mid-trophic level forage fish such as capelin.
-    landings$shift <- ifelse(landings$year < 1991, "pre-1991", "post-1991")
-    landings$shift <- factor(landings$shift, levels = c("pre-1991", "post-1991"))
 
     inputs <- list(landings = landings, index = index)
 
