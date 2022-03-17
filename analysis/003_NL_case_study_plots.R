@@ -54,6 +54,12 @@ ind <- paste0(loo_dat$region, "-", loo_dat$rec_id) %in%
     paste0(drop_recs$region, "-", drop_recs$rec_id)
 loo_dat <- loo_dat[!ind, ]
 
+loo_dat |>
+    plot_ly(x = ~year, y = ~log_pred_index - log_index,
+            color = ~survey, colors = viridis::viridis(100),
+            frame = ~model) |>
+    add_markers()
+
 loo_scores <- loo_dat |>
     group_by(model, species, region) |>
     summarise(n = n(), n_species = length(unique(species)),
