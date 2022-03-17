@@ -82,7 +82,7 @@ one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, re
     year_ind <- rowSums(year_div_table > 0) == length(NAFOdiv)
     years <- as.numeric(names(year_ind[year_ind]))
 
-    if (length(years) >= 5) {
+    if (length(years) > 5) {
 
         ## First run analysis using all available data
         all_strat <- strat.fun(setdet = setdet, program = "strat2",
