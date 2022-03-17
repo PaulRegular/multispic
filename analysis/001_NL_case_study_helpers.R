@@ -77,10 +77,11 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
 
     ## Use design-based estimates of cv to inform prior for observation error
-    ## Note: sd of cv was widened as it is an imperfect indicator of observation error
+    ## Note: sd of cv was widened as it is an imperfect and partial indicator of observation error
+    ## (partial because the design-based estimates only pertain to the pop available to the survey)
     log_cv_stats <- aggregate(cv ~ species_survey, data = index,
                               FUN = function(x) {
-                                  c(mean = mean(log(x)), sd = sd(log(x)) * 4)
+                                  c(mean = mean(log(x)), sd = sd(log(x)) * 5)
                               })
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
