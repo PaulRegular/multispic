@@ -59,7 +59,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_r <- (upper_log_r - lower_log_r) / 2
 
     lower_log_K <- log(max_tot_landings) - upper_log_r
-    upper_log_K <- log(max_tot_landings * 100) - lower_log_r
+    upper_log_K <- log(max_tot_landings * 50) - lower_log_r
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -67,7 +67,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     L0$species <- factor(L0$species)
     L0 <- L0[order(L0$species), ]
     lower_log_B0 <- log(L0$landings) - upper_log_r
-    upper_log_B0 <- log(L0$landings * 100) - lower_log_r
+    upper_log_B0 <- log(L0$landings * 50) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
@@ -77,29 +77,33 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_sd_B <- (upper_log_sd_B - lower_log_sd_B) / 2
 
     ## Use design-based estimates of cv to inform prior for observation error
-    ## Note: sd of cv was widened as it is an imperfect and partial indicator of observation error
-    ## (partial because the design-based estimates only pertain to the pop available to the survey)
+    ## Note: sd of cv was widened as it is an imperfect and partial indicator of observation error.
+    ##       Multiplier is greater for deep water species as the survey likely captures less of their
+    ##       range (i.e. greater variation is possible as the species may move in and out of the
+    ##       survey area)
+    deep_spp <- "Greenland Halibut|Atlantic Halibut|Witch Flounder|Redfish spp.|White Hake|Silver Hake|Monkfish"
     log_cv_stats <- aggregate(cv ~ species_survey, data = index,
                               FUN = function(x) {
-                                  c(mean = mean(log(x)), sd = sd(log(x)) * 5)
+                                  c(mean = mean(log(x)), sd = sd(log(x)))
                               })
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
+    ind <- grepl(deep_spp, log_cv_stats$species_survey)
+    sd_log_sd_I <- ifelse(ind, sd_log_sd_I * 5, sd_log_sd_I * 2)
     # plot_ly(y = exp(mean_log_sd_I), x = log_cv_stats$species_survey)
 
     ## Use survey coverage to inform lower bound for q
-    ## Reduce by an extra 50% to account for selectivity
-    ## Apply an additional reduction to deep-water species as the survey does not capture
-    ## their full depth range
+    ## Values are further reduced to account for selectivity and availability.
+    ## Percent reduction is greater for deep water species as the survey likely captures less of
+    ## their range.
     coverage_stats <- aggregate(coverage ~ species_survey, data = index,
                                 FUN = function(x) {
                                     round(unique(x), 1)
                                 })
-    lower_log_q <- log(coverage_stats$coverage * 0.5)
+    ind <- grepl(deep_spp, coverage_stats$species_survey)
+    lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
+                          log(coverage_stats$coverage * 0.8))
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
-    ind <- grepl("Greenland Halibut|Atlantic Halibut|Witch Flounder",
-                 coverage_stats$species_survey)
-    lower_log_q[ind] <- lower_log_q[ind] + log(0.5)
     mean_log_q <- (lower_log_q + upper_log_q) / 2
     sd_log_q <- (upper_log_q - lower_log_q) / 2
     # plot_ly(y = exp(mean_log_q), x = coverage_stats$species_survey)
