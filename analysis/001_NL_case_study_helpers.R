@@ -101,8 +101,14 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
                                     round(unique(x), 1)
                                 })
     ind <- grepl(deep_spp, coverage_stats$species_survey)
-    lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
-                          log(coverage_stats$coverage * 0.8))
+    if (r == "3Ps") {
+        ## Relatively small area; mixing may therefore be more prevalent; q may therefore be lower.
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
+                              log(coverage_stats$coverage * 0.5))
+    } else {
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
+                              log(coverage_stats$coverage * 0.8))
+    }
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2
     sd_log_q <- (upper_log_q - lower_log_q) / 2
