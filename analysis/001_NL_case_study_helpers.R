@@ -59,7 +59,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     sd_log_r <- (upper_log_r - lower_log_r) / 2
 
     lower_log_K <- log(max_tot_landings) - upper_log_r
-    upper_log_K <- log(max_tot_landings * 50) - lower_log_r
+    upper_log_K <- log(max_tot_landings * 20) - lower_log_r
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -67,7 +67,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     L0$species <- factor(L0$species)
     L0 <- L0[order(L0$species), ]
     lower_log_B0 <- log(L0$landings) - upper_log_r
-    upper_log_B0 <- log(L0$landings * 50) - lower_log_r
+    upper_log_B0 <- log(L0$landings * 20) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
@@ -103,11 +103,11 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     ind <- grepl(deep_spp, coverage_stats$species_survey)
     if (r == "3Ps") {
         ## Relatively small area; mixing may therefore be more prevalent; q may therefore be lower.
-        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
-                              log(coverage_stats$coverage * 0.5))
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.1),
+                              log(coverage_stats$coverage * 0.2))
     } else {
         lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
-                              log(coverage_stats$coverage * 0.8))
+                              log(coverage_stats$coverage * 0.6))
     }
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2
