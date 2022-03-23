@@ -323,6 +323,37 @@ multispic <- function(inputs,
                 pe_betas =  rep(0, ncol(pe_model_mat)))
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
+    random <- "log_B"
+
+    ## Augment dat, par, map, and random objects using par_option closures
+    log_K_option(environment(), "log_K", center = TRUE)
+    log_B0_option(environment(), "log_B0", center = TRUE)
+    log_r_option(environment(), "log_r")
+    log_sd_B_option(environment(), "log_sd_B")
+    log_q_option(environment(), "log_q", is_option = c("fixed", "random", "prior"))
+    log_sd_I_option(environment(), "log_sd_I", is_option = c("fixed", "random", "prior"))
+    logit_rho_option(environment(), "logit_rho", is_option = c("fixed", "prior"))
+    logit_phi_option(environment(), "logit_phi", is_option = c("fixed", "prior"))
+    K_betas_option(environment(), "K_betas", is_option = c("fixed", "prior"))
+    pe_betas_option(environment(), "pe_betas", is_option = c("fixed", "prior"))
+
+    ## Extra tweaks for q, sd_I, and rho
+    if (dat$log_q_option != 2) { # != "random"
+        map$log_q <- factor(rep(NA, length(par$log_q)))
+    } else {
+        map$log_q_betas <- factor(rep(NA, length(par$log_q_betas)))
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main effects and random effects are currently not possible)")
+        }
+    }
+    if (dat$log_sd_I_option != 2) {
+        map$log_sd_I <- factor(rep(NA, length(par$log_sd_I)))
+    } else {
+        map$log_sd_I_betas <- factor(rep(NA, length(par$log_sd_I_betas)))
+        if (length(all.vars(survey_groups)) > 1) {
+            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main-effects and random effects are currently not possible)")
+        }
+    }
     if (species_cor == "one") {
         map$logit_rho <- factor(rep(1, length(par$logit_rho)))
     }
@@ -343,38 +374,6 @@ multispic <- function(inputs,
     }
     if (K_covariates == ~0) {
         map$K_betas <- factor(NA)
-    }
-
-    random <- "log_B"
-
-    ## Augment dat, par, map, and random objects using par_option closures
-    log_K_option(environment(), "log_K", center = TRUE)
-    log_B0_option(environment(), "log_B0", center = TRUE)
-    log_r_option(environment(), "log_r")
-    log_sd_B_option(environment(), "log_sd_B")
-    log_q_option(environment(), "log_q", is_option = c("fixed", "random", "prior"))
-    log_sd_I_option(environment(), "log_sd_I", is_option = c("fixed", "random", "prior"))
-    logit_rho_option(environment(), "logit_rho")
-    logit_phi_option(environment(), "logit_phi", is_option = c("fixed", "prior"))
-    K_betas_option(environment(), "K_betas", is_option = c("fixed", "prior"))
-    pe_betas_option(environment(), "pe_betas", is_option = c("fixed", "prior"))
-
-    ## Extra tweaks for q and sd_I
-    if (dat$log_q_option != 2) { # != "random"
-        map$log_q <- factor(rep(NA, length(par$log_q)))
-    } else {
-        map$log_q_betas <- factor(rep(NA, length(par$log_q_betas)))
-        if (length(all.vars(survey_groups)) > 1) {
-            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main effects and random effects are currently not possible)")
-        }
-    }
-    if (dat$log_sd_I_option != 2) {
-        map$log_sd_I <- factor(rep(NA, length(par$log_sd_I)))
-    } else {
-        map$log_sd_I_betas <- factor(rep(NA, length(par$log_sd_I_betas)))
-        if (length(all.vars(survey_groups)) > 1) {
-            message("Fitting all unique survey_groups as random effects (i.e., a mixture of fixed main-effects and random effects are currently not possible)")
-        }
     }
 
     ## Fit model
