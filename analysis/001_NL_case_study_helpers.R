@@ -33,7 +33,9 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     }
 
     index <- index[index$species %in% sub_sp, ]
-    landings <- landings[landings$species %in% sub_sp, ]
+    landings <- landings[landings$species %in% sub_sp &
+                             landings$year >= min(index$year) &
+                             landings$year <= max(index$year), ]
 
     ## Species survey = species-region-season-gear
     index$species_survey <- paste0(index$species, "-", index$region, "-", index$season, "-", index$gear)
@@ -53,13 +55,13 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     max_tot_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
                                   data = tot_landings, FUN = max) %>% with(landings)
 
-    lower_log_r <- log(0.01)
+    lower_log_r <- log(0.1)
     upper_log_r <- log(1)
     mean_log_r <- (lower_log_r + upper_log_r) / 2
     sd_log_r <- (upper_log_r - lower_log_r) / 2
 
     lower_log_K <- log(max_tot_landings) - upper_log_r
-    upper_log_K <- log(max_tot_landings * 20) - lower_log_r
+    upper_log_K <- log(max_tot_landings * 4) - lower_log_r
     mean_log_K <- (lower_log_K + upper_log_K) / 2
     sd_log_K <- (upper_log_K - lower_log_K) / 2
 
@@ -67,7 +69,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     L0$species <- factor(L0$species)
     L0 <- L0[order(L0$species), ]
     lower_log_B0 <- log(L0$landings) - upper_log_r
-    upper_log_B0 <- log(L0$landings * 20) - lower_log_r
+    upper_log_B0 <- log(L0$landings * 4) - lower_log_r
     mean_log_B0 <- (lower_log_B0 + upper_log_B0) / 2
     sd_log_B0 <- c(upper_log_B0 - lower_log_B0) / 2
 
@@ -89,7 +91,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
     ind <- grepl(deep_spp, log_cv_stats$species_survey)
-    sd_log_sd_I <- ifelse(ind, sd_log_sd_I * 5, sd_log_sd_I * 2)
+    sd_log_sd_I <- ifelse(ind, sd_log_sd_I * 4, sd_log_sd_I * 2)
     # plot_ly(y = exp(mean_log_sd_I), x = log_cv_stats$species_survey)
 
     ## Use survey coverage to inform lower bound for q
@@ -129,13 +131,6 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
 
     mean_K_betas <- 0
     sd_K_betas <- 10
-
-    ## Use full landings time series to inform prior for K but limit analysis to
-    ## index time series as there is nothing to inform the process errors prior to the start
-    ## of the surveys
-    landings <- landings[landings$year >= min(index$year) &
-                             landings$year <= max(index$year), ]
-
 
     inputs <- list(landings = landings, index = index)
 
