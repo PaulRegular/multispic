@@ -31,8 +31,8 @@ plan(multisession, workers = 6)
 
 source("analysis/001_NL_case_study_helpers.R")
 
-year_gear_tab <- table(multispic::index$year, multispic::index$gear)
-sum(year_gear_tab[, "Campelen"] > 0) - 10 # number of years to fold back, leaving 10 years in the Cameplen series
+multispic::index |> filter(gear == "Campelen") |> pull(year) |> unique() |> length()
+
 
 ## Species-specific analyses -----------------------------------------------------------------------
 
@@ -40,43 +40,50 @@ sum(year_gear_tab[, "Campelen"] > 0) - 10 # number of years to fold back, leavin
 ## Hypothesis: population dynamics are independent and governed by species-specific K
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
+# for (r in c("3LNO", "3Ps")) {
 
-    ## Limit to top 7 most commonly caught species by region
-    ## (exception: cod and redfish in 3Ps as there were convergence issues)
+    ## Limit to the most commonly caught species by region
+    index_spp <- multispic::index |>
+        filter(region == r) |>
+        pull(species) |>
+        unique()
     top_spp <- multispic::landings %>%
-        filter(region == r, !grepl("Grenadier", species),
-               !(region == "3Ps" & species %in% c("Atlantic Cod", "Redfish spp."))) %>%
-        group_by(species) %>%
-        summarise(total_landings = sum(landings)) %>%
+        filter(region == r, species %in% index_spp) |>
+        group_by(species) |>
+        summarise(total_landings = sum(landings)) |>
         arrange(-total_landings)
 
-    spp <- head(top_spp$species, 5)
+    ## Limit to top 7 (all species with data for 2J3K)
+    n_spp <- switch(r, `2J3K` = 7, `3LNO` = 7, `3Ps` = 7)
+    spp <- head(top_spp$species, n_spp)
 
     list2env(nl_inputs_and_priors(region = r, species = spp, K_groups = ~species), envir = globalenv())
 
     null <- multispic(inputs, species_cor = "none", temporal_cor = "none",
-                     log_K_option = par_option(option = "prior",
-                                               mean = mean_log_K, sd = sd_log_K),
-                     log_B0_option = par_option(option = "prior",
-                                                mean = mean_log_B0, sd = sd_log_B0),
-                     log_r_option = par_option(option = "prior",
-                                               mean = mean_log_r, sd = sd_log_r),
-                     log_sd_B_option = par_option(option = "prior",
-                                                  mean = mean_log_sd_B, sd = sd_log_sd_B),
-                     log_q_option = par_option(option = "prior",
-                                               mean = mean_log_q, sd = sd_log_q),
-                     log_sd_I_option = par_option(option = "prior",
-                                                  mean = mean_log_sd_I, sd = sd_log_sd_I),
-                     logit_rho_option = par_option(option = "prior",
-                                                   mean = mean_logit_rho, sd = sd_logit_rho),
-                     logit_phi_option = par_option(option = "prior",
-                                                   mean = mean_logit_phi, sd = sd_logit_phi),
-                     K_betas_option = par_option(option = "prior",
-                                                 mean = mean_K_betas, sd = sd_K_betas),
-                     pe_betas_option = par_option(option = "prior",
-                                                  mean = mean_pe_betas, sd = sd_pe_betas),
-                     n_forecast = 1, K_groups = ~species, survey_groups = ~species_survey,
-                     pe_covariates = ~0, K_covariates = ~0, silent = TRUE)
+                      log_K_option = par_option(option = "prior",
+                                                mean = mean_log_K, sd = sd_log_K),
+                      log_B0_option = par_option(option = "prior",
+                                                 mean = mean_log_B0, sd = sd_log_B0),
+                      log_r_option = par_option(option = "prior",
+                                                mean = mean_log_r, sd = sd_log_r),
+                      log_sd_B_option = par_option(option = "prior",
+                                                   mean = mean_log_sd_B, sd = sd_log_sd_B),
+                      log_q_option = par_option(option = "prior",
+                                                mean = mean_log_q, sd = sd_log_q),
+                      log_sd_I_option = par_option(option = "prior",
+                                                   mean = mean_log_sd_I, sd = sd_log_sd_I),
+                      logit_rho_option = par_option(option = "prior",
+                                                    mean = mean_logit_rho, sd = sd_logit_rho),
+                      logit_phi_option = par_option(option = "prior",
+                                                    mean = mean_logit_phi, sd = sd_logit_phi),
+                      K_betas_option = par_option(option = "prior",
+                                                  mean = mean_K_betas, sd = sd_K_betas),
+                      pe_betas_option = par_option(option = "prior",
+                                                   mean = mean_pe_betas, sd = sd_pe_betas),
+                      n_forecast = 1, K_groups = ~species, survey_groups = ~species_survey,
+                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE)
+    null$sd_rep
+    # vis_multispic(null)
 
     null$loo <- run_loo(null)
     null$retro <- run_retro(null, folds = 16)
@@ -87,11 +94,10 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
 
 
-
-
 ## Multispecies analysis ---------------------------------------------------------------------------
 
 for (r in c("2J3K", "3LNO", "3Ps")) {
+# for (r in c("3LNO", "3Ps")) {
 
     message("\n", r)
 
@@ -127,6 +133,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
                       pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE)
+    # vis_multispic(full)
 
     ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
     ##             by climate, and residual variation is simple noise. (i.e., temporal
@@ -146,12 +153,14 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     ##             and process error is temporally correlated with unstructured
     ##             species by species correlations.
     just_cor <- update(full, pe_covariates = ~0, K_covariates = ~0)
+    # vis_multispic(just_cor)
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and correlation in residual variation is shared across species
     ##             and over time. (i.e., there is a common but unknown environmental
     ##             process affecting all species)
     shared_cor <- update(just_cor, species_cor = "one", temporal_cor = "ar1")
+    # vis_multispic(shared_cor)
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and correlation in residual variation is shared across species.

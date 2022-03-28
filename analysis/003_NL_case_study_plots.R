@@ -60,6 +60,20 @@ loo_dat |>
             frame = ~model) |>
     add_markers()
 
+loo_dat |>
+    filter(region == "3LNO") |>
+    plot_ly(x = ~year, y = ~log_pred_index - log_index,
+            color = ~factor(survey), colors = viridis::viridis(100),
+            frame = ~model) |>
+    add_markers()
+
+loo_dat |>
+    filter(region == "3LNO") |>
+    plot_ly(x = ~year, y = ~log_pred_index - log_index,
+            color = ~model, colors = viridis::viridis(100),
+            frame = ~factor(survey)) |>
+    add_markers()
+
 loo_scores <- loo_dat |>
     group_by(model, species, region) |>
     summarise(n = n(), n_species = length(unique(species)),
@@ -211,6 +225,12 @@ scores <- merge(overall_loo_scores, overall_hind_scores,
                 by = c("model", "region"),
                 suffixes = c("_loo", "_hind"))
 
+mean_score <- bind_rows(overall_loo_scores, overall_hind_scores) |>
+    group_by(model) |>
+    summarise(mean_score = mean(rmse)) |>
+    mutate(ranked_score = rank(mean_score)) |>
+    ungroup()
+
 a <- scores |>
     arrange(model) |>
     plot_ly(y = ~model, color = ~region, legendgroup = ~region,
@@ -223,7 +243,7 @@ a <- scores |>
               textfont = list(size = 10),
               showlegend = FALSE) |>
     layout(yaxis = list(title = "", autorange = "reversed"),
-           xaxis = list(title = "LOO-CV Score", side ="top"))
+           xaxis = list(title = "LOO-CV score", side ="top"))
 
 
 b <- scores |>
@@ -237,9 +257,22 @@ b <- scores |>
                             line = list(width = 2)),
               textfont = list(size = 10)) |>
     layout(yaxis = list(title = "", autorange = "reversed"),
-           xaxis = list(title = "Hindcast-CV Score", side ="top"))
+           xaxis = list(title = "Hindcast-CV score", side ="top"))
 
-subplot(a, b, nrows = 1, shareY = TRUE, titleX = TRUE)
+c <- mean_score |>
+    arrange(model) |>
+    plot_ly(y = ~model, color = I("grey30"), showlegend = FALSE) |>
+    add_trace(x = ~mean_score, text = ~ranked_score,
+              type = "scatter", mode = "lines+markers+text",
+              marker = list(color = "white", size = 20,
+                            line = list(width = 2)),
+              textfont = list(size = 10)) |>
+    layout(yaxis = list(title = "", autorange = "reversed"),
+           xaxis = list(title = "Mean score", side ="top"))
+
+subplot(a, b, c, nrows = 1, shareY = TRUE, titleX = TRUE,
+        widths = c(0.4, 0.4, 0.2)) |>
+    layout(legend = list(orientation = "h", x = 0.3, y = 0.01))
 
 
 
