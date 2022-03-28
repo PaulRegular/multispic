@@ -278,22 +278,18 @@ subplot(a, b, c, nrows = 1, shareY = TRUE, titleX = TRUE,
 
 ## Export select dashboards ------------------------------------------------------------------------
 
-# spp_fits <- readRDS("analysis/exports/spp_fits_2J3K.rds")
-# fit <- spp_fits$one_species_cor
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_2J3KL_one_species_cor.html")
-#
-# spp_fits <- readRDS("analysis/exports/spp_fits_3LNO.rds")
-# fit <- spp_fits$no_nao
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_no_nao.html")
-# fit <- spp_fits$one_species_cor
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3LNO_one_species_cor.html")
-#
-# spp_fits <- readRDS("analysis/exports/spp_fits_3Ps.rds")
-# fit <- spp_fits$full
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_full.html")
-# fit <- spp_fits$full
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_just_nao.html")
-# fit <- spp_fits$no_nao
-# vis_multispic(fit, output_file = "analysis/exports/dashboards/spp_fit_3Ps_no_nao.html")
+for (r in c("2J3K", "3LNO", "3Ps")) {
+    sp_fits <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    vis_multispic(sp_fits,
+                  output_file = paste0("analysis/exports/dashboards/sp_fits_", r, ".html"))
+}
+
+for (r in c("2J3K", "3LNO", "3Ps")) {
+    spp_fits <- readRDS(paste0("analysis/exports/spp_fits_", r, ".rds"))
+    spp_fits_just_cor <- spp_fits$just_cor
+    vis_multispic(spp_fits_just_cor,
+                  output_file = paste0("analysis/exports/dashboards/spp_fits_just_cor_", r, ".html"))
+}
+
 
 
