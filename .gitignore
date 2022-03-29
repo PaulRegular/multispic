@@ -5,6 +5,9 @@
 *.o
 *.dll
 *.html
+*.png
+*.pdf
+*.svg
 /data-raw/excel_files/
 /data-raw/nafo_scr/
 .Rproj.user
