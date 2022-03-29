@@ -29,7 +29,7 @@ library(progress) ## need to load progress to get progress handler to work...not
 library(future)
 plan(multisession, workers = 6)
 
-source("analysis/001_NL_case_study_helpers.R")
+source("analysis/NL_case_study/001_helpers.R")
 
 multispic::index |> filter(gear == "Campelen") |> pull(year) |> unique() |> length()
 
@@ -88,7 +88,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     null$loo <- run_loo(null)
     null$retro <- run_retro(null, folds = 16)
 
-    saveRDS(null, file = paste0("analysis/exports/sp_fits_", r, ".rds"))
+    saveRDS(null, file = paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
 
 }
 
@@ -101,7 +101,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     message("\n", r)
 
-    null <- readRDS(paste0("analysis/exports/sp_fits_", r, ".rds"))
+    null <- readRDS(paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
     spp <- levels(null$landings$species)
     spp <- gsub(paste0("-", r), "", spp)
 
@@ -201,7 +201,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
                    "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
 
-    saveRDS(fits, file = paste0("analysis/exports/spp_fits_", r, ".rds")) # spp = multiple species
+    saveRDS(fits, file = paste0("analysis/NL_case_study/exports/spp_fits_", r, ".rds")) # spp = multiple species
 
 }
 
