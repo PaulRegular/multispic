@@ -21,16 +21,23 @@ all_spp <- c(spp_2J3K, spp_3LNO, spp_3Ps)|>
     sort()
 all_spp
 
-## Rough phylogenetic order
+## Rough phylogenetic order + limit species to improve visual contrast
 
-## Consider reducing the number of species to increase contrast
-## Or use different ramps for different groups
-
-all_spp <- c("Skate spp.",
-             "Atlantic Cod", "Haddock", "White Hake",
-             "American Plaice", "Witch Flounder", "Yellowtail Flounder", "Greenland Halibut",
-             "Redfish spp.", "Wolffish spp.")
+# all_spp <- c("Redfish spp.", "Wolffish spp.",
+#              "Yellowtail Flounder", "Witch Flounder", "American Plaice", "Greenland Halibut",
+#              "White Hake", "Haddock", "Atlantic Cod",
+#              "Skate spp.")
+all_spp <- c("Redfish spp.",
+             "Yellowtail Flounder", "American Plaice", "Greenland Halibut",
+             "Atlantic Cod",
+             "Skate spp.")
 spp_cols <- viridis::viridis(length(all_spp))
+# see::material_colors()
+# spp_cols <- see::material_colors() |> head(length(all_spp))
+# spp_cols <- see::material_colors()[c("red", "pink",
+#                                      "yellow", "brown", "deep purple", "green",
+#                                      "purple", "teal", "blue",
+#                                      "amber")]
 names(spp_cols) <- all_spp
 spp_cols
 
@@ -91,16 +98,17 @@ p_3Ps <- plot_ly(colors = spp_cols) |>
            yaxis = list(title = "Biomass (kt)"))
 
 
-subplot(p_2J3K, p_3LNO, p_3Ps, nrows = 1, shareY = TRUE)
+subplot(p_2J3K, p_3LNO, p_3Ps, nrows = 1, shareY = FALSE)
+
+
+
+## Consider exporting and displaying density dependent subtractions
+## along with additions and subtractions from process error
+## And subtractions from landings
+
+## Figure out how to display uncertainty without making the plot too busy
 
 
 
 
-fit$pop |>
-    filter(species == "Atlantic Cod-2J3K") |>
-    plot_ly(x = ~year) |>
-    add_ribbons(ymin = ~B_lwr, ymax = ~B_upr,
-                line = list(width = 0),
-                alpha = 0.2, showlegend = FALSE) |>
-    add_lines(y = ~B)
 
