@@ -91,6 +91,8 @@ Type objective_function<Type>::operator() ()
     matrix<Type> log_grouped_K(nY, nK);
     vector<Type> B_vec(nL);
     vector<Type> log_B_vec(nL);
+    matrix<Type> B_growth(nY, nS);
+    vector<Type> B_growth_vec(nL);
     vector<Type> log_res_pe(nL);
     vector<Type> log_std_res_pe(nL);
     vector<Type> log_pe(nL);
@@ -216,15 +218,16 @@ Type objective_function<Type>::operator() ()
     for (int i = 0; i < nY; i++) {
         for (int j = 0; j < nS; j++) {
             K_mat(i, j) = K(K_map(j)) * exp(K_covar_mat(i, j));
+            B_row = B.row(i);
+            B_groups_row = B_groups.row(j);
+            tot_B_mat(i, j) = (B_row * B_groups_row).sum(); // use 0s and 1s to group B sum
+            B_growth(i, j) = (r(j) / (m(j) - 1.0)) * B(i, j) *
+                (1.0 - pow((tot_B_mat(i, j) / K_mat(i, j)), m(j) - 1.0));
             if (i == 0) {
                 pred_B(i, j) = B0(j) * exp(pe_covar_mat(i, j));
             } else {
-                B_row = B.row(i - 1);
-                B_groups_row = B_groups.row(j);
-                tot_B_mat(i - 1, j) = (B_row * B_groups_row).sum(); // use 0s and 1s to group B sum
-                pred_B(i, j) = (B(i - 1, j) + (r(j) / (m(j) - 1.0)) * B(i - 1, j) *
-                    (1.0 - pow((tot_B_mat(i - 1, j) / K_mat(i, j)), m(j) - 1.0)) -
-                    L_mat(i - 1, j)) * exp(pe_covar_mat(i, j));
+                pred_B(i, j) = (B(i - 1, j) +  B_growth(i - 1, j) - L_mat(i - 1, j)) *
+                    exp(pe_covar_mat(i, j));
             }
             pred_B(i, j) = pos_fun(pred_B(i, j), min_B, pen);
             log_pred_B(i, j) = log(pred_B(i, j));
@@ -261,6 +264,7 @@ Type objective_function<Type>::operator() ()
         log_F(i) = log(F(i));
         K_vec(i) = K_mat(L_year(i), L_species(i));
         log_K_vec(i) = log(K_vec(i));
+        B_growth_vec(i) = B_growth(L_year(i), L_species(i));
     }
 
     // Total biomass by group
@@ -291,6 +295,7 @@ Type objective_function<Type>::operator() ()
 
     REPORT(B);
     REPORT(B_vec);
+    REPORT(B_growth_vec);
     REPORT(F);
     REPORT(K_vec);
     REPORT(tot_B);

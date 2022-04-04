@@ -399,6 +399,7 @@ multispic <- function(inputs,
     pop$res_pe <- exp(rep$log_res_pe)
     pop$log_std_res_pe <- rep$log_std_res_pe
     pop$B <- exp(log(rep$B_vec) + log_center)
+    pop$B_growth <- rep$B_growth * exp(log_center)
     pop$F <- rep$F
     pop$K <- exp(log(rep$K_vec) + log_center)
 
