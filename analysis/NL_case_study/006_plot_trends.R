@@ -102,6 +102,52 @@ subplot(p_2J3K, p_3LNO, p_3Ps, nrows = 1, shareY = FALSE)
 
 
 
+
+
+
+
+
+
+
+a <- plot_ly(colors = spp_cols) |>
+    add_trace(data = fit_2J3K$tot_pop, x = ~year, y = ~B, color = I("grey"),
+              type = 'scatter', mode = 'lines', fill = 'tozeroy',
+              name = "Total", legendgroup = "Total", line = list(width = 0)) |>
+    add_lines(data = fit_2J3K$tot_pop, x = ~year, y = ~K, color = I("black"),
+              name = "K", legendgroup = "K") |>
+    add_lines(data = fit_2J3K$pop, x = ~year, y = ~B,
+              color = ~species, legendgroup = ~species, showlegend = FALSE) |>
+    add_lines(data = dummy_data, x = ~year, y = ~x, color = ~species,
+              legendgroup = ~species) |>
+    add_annotations(x = 0.5, y = 1.07, xref = "paper", yref = "paper", text = "2J3K",
+                    font = list(size = 16), showarrow = FALSE) |>
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Biomass (kt)"))
+
+b <- plot_ly(colors = spp_cols) |>
+    add_lines(data = fit_2J3K$pop, x = ~year, y = ~B_growth,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE) |>
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Expected growth (kt)"))
+
+c <- plot_ly(colors = spp_cols) |>
+    add_lines(data = fit_2J3K$pop, x = ~year, y = ~-landings,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE) |>
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Landings (kt)"))
+
+d <- plot_ly(colors = spp_cols) |>
+    add_lines(data = fit_2J3K$pop, x = ~year, y = ~log_std_res_pe,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE) |>
+    layout(xaxis = list(title = "Year"),
+           yaxis = list(title = "Standardized process error"))
+
+subplot(a, b, c, d, nrows = 4, titleY = TRUE)
+
+
 ## Consider exporting and displaying density dependent subtractions
 ## along with additions and subtractions from process error
 ## And subtractions from landings

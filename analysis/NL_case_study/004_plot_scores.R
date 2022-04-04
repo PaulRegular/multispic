@@ -3,7 +3,7 @@ library(plotly)
 library(dplyr)
 library(ggplot2)
 
-normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
+source("analysis/NL_case_study/003_compile_scores.R")
 
 save_html <- function(p, file = file, selfcontained = TRUE, ...) {
     ext <- tools::file_ext(file)
@@ -12,8 +12,6 @@ save_html <- function(p, file = file, selfcontained = TRUE, ...) {
                             selfcontained = selfcontained, ...)
     invisible(file.rename(tmp_file, file))
 }
-
-source("analysis/NL_case_study/003_compile_scores.R")
 
 ## Visualize some of the detailed results ----------------------------------------------------------
 

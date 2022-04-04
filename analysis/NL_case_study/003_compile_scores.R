@@ -1,6 +1,8 @@
 
 library(dplyr)
 
+normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
+
 ## Leave-one-out results ---------------------------------------------------------------------------
 
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
