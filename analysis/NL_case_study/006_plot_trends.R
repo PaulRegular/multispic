@@ -106,17 +106,29 @@ subplot(p_2J3K, p_3LNO, p_3Ps, nrows = 1, shareY = FALSE)
 
 
 
+pop <- fit_2J3K$pop
+pop$B_pe <- pop$B - (pop$B / pop$pe)
+pop$B_net <- pop$B_growth - pop$landings
 
+extra_tots <- pop |>
+    group_by(year) |>
+    summarise(total_growth = sum(B_growth),
+              total_pe = sum(B_pe),
+              total_net = sum(B_net))
+
+tot_pop <- fit_2J3K$tot_pop |>
+    merge(extra_tots, by = "year")
 
 
 a <- plot_ly(colors = spp_cols) |>
-    add_trace(data = fit_2J3K$tot_pop, x = ~year, y = ~B, color = I("grey"),
+    add_trace(data = tot_pop, x = ~year, y = ~B, color = I("lightgrey"),
               type = 'scatter', mode = 'lines', fill = 'tozeroy',
               name = "Total", legendgroup = "Total", line = list(width = 0)) |>
-    add_lines(data = fit_2J3K$tot_pop, x = ~year, y = ~K, color = I("black"),
+    add_lines(data = tot_pop, x = ~year, y = ~K, color = I("black"),
               name = "K", legendgroup = "K") |>
-    add_lines(data = fit_2J3K$pop, x = ~year, y = ~B,
-              color = ~species, legendgroup = ~species, showlegend = FALSE) |>
+    add_lines(data = pop, x = ~year, y = ~B,
+              color = ~species, legendgroup = ~species, showlegend = FALSE,
+              line = list(width = 1)) |>
     add_lines(data = dummy_data, x = ~year, y = ~x, color = ~species,
               legendgroup = ~species) |>
     add_annotations(x = 0.5, y = 1.07, xref = "paper", yref = "paper", text = "2J3K",
@@ -125,27 +137,40 @@ a <- plot_ly(colors = spp_cols) |>
            yaxis = list(title = "Biomass (kt)"))
 
 b <- plot_ly(colors = spp_cols) |>
-    add_lines(data = fit_2J3K$pop, x = ~year, y = ~B_growth,
-              color = ~species, legendgroup = ~species,
+    add_trace(data = tot_pop, x = ~year, y = ~total_growth, color = I("lightgrey"),
+              type = 'scatter', mode = 'lines', fill = 'tozeroy',
+              name = "Total", legendgroup = "Total", line = list(width = 0),
               showlegend = FALSE) |>
+    add_lines(data = pop, x = ~year, y = ~B_growth,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE, line = list(width = 1)) |>
     layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Expected growth (kt)"))
+           yaxis = list(title = "Expected production"))
 
 c <- plot_ly(colors = spp_cols) |>
-    add_lines(data = fit_2J3K$pop, x = ~year, y = ~-landings,
-              color = ~species, legendgroup = ~species,
+    add_trace(data = tot_pop, x = ~year, y = ~-landings, color = I("lightgrey"),
+              type = 'scatter', mode = 'lines', fill = 'tozeroy',
+              name = "Total", legendgroup = "Total", line = list(width = 0),
               showlegend = FALSE) |>
+    add_lines(data = pop, x = ~year, y = ~-landings,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE, line = list(width = 1)) |>
     layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Landings (kt)"))
+           yaxis = list(title = "Landings"))
 
 d <- plot_ly(colors = spp_cols) |>
-    add_lines(data = fit_2J3K$pop, x = ~year, y = ~log_std_res_pe,
-              color = ~species, legendgroup = ~species,
+    add_trace(data = tot_pop, x = ~year, y = ~total_pe, color = I("lightgrey"),
+              type = 'scatter', mode = 'lines', fill = 'tozeroy',
+              name = "Total", legendgroup = "Total", line = list(width = 0),
               showlegend = FALSE) |>
+    add_lines(data = pop, x = ~year, y = ~B_pe,
+              color = ~species, legendgroup = ~species,
+              showlegend = FALSE, line = list(width = 1)) |>
     layout(xaxis = list(title = "Year"),
-           yaxis = list(title = "Standardized process error"))
+           yaxis = list(title = "Process error"))
 
-subplot(a, b, c, d, nrows = 4, titleY = TRUE)
+subplot(a, b, c, d, nrows = 4, titleY = TRUE, shareX = TRUE,
+        heights = c(0.4, 0.2, 0.2, 0.2))
 
 
 ## Consider exporting and displaying density dependent subtractions
