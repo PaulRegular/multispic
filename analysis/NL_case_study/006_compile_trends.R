@@ -49,14 +49,17 @@ spp_cols <- viridis::viridis(length(all_spp))
 names(spp_cols) <- all_spp
 spp_cols
 
-fit_2J3K$pop$species <- gsub("-2J3K", "", fit_2J3K$pop$species)
-fit_2J3K$pop$species <- factor(fit_2J3K$pop$species, levels = all_spp)
+simplify_spp_name <- function(fit, tag) {
+    for (df in c("pop", "index")) {
+        fit[[df]]$species <- gsub(tag, "", fit[[df]]$species)
+        fit[[df]]$species <- factor(fit[[df]]$species, levels = all_spp)
+    }
+    fit
+}
 
-fit_3LNO$pop$species <- gsub("-3LNO", "", fit_3LNO$pop$species)
-fit_3LNO$pop$species <- factor(fit_3LNO$pop$species, levels = all_spp)
-
-fit_3Ps$pop$species <- gsub("-3Ps", "", fit_3Ps$pop$species)
-fit_3Ps$pop$species <- factor(fit_3Ps$pop$species, levels = all_spp)
+fit_2J3K <- simplify_spp_name(fit_2J3K, "-2J3K")
+fit_3LNO <- simplify_spp_name(fit_3LNO, "-3LNO")
+fit_3Ps <- simplify_spp_name(fit_3Ps, "-3Ps")
 
 ## create dummy data for legend
 dummy_data <- expand.grid(year = min(fit_2J3K$tot_pop$year), x = 0,
