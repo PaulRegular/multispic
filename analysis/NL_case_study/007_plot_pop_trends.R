@@ -33,7 +33,8 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
         add_lines(data = dummy_data, x = ~year, y = ~x, color = ~species,
                   legendgroup = ~species, line = list(width = 1.2),
                   showlegend = show_legend) |>
-        add_annotations(x = 0.5, y = 1.07, xref = "paper", yref = "paper", text = title,
+        add_annotations(x = 0.5, y = 1, xref = "paper", yref = "paper", text = title,
+                        xanchor = "center",  yanchor = "bottom",
                         font = list(size = 16), showarrow = FALSE) |>
         layout(xaxis = list(title = ifelse(show_axis_titles, "Year", "")),
                yaxis = list(title = ifelse(show_axis_titles, "Biomass (kt)", "")))

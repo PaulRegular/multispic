@@ -24,7 +24,7 @@ spp_2J3K <- gsub("-2J3K", "", levels(fit_2J3K$landings$species))
 spp_3LNO <- gsub("-3LNO", "", levels(fit_3LNO$landings$species))
 spp_3Ps <- gsub("-3Ps", "", levels(fit_3Ps$landings$species))
 
-all_spp <- c(spp_2J3K, spp_3LNO, spp_3Ps)|>
+all_spp <- c(spp_2J3K, spp_3LNO, spp_3Ps) |>
     unique() |>
     sort()
 all_spp
@@ -35,24 +35,29 @@ all_spp
 #              "Yellowtail Flounder", "Witch Flounder", "American Plaice", "Greenland Halibut",
 #              "White Hake", "Haddock", "Atlantic Cod",
 #              "Skate spp.")
-all_spp <- c("Redfish spp.",
+core_spp <- c("Redfish spp.",
              "Yellowtail Flounder", "American Plaice", "Greenland Halibut",
              "Atlantic Cod",
              "Skate spp.")
-spp_cols <- viridis::viridis(length(all_spp))
+spp_cols <- viridis::viridis(length(core_spp))
 # see::material_colors()
-# spp_cols <- see::material_colors() |> head(length(all_spp))
+# spp_cols <- see::material_colors() |> head(length(core_spp))
 # spp_cols <- see::material_colors()[c("red", "pink",
 #                                      "yellow", "brown", "deep purple", "green",
 #                                      "purple", "teal", "blue",
 #                                      "amber")]
-names(spp_cols) <- all_spp
+names(spp_cols) <- core_spp
 spp_cols
 
+## Identify species included across all regions
+spp_tab <- table(c(spp_2J3K, spp_3LNO, spp_3Ps))[core_spp]
+common_spp <- names(which(spp_tab == 3))
+
+## Function for dropping region tag from species name
 simplify_spp_name <- function(fit, tag) {
     for (df in c("pop", "index")) {
         fit[[df]]$species <- gsub(tag, "", fit[[df]]$species)
-        fit[[df]]$species <- factor(fit[[df]]$species, levels = all_spp)
+        fit[[df]]$species <- factor(fit[[df]]$species, levels = core_spp)
     }
     fit
 }
@@ -63,7 +68,7 @@ fit_3Ps <- simplify_spp_name(fit_3Ps, "-3Ps")
 
 ## create dummy data for legend
 dummy_data <- expand.grid(year = min(fit_2J3K$tot_pop$year), x = 0,
-                          species = factor(all_spp, levels = all_spp))
+                          species = factor(core_spp, levels = core_spp))
 
 
 
