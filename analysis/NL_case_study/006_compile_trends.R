@@ -1,4 +1,5 @@
 
+library(multispic)
 library(plotly)
 
 save_html <- function(p, file = file, selfcontained = TRUE, ...) {
@@ -31,10 +32,10 @@ all_spp
 
 ## Rough phylogenetic order + limit species to improve visual contrast
 
-# all_spp <- c("Redfish spp.", "Wolffish spp.",
-#              "Yellowtail Flounder", "Witch Flounder", "American Plaice", "Greenland Halibut",
-#              "White Hake", "Haddock", "Atlantic Cod",
-#              "Skate spp.")
+all_spp <- c("Redfish spp.", "Wolffish spp.",
+             "Yellowtail Flounder", "Witch Flounder", "American Plaice", "Greenland Halibut",
+             "White Hake", "Haddock", "Atlantic Cod",
+             "Skate spp.")
 core_spp <- c("Redfish spp.",
              "Yellowtail Flounder", "American Plaice", "Greenland Halibut",
              "Atlantic Cod",
@@ -52,6 +53,31 @@ spp_cols
 ## Identify species included across all regions
 spp_tab <- table(c(spp_2J3K, spp_3LNO, spp_3Ps))[core_spp]
 common_spp <- names(which(spp_tab == 3))
+
+
+## Function for extracting species correlations
+get_spp_rho <- function(fit, tag) {
+    n_spp_cor <- length(fit$par$logit_rho)
+
+    sp_rho <- sp_nm_mat <- matrix(NA, nrow = nlevels(fit$pop$species), ncol = nlevels(fit$pop$species))
+    rownames(sp_rho) <- colnames(sp_rho) <- gsub(tag, "", levels(fit$pop$species))
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    sp_rho <- t(sp_rho)
+    sp_rho[lower.tri(sp_rho)] <- inv_logit(fit$par$logit_rho, shift = TRUE)
+    diag(sp_rho) <- 1
+    round(sp_rho, 2)
+    for (i in seq(nrow(sp_rho))) {
+        for (j in seq(ncol(sp_rho))) {
+            sp_nm_mat[i, j] <- paste(levels(fit$pop$species)[i], "-", levels(fit$pop$species)[j])
+        }
+    }
+    ind <- match(all_spp, rownames(sp_rho)) |> na.omit() # consistent order
+    sp_rho[ind, ind]
+}
+
+fit_2J3K$spp_rho <- get_spp_rho(fit_2J3K, "-2J3K")
+fit_3LNO$spp_rho <- get_spp_rho(fit_3LNO, "-3LNO")
+fit_3Ps$spp_rho <- get_spp_rho(fit_3Ps, "-3Ps")
 
 ## Function for dropping region tag from species name
 simplify_spp_name <- function(fit, tag) {
