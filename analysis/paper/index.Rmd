@@ -1,0 +1,52 @@
+---
+title: "Summing the parts: Improving population estimates using a state-space multispecies production model"
+author: "Paul M. Regular^1^*, Mariano Koen-Alonso^1^, M. Joanne Morgan^1^, Pierre Pepin^1^, Rick M. Rideout^1^"
+date: | 
+    ^1^ Fisheries and Oceans Canada, Northwest Atlantic Fisheries Center, 80 East White Hills, St. John's, Newfoundland and Labrador, A1C 5X1, Canada\
+    \
+    *Corresponding author\
+    E-mail: Paul.Regular@dfo-mpo.gc.ca\
+    \
+    `r format(Sys.time(), "%Y-%m-%d")` 
+abstract: |
+  **Abstract:** ...\
+  \
+  **Keywords:** ...
+output: 
+   bookdown::word_document2:
+       reference_docx: style/template.docx
+knit: bookdown::render_book
+link-citations: true
+bibliography: bib/refs.bib
+csl: csl/pnas.csl
+---
+
+```{r setup, echo=FALSE, cache=FALSE, message=FALSE, results='hide', warning=FALSE}
+# adjust as desired:
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.path = "knitr-figs-docx/",
+  cache.path = "knitr-cache-docx/",
+  fig.height = 2.5,
+  fig.width = 4.5, 
+  fig.showtext = TRUE,
+  echo = FALSE,
+  # autodep = TRUE,
+  # cache = TRUE,
+  cache.comments = FALSE,
+  dev = "png",
+  dpi = 300
+)
+showtext::showtext_opts(dpi = knitr::opts_chunk$get()$dpi) # force showtext dpi to match chunk dpi to preserve proper font size (9 pt)
+```
+
+
+```{r load-libraries, cache=FALSE}
+library(here)
+library(knitr)
+library(dplyr)
+```
+

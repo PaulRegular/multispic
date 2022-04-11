@@ -1,0 +1,9 @@
+book_filename: "ms"
+rmd_files: ["index.Rmd", "01_introduction.Rmd", "02_methods.Rmd",
+            "03_results.Rmd", "04_discussion.Rmd", "05_acknowledgements.Rmd",
+            "06_references.Rmd", "07_figures.Rmd"]
+delete_merged_file: true
+language:
+  label:
+   fig: 'Fig '
+   ## TODO: figure out how to use a dot as a figure label sufix
