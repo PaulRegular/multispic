@@ -1,3 +1,64 @@
-
 # Methods {-}
 
+## Model formulation {-}
+
+Trends in fish populations have frequently been described using biomass dynamic models of the form
+
+\begin{align}
+B_y = B_{y-1} + g(B_{y-1}) - C_{y-1} & (\#eq:bdm)
+\end{align}
+
+where $B_y$ and $C_y$ represents biomass and catch at annual intervals $y$, and changes in biomass due to growth, recruitment, and natural mortality are captured via the production function $g(B)$ [@polacheck1993]. An early and influential form for the production function was based on the logistic equation,
+
+\begin{align}
+g(B) = rB \left( 1 - \frac{B}{K} \right) & (\#eq:logistic)
+\end{align}
+
+where $r$ is the maximum per-capita rate of change, and $K$ is the carrying capacity [@schaefer1954]. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$).
+
+
+<!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
+
+<!-- $$B_{t, s} = \left (B_{t-1, s} + r_s B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ] \right ) - L_{t-1, s} \right ) e^ {\beta X_t + {\delta_{t,s}}}$$ where -->
+
+<!-- $$ \delta_{t,s} \sim N(0, \Sigma_s)$$ and -->
+
+<!-- $$ \Sigma_s = \begin{bmatrix} -->
+<!-- \sigma^2_{\delta~1} &  \sigma_{\delta~1} \sigma_{\delta~2} \rho_{1,2}  & \dots &  \sigma_{\delta~1} \sigma_{\delta~s} \rho_{1,s} & \\  -->
+<!-- \sigma_{\delta~2} \sigma_{\delta~1} \rho_{2,1}       & \sigma^2_{\delta~2}     & \dots & \sigma_{\delta~2} \sigma_{\delta~s} \rho_{2,s}  & \\  -->
+<!-- \vdots & \vdots &  \ddots     &  \vdots & \\  -->
+<!-- \sigma_{\delta~s} \sigma_{\delta~1} \rho_{s,1} & \sigma_{\delta~s} \sigma_{\delta~2} \rho_{s,2} & \dots  &  \sigma^2_{\delta~s} &  -->
+<!-- \end{bmatrix} $$ -->
+
+<!-- The key difference here from a standard surplus production model is that biomass is indexed by species, $s$, and the ratio of biomass over carrying capacity is based on the total biomass of the species included in the model. Note that intrinsic growth rates, $r_s$, are species specific while only one carrying capacity $K$ parameter is estimated. Therefore, as the population in the system increases towards $K$, year-over-year growth of all species slows. The concept is that the species included in the model are limited by the finite amount of energy in the system. Another difference is the way the process error is modeled. Because multiple species are included, covariance between the species can be estimated. Here I model process error using the multivariate normal distribution and estimate standard deviation parameters ($\sigma^2_{\delta ~ s}$) for each species as well as the correlation in the errors across species ($\rho_{s,s}$). If these species are affected by similar drivers, then correlations will be positive. Alternatively, negative correlations may occur if there is competition or predator-prey interactions between two species. Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect ($\beta X$). -->
+
+<!-- The observation portion of this state-space model is -->
+
+<!-- $$I_{t,s,g} = q_{s,g} ~ B_{t,s} ~ e^{\nu}$$ where -->
+
+<!-- $$\nu \sim N(0, \sigma^2_{\nu ~ s,g})$$ Here $g$ represents survey grouping (e.g. season, gear). This allows for the catachability and variability of surveys to be species and survey specific. This model was constructed using Template Model Builder. -->
+
+<!-- ### Data and priors -->
+
+<!-- As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): Yellowtail, Witch, Cod, Plaice, Skate, Hake, Haddock, Redfish. Landings data were obtained from the STATLANT21A database maintained by NAFO (<https://www.nafo.int/Data/STATLANT>). Survey indices are from Canadian spring and fall multispecies surveys. Three gear changes have occurred throughout the survey time-series, from Yankee, Engel and Campelen gear. Coverage of the Grand Bank has been inconsistent and, as such, the data has been restricted to years where 90% of the core area (strata that have been sampled for more than 20 years) has been covered by the survey. Separate catchabilities are estimated by season and gear type. -->
+
+<!-- The same prior (mean = -1, sd = 1) was used on $log(r)$, $log(\sigma^2_{\delta ~ s})$, $log(q_{s,g})$ and $log(\sigma^2_{\nu ~ s,g})$, which corresponds to 95% interval of 0.05 and 2.61. These general priors stabilized convergence by penalizing large deviations into unrealistic parameter space \[i.e. growth ($r$), catchability ($q$) and variance ($\sigma^2$) parameters are not expected to move far outside the 0.05 - 2.61 range\]. -->
+
+<!-- ### Model selection -->
+
+<!-- A range of models have been tested and compared: -->
+
+<!-- 1.  null: assumes no correlation across species and no covariate effects. -->
+<!-- 2.  one: assumes one common correlation parameters across species and no covariate effects -->
+<!-- 3.  cil: assumes no correlation across species but adds core cold intermediate layer (CIL) temperature as a covariate -->
+<!-- 4.  cei: assumes no correlation across species but adds composite environmental index (CEI) as a covariate -->
+<!-- 5.  cil_one: assumes one correlation parameter and adds core CIL temperature as a covariate -->
+<!-- 6.  cei_one: assumes one correlation parameter and adds CEI as a covariate -->
+
+<!-- Models are compared using marginal AIC -->
+
+<!-- $$mAIC =  2k + 2log(\hat{L}),$$ -->
+
+<!-- where $k$ is the number of fixed parameters and $log(\hat{L})$ is the negative log likelihood, and leave-one-out cross-validation score -->
+
+<!-- $$LOOCV = \frac{1}{n} \sum_{i-1}^{n} \left (  log(I_i) - log(\hat{I}_i) \right ) ^ 2$$ LOOCV is the mean squared error of the log estimates of the survey indices $\hat{I}$, under consecutive model runs where each observation $i$ was left out. For both metrics, lower values indicate models with greater predictive ability. -->
