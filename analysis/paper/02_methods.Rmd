@@ -2,13 +2,15 @@
 
 ## Model formulation {-}
 
-Trends in fish populations have frequently been described using biomass dynamic models of the form
+Trends in fish populations have frequently been described using state-space biomass dynamic models that can generally be described using two equations:
 
 \begin{align}
-B_y = B_{y-1} + g(B_{y-1}) - C_{y-1} & (\#eq:bdm)
+B_y = \left ( B_{y-1} + g(B_{y-1}) - C_{y-1} \right ) e^{\delta_y} & (\#eq:pro) \\
+\\
+I_{y,s} =& q_s B_y e^{\varepsilon_{y,s}} & (\#eq:obs)
 \end{align}
 
-where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year $y$, and changes in biomass due to growth, recruitment, and natural mortality are captured via the production function $g(B)$ [@polacheck1993]. An early and influential form for the production function was based on the logistic equation,
+where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year $y$, $g(B)$ is production as a function of biomass, $I_{y,s}$ is an index of relative abundance in year $y$ from survey $s$, $q_s$ is the time-invariant catchability coefficient for survey $s$, $\delta$ is process error, and $\varepsilon$ is observation error. Statistical challenges aside, the most difficult aspect of this model to parameterize is the production function as it needs to capture changes caused by growth, recruitment, and natural mortality. Schaefer [-@schafer1954] proposed a solution by applying the logistic equation to describe self-limiting growth:
 
 \begin{align}
 g(B) = rB \left( 1 - \frac{B}{K} \right) & (\#eq:logistic)
@@ -16,14 +18,9 @@ g(B) = rB \left( 1 - \frac{B}{K} \right) & (\#eq:logistic)
 
 where $r$ is the maximum per-capita rate of change, and $K$ is the carrying capacity [@schaefer1954]. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$).
 
-Combining equations \@ref(eq:bdm) and \@ref(eq:logistic) results in the Schaefer production model and, by applying a state-space framework [sensu @meyer1999], the stochastic form of this population process may be informed by survey data with observation error. Specifically,
+...flag problem with single-species focus.
 
-\begin{align}
-B_y =& \left ( B_{y-1} + rB_{y-1} \left( 1 - \frac{B_{y-1}}{K} \right) - C_{y-1} \right ) e^{\delta_y} & (\#eq:schaefer) \\
-I_{y,s} =& q_sB_ye^{\varepsilon_{y,s}} & (\#eq:obs)
-\end{align}
 
-where $\delta$ represents process error, $\varepsilon$ represents observation error, $I_{y,s}$ is an index of relative abundance in year $y$ from survey $s$, and $q_s$ is the time-invariant catchability coefficient for survey $s$.
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
 
