@@ -1,2 +1,4 @@
 eq:bdm
 eq:logistic
+eq:schaefer
+eq:obs
