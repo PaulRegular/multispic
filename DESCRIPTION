@@ -7,7 +7,9 @@ Depends: R (>= 3.4.2), TMB, RcppEigen
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-LinkingTo: TMB, RcppEigen
+LinkingTo: 
+    TMB (>= 1.8.0)
+    RcppEigen
 Imports: 
     plotly, 
     units
