@@ -2,24 +2,36 @@
 
 ## Model formulation {-}
 
-Trends in fish populations have frequently been described using state-space biomass dynamic models that can generally be described using two equations:
+Trends in fish populations have frequently been described using state-space biomass dynamic models of the form
 
 \begin{align}
-B_y = \left ( B_{y-1} + g(B_{y-1}) - C_{y-1} \right ) e^{\delta_y} & (\#eq:pro) \\
+B_y =& \left ( B_{y-1} + g(B_{y-1}) - C_{y-1} \right ) e^{\delta_y} & (\#eq:pro) \\
 \\
-I_{y,s} =& q_s B_y e^{\varepsilon_{y,s}} & (\#eq:obs)
+I_{y,i} =& q_i B_y e^{\varepsilon_{y,i}} & (\#eq:obs)
 \end{align}
 
-where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year $y$, $g(B)$ is production as a function of biomass, $I_{y,s}$ is an index of relative abundance in year $y$ from survey $s$, $q_s$ is the time-invariant catchability coefficient for survey $s$, $\delta$ is process error, and $\varepsilon$ is observation error. Statistical challenges aside, the most difficult aspect of this model to parameterize is the production function as it needs to capture changes caused by growth, recruitment, and natural mortality. Schaefer [-@schafer1954] proposed a solution by applying the logistic equation to describe self-limiting growth:
+where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year $y$, $g(B)$ is production as a function of biomass, $I_{y,s}$ is an index of relative abundance in year $y$ from survey $i$, $q_i$ is the time-invariant catchability coefficient for survey index $i$, $\delta$ is process error, and $\varepsilon$ is observation error. Statistical challenges aside, the most difficult aspect of this model to parameterize is the production function as it needs to capture changes caused by growth, recruitment, and natural mortality. Schaefer [-@schaefer1954] proposed a solution by applying the logistic equation to describe self-limiting growth, 
 
 \begin{align}
-g(B) = rB \left( 1 - \frac{B}{K} \right) & (\#eq:logistic)
+g(B) = rB \left( 1 - \frac{B}{K} \right), & (\#eq:logistic)
 \end{align}
 
-where $r$ is the maximum per-capita rate of change, and $K$ is the carrying capacity [@schaefer1954]. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$).
+where $r$ is the maximum per-capita rate of change and $K$ is the carrying capacity. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$). While this formulation offers an elegant description of single-species population dynamics, it assumes that density-dependent effects are solely caused by intraspecific competition and ignores the potential effects of other species inhabiting the same ecological area. We present an extension of equation \@ref(eq:logistic) that attempts to account for intra and interspecific competition by assuming that density-dependent effects are incurred when the total biomass of multiple species, represented by $s$, exceeds the capacity of the system, 
 
-...flag problem with single-species focus.
+\begin{align}
+g(B_s) = r_s B_s \left (1 - \frac{\sum_{s} B_s}{K} \right ). & (\#eq:ms-logistic)
+\end{align}
 
+While intrinsic rates of growth may vary across species, this formulation implies that the growth of all species is ultimately limited by the finite amount of energy in a region. Combining equations \@ref(eq:pro), \@ref(eq:obs), and \@ref(eq:ms-logistic), our model becomes
+
+\begin{align}
+B_{y,s} =& \left ( B_{y-1,s} + r_s B_{y-1,s} \left (1 - \frac{\sum_{s} B_{y-1,s}}{K} \right ) - C_{y-1,s} \right ) e^{\delta_{y,s}} & (\#eq:ms-pro) \\
+\\
+I_{y,i,s} =& q_{i,s} B_{y,s} e^{\varepsilon_{y,i,s}}. & (\#eq:ms-obs)
+\end{align}
+
+
+...next describe errors and note covariate options (note that covarate option for r was not implemented as this is a long-term vital rate shaped by natural selection).
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->

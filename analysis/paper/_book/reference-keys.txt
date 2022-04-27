@@ -1,4 +1,5 @@
-eq:bdm
-eq:logistic
-eq:schaefer
+eq:pro
 eq:obs
+eq:logistic
+eq:ms-pro
+eq:ms-obs
