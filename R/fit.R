@@ -276,19 +276,7 @@ multispic <- function(inputs,
                               FUN = sum, data = landings)
     max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
                               FUN = max, data = tot_landings)$landings
-
-    if (is.null(start_par)) {
-        ## Use estimates from a spline to inform starting values for B
-        .spp_spline <- function(d, years = NULL) {
-            m <- smooth.spline(d$year, log(d$index))
-            y <- predict(m, data.frame(year = years))$y
-            unname(unlist(y))
-        }
-        years <- as.numeric(levels(landings$y))
-        spline_log_index <- sapply(split(index, index$species), .spp_spline, years = years)
-        rownames(spline_log_index) <- years
-        spline_log_index <- spline_log_index[, levels(landings$species)]
-    }
+    mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
 
 
     ## Set-up the objects for TMB
@@ -310,7 +298,7 @@ multispic <- function(inputs,
                 I_species = as.numeric(index$species) - 1,
                 I_survey = index$survey_id,
                 I_sy = as.numeric(index$sy) - 1,
-                min_B = 0.0001,
+                min_B = 0.00001,
                 nY = nlevels(landings$y),
                 nS = nlevels(landings$species),
                 survey_covariates = survey_model_mat,
@@ -321,18 +309,19 @@ multispic <- function(inputs,
                 keep = as.numeric(!index$left_out))
 
     if (is.null(start_par)) {
-        par <- list(log_B = unname(spline_log_index),
+        par <- list(log_B = matrix(ceiling(mean_log_index$index),
+                                   ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
                     log_sd_B = rep(-2, nlevels(landings$species)),
                     logit_rho = rep(0, n_rho),
-                    logit_phi = -2,
+                    logit_phi = 0,
                     log_K = ceiling(log(max_landings)),
-                    log_B0 = spline_log_index[1, ],
-                    log_r = rep(-1.5, nlevels(landings$species)),
+                    log_B0 = ceiling(mean_log_index$index),
+                    log_r = rep(-2, nlevels(landings$species)),
                     log_m = rep(log(2), nlevels(landings$species)),
-                    log_q = rep(0, nrow(unique_surveys)),
+                    log_q = rep(-2, nrow(unique_surveys)),
                     log_q_betas = rep(0, ncol(survey_model_mat)),
                     log_sd_I = rep(-2, nrow(unique_surveys)),
-                    log_sd_I_betas = c(-2, rep(0, ncol(survey_model_mat) - 1)),
+                    log_sd_I_betas = rep(0, ncol(survey_model_mat)),
                     K_betas = rep(0, ncol(K_model_mat)),
                     pe_betas =  rep(0, ncol(pe_model_mat)))
     } else {
