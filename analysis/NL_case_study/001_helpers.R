@@ -1,5 +1,4 @@
 
-
 library(units)
 library(plotly)
 library(TMB)
@@ -80,26 +79,36 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
 
     ## Use design-based estimates of cv to inform prior for observation error
     ## Note: sd of cv was widened as it is an imperfect and partial indicator of observation error.
+    ##       Multiplier is greater for deep water species as the survey likely captures less of their
+    ##       range (i.e. greater variation is possible as the species may move in and out of the
+    ##       survey area)
+    deep_spp <- "Greenland Halibut|Atlantic Halibut|Witch Flounder|Redfish spp.|White Hake|Silver Hake|Monkfish"
     log_cv_stats <- aggregate(cv ~ species_survey, data = index,
                               FUN = function(x) {
                                   c(mean = mean(log(x)), sd = sd(log(x)))
                               })
     mean_log_sd_I <-  log_cv_stats$cv[, "mean"] # mean(log(index$cv))
     sd_log_sd_I <-  log_cv_stats$cv[, "sd"] # sd(log(index$cv))
-    sd_log_sd_I <- sd_log_sd_I * 2
+    ind <- grepl(deep_spp, log_cv_stats$species_survey)
+    sd_log_sd_I <- ifelse(ind, sd_log_sd_I * 4, sd_log_sd_I * 2)
     # plot_ly(y = exp(mean_log_sd_I), x = log_cv_stats$species_survey)
 
     ## Use survey coverage to inform lower bound for q
     ## Values are further reduced to account for selectivity and availability.
+    ## Percent reduction is greater for deep water species as the survey likely captures less of
+    ## their range.
     coverage_stats <- aggregate(coverage ~ species_survey, data = index,
                                 FUN = function(x) {
                                     round(unique(x), 1)
                                 })
+    ind <- grepl(deep_spp, coverage_stats$species_survey)
     if (r == "3Ps") {
-        ## Relatively small area so availability may be lower (i.e., q may be lower).
-        lower_log_q <- log(coverage_stats$coverage * 0.1)
+        ## Relatively small area; mixing may therefore be more prevalent; q may therefore be lower.
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.1),
+                              log(coverage_stats$coverage * 0.2))
     } else {
-        lower_log_q <- log(coverage_stats$coverage * 0.5)
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
+                              log(coverage_stats$coverage * 0.6))
     }
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2
