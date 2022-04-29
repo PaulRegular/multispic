@@ -97,7 +97,7 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
                                 })
     if (r == "3Ps") {
         ## Relatively small area so availability may be lower (i.e., q may be lower).
-        lower_log_q <- log(coverage_stats$coverage * 0.2)
+        lower_log_q <- log(coverage_stats$coverage * 0.1)
     } else {
         lower_log_q <- log(coverage_stats$coverage * 0.5)
     }
