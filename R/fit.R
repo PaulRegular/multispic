@@ -388,6 +388,9 @@ multispic <- function(inputs,
         opt <- nlminb(opt$par, obj$fn, obj$gr,
                       control = list(eval.max = 1000, iter.max = 1000))
     }
+    if (opt$message == "false convergence (8)") {
+        stop("Model convergence issues detected: nlminb message = false convergence (8)")
+    }
 
     ## Reset scale
     landings$landings <- exp(log(landings$landings) + log_center)
@@ -419,6 +422,21 @@ multispic <- function(inputs,
 
         ## Extract ADREPORT objects
         sd_rep <- sdreport(obj)
+
+        if (!sd_rep$pdHess) {
+            stop("Model convergence issues detected: Hessian of fixed effects was not positive definite.")
+        }
+        max_gr <- max(sd_rep$gradient.fixed)
+        if (max_gr > 1) {
+            stop("Model convergence issues detected: Maximum gradient was > 1")
+        }
+        if (max_gr > 0.001) {
+            warning(paste0("Potential convergence issue detected: Maximum gradient was ", max_gr))
+        }
+        if (any(is.nan(sd_rep$sd))) {
+            stop("Convergence issues detected: NaNs produced for one or more standard error estimates.")
+        }
+
         par <- as.list(sd_rep, "Est")
         se <- as.list(sd_rep, "Std. Error")
         par_lwr <- lapply(seq_along(par), function(i) par[[i]] - 1.96 * se[[i]])
@@ -534,10 +552,10 @@ run_loo <- function(fit, progress = TRUE) {
         if (!is.null(p)) p()
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE, nlminb_loops = 0))
-        if (class(f) == "try-catch" || f$opt$message == "false convergence (8)") {
+        if (class(f) == "try-catch") {
             f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE, start_par = NULL))
         }
-        if (class(f) == "try-catch" || f$opt$message == "false convergence (8)") {
+        if (class(f) == "try-catch") {
             obs <- pred <- NA
         } else {
             obs <- f$index$log_index[f$index$left_out]
@@ -633,12 +651,12 @@ run_retro <- function(fit, folds, progress = TRUE) {
         retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
                                 light = TRUE, silent = TRUE, nlminb_loops = 0))
 
-        if (class(retro_fit) == "try-catch" || retro_fit$opt$message == "false convergence (8)") {
+        if (class(retro_fit) == "try-catch") {
             retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
                                     light = TRUE, silent = TRUE, start_par = NULL))
         }
 
-        if (class(retro_fit) == "try-catch" || retro_fit$opt$message == "false convergence (8)") {
+        if (class(retro_fit) == "try-catch") {
 
             retro_fit <- NA
             hindcast <- NULL
