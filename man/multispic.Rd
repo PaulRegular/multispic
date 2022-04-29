@@ -26,6 +26,7 @@ multispic(
   n_forecast = 0,
   leave_out = NULL,
   start_par = NULL,
+  nlminb_loops = 0,
   light = FALSE,
   silent = FALSE
 )
@@ -102,6 +103,8 @@ Useful for cross-validation. All data are kept if \code{NULL}.}
 \item{start_par}{List of starting parameter values. Start parameters are internally
 defined, however, it may be useful to supply parameters from a previous
 model fit to speed up convergence.}
+
+\item{nlminb_loops}{Number of times to repeat optimization to refine estimates.}
 
 \item{light}{Skip running \code{\link[TMB:sdreport]{TMB::sdreport()}} and limit output to speed things up?}
 

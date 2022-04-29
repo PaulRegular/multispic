@@ -131,6 +131,7 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 #' @param start_par          List of starting parameter values. Start parameters are internally
 #'                           defined, however, it may be useful to supply parameters from a previous
 #'                           model fit to speed up convergence.
+#' @param nlminb_loops       Number of times to repeat optimization to refine estimates.
 #' @param light              Skip running [TMB::sdreport()] and limit output to speed things up?
 #' @param silent             Disable tracing information?
 #'
@@ -158,6 +159,7 @@ multispic <- function(inputs,
                       n_forecast = 0,
                       leave_out = NULL,
                       start_par = NULL,
+                      nlminb_loops = 0,
                       light = FALSE,
                       silent = FALSE) {
 
@@ -296,7 +298,7 @@ multispic <- function(inputs,
                 I_species = as.numeric(index$species) - 1,
                 I_survey = index$survey_id,
                 I_sy = as.numeric(index$sy) - 1,
-                min_B = 0.00001,
+                min_B = 0.0001,
                 nY = nlevels(landings$y),
                 nS = nlevels(landings$species),
                 survey_covariates = survey_model_mat,
@@ -310,15 +312,15 @@ multispic <- function(inputs,
                                ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
                 log_sd_B = rep(-2, nlevels(landings$species)),
                 logit_rho = rep(0, n_rho),
-                logit_phi = 0,
+                logit_phi = -1,
                 log_K = ceiling(log(max_landings)),
                 log_B0 = ceiling(mean_log_index$index),
-                log_r = rep(-2, nlevels(landings$species)),
+                log_r = rep(-1.5, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
-                log_q = rep(-2, nrow(unique_surveys)),
+                log_q = rep(0, nrow(unique_surveys)),
                 log_q_betas = rep(0, ncol(survey_model_mat)),
                 log_sd_I = rep(-2, nrow(unique_surveys)),
-                log_sd_I_betas = rep(0, ncol(survey_model_mat)),
+                log_sd_I_betas = c(-1.5, rep(0, ncol(survey_model_mat) - 1)),
                 K_betas = rep(0, ncol(K_model_mat)),
                 pe_betas =  rep(0, ncol(pe_model_mat)))
 
@@ -382,6 +384,10 @@ multispic <- function(inputs,
                           silent = silent, checkParameterOrder = FALSE)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
                   control = list(eval.max = 1000, iter.max = 1000))
+    for (i in seq_len(nlminb_loops)) {
+        opt <- nlminb(opt$par, obj$fn, obj$gr,
+                      control = list(eval.max = 1000, iter.max = 1000))
+    }
 
     ## Reset scale
     landings$landings <- exp(log(landings$landings) + log_center)
@@ -527,9 +533,9 @@ run_loo <- function(fit, progress = TRUE) {
     loo <- function(i, fit, start_par, p = NULL) {
         if (!is.null(p)) p()
         f <- try(update(fit, leave_out = i, start_par = start_par,
-                        light = TRUE, silent = TRUE))
+                        light = TRUE, silent = TRUE, nlminb_loops = 0))
         if (class(f) == "try-catch" || f$opt$message == "false convergence (8)") {
-            f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE))
+            f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE, start_par = NULL))
         }
         if (class(f) == "try-catch" || f$opt$message == "false convergence (8)") {
             obs <- pred <- NA
@@ -625,11 +631,11 @@ run_retro <- function(fit, folds, progress = TRUE) {
         retro_start_par$log_B <- retro_start_par$log_B[seq(nY), , drop = FALSE]
 
         retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
-                                light = TRUE, silent = TRUE))
+                                light = TRUE, silent = TRUE, nlminb_loops = 0))
 
         if (class(retro_fit) == "try-catch" || retro_fit$opt$message == "false convergence (8)") {
             retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
-                                    light = TRUE, silent = TRUE))
+                                    light = TRUE, silent = TRUE, start_par = NULL))
         }
 
         if (class(retro_fit) == "try-catch" || retro_fit$opt$message == "false convergence (8)") {
