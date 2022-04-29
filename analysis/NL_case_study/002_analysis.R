@@ -24,6 +24,7 @@
 ## - Forcing the RW structure results in unusual process errors for some species
 ## - During testing the fixed, random, and uniform_prior options rarely converged
 
+options(warn = 1)
 
 library(progress) ## need to load progress to get progress handler to work...not sure why?
 library(future)
@@ -81,12 +82,12 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~species, survey_groups = ~species_survey,
-                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE)
+                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE, nlminb_loops = 2)
     null$sd_rep
     # vis_multispic(null)
 
     null$loo <- run_loo(null)
-    null$retro <- run_retro(null, folds = 16)
+    null$retro <- run_retro(null, folds = 20)
 
     saveRDS(null, file = paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
 
@@ -132,27 +133,32 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE)
+                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE, nlminb_loops = 2)
+    full$sd_rep
     # vis_multispic(full)
 
     ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
     ##             by climate, and residual variation is simple noise. (i.e., temporal
     ##             and species correlations are explained by the shift and climate)
     just_covar <- update(full, species_cor = "none", temporal_cor = "none")
+    just_covar$sd_rep
 
     ## Hypothesis: energy flow was affected by the 1991 shift and process error is
     ##             simple noise. (i.e., temporal and species correlations are explained by
     ##             the shift)
     just_shift <- update(just_covar, pe_covariates = ~0)
+    just_shift$sd_rep
 
     ## Hypothesis: process errors are affected by climate. (i.e., temporal and species
     ##             correlations are explained by climate)
     just_nlci <- update(just_covar, K_covariates = ~0)
+    just_nlci$sd_rep
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and process error is temporally correlated with unstructured
     ##             species by species correlations.
     just_cor <- update(full, pe_covariates = ~0, K_covariates = ~0)
+    just_cor$sd_rep
     # vis_multispic(just_cor)
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
@@ -160,6 +166,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     ##             and over time. (i.e., there is a common but unknown environmental
     ##             process affecting all species)
     shared_cor <- update(just_cor, species_cor = "one", temporal_cor = "ar1")
+    shared_cor$sd_rep
     # vis_multispic(shared_cor)
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
@@ -167,16 +174,21 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     ##             (i.e., there is a common but unknown environmental process affecting
     ##             all species and the process is noisy with no temporal dependence)
     just_species_cor <- update(shared_cor, temporal_cor = "none")
+    just_species_cor$sd_rep
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and correlation in residual variation is temporally correlated.
     ##             (i.e., environmental processes affect each species differently
     ##             but there are carry-over effects from one year to the next)
-    just_temporal_cor <- update(shared_cor, species_cor = "none")
+    just_temporal_cor <- update(shared_cor, species_cor = "none",
+                                start_par = as.list(shared_cor$sd_rep, "Est"))
+    just_temporal_cor$sd_rep
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and process errors are independent across time and species
-    no_cor <- update(shared_cor, species_cor = "none", temporal_cor = "none")
+    no_cor <- update(shared_cor, species_cor = "none", temporal_cor = "none",
+                     start_par = as.list(shared_cor$sd_rep, "Est"))
+    no_cor$sd_rep
 
     full$loo <- run_loo(full)
     just_covar$loo<- run_loo(just_covar)
@@ -188,15 +200,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     just_temporal_cor$loo  <- run_loo(just_temporal_cor)
     no_cor$loo  <- run_loo(no_cor)
 
-    full$retro <- run_retro(full, folds = 16)
-    just_covar$retro<- run_retro(just_covar, folds = 16)
-    just_shift$retro <- run_retro(just_shift, folds = 16)
-    just_nlci$retro  <- run_retro(just_nlci, folds = 16)
-    just_cor$retro  <- run_retro(just_cor, folds = 16)
-    shared_cor$retro  <- run_retro(shared_cor, folds = 16)
-    just_species_cor$retro  <- run_retro(just_species_cor, folds = 16)
-    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 16)
-    no_cor$retro  <- run_retro(no_cor, folds = 16)
+    full$retro <- run_retro(full, folds = 20)
+    just_covar$retro<- run_retro(just_covar, folds = 20)
+    just_shift$retro <- run_retro(just_shift, folds = 20)
+    just_nlci$retro  <- run_retro(just_nlci, folds = 20)
+    just_cor$retro  <- run_retro(just_cor, folds = 20)
+    shared_cor$retro  <- run_retro(shared_cor, folds = 20)
+    just_species_cor$retro  <- run_retro(just_species_cor, folds = 20)
+    just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 20)
+    no_cor$retro  <- run_retro(no_cor, folds = 20)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
                    "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
