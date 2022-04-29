@@ -564,10 +564,10 @@ run_loo <- function(fit, progress = TRUE) {
         if (!is.null(p)) p()
         f <- try(update(fit, leave_out = i, start_par = start_par,
                         light = TRUE, silent = TRUE, nlminb_loops = 0))
-        if (class(f) == "try-catch") {
+        if (class(f) == "try-error") {
             f <- try(update(fit, leave_out = i, light = TRUE, silent = TRUE, start_par = NULL))
         }
-        if (class(f) == "try-catch") {
+        if (class(f) == "try-error") {
             obs <- pred <- NA
         } else {
             obs <- f$index$log_index[f$index$left_out]
@@ -663,12 +663,12 @@ run_retro <- function(fit, folds, progress = TRUE) {
         retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind, start_par = retro_start_par,
                                 light = TRUE, silent = TRUE, nlminb_loops = 0))
 
-        if (class(retro_fit) == "try-catch") {
+        if (class(retro_fit) == "try-error") {
             retro_fit <- try(update(fit, inputs = retro_inputs, leave_out = ind,
                                     light = TRUE, silent = TRUE, start_par = NULL))
         }
 
-        if (class(retro_fit) == "try-catch") {
+        if (class(retro_fit) == "try-error") {
 
             retro_fit <- NA
             hindcast <- NULL
