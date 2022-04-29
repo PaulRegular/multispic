@@ -272,12 +272,21 @@ multispic <- function(inputs,
     landings$landings <- exp(log(landings$landings) - log_center)
 
     ## Compute total landings by year to inform starting value for K
-    ## And mean log index to inform starting values for B
     tot_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
                               FUN = sum, data = landings)
     max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
                               FUN = max, data = tot_landings)$landings
-    mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
+
+    ## Use estimates from a spline to inform starting values for B
+    .spp_spline <- function(d, years = NULL) {
+        m <- smooth.spline(d$year, log(d$index))
+        y <- predict(m, data.frame(year = years))$y
+        unname(unlist(y))
+    }
+    years <- as.numeric(levels(landings$y))
+    spline_log_index <- sapply(split(index, index$species), .spp_spline, years = years)
+    rownames(spline_log_index) <- years
+    spline_log_index <- spline_log_index[, levels(landings$species)]
 
     ## Set-up the objects for TMB
     if (nlevels(landings$species) == 1) {
@@ -308,19 +317,18 @@ multispic <- function(inputs,
                 B_groups = B_group_mat,
                 keep = as.numeric(!index$left_out))
 
-    par <- list(log_B = matrix(ceiling(mean_log_index$index),
-                               ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
+    par <- list(log_B = unname(spline_log_index),
                 log_sd_B = rep(-2, nlevels(landings$species)),
                 logit_rho = rep(0, n_rho),
-                logit_phi = -1,
+                logit_phi = -2,
                 log_K = ceiling(log(max_landings)),
-                log_B0 = ceiling(mean_log_index$index),
+                log_B0 = spline_log_index[1, ],
                 log_r = rep(-1.5, nlevels(landings$species)),
                 log_m = rep(log(2), nlevels(landings$species)),
                 log_q = rep(0, nrow(unique_surveys)),
                 log_q_betas = rep(0, ncol(survey_model_mat)),
                 log_sd_I = rep(-2, nrow(unique_surveys)),
-                log_sd_I_betas = c(-1.5, rep(0, ncol(survey_model_mat) - 1)),
+                log_sd_I_betas = c(-2, rep(0, ncol(survey_model_mat) - 1)),
                 K_betas = rep(0, ncol(K_model_mat)),
                 pe_betas =  rep(0, ncol(pe_model_mat)))
 
@@ -382,11 +390,9 @@ multispic <- function(inputs,
     if (!is.null(start_par)) par <- start_par
     obj <- TMB::MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                           silent = silent, checkParameterOrder = FALSE)
-    opt <- nlminb(obj$par, obj$fn, obj$gr,
-                  control = list(eval.max = 1000, iter.max = 1000))
+    opt <- nlminb(obj$par, obj$fn, obj$gr)
     for (i in seq_len(nlminb_loops)) {
-        opt <- nlminb(opt$par, obj$fn, obj$gr,
-                      control = list(eval.max = 1000, iter.max = 1000))
+        opt <- nlminb(opt$par, obj$fn, obj$gr)
     }
     if (opt$message == "false convergence (8)") {
         stop("Model convergence issues detected: nlminb message = false convergence (8)")
