@@ -377,9 +377,11 @@ multispic <- function(inputs,
     }
     if (pe_covariates == ~0) {
         map$pe_betas <- factor(NA)
+        dat$pe_betas_option <- 0 # skip prior / random effect loop
     }
     if (K_covariates == ~0) {
         map$K_betas <- factor(NA)
+        dat$K_betas_option <- 0 # skip prior / random effect loop
     }
 
     ## Fit model
