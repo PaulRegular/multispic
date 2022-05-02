@@ -21,9 +21,11 @@ Type objective_function<Type>::operator() ()
     DATA_IVECTOR(I_sy);      // species-year index that corresponds to L row number
     DATA_IVECTOR(keep);      // useful for cross-validation
     DATA_SCALAR(min_B);
-    DATA_INTEGER(log_K_option);
+    DATA_VECTOR(log_max);    // used to adjust scale of K
+    DATA_VECTOR(log_center); // used to adjust scale of log_B
+    DATA_INTEGER(scaled_log_K_option);
     DATA_INTEGER(log_sd_B_option);
-    DATA_INTEGER(log_B0_option);
+    DATA_INTEGER(scaled_log_B0_option);
     DATA_INTEGER(log_r_option);
     DATA_INTEGER(log_q_option);
     DATA_INTEGER(log_sd_I_option);
@@ -38,7 +40,7 @@ Type objective_function<Type>::operator() ()
     DATA_MATRIX(B_groups);
 
     // Parameters
-    PARAMETER_MATRIX(log_B);
+    PARAMETER_MATRIX(scaled_log_B);
     PARAMETER_VECTOR(mean_log_sd_B);
     PARAMETER_VECTOR(log_sd_log_sd_B);
     PARAMETER_VECTOR(log_sd_B);
@@ -48,12 +50,12 @@ Type objective_function<Type>::operator() ()
     PARAMETER(mean_logit_phi);
     PARAMETER(log_sd_logit_phi);
     PARAMETER(logit_phi);
-    PARAMETER_VECTOR(mean_log_K);
-    PARAMETER_VECTOR(log_sd_log_K);
-    PARAMETER_VECTOR(log_K);
-    PARAMETER_VECTOR(mean_log_B0);
-    PARAMETER_VECTOR(log_sd_log_B0);
-    PARAMETER_VECTOR(log_B0);
+    PARAMETER_VECTOR(mean_scaled_log_K);
+    PARAMETER_VECTOR(log_sd_scaled_log_K);
+    PARAMETER_VECTOR(scaled_log_K);
+    PARAMETER_VECTOR(mean_scaled_log_B0);
+    PARAMETER_VECTOR(log_sd_scaled_log_B0);
+    PARAMETER_VECTOR(scaled_log_B0);
     PARAMETER_VECTOR(mean_log_r);
     PARAMETER_VECTOR(log_sd_log_r);
     PARAMETER_VECTOR(log_r);
@@ -74,14 +76,16 @@ Type objective_function<Type>::operator() ()
     PARAMETER_VECTOR(pe_betas);
 
     // Dim
-    int nK = log_K.size();         // number of Ks estimated
-    int nY = log_B.rows();         // number of years
-    int nS = log_B.cols();         // number of species
+    int nK = scaled_log_K.size();         // number of Ks estimated
+    int nY = scaled_log_B.rows();         // number of years
+    int nS = scaled_log_B.cols();         // number of species
     int nL = L.size();
     int nI = I.size();
     int n_surveys = survey_covariates.rows();
 
     // Containers
+    vector<Type> log_B0(nS);
+    matrix<Type> log_B(nY, nS);
     matrix<Type> pred_B(nY, nS);
     matrix<Type> log_pred_B(nY, nS);
     array<Type> delta(nY, nS); // AR1 function expects an array
@@ -102,11 +106,38 @@ Type objective_function<Type>::operator() ()
     matrix<Type> L_mat(nY, nS);
     vector<Type> F(nL);
     vector<Type> log_F(nL);
+    vector<Type> log_K(nK);
     matrix<Type> K_mat(nY, nS);
     vector<Type> K_vec(nL);
     vector<Type> log_K_vec(nL);
     vector<Type> pred_log_q(n_surveys);
     vector<Type> pred_log_sd_I(n_surveys);
+
+    vector<Type> mean_log_K(nK);
+    vector<Type> log_sd_log_K(nK);
+    vector<Type> mean_log_B0(nS);
+    vector<Type> log_sd_log_B0(nS);
+
+    // Adjust scale
+    log_B0 = scaled_log_B0 - log_center;
+    for (int j = 0; j < nS; j++) {
+        for (int i = 0; i < nY; i++) {
+            log_B(i, j) = scaled_log_B(i, j) - log_center(j);
+        }
+    }
+    log_K = scaled_log_K - log_max;
+    if (scaled_log_K_option == 2) { // adjust scale if option = "random", otherwise use option input as is
+        mean_log_K = mean_scaled_log_K - log_max;
+    } else {
+        mean_log_K = mean_scaled_log_K;
+    }
+    if (scaled_log_B0_option == 2) { // adjust scale if option = "random", otherwise use option input as is
+        mean_log_B0 = mean_scaled_log_B0 - log_center;
+    } else {
+        mean_log_B0 = mean_scaled_log_B0;
+    }
+    log_sd_log_K = log_sd_scaled_log_K;
+    log_sd_log_B0 = log_sd_scaled_log_B0;
 
     // Transformations
     matrix<Type> B = exp(log_B.array());
@@ -147,12 +178,12 @@ Type objective_function<Type>::operator() ()
     Type nll = Type(0);
 
     // Priors / random effects
-    if (log_K_option > 1) {
+    if (scaled_log_K_option > 1) {
         for(int i = 0; i < log_K.size(); i++) {
             nll -= dnorm(log_K(i), mean_log_K(i), sd_log_K(i), true);
         }
     }
-    if (log_B0_option > 1) {
+    if (scaled_log_B0_option > 1) {
         for(int i = 0; i < log_B0.size(); i++) {
             nll -= dnorm(log_B0(i), mean_log_B0(i), sd_log_B0(i), true);
         }

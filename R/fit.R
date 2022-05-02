@@ -22,8 +22,7 @@
 par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
     ## When used inside the multispic function, key lists for TMB are edited
-    function (env, par_name, is_option = c("fixed", "coupled", "random", "prior"),
-              center = FALSE) {
+    function (env, par_name, is_option = c("fixed", "coupled", "random", "prior")) {
 
         par_length <- length(env$par[[par_name]])
 
@@ -37,8 +36,6 @@ par_option <- function(option = "fixed", mean = 0, sd = 1) {
 
         options <- factor(option, levels = c("fixed", "coupled", "random", "prior"))
         env$dat[[paste0(par_name, "_option")]] <- as.numeric(options) - 1
-
-        if (center) mean <- mean - env$log_center
 
         if (length(mean) == 1) {
             env$par[[paste0("mean_", par_name)]] <- rep(mean, par_length)
@@ -259,25 +256,24 @@ multispic <- function(inputs,
     index <- merge(index, unique_surveys, by = all.vars(survey_groups))
     index$survey <- factor(index$survey, levels = unique_surveys$survey) # ensure survey is a factor
 
-    ## Center index and landings by the mean(log(index) ~ K_group) to aid convergence
+    ## Calculate and log maximum aggregate index biomass by group for adjusting K values
+    ## and mean log index biomass by species for centering species specific values
+    ## to try and bring starting values close to zero.
     by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
     by_yr_grp <- paste(c("year", all.vars(K_groups)), collapse = " + ")
     by_grp <- ifelse(K_groups == ~1, "0", paste(all.vars(K_groups), collapse = " + "))
-    mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
-                            FUN = mean, data = index)
-    tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
-                                FUN = sum, data = mean_index)
-    log_center <- ifelse(center, mean(log(tot_mean_index$index)), 0)
-    index$index <- exp(log(index$index) - log_center)
-    landings$landings <- exp(log(landings$landings) - log_center)
-
-    ## Compute total landings by year to inform starting value for K
-    tot_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
-                              FUN = sum, data = landings)
-    max_landings <- aggregate(as.formula(paste("landings ~", by_grp)),
-                              FUN = max, data = tot_landings)$landings
-    mean_log_index <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)
-
+    if (center) {
+        mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
+                                FUN = function(x) exp(mean(log(x))), data = index)
+        tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
+                                    FUN = sum, data = mean_index)
+        log_max <- aggregate(as.formula(paste("index ~", by_grp)),
+                             FUN = function(x) log(max(x)), data = tot_mean_index)[, "index"]
+        log_center <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)[, "index"]
+    } else {
+        log_max <- rep(0, length(unique(K_map)))
+        log_center <- rep(0, nlevels(landings$species))
+    }
 
     ## Set-up the objects for TMB
     if (nlevels(landings$species) == 1) {
@@ -299,6 +295,8 @@ multispic <- function(inputs,
                 I_survey = index$survey_id,
                 I_sy = as.numeric(index$sy) - 1,
                 min_B = 0.00001,
+                log_max = log_max,
+                log_center = log_center,
                 nY = nlevels(landings$y),
                 nS = nlevels(landings$species),
                 survey_covariates = survey_model_mat,
@@ -309,18 +307,17 @@ multispic <- function(inputs,
                 keep = as.numeric(!index$left_out))
 
     if (is.null(start_par)) {
-        par <- list(log_B = matrix(ceiling(mean_log_index$index),
-                                   ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
-                    log_sd_B = rep(-2, nlevels(landings$species)),
+        par <- list(scaled_log_B = matrix(0, ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
+                    log_sd_B = rep(0, nlevels(landings$species)),
                     logit_rho = rep(0, n_rho),
                     logit_phi = 0,
-                    log_K = ceiling(log(max_landings)),
-                    log_B0 = ceiling(mean_log_index$index),
-                    log_r = rep(-2, nlevels(landings$species)),
+                    scaled_log_K = rep(0, length(unique(K_map))),
+                    scaled_log_B0 = rep(0, nlevels(landings$species)),
+                    log_r = rep(0, nlevels(landings$species)),
                     log_m = rep(log(2), nlevels(landings$species)),
-                    log_q = rep(-2, nrow(unique_surveys)),
+                    log_q = rep(0, nrow(unique_surveys)),
                     log_q_betas = rep(0, ncol(survey_model_mat)),
-                    log_sd_I = rep(-2, nrow(unique_surveys)),
+                    log_sd_I = rep(0, nrow(unique_surveys)),
                     log_sd_I_betas = rep(0, ncol(survey_model_mat)),
                     K_betas = rep(0, ncol(K_model_mat)),
                     pe_betas =  rep(0, ncol(pe_model_mat)))
@@ -329,11 +326,11 @@ multispic <- function(inputs,
     }
 
     map <- list(log_m = factor(rep(NA, nlevels(landings$species))))
-    random <- "log_B"
+    random <- "scaled_log_B"
 
     ## Augment dat, par, map, and random objects using par_option closures
-    log_K_option(environment(), "log_K", center = TRUE)
-    log_B0_option(environment(), "log_B0", center = TRUE)
+    log_K_option(environment(), "scaled_log_K")
+    log_B0_option(environment(), "scaled_log_B0")
     log_r_option(environment(), "log_r")
     log_sd_B_option(environment(), "log_sd_B")
     log_q_option(environment(), "log_q", is_option = c("fixed", "random", "prior"))
@@ -395,36 +392,33 @@ multispic <- function(inputs,
         stop("Model convergence issues detected: nlminb message = false convergence (8)")
     }
 
-    ## Reset scale
-    landings$landings <- exp(log(landings$landings) + log_center)
-    index$index <- exp(log(index$index) + log_center)
-
     ## Extract REPORT objects
     rep <- obj$report()
 
     index$log_index <- log(index$index)
-    index$log_pred_index <- rep$log_pred_I + log_center
+    index$log_pred_index <- rep$log_pred_I
     index$std_res <- rep$log_I_std_res
 
     pop <- landings
     pop$pe <- exp(rep$log_pe)
     pop$res_pe <- exp(rep$log_res_pe)
     pop$log_std_res_pe <- rep$log_std_res_pe
-    pop$B <- exp(log(rep$B_vec) + log_center)
-    pop$B_growth <- rep$B_growth * exp(log_center)
+    pop$B <- rep$B_vec
+    pop$B_growth <- rep$B_growth
     pop$F <- rep$F
-    pop$K <- exp(log(rep$K_vec) + log_center)
+    pop$K <- rep$K_vec
 
-    tot_pop <- tot_landings
-    tot_pop$landings <- exp(log(tot_pop$landings) + log_center)
-    tot_pop$B <- exp(log(c(rep$tot_B)) + log_center)
+    tot_pop <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
+                         FUN = sum, data = landings)
+    tot_pop$landings <- tot_pop$landings
+    tot_pop$B <- rep$tot_B
 
     se <- sd_rep <- par_lwr <- par_upr <- NULL
 
     if (!light) {
 
         ## Extract ADREPORT objects
-        sd_rep <- sdreport(obj)
+        sd_rep <- TMB::sdreport(obj)
 
         if (!sd_rep$pdHess) {
             stop("Model convergence issues detected: Hessian of fixed effects was not positive definite.")
@@ -445,43 +439,34 @@ multispic <- function(inputs,
         par_lwr <- lapply(seq_along(par), function(i) par[[i]] - 1.96 * se[[i]])
         par_upr <- lapply(seq_along(par), function(i) par[[i]] + 1.96 * se[[i]])
         names(par_lwr) <- names(par_upr) <- names(par)
-        par$log_B0 <- par$log_B0 + log_center
-        par$log_B <- par$log_B + log_center
-        par$log_K <- par$log_K + log_center
-        par_lwr$log_B0 <- par_lwr$log_B0 + log_center
-        par_lwr$log_B <- par_lwr$log_B + log_center
-        par_lwr$log_K <- par_lwr$log_K + log_center
-        par_upr$log_B0 <- par_upr$log_B0 + log_center
-        par_upr$log_B <- par_upr$log_B + log_center
-        par_upr$log_K <- par_upr$log_K + log_center
 
         ## Extract and append fits
         est <- split(unname(sd_rep$value), names(sd_rep$value))
         sd <- split(sd_rep$sd, names(sd_rep$value))
         lwr <- split(unname(sd_rep$value) - 1.96 * sd_rep$sd, names(sd_rep$val))
         upr <- split(unname(sd_rep$value) + 1.96 * sd_rep$sd, names(sd_rep$val))
-        index$pred <- exp(est$log_pred_I + log_center)
-        index$pred_lwr <- exp(lwr$log_pred_I + log_center)
-        index$pred_upr <- exp(upr$log_pred_I + log_center)
+        index$pred <- exp(est$log_pred_I)
+        index$pred_lwr <- exp(lwr$log_pred_I)
+        index$pred_upr <- exp(upr$log_pred_I)
 
         ## Extract population estimates
-        pop$B <- exp(est$log_B_vec + log_center)
-        pop$B_lwr <- exp(lwr$log_B_vec + log_center)
-        pop$B_upr <- exp(upr$log_B_vec + log_center)
+        pop$B <- exp(est$log_B_vec)
+        pop$B_lwr <- exp(lwr$log_B_vec)
+        pop$B_upr <- exp(upr$log_B_vec)
         pop$F <- exp(est$log_F)
         pop$F_lwr <- exp(lwr$log_F)
         pop$F_upr <- exp(upr$log_F)
-        pop$K <- exp(est$log_K_vec + log_center)
-        pop$K_lwr <- exp(lwr$log_K_vec + log_center)
-        pop$K_upr <- exp(upr$log_K_vec + log_center)
+        pop$K <- exp(est$log_K_vec)
+        pop$K_lwr <- exp(lwr$log_K_vec)
+        pop$K_upr <- exp(upr$log_K_vec)
 
-        tot_pop$B <- exp(est$log_tot_B + log_center)
-        tot_pop$B_lwr <- exp(lwr$log_tot_B + log_center)
-        tot_pop$B_upr <- exp(upr$log_tot_B + log_center)
+        tot_pop$B <- exp(est$log_tot_B)
+        tot_pop$B_lwr <- exp(lwr$log_tot_B)
+        tot_pop$B_upr <- exp(upr$log_tot_B)
 
-        tot_pop$K <- exp(est$log_grouped_K + log_center)
-        tot_pop$K_lwr <- exp(lwr$log_grouped_K + log_center)
-        tot_pop$K_upr <- exp(upr$log_grouped_K + log_center)
+        tot_pop$K <- exp(est$log_grouped_K)
+        tot_pop$K_lwr <- exp(lwr$log_grouped_K)
+        tot_pop$K_upr <- exp(upr$log_grouped_K)
 
         ## Replace log_q and log_sd_I with reported pred values
         ## (will be same values if option is "random")
@@ -512,10 +497,10 @@ multispic <- function(inputs,
     end_time <- Sys.time()
     run_dur <- end_time - start_time
 
-    out <- list(call = call, run_dur = run_dur, log_center = log_center, tmb_dat = dat,
-                obj = obj, opt = opt, sd_rep = sd_rep, rep = rep, par = par, se = se,
-                par_lwr = par_lwr, par_upr = par_upr, index = index, landings = landings,
-                pop = pop, tot_pop = tot_pop, mAIC = mAIC)
+    list(call = call, run_dur = run_dur, tmb_dat = dat,
+         obj = obj, opt = opt, sd_rep = sd_rep, rep = rep, par = par, se = se,
+         par_lwr = par_lwr, par_upr = par_upr, index = index, landings = landings,
+         pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
