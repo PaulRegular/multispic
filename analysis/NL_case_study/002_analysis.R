@@ -186,7 +186,8 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and process errors are independent across time and species
-    no_cor <- update(shared_cor, species_cor = "none", temporal_cor = "none")
+    no_cor <- update(shared_cor, species_cor = "none", temporal_cor = "none",
+                     start_par = if(r == "3Ps") as.list(shared_cor$sd_rep, "Est") else NULL)
     # no_cor$sd_rep
 
     full$loo <- run_loo(full)

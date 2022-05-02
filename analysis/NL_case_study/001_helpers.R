@@ -107,8 +107,8 @@ nl_inputs_and_priors <- function(region = "2J3K", species = NULL, K_groups = ~re
         lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
                               log(coverage_stats$coverage * 0.2))
     } else {
-        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.3),
-                              log(coverage_stats$coverage * 0.6))
+        lower_log_q <- ifelse(ind, log(coverage_stats$coverage * 0.2),
+                              log(coverage_stats$coverage * 0.5))
     }
     upper_log_q <- rep(log(1), nrow(log_cv_stats))
     mean_log_q <- (lower_log_q + upper_log_q) / 2
