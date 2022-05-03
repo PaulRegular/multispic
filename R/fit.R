@@ -387,9 +387,11 @@ multispic <- function(inputs,
     ## Fit model
     obj <- TMB::MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                           silent = silent, checkParameterOrder = FALSE)
-    opt <- nlminb(obj$par, obj$fn, obj$gr)
+    opt <- nlminb(obj$par, obj$fn, obj$gr,
+                  control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
     for (i in seq_len(nlminb_loops)) {
-        opt <- nlminb(opt$par, obj$fn, obj$gr)
+        opt <- nlminb(opt$par, obj$fn, obj$gr,
+                      control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
     }
     if (opt$message == "false convergence (8)") {
         stop("Model convergence issues detected: nlminb message = false convergence (8)")
@@ -512,10 +514,10 @@ multispic <- function(inputs,
     end_time <- Sys.time()
     run_dur <- end_time - start_time
 
-    out <- list(call = call, run_dur = run_dur, log_center = log_center, tmb_dat = dat,
-                obj = obj, opt = opt, sd_rep = sd_rep, rep = rep, par = par, se = se,
-                par_lwr = par_lwr, par_upr = par_upr, index = index, landings = landings,
-                pop = pop, tot_pop = tot_pop, mAIC = mAIC)
+    list(call = call, run_dur = run_dur, log_center = log_center, tmb_dat = dat,
+         obj = obj, opt = opt, sd_rep = sd_rep, rep = rep, par = par, se = se,
+         par_lwr = par_lwr, par_upr = par_upr, index = index, landings = landings,
+         pop = pop, tot_pop = tot_pop, mAIC = mAIC)
 
 }
 
