@@ -308,12 +308,12 @@ multispic <- function(inputs,
 
     if (is.null(start_par)) {
         par <- list(scaled_log_B = matrix(0, ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
-                    log_sd_B = rep(0, nlevels(landings$species)),
+                    log_sd_B = rep(-2, nlevels(landings$species)),
                     logit_rho = rep(0, n_rho),
                     logit_phi = 0,
                     scaled_log_K = rep(0, length(unique(K_map))),
                     scaled_log_B0 = rep(0, nlevels(landings$species)),
-                    log_r = rep(0, nlevels(landings$species)),
+                    log_r = rep(-2, nlevels(landings$species)),
                     log_m = rep(log(2), nlevels(landings$species)),
                     log_q = rep(0, nrow(unique_surveys)),
                     log_q_betas = rep(0, ncol(survey_model_mat)),
@@ -410,8 +410,7 @@ multispic <- function(inputs,
 
     tot_pop <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
                          FUN = sum, data = landings)
-    tot_pop$landings <- tot_pop$landings
-    tot_pop$B <- rep$tot_B
+    tot_pop$B <- c(rep$tot_B)
 
     se <- sd_rep <- par_lwr <- par_upr <- NULL
 

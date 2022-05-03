@@ -119,20 +119,20 @@ Type objective_function<Type>::operator() ()
     vector<Type> log_sd_log_B0(nS);
 
     // Adjust scale
-    log_B0 = scaled_log_B0 - log_center;
+    log_B0 = scaled_log_B0 + log_center;
     for (int j = 0; j < nS; j++) {
         for (int i = 0; i < nY; i++) {
-            log_B(i, j) = scaled_log_B(i, j) - log_center(j);
+            log_B(i, j) = scaled_log_B(i, j) + log_center(j);
         }
     }
-    log_K = scaled_log_K - log_max;
+    log_K = scaled_log_K + log_max;
     if (scaled_log_K_option == 2) { // adjust scale if option = "random", otherwise use option input as is
-        mean_log_K = mean_scaled_log_K - log_max;
+        mean_log_K = mean_scaled_log_K + log_max;
     } else {
         mean_log_K = mean_scaled_log_K;
     }
     if (scaled_log_B0_option == 2) { // adjust scale if option = "random", otherwise use option input as is
-        mean_log_B0 = mean_scaled_log_B0 - log_center;
+        mean_log_B0 = mean_scaled_log_B0 + log_center;
     } else {
         mean_log_B0 = mean_scaled_log_B0;
     }
