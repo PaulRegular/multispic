@@ -6,7 +6,7 @@
 
 source("analysis/NL_case_study/001_helpers.R")
 
-r <- "2J3K"
+r <- "3LNO"
 
 ## Limit to the most commonly caught species by region
 index_spp <- multispic::index |>
