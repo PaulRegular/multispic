@@ -1,9 +1,5 @@
 
 
-## Idea was to center K and log_B by species in template such that start par of 0 would be sensible.
-## Turns out it isn't helping (assuming it is implemented correctly).
-## Maybe the data should be scaled by species? But then what to do with K?
-
 source("analysis/NL_case_study/001_helpers.R")
 
 r <- "3LNO"
@@ -48,6 +44,8 @@ m <- multispic(inputs, species_cor = "none", temporal_cor = "none",
                                             mean = mean_pe_betas, sd = sd_pe_betas),
                n_forecast = 1, K_groups = ~species, survey_groups = ~species_survey,
                pe_covariates = ~0, K_covariates = ~0, silent = FALSE, nlminb_loops = 2)
+
+barplot(m$opt$par)
 
 
 
