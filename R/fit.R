@@ -314,7 +314,7 @@ multispic <- function(inputs,
                     logit_phi = 0,
                     scaled_log_K = rep(0, length(unique(K_map))),
                     scaled_log_B0 = rep(0, nlevels(landings$species)),
-                    log_r = rep(-2, nlevels(landings$species)),
+                    log_r = rep(-2.5, nlevels(landings$species)),
                     log_m = rep(log(2), nlevels(landings$species)),
                     log_q = rep(0, nrow(unique_surveys)),
                     log_q_betas = rep(0, ncol(survey_model_mat)),
@@ -386,10 +386,10 @@ multispic <- function(inputs,
     obj <- TMB::MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                           silent = silent, checkParameterOrder = FALSE)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
-                  control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
+                  control = list(iter.max = 2000, eval.max = 2000, rel.tol = 2e-10))
     for (i in seq_len(nlminb_loops)) {
         opt <- nlminb(opt$par, obj$fn, obj$gr,
-                      control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
+                      control = list(iter.max = 2000, eval.max = 2000, rel.tol = 2e-10))
     }
     if (opt$message == "false convergence (8)") {
         stop("Model convergence issues detected: nlminb message = false convergence (8)")
