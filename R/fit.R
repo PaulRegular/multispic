@@ -256,24 +256,25 @@ multispic <- function(inputs,
     index <- merge(index, unique_surveys, by = all.vars(survey_groups))
     index$survey <- factor(index$survey, levels = unique_surveys$survey) # ensure survey is a factor
 
-    ## Calculate and log maximum aggregate index biomass by group for adjusting K values
+    ## Calculate and log maximum aggregate landings by group for adjusting K values
     ## and mean log index biomass by species for centering species specific values
     ## to try and bring starting values close to zero.
     by_sp_yr_grp <- paste(c("species", "year", all.vars(K_groups)), collapse = " + ")
     by_yr_grp <- paste(c("year", all.vars(K_groups)), collapse = " + ")
     by_grp <- ifelse(K_groups == ~1, "0", paste(all.vars(K_groups), collapse = " + "))
+    tot_landings <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
+                              FUN = sum, data = landings)
     if (center) {
-        mean_index <- aggregate(as.formula(paste("index ~ ", by_sp_yr_grp)),
-                                FUN = function(x) exp(mean(log(x))), data = index)
-        tot_mean_index <- aggregate(as.formula(paste("index ~ ", by_yr_grp)),
-                                    FUN = sum, data = mean_index)
-        log_max <- aggregate(as.formula(paste("index ~", by_grp)),
-                             FUN = function(x) log(max(x)), data = tot_mean_index)[, "index"]
+        log_max <- log(aggregate(as.formula(paste("landings ~", by_grp)),
+                                 FUN = max, data = tot_landings)$landings)
         log_center <- aggregate(index ~ species, FUN = function(x) mean(log(x)), data = index)[, "index"]
     } else {
         log_max <- rep(0, length(unique(K_map)))
         log_center <- rep(0, nlevels(landings$species))
     }
+
+    ## Start values for log_sd_B and log_sd_I
+    log_sd <- log(aggregate(index ~ species, FUN = function(x) sd(log(x)) / 2, data = index)[, "index"])
 
     ## Set-up the objects for TMB
     if (nlevels(landings$species) == 1) {
@@ -308,7 +309,7 @@ multispic <- function(inputs,
 
     if (is.null(start_par)) {
         par <- list(scaled_log_B = matrix(0, ncol = dat$nS, nrow = dat$nY, byrow = TRUE),
-                    log_sd_B = rep(-1, nlevels(landings$species)),
+                    log_sd_B = rep(0, nlevels(landings$species)),
                     logit_rho = rep(0, n_rho),
                     logit_phi = 0,
                     scaled_log_K = rep(0, length(unique(K_map))),
@@ -318,7 +319,7 @@ multispic <- function(inputs,
                     log_q = rep(0, nrow(unique_surveys)),
                     log_q_betas = rep(0, ncol(survey_model_mat)),
                     log_sd_I = rep(0, nrow(unique_surveys)),
-                    log_sd_I_betas = c(-1, rep(0, ncol(survey_model_mat) - 1)),
+                    log_sd_I_betas = c(0, rep(0, ncol(survey_model_mat) - 1)),
                     K_betas = rep(0, ncol(K_model_mat)),
                     pe_betas =  rep(0, ncol(pe_model_mat)))
     } else {
@@ -410,8 +411,7 @@ multispic <- function(inputs,
     pop$F <- rep$F
     pop$K <- rep$K_vec
 
-    tot_pop <- aggregate(as.formula(paste("landings ~ ", by_yr_grp)),
-                         FUN = sum, data = landings)
+    tot_pop <- tot_landings
     tot_pop$B <- c(rep$tot_B)
 
     se <- sd_rep <- par_lwr <- par_upr <- NULL
