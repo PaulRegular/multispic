@@ -66,11 +66,6 @@ index <- index |>
 index <- index |>
     filter(!species %in% c("Roughhead Grenadier", "Roundnose Grenadier"))
 
-## Drop extreme values from 2007 and 2019 for Redfish as these were likely incursions of
-## Redfish from the Gulf of St. Lawerence
-index <- index |>
-    filter(!(species == "Redfish spp." & year %in% c(2007, 2019)))
-
 ## Drop species with a partial series
 ## (less than 30 years of data or if species isn't present across each series)
 ## Zeros are also an occasional problem, especially early in the time series.
