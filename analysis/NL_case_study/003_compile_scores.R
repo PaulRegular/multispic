@@ -7,34 +7,25 @@ normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
 
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
-    spp_fits <- readRDS(paste0("analysis/NL_case_study/exports/spp_fits_", r, ".rds"))
-    models <- names(spp_fits)
+    fits <- readRDS(paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
+    models <- names(fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation", "No correlation")
+                       "Just temporal correlation", "No correlation", "Single-species")
 
-    spp_loo_dat <- lapply(models, function (m) {
-        spp_fit <- spp_fits[[m]]
+    loo_dat <- lapply(models, function (m) {
+        fit <- fits[[m]]
         data.frame(model = names(models)[models == m],
-                   n_index = nrow(spp_fit$index),
-                   n_random = length(spp_fit$sd_rep$par.random),
-                   n_fixed = length(spp_fit$sd_rep$par.fixed),
-                   rec_id = seq(nrow(spp_fit$loo$preds)),
-                   spp_fit$loo$preds)
+                   n_index = nrow(fit$index),
+                   n_random = length(fit$sd_rep$par.random),
+                   n_fixed = length(fit$sd_rep$par.fixed),
+                   rec_id = seq(nrow(fit$loo$preds)),
+                   fit$loo$preds)
     })
-    spp_loo_dat <- do.call(rbind, spp_loo_dat)
+    loo_dat <- do.call(rbind, loo_dat)
 
-    sp_fit <- readRDS(paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
-    sp_loo_dat <- data.frame(model = "Single-species",
-                             n_index = nrow(sp_fit$index),
-                             n_random = length(sp_fit$sd_rep$par.random),
-                             n_fixed = length(sp_fit$sd_rep$par.fixed),
-                             rec_id = seq(nrow(sp_fit$loo$preds)),
-                             sp_fit$loo$preds)
-
-    r_loo_dat <- rbind(spp_loo_dat, sp_loo_dat)
-    r_loo_dat$model <- factor(r_loo_dat$model, levels = c(names(models), "Single-species"))
-    r_loo_dat
+    loo_dat$model <- factor(loo_dat$model, levels = names(models))
+    loo_dat
 
 })
 loo_dat <- do.call(rbind, loo_dat)
@@ -80,31 +71,23 @@ overall_loo_scores <- loo_dat |>
 drop_years <- vector(mode = "character")
 hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
-    spp_fits <- readRDS(paste0("analysis/NL_case_study/exports/spp_fits_", r, ".rds"))
-    models <- names(spp_fits)
+    fits <- readRDS(paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
+    models <- names(fits)
     names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
                        "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation", "No correlation")
+                       "Just temporal correlation", "No correlation", "Single-species")
 
-    spp_hind_dat <- lapply(models, function (m) {
-        missing_years <<- is.na(spp_fits[[m]]$retro$retro_fits) |> which() |> names()
+    hind_dat <- lapply(models, function (m) {
+        missing_years <<- is.na(fits[[m]]$retro$retro_fits) |> which() |> names()
         if (length(missing_years) > 0) missing_years <<- paste0(r, "-", missing_years)
         drop_years <<- c(drop_years, missing_years)
         # cat(r, "|", m, "| missing years:", missing_years, "\n\n")
-        data.frame(model = names(models)[models == m], spp_fits[[m]]$retro$hindcasts)
+        data.frame(model = names(models)[models == m], fits[[m]]$retro$hindcasts)
     })
-    spp_hind_dat <- do.call(rbind, spp_hind_dat)
+    hind_dat <- do.call(rbind, hind_dat)
 
-    sp_fit <- readRDS(paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
-    sp_hind_dat <- data.frame(model = "Single-species", sp_fit$retro$hindcasts)
-
-    missing_years <<- is.na(sp_fit$retro$retro_fits) |> which() |> names()
-    if (length(missing_years) > 0) missing_years <<- paste0(r, "-", missing_years)
-    drop_years <<- c(drop_years, missing_years)
-
-    r_hind_dat <- rbind(spp_hind_dat, sp_hind_dat)
-    r_hind_dat$model <- factor(r_hind_dat$model, levels = c(names(models), "Single-species"))
-    r_hind_dat
+    hind_dat$model <- factor(hind_dat$model, levels = names(models))
+    hind_dat
 
 })
 hind_dat <- do.call(rbind, hind_dat)

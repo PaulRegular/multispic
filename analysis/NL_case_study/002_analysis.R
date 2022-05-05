@@ -17,7 +17,6 @@
 
 ## Consider:
 ## - make a tidy_par function and name par using factor levels
-## - consider imposing a mean change in the collapse era (current fit is using K to cause the collapse)
 ## - consider dropping approximate uniform prior option
 
 ## Dev notes:
@@ -35,13 +34,9 @@ source("analysis/NL_case_study/001_helpers.R")
 multispic::index |> filter(gear == "Campelen") |> pull(year) |> unique() |> length()
 
 
-## Species-specific analyses -----------------------------------------------------------------------
-
-## Run single-species analysis first = NULL model
-## Hypothesis: population dynamics are independent and governed by species-specific K
-
 for (r in c("2J3K", "3LNO", "3Ps")) {
-# for (r in c("3LNO", "3Ps")) {
+
+    message("\n", r)
 
     ## Limit to the most commonly caught species by region
     index_spp <- multispic::index |>
@@ -60,6 +55,8 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = spp, K_groups = ~species), envir = globalenv())
 
+    ## Run single-species analysis first = NULL model
+    ## Hypothesis: population dynamics are independent and governed by species-specific K
     null <- multispic(inputs, species_cor = "none", temporal_cor = "none",
                       log_K_option = par_option(option = "prior",
                                                 mean = mean_log_K, sd = sd_log_K),
@@ -82,29 +79,10 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~species, survey_groups = ~species_survey,
-                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE, nlminb_loops = 2)
+                      pe_covariates = ~0, K_covariates = ~0, silent = TRUE, nlminb_loops = 0)
     # null$sd_rep
     # vis_multispic(null)
 
-    null$loo <- run_loo(null)
-    null$retro <- run_retro(null, folds = 20)
-
-    saveRDS(null, file = paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
-
-}
-
-
-
-## Multispecies analysis ---------------------------------------------------------------------------
-
-for (r in c("2J3K", "3LNO", "3Ps")) {
-# for (r in c("3LNO", "3Ps")) {
-
-    message("\n", r)
-
-    null <- readRDS(paste0("analysis/NL_case_study/exports/sp_fits_", r, ".rds"))
-    spp <- levels(null$landings$species)
-    spp <- gsub(paste0("-", r), "", spp)
 
     list2env(nl_inputs_and_priors(region = r, species = spp), envir = globalenv())
 
@@ -133,7 +111,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE, nlminb_loops = 2)
+                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE, nlminb_loops = 0)
     # full$sd_rep
     # vis_multispic(full)
 
@@ -190,6 +168,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                      start_par = if(r == "3Ps") as.list(shared_cor$sd_rep, "Est") else NULL)
     # no_cor$sd_rep
 
+    null$loo <- run_loo(null)
     full$loo <- run_loo(full)
     just_covar$loo<- run_loo(just_covar)
     just_shift$loo <- run_loo(just_shift)
@@ -200,6 +179,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     just_temporal_cor$loo  <- run_loo(just_temporal_cor)
     no_cor$loo  <- run_loo(no_cor)
 
+    null$retro <- run_retro(null, folds = 20)
     full$retro <- run_retro(full, folds = 20)
     just_covar$retro<- run_retro(just_covar, folds = 20)
     just_shift$retro <- run_retro(just_shift, folds = 20)
@@ -211,9 +191,9 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
     no_cor$retro  <- run_retro(no_cor, folds = 20)
 
     fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
-                   "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor"))
+                   "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor", "null"))
 
-    saveRDS(fits, file = paste0("analysis/NL_case_study/exports/spp_fits_", r, ".rds")) # spp = multiple species
+    saveRDS(fits, file = paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
 
 }
 

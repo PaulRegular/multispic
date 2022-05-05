@@ -388,10 +388,10 @@ multispic <- function(inputs,
     obj <- TMB::MakeADFun(dat, par, map = map, random = random, DLL = "multispic",
                           silent = silent, checkParameterOrder = FALSE)
     opt <- nlminb(obj$par, obj$fn, obj$gr,
-                  control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
+                  control = list(iter.max = 2000, eval.max = 2000, rel.tol = 2e-10))
     for (i in seq_len(nlminb_loops)) {
         opt <- nlminb(opt$par, obj$fn, obj$gr,
-                      control = list(iter.max = 2000, eval.max = 1000, rel.tol = 2e-10))
+                      control = list(iter.max = 2000, eval.max = 2000, rel.tol = 2e-10))
     }
     if (opt$message == "false convergence (8)") {
         stop("Model convergence issues detected: nlminb message = false convergence (8)")

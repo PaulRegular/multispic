@@ -12,13 +12,13 @@ save_html <- function(p, file = file, selfcontained = TRUE, ...) {
 
 ## Plot trends estimated by the just correlation model
 
-fits_2J3K <- readRDS("analysis/NL_case_study/exports/spp_fits_2J3K.rds")
+fits_2J3K <- readRDS("analysis/NL_case_study/exports/fits_2J3K.rds")
 fit_2J3K <- fits_2J3K$just_cor
 
-fits_3LNO <- readRDS("analysis/NL_case_study/exports/spp_fits_3LNO.rds")
+fits_3LNO <- readRDS("analysis/NL_case_study/exports/fits_3LNO.rds")
 fit_3LNO <- fits_3LNO$just_cor
 
-fits_3Ps <- readRDS("analysis/NL_case_study/exports/spp_fits_3Ps.rds")
+fits_3Ps <- readRDS("analysis/NL_case_study/exports/fits_3Ps.rds")
 fit_3Ps <- fits_3Ps$just_cor
 
 spp_2J3K <- gsub("-2J3K", "", levels(fit_2J3K$landings$species))
