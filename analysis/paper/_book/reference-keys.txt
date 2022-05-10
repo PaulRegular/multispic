@@ -1,5 +1,8 @@
 eq:pro
 eq:obs
 eq:logistic
+eq:ms-logistic
 eq:ms-pro
 eq:ms-obs
+eq:ar1
+eq:sigma

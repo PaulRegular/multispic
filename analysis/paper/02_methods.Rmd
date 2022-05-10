@@ -5,9 +5,9 @@
 Trends in fish populations have frequently been described using state-space biomass dynamic models of the form
 
 \begin{align}
-B_y =& \left ( B_{y-1} + g(B_{y-1}) - C_{y-1} \right ) e^{\delta_y} & (\#eq:pro) \\
+B_y =& \left ( B_{y-1} + g(B_{y - 1}) - C_{y - 1} \right ) e^{\delta_y} & (\#eq:pro) \\
 \\
-I_{y,i} =& q_i B_y e^{\varepsilon_{y,i}} & (\#eq:obs)
+I_{y, i} =& q_i B_y e^{\varepsilon_{y, i}} & (\#eq:obs)
 \end{align}
 
 where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year $y$, $g(B)$ is production as a function of biomass, $I_{y,s}$ is an index of relative abundance in year $y$ from survey $i$, $q_i$ is the time-invariant catchability coefficient for survey index $i$, $\delta$ is process error, and $\varepsilon$ is observation error. Statistical challenges aside, the most difficult aspect of this model to parameterize is the production function as it needs to capture changes caused by growth, recruitment, and natural mortality. Schaefer [-@schaefer1954] proposed a solution by applying the logistic equation to describe self-limiting growth, 
@@ -22,16 +22,38 @@ where $r$ is the maximum per-capita rate of change and $K$ is the carrying capac
 g(B_s) = r_s B_s \left (1 - \frac{\sum_{s} B_s}{K} \right ). & (\#eq:ms-logistic)
 \end{align}
 
-While intrinsic rates of growth may vary across species, this formulation implies that the growth of all species is ultimately limited by the finite amount of energy in a region. Combining equations \@ref(eq:pro), \@ref(eq:obs), and \@ref(eq:ms-logistic), our model becomes
+While intrinsic rates of growth may vary across species, this formulation implies that the growth of all species is ultimately limited by the finite amount of energy in a region (i.e., as the population in the system increases towards $K$, year-over-year growth of all species slows). Combining equations \@ref(eq:pro), \@ref(eq:obs), and \@ref(eq:ms-logistic), our model becomes
 
 \begin{align}
-B_{y,s} =& \left ( B_{y-1,s} + r_s B_{y-1,s} \left (1 - \frac{\sum_{s} B_{y-1,s}}{K} \right ) - C_{y-1,s} \right ) e^{\delta_{y,s}} & (\#eq:ms-pro) \\
+B_{y, s} =& \left ( B_{y-1, s} + r_s B_{y-1, s} \left (1 - \frac{\sum_{s} B_{y-1, s}}{K} \right ) - C_{y - 1, s} \right ) e^{\delta_{y, s}} & (\#eq:ms-pro) \\
 \\
-I_{y,i,s} =& q_{i,s} B_{y,s} e^{\varepsilon_{y,i,s}}. & (\#eq:ms-obs)
+I_{y, i, s} =& q_{i, s} B_{y, s} e^{\varepsilon_{y, i, s}}. & (\#eq:ms-obs)
+\end{align}
+
+The inclusion of multiple species in the model also permits the estimation of covariance. Beyond the global limiting effect of $K$, species interactions may elicit positive or negative population responses resulting from direct or indirect associations. We therefore apply the multivariate normal distribution to account for the possibility that process errors are not independent across species. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change slowly through time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
+
+\begin{align}
+\delta_{0, s} \sim& N(0, \Sigma_s) & \\
+\delta_{1, s} =& \phi \delta_{0} + \sigma_s \varepsilon_{1}, \quad \varepsilon_{1} \sim N(0, \Sigma_s)  & (\#eq:ar1) \\
+\delta_{y, s} =& \phi \delta_{y - 1} + \sigma_s \varepsilon_{y}, \quad \varepsilon_{y} \sim N(0, \Sigma_s) & 
+\end{align}
+
+and
+
+\begin{align}
+\Sigma_s = \begin{bmatrix}
+\sigma^2_{1} &  \sigma_{1} \sigma_{2} \rho_{1,2}  & \dots &  \sigma_{1} \sigma_{s} \rho_{1,s} & \\
+\sigma_{2} \sigma_{1} \rho_{2,1}       & \sigma^2_{2}     & \dots & \sigma_{2} \sigma_{s} \rho_{2,s}  & \\
+\vdots & \vdots &  \ddots     &  \vdots & \\
+\sigma_{s} \sigma_{1} \rho_{s,1} & \sigma_{s} \sigma_{2} \rho_{s,2} & \dots  &  \sigma^2_{s} &
+\end{bmatrix}. & (\#eq:sigma)
 \end{align}
 
 
-...next describe errors and note covariate options (note that covarate option for r was not implemented as this is a long-term vital rate shaped by natural selection).
+
+- Describe rho and phi
+- next describe observation error - like Millar and Meyer, use tau to rater than sigma
+- note that covarate option for r was not implemented as this is a long-term vital rate shaped by natural selection.
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
