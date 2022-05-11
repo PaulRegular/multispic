@@ -30,7 +30,7 @@ B_{y, s} =& \left ( B_{y-1, s} + r_s B_{y-1, s} \left (1 - \frac{\sum_{s} B_{y-1
 I_{y, i, s} =& q_{i, s} B_{y, s} e^{\varepsilon_{y, i, s}}. & (\#eq:ms-obs)
 \end{align}
 
-The inclusion of multiple species in the model also permits the estimation of covariance. Beyond the global limiting effect of $K$, species interactions may elicit positive or negative population responses resulting from direct or indirect associations. We therefore apply the multivariate normal distribution to account for the possibility that process errors are not independent across species. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change slowly through time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
+The inclusion of multiple species in the model also permits the estimation of covariance. Beyond the global limiting effect of $K$, species interactions may elicit positive or negative population responses resulting from direct or indirect associations. We therefore apply the multivariate normal distribution to account for the possibility that process errors are not independent across species. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change slowly through time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was therefore applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
 
 \begin{align}
 \delta_{0, s} \sim& N(0, \Sigma_s) & \\
@@ -49,9 +49,8 @@ and
 \end{bmatrix}. & (\#eq:sigma)
 \end{align}
 
+The degree of temporal correlation is controlled by $\phi$, where low to high correlation is represented by values between 0 and 1, and species-to-species correlations are described by $\rho_{s, s}$, where negative an positive correlation is represented by values between -1 and 1. This is a flexible structure that allows for the testing of alternate hypotheses that process errors are independent through time or across species (i.e, $\phi = 0$ or $\rho_{s, s} = 0$). The possibility that process errors are similarly correlated across all species may also be tested by estimating only one $\rho$ parameter. Finally, the magnitude of the process error deviations are controlled by the species-specific standard deviation parameters, $\sigma_s$.
 
-
-- Describe rho and phi
 - next describe observation error - like Millar and Meyer, use tau to rater than sigma
 - note that covarate option for r was not implemented as this is a long-term vital rate shaped by natural selection.
 
