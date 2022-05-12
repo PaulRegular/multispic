@@ -51,9 +51,8 @@ and
 
 The degree of temporal correlation is controlled by $\phi$, where values between 0 to 1 represent low to high correlation, and species-to-species correlations are described by $\rho_{s, s}$, where values between -1 to 1 represent negative to positive correlation. This is a flexible structure that allows for the testing of alternate hypotheses that process errors are independent through time or across species (i.e, $\phi = 0$ or $\rho_{s, s} = 0$). The possibility that process errors are similarly correlated across all species may also be tested by estimating only one $\rho$ parameter. Finally, the magnitude of the process error deviations are controlled by the species-specific standard deviation parameters, $\sigma_s$.
 
+Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect. Two options were implemented, one that affects the process errors by substituting $e^{\delta{y,s}}$ in equation \@ref(eq:ms-pro) with $e^{\beta_{\delta} X^{\delta}_{y,s} + \delta_{y, s}}$, and another that affects the carrying capacity by substituting $K$ in equation \@ref(eq:ms-pro) with $K e^{\beta_K X^K_{y}}$. The idea is that some factors may affect positive or negative changes in the populations while others may affect change in the total carrying capacity of the system. A covariate option for intrinsic rates of increase was not implemented as one goal of this model is to obtain estimates of this vital rate, which is not expected to change rapidly as it is shaped by natural selection [@hutchings2021].
 
-
-- note that covarate option for r was not implemented as this is a long-term vital rate shaped by natural selection.
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
