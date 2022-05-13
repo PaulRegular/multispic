@@ -53,6 +53,16 @@ The degree of temporal correlation is controlled by $\phi$, where values between
 
 Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect. Two options were implemented, one that affects the process errors by substituting $e^{\delta{y,s}}$ in equation \@ref(eq:ms-pro) with $e^{\beta_{\delta} X^{\delta}_{y,s} + \delta_{y, s}}$, and another that affects the carrying capacity by substituting $K$ in equation \@ref(eq:ms-pro) with $K e^{\beta_K X^K_{y}}$. The idea is that some factors may affect positive or negative changes in the populations while others may affect change in the total carrying capacity of the system. A covariate option for intrinsic rates of increase was not implemented as one goal of this model is to obtain estimates of this vital rate, which is not expected to change rapidly as it is shaped by natural selection [@hutchings2021].
 
+## Statistical framework {-}
+
+This model was implemented using template model builder [TMB\; @kristensen2015], which is package for R [@R] that enables the fitting of complex nonlinear random effects such as the latent $B$ variable in state-space biomass dynamic models (equation \@ref(eq:pro)). Such variables are not directly measured but are inferred indirectly via observed values. Data fitting is accomplished using a combination of Laplace approximation and automatic differentiation to evaluate the joint likelihood [@kristensen2015]. Like the production model descried by Pedersen et al. [-@pedersen2017], both frequentist and Bayesian inference of model parameters are possible. In development, we found that estimation was generally more successful when vaguely informative priors are specified as parameters were, in some cases, not identifiable when unconstrained.
+
+## Case study {-}
+
+### Data {-}
+
+### Priors {-}
+
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
