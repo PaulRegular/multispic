@@ -2,7 +2,7 @@
 
 ## Model formulation {-}
 
-Trends in fish populations have frequently been described using state-space biomass dynamic models of the form
+Trends in fish populations have frequently been described using state-space production models of the form
 
 \begin{align}
 B_y =& \left ( B_{y-1} + g(B_{y - 1}) - C_{y - 1} \right ) e^{\delta_y} & (\#eq:pro) \\
@@ -51,15 +51,26 @@ and
 
 The degree of temporal correlation is controlled by $\phi$, where values between 0 to 1 represent low to high correlation, and species-to-species correlations are described by $\rho_{s, s}$, where values between -1 to 1 represent negative to positive correlation. This is a flexible structure that allows for the testing of alternate hypotheses that process errors are independent through time or across species (i.e, $\phi = 0$ or $\rho_{s, s} = 0$). The possibility that process errors are similarly correlated across all species may also be tested by estimating only one $\rho$ parameter. Finally, the magnitude of the process error deviations are controlled by the species-specific standard deviation parameters, $\sigma_s$.
 
-Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect. Two options were implemented, one that affects the process errors by substituting $e^{\delta{y,s}}$ in equation \@ref(eq:ms-pro) with $e^{\beta_{\delta} X^{\delta}_{y,s} + \delta_{y, s}}$, and another that affects the carrying capacity by substituting $K$ in equation \@ref(eq:ms-pro) with $K e^{\beta_K X^K_{y}}$. The idea is that some factors may affect positive or negative changes in the populations while others may affect change in the total carrying capacity of the system. A covariate option for intrinsic rates of increase was not implemented as one goal of this model is to obtain estimates of this vital rate, which is not expected to change rapidly as it is shaped by natural selection [@hutchings2021].
+Minor extensions of the formulation also permits the fitting of covariates which may describe an underlying linear effect. Two options were implemented, one that affects the process errors by substituting $e^{\delta{y,s}}$ in equation \@ref(eq:ms-pro) with $e^{\beta_{\delta} X^{\delta}_{y,s} + \delta_{y, s}}$, and another that affects the carrying capacity by substituting $K$ in equation \@ref(eq:ms-pro) with $K e^{\beta_K X^K_{y}}$. The idea is that some factors may affect positive or negative changes in the populations while others may affect change in the total carrying capacity of the system. A covariate option for intrinsic rates of increase was not implemented as one goal of this model is to obtain estimates of this vital rate, which is not expected to change rapidly as it is shaped by natural selection [@hutchings2021]. The formulation was also modified to fit the single-species Schaefer production function by dropping the summation of biomass in equation \@ref(eq:ms-pro) and estimating species-specific carrying capacities, $K_s$ (i.e., apply equation \@ref(eq:logistic) indexed by species).
 
 ## Statistical framework {-}
 
-This model was implemented using template model builder [TMB\; @kristensen2015], which is package for R [@R] that enables the fitting of complex nonlinear random effects such as the latent $B$ variable in state-space biomass dynamic models (equation \@ref(eq:pro)). Such variables are not directly measured but are inferred indirectly via observed values. Data fitting is accomplished using a combination of Laplace approximation and automatic differentiation to evaluate the joint likelihood [@kristensen2015]. Like the production model descried by Pedersen et al. [-@pedersen2017], both frequentist and Bayesian inference of model parameters are possible. In development, we found that estimation was generally more successful when vaguely informative priors are specified as parameters were, in some cases, not identifiable when unconstrained.
+This model was implemented using template model builder [TMB\; @kristensen2015], which is package for R [@R] that enables the fitting of complex nonlinear random effects such as the latent $B$ variable in state-space production models (equation \@ref(eq:pro)). Such variables are not directly measured but are inferred indirectly via observed values. Data fitting is accomplished using a combination of Laplace approximation and automatic differentiation to evaluate the joint likelihood [@kristensen2015]. Like the production model descried by Pedersen et al. [-@pedersen2017], both frequentist and Bayesian inference of model parameters are possible. In development, we found that estimation was generally more successful when vaguely informative priors are specified as parameters were, in some cases, not identifiable when unconstrained.
 
 ## Case study {-}
 
 ### Data {-}
+
+The multispecies production model described above requires two basic inputs for one or more species in a region: 1) a time-series of catch ($C_{y,s}$ in equation \@ref(eq:ms-pro)), and 2) an index of population size ($I_{y,s}$ in equation \@ref(eq:ms-obs)). The Northwest Atlantic Fisheries Organization (NAFO) and Fisheries and Oceans Canada (DFO) has been collecting and curating such information for multiple fish populations along the shelves of Newfoundland and Labrador since the 1970s. 
+
+Given the availability of data, the presence of regions with distinct productivity and a reasonably well defined marine community [i.e. ecosystem production units; @pepin2014], ...also note something about dynamic history of the fisheries in the region...and these factors make this a good area for a case study...cross-ref Rick's map.
+
+
+Multiple demersal fish populations have been commercially exploited since the colonization of 
+
+Fisheries and Oceans Canada has actively surveyed fish populations along the shelves of Newfoundland and Labrador since the early 1970s. Many of these populations, such as Atlantic cod *Gadus morhua*, were commercially exploited long before the commencement of the survey
+
+History of survey reference [@chadwick2007]
 
 ### Priors {-}
 
