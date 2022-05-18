@@ -1,3 +1,14 @@
 
 # Figures {-}
 
+
+
+```{r epu-map, fig.cap = "Map of Newfoundland and Labrador (NL) case study area showing the Northeast NL Shelf (purple), Grand Bank (green), and Southern NL (yellow) ecosystem production units.", fig.height = 5}
+
+img <- load.image(here("analysis/paper/figures/epu_map.png"))
+par(mar = c(0,0,0,0))
+plot(img, axes = FALSE)
+
+```
+
+\pagebreak
