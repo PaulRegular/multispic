@@ -68,8 +68,17 @@ Catch data were extracted from the STATLANT 21A database maintained by NAFO (htt
 
 ### Priors {-}
 
-The priors chosen for our case study were loosely based on priors used by Froese et al. [-@froese2017]. For simplicity, all priors were normally distributed and the upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. For $\log(r)$, $\log(0.01)$ and $\log(0.1)$ were chosen as the upper and lower inflection points. 
+The priors chosen for our case study were loosely based on priors used by Froese et al. [-@froese2017]. For simplicity, all priors were normally distributed and upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. 
 
+#### *Intrinsic growth rate, $r$, and carrying capacity, $K$* {-}
+
+To capture a broad range of predicted intrinsic growth rates for all fishes worldwide [@thorson2020], 0.01 and 0.1 were chosen as the lower, $r_l$, and upper, $r_u$, values; this translate to a normal prior with a mean of -1.15 and a standard deviation of 1.15 on the log-scale. The log-scale $K$ prior was informed by total levels of catch and $r_l$ and $r_u$,
+
+\begin{align}
+K_l = \frac{\max(\Sigma_s C_{s,y})}{r_u}, K_u = \frac{4 \max(\Sigma_s C_{s,y})}{r_l} & (\#eq:k-prior)
+\end{align}
+
+where $K_l$ and $K_u$ are the lower and upper values. On the lower end, this prior imposes the assumption that the fishery is unlikely to have caught more fish in a single year than the system is capable of supporting and, on the upper end, it assumes that the maximum observed catch represents a portion of the true carrying capacity of the system [*sensu* @froese2017]. The division by the lower and upper values for $r$ also accounts for the potential range of productivity. Note that the maximum time-series catches are species specific when estimating species-specific carrying capacities.
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->

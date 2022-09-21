@@ -6,4 +6,5 @@ eq:ms-pro
 eq:ms-obs
 eq:ar1
 eq:sigma
+eq:k-prior
 fig:epu-map
