@@ -33,8 +33,8 @@ I_{y, i, s} =& q_{i, s} B_{y, s} e^{\varepsilon_{y, i, s}}. & (\#eq:ms-obs)
 The inclusion of multiple species in the model permits the estimation of covariance. While covarying changes in observed populations may be described using observation errors, we assume that most covariance stems from population processes. We therefore assume that observation errors are independent and normal distribution such that $\varepsilon_{y, i, s} \sim N(0, \tau_{i, s})$, where the standard deviation parameter $\tau_{i, s}$ represents species and survey specific levels of observation error. A more flexible error structure is used to describe the process errors as ecological processes may contribute to species or temporal dependencies. Beyond the global limiting effect of $K$, species interactions may elicit positive or negative population responses resulting from direct or indirect associations. We therefore apply the multivariate normal distribution to account for the possibility that process errors are not independent across species. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change slowly through time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was therefore applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
 
 \begin{align}
-\delta_{0, s} \sim& N(0, \Sigma_s) & \\
-\delta_{1, s} =& \phi \delta_{0} + \sigma_s \varepsilon_{1}, \quad \varepsilon_{1} \sim N(0, \Sigma_s)  & (\#eq:ar1) \\
+\delta_{1, s} \sim& N(0, \Sigma_s) & \\
+\delta_{2, s} =& \phi \delta_{1} + \sigma_s \varepsilon_{2}, \quad \varepsilon_{2} \sim N(0, \Sigma_s)  & (\#eq:ar1) \\
 \delta_{y, s} =& \phi \delta_{y - 1} + \sigma_s \varepsilon_{y}, \quad \varepsilon_{y} \sim N(0, \Sigma_s) & 
 \end{align}
 
@@ -68,17 +68,28 @@ Catch data were extracted from the STATLANT 21A database maintained by NAFO (htt
 
 ### Priors {-}
 
-The priors chosen for our case study were loosely based on priors used by Froese et al. [-@froese2017]. For simplicity, all priors were normally distributed and upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. 
+For simplicity, all priors were normally distributed and upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. Upper and lower values were based on previous research or knowledge to impose fairly generic and vaguely informative priors.
 
-#### *Intrinsic growth rate, $r$, and carrying capacity, $K$* {-}
+#### *Intrinsic growth rate, $r_s$, and carrying capacity, $K$* {-}
 
 To capture a broad range of predicted intrinsic growth rates for all fishes worldwide [@thorson2020], 0.01 and 0.1 were chosen as the lower, $r_l$, and upper, $r_u$, values; this translate to a normal prior with a mean of -1.15 and a standard deviation of 1.15 on the log-scale. The log-scale $K$ prior was informed by total levels of catch and $r_l$ and $r_u$,
 
 \begin{align}
-K_l = \frac{\max(\Sigma_s C_{s,y})}{r_u}, K_u = \frac{4 \max(\Sigma_s C_{s,y})}{r_l} & (\#eq:k-prior)
+K_l = \frac{\max(\Sigma_s C_{y,s})}{r_u}, K_u = \frac{4 \max(\Sigma_s C_{y,s})}{r_l} & (\#eq:k-prior)
 \end{align}
 
 where $K_l$ and $K_u$ are the lower and upper values. On the lower end, this prior imposes the assumption that the fishery is unlikely to have caught more fish in a single year than the system is capable of supporting and, on the upper end, it assumes that the maximum observed catch represents a portion of the true carrying capacity of the system [*sensu* @froese2017]. The division by the lower and upper values for $r$ also accounts for the potential range of productivity. Note that the maximum time-series catches are species specific when estimating species-specific carrying capacities.
+
+#### *Starting biomass, $B_{1,s}$* {-}
+
+Like $K$, catch was used to constrain the plausible range of the biomass at the beginning of the time series, $B_{1,s}$, which we will denote as $B0$ to simplify notation. Specifically,  
+
+\begin{align}
+B0_l = \frac{C_{1,s}}{r_u}, B0_u = \frac{4 C_{1,s}}{r_l} & (\#eq:b0-prior)
+\end{align}
+
+where $B0_l$ and $B0_u$ are the lower and upper values that are log transformed to define the normal prior for $\log(B0)$. Again, adjusting for the potential range of productivity from $r_l$ to $r_u$, this assumes that the fishery did not catch all of the biomass in the first year and it assumes that the catch represents a portion of the biomass in the first year. A flaw with the upper value for this prior is that a lack of market demand or conservation concerns may contradict the assumption that landings are coarsely proportional to stock size. However, the upper range chosen was considered reasonable for this case study as there was an active fishery for each species at the start of the time series.
+
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
