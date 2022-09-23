@@ -90,6 +90,12 @@ B0_l = \frac{C_{1,s}}{r_u}, B0_u = \frac{4 C_{1,s}}{r_l} & (\#eq:b0-prior)
 
 where $B0_l$ and $B0_u$ are the lower and upper values that are log transformed to define the normal prior for $\log(B0)$. Again, adjusting for the potential range of productivity from $r_l$ to $r_u$, this assumes that the fishery did not catch all of the biomass in the first year and it assumes that the catch represents a portion of the biomass in the first year. A flaw with the upper value for this prior is that a lack of market demand or conservation concerns may contradict the assumption that landings are coarsely proportional to stock size. However, the upper range chosen was considered reasonable for this case study as there was an active fishery for each species at the start of the time series.
 
+#### *Process error variance, $\sigma_s^2$, temporal correlation, $\phi$, and species-to-species correlation, $\rho_{s, s}$* {-}
+
+Considerable process variability may arise from variable recruitment, natural mortality, and/or growth. For instance, species in the Scorpaenidae family, which includes the *Sebastes* genus, have notoriously variable recruitment which frequently results in "spasmodic" stock dynamics [@cadigan2022; @licandeo2020]. Also, there is evidence that heightened and variable natural mortality contributed to the collapse and slow recovery of Atlantic cod along the Northeast NL Shelf [@cadigan2015; @regular2021]. To account for a wide range of possible standard deviations, $\sigma_s$, a vague prior with 0.01 and 1 as the lower and upper values were chosen. In log-space, this translates to a normal distribution with a mean of -2.3 and and sd of 2.3.
+
+There is little information to inform the potential level of temporal or species-to-species dependence present in the focal systems; vague priors were therefore defined for $\phi$ and $\rho_{s,s}$. For $\phi$, 0.1 and 0.9 were logit transformed [$\log(x / (1 - x))$] to define the upper and lower inflection points for a normal prior for the logit of $\phi$. For $\rho$, the logit transformation was shifted [$\log((1 + x) / (1 - x))$] to capture negative and positive lower (-0.9) and upper (0.9) values. When these parameters are estimated, these priors give most credence to moderate temporal correlation (0.5) and no species-to-species correlation (0) but still allow the possibility of high levels of correlation (0.9).
+
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
