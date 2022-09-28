@@ -22,12 +22,13 @@ fits_3Ps <- readRDS("analysis/NL_case_study/exports/fits_3Ps.rds")
 fit_3Ps <- fits_3Ps$just_cor
 
 ## Export process errors for Fred Cyr
-pe_cols <- c("year", "region", "species", "pe", "log_std_res_pe")
+pe_cols <- c("year", "region", "species", "landings", "B", "pe", "log_std_res_pe")
 pe_table <- rbind(fit_2J3K$pop[, pe_cols],
                   fit_3LNO$pop[, pe_cols],
                   fit_3Ps$pop[, pe_cols])
 pe_table$species <- gsub("-2J3K|-3LNO|-3Ps", "", pe_table$species)
-names(pe_table) <- c("year", "region", "species", "process_error", "standardized_process_error")
+names(pe_table) <- c("year", "region", "species", "landings_kt", "biomass_kt", "process_error", "standardized_process_error")
+pe_table$delta_biomass_kt <- pe_table$biomass_kt - (pe_table$biomass_kt / pe_table$process_error)
 write.csv(pe_table, file = "analysis/NL_case_study/exports/tables/multispic_process_error.csv",
           row.names = FALSE)
 
