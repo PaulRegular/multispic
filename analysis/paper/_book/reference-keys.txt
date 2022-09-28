@@ -8,4 +8,5 @@ eq:ar1
 eq:sigma
 eq:k-prior
 eq:b0-prior
+eq:cv
 fig:epu-map
