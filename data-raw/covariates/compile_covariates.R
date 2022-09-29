@@ -24,6 +24,12 @@ nao <- data.frame(year = monthly_nao$year,
 nlci <- fread("data-raw/covariates/climate/NL_climate_index.csv") %>% as.data.frame()
 names(nlci) <- c("year", "nlci")
 
+## The cumulative sum of the NLCI represents the effect of consecutive warm or cold years
+## Hypothesis is that higher trophic level species may be responding to the cumulative effects
+## of sequential warm or cold years
+nlci$cumsum_nlci <- replace(nlci$nlci, is.na(nlci$nlci), 0) |> cumsum()
+plot(cumsum_nlci ~ year, data = nlci, type = "l")
+
 
 ## Merge and export --------------------------------------------------------------------------------
 
