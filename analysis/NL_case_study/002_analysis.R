@@ -22,6 +22,7 @@
 ## Dev notes:
 ## - Forcing the RW structure results in unusual process errors for some species
 ## - During testing the fixed, random, and uniform_prior options rarely converged
+## - Ran into convergence issues when trying to use cumsum_nlci with 3Ps
 
 options(warn = 1)
 
