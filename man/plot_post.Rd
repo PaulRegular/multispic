@@ -48,7 +48,3 @@ plot_post(
 Plot posterior and prior (optional) distributions.
 Currently limited to the normal distribution.
 }
-\examples{
-
-
-}
