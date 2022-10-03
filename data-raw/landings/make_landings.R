@@ -8,13 +8,8 @@ names(landings) <- c("year", "country", "division", "species", "landings")
 
 ## Filter to focal area
 landings <- landings %>%
-    filter(division %in% c("2J", "3K", "3L", "3N", "3O", "3P", "3PS")) %>%
-    mutate(region = case_when(
-        division %in% c("2J", "3K") ~ "2J3K",
-        division %in% c("3L", "3N", "3O") ~ "3LNO",
-        division %in% c("3P", "3PS") ~ "3Ps",
-        TRUE ~ "ERROR"
-    ))
+    filter(division %in% c("2H", "2J", "3K", "3L", "3N", "3O")) %>%
+    mutate(region = "2HJ3KLNO")
 
 ## Demersal fish species with all time reported landings of > 1000 tonnes
 ## Exception: Winter Flounder b/c inshore and not present in multispecies survey

@@ -1,2929 +1,977 @@
 "Year","Region","Species","Landings (kt)"
-1960,"2J3K","American Plaice",0.016
-1960,"2J3K","Atlantic Cod",297.586
-1960,"2J3K","Atlantic Halibut",0.537
-1960,"2J3K","Greenland Halibut",0.838
-1960,"2J3K","Haddock",0.055
-1960,"2J3K","Monkfish",0
-1960,"2J3K","Red Hake",0
-1960,"2J3K","Redfish spp.",125.99
-1960,"2J3K","Roughhead Grenadier",0
-1960,"2J3K","Roundnose Grenadier",0
-1960,"2J3K","Silver Hake",0
-1960,"2J3K","Skate spp.",0.002
-1960,"2J3K","White Hake",0.004
-1960,"2J3K","Witch Flounder",0.16
-1960,"2J3K","Wolffish spp.",0.401
-1960,"2J3K","Yellowtail Flounder",0
-1960,"3LNO","American Plaice",21.373
-1960,"3LNO","Atlantic Cod",242.157
-1960,"3LNO","Atlantic Halibut",1.028
-1960,"3LNO","Greenland Halibut",0.1
-1960,"3LNO","Haddock",59.264
-1960,"3LNO","Monkfish",0.001
-1960,"3LNO","Red Hake",0
-1960,"3LNO","Redfish spp.",31.592
-1960,"3LNO","Roughhead Grenadier",0
-1960,"3LNO","Roundnose Grenadier",0
-1960,"3LNO","Silver Hake",0
-1960,"3LNO","Skate spp.",0.073
-1960,"3LNO","White Hake",0.623
-1960,"3LNO","Witch Flounder",5.993
-1960,"3LNO","Wolffish spp.",0.32
-1960,"3LNO","Yellowtail Flounder",0.008
-1960,"3Ps","American Plaice",0.827
-1960,"3Ps","Atlantic Cod",75.406
-1960,"3Ps","Atlantic Halibut",0.674
-1960,"3Ps","Greenland Halibut",0.023
-1960,"3Ps","Haddock",4.084
-1960,"3Ps","Monkfish",0.003
-1960,"3Ps","Red Hake",0
-1960,"3Ps","Redfish spp.",9.211
-1960,"3Ps","Roughhead Grenadier",0
-1960,"3Ps","Roundnose Grenadier",0
-1960,"3Ps","Silver Hake",0
-1960,"3Ps","Skate spp.",0.011
-1960,"3Ps","White Hake",0.732
-1960,"3Ps","Witch Flounder",1.277
-1960,"3Ps","Wolffish spp.",0.092
-1960,"3Ps","Yellowtail Flounder",0.004
-1961,"2J3K","American Plaice",0.067
-1961,"2J3K","Atlantic Cod",352.423
-1961,"2J3K","Atlantic Halibut",0.283
-1961,"2J3K","Greenland Halibut",0.613
-1961,"2J3K","Haddock",0.135
-1961,"2J3K","Monkfish",0
-1961,"2J3K","Red Hake",0
-1961,"2J3K","Redfish spp.",54.913
-1961,"2J3K","Roughhead Grenadier",0
-1961,"2J3K","Roundnose Grenadier",0
-1961,"2J3K","Silver Hake",0
-1961,"2J3K","Skate spp.",0.002
-1961,"2J3K","White Hake",0
-1961,"2J3K","Witch Flounder",0.086
-1961,"2J3K","Wolffish spp.",0.376
-1961,"2J3K","Yellowtail Flounder",0
-1961,"3LNO","American Plaice",16.373
-1961,"3LNO","Atlantic Cod",217.109
-1961,"3LNO","Atlantic Halibut",1.211
-1961,"3LNO","Greenland Halibut",0.128
-1961,"3LNO","Haddock",76.523
-1961,"3LNO","Monkfish",0
-1961,"3LNO","Red Hake",0
-1961,"3LNO","Redfish spp.",34.569
-1961,"3LNO","Roughhead Grenadier",0
-1961,"3LNO","Roundnose Grenadier",0
-1961,"3LNO","Silver Hake",0
-1961,"3LNO","Skate spp.",0.119
-1961,"3LNO","White Hake",0.204
-1961,"3LNO","Witch Flounder",4.679
-1961,"3LNO","Wolffish spp.",0.332
-1961,"3LNO","Yellowtail Flounder",0.1
-1961,"3Ps","American Plaice",1.454
-1961,"3Ps","Atlantic Cod",85.201
-1961,"3Ps","Atlantic Halibut",0.647
-1961,"3Ps","Greenland Halibut",0.015
-1961,"3Ps","Haddock",2.757
-1961,"3Ps","Monkfish",0
-1961,"3Ps","Red Hake",0
-1961,"3Ps","Redfish spp.",8.716
-1961,"3Ps","Roughhead Grenadier",0
-1961,"3Ps","Roundnose Grenadier",0
-1961,"3Ps","Silver Hake",0
-1961,"3Ps","Skate spp.",0.017
-1961,"3Ps","White Hake",0.132
-1961,"3Ps","Witch Flounder",1.106
-1961,"3Ps","Wolffish spp.",0.109
-1961,"3Ps","Yellowtail Flounder",0.052
-1962,"2J3K","American Plaice",0.064
-1962,"2J3K","Atlantic Cod",338.635
-1962,"2J3K","Atlantic Halibut",0.094
-1962,"2J3K","Greenland Halibut",0.481
-1962,"2J3K","Haddock",0.163
-1962,"2J3K","Monkfish",0
-1962,"2J3K","Red Hake",0
-1962,"2J3K","Redfish spp.",19.501
-1962,"2J3K","Roughhead Grenadier",0
-1962,"2J3K","Roundnose Grenadier",0
-1962,"2J3K","Silver Hake",0
-1962,"2J3K","Skate spp.",0.002
-1962,"2J3K","White Hake",0
-1962,"2J3K","Witch Flounder",0.038
-1962,"2J3K","Wolffish spp.",0.109
-1962,"2J3K","Yellowtail Flounder",0
-1962,"3LNO","American Plaice",16.192
-1962,"3LNO","Atlantic Cod",198.522
-1962,"3LNO","Atlantic Halibut",1.271
-1962,"3LNO","Greenland Halibut",0.107
-1962,"3LNO","Haddock",33.333
-1962,"3LNO","Monkfish",0.004
-1962,"3LNO","Red Hake",0
-1962,"3LNO","Redfish spp.",28.991
-1962,"3LNO","Roughhead Grenadier",0
-1962,"3LNO","Roundnose Grenadier",0
-1962,"3LNO","Silver Hake",0
-1962,"3LNO","Skate spp.",0.099
-1962,"3LNO","White Hake",2.704
-1962,"3LNO","Witch Flounder",4.798
-1962,"3LNO","Wolffish spp.",0.252
-1962,"3LNO","Yellowtail Flounder",0.067
-1962,"3Ps","American Plaice",1.019
-1962,"3Ps","Atlantic Cod",55.154
-1962,"3Ps","Atlantic Halibut",0.286
-1962,"3Ps","Greenland Halibut",0.009
-1962,"3Ps","Haddock",1.481
-1962,"3Ps","Monkfish",0.001
-1962,"3Ps","Red Hake",0
-1962,"3Ps","Redfish spp.",11.307
-1962,"3Ps","Roughhead Grenadier",0
-1962,"3Ps","Roundnose Grenadier",0
-1962,"3Ps","Silver Hake",0
-1962,"3Ps","Skate spp.",0.011
-1962,"3Ps","White Hake",0.075
-1962,"3Ps","Witch Flounder",0.978
-1962,"3Ps","Wolffish spp.",0.086
-1962,"3Ps","Yellowtail Flounder",0.023
-1963,"2J3K","American Plaice",1.421
-1963,"2J3K","Atlantic Cod",334.523
-1963,"2J3K","Atlantic Halibut",0.065
-1963,"2J3K","Greenland Halibut",1.046
-1963,"2J3K","Haddock",0.172
-1963,"2J3K","Monkfish",0
-1963,"2J3K","Red Hake",0
-1963,"2J3K","Redfish spp.",23.383
-1963,"2J3K","Roughhead Grenadier",0
-1963,"2J3K","Roundnose Grenadier",0
-1963,"2J3K","Silver Hake",0
-1963,"2J3K","Skate spp.",0.001
-1963,"2J3K","White Hake",0
-1963,"2J3K","Witch Flounder",0.301
-1963,"2J3K","Wolffish spp.",0.131
-1963,"2J3K","Yellowtail Flounder",0
-1963,"3LNO","American Plaice",25.719
-1963,"3LNO","Atlantic Cod",224.038
-1963,"3LNO","Atlantic Halibut",0.735
-1963,"3LNO","Greenland Halibut",0.556
-1963,"3LNO","Haddock",12.239
-1963,"3LNO","Monkfish",0.002
-1963,"3LNO","Red Hake",0
-1963,"3LNO","Redfish spp.",30.277
-1963,"3LNO","Roughhead Grenadier",0
-1963,"3LNO","Roundnose Grenadier",0
-1963,"3LNO","Silver Hake",0
-1963,"3LNO","Skate spp.",0.065
-1963,"3LNO","White Hake",0.148
-1963,"3LNO","Witch Flounder",2.827
-1963,"3LNO","Wolffish spp.",0.838
-1963,"3LNO","Yellowtail Flounder",0.518
-1963,"3Ps","American Plaice",0.754
-1963,"3Ps","Atlantic Cod",48.569
-1963,"3Ps","Atlantic Halibut",0.21
-1963,"3Ps","Greenland Halibut",0.011
-1963,"3Ps","Haddock",1.856
-1963,"3Ps","Monkfish",0.001
-1963,"3Ps","Red Hake",0
-1963,"3Ps","Redfish spp.",11.15
-1963,"3Ps","Roughhead Grenadier",0
-1963,"3Ps","Roundnose Grenadier",0
-1963,"3Ps","Silver Hake",0
-1963,"3Ps","Skate spp.",0.058
-1963,"3Ps","White Hake",0.111
-1963,"3Ps","Witch Flounder",0.924
-1963,"3Ps","Wolffish spp.",0.119
-1963,"3Ps","Yellowtail Flounder",0.005
-1964,"2J3K","American Plaice",3.048
-1964,"2J3K","Atlantic Cod",346.654
-1964,"2J3K","Atlantic Halibut",0.144
-1964,"2J3K","Greenland Halibut",2.993
-1964,"2J3K","Haddock",0.03
-1964,"2J3K","Monkfish",0
-1964,"2J3K","Red Hake",0
-1964,"2J3K","Redfish spp.",39.045
-1964,"2J3K","Roughhead Grenadier",0
-1964,"2J3K","Roundnose Grenadier",0
-1964,"2J3K","Silver Hake",0
-1964,"2J3K","Skate spp.",0.003
-1964,"2J3K","White Hake",0
-1964,"2J3K","Witch Flounder",0.652
-1964,"2J3K","Wolffish spp.",0.576
-1964,"2J3K","Yellowtail Flounder",0
-1964,"3LNO","American Plaice",38.567
-1964,"3LNO","Atlantic Cod",277.084
-1964,"3LNO","Atlantic Halibut",0.53
-1964,"3LNO","Greenland Halibut",0.97
-1964,"3LNO","Haddock",8.647
-1964,"3LNO","Monkfish",0.001
-1964,"3LNO","Red Hake",0.939
-1964,"3LNO","Redfish spp.",24.148
-1964,"3LNO","Roughhead Grenadier",0
-1964,"3LNO","Roundnose Grenadier",0
-1964,"3LNO","Silver Hake",0
-1964,"3LNO","Skate spp.",0.145
-1964,"3LNO","White Hake",0.137
-1964,"3LNO","Witch Flounder",1.458
-1964,"3LNO","Wolffish spp.",0.604
-1964,"3LNO","Yellowtail Flounder",0.147
-1964,"3Ps","American Plaice",1.542
-1964,"3Ps","Atlantic Cod",51.884
-1964,"3Ps","Atlantic Halibut",0.533
-1964,"3Ps","Greenland Halibut",0.016
-1964,"3Ps","Haddock",2.096
-1964,"3Ps","Monkfish",0.004
-1964,"3Ps","Red Hake",0
-1964,"3Ps","Redfish spp.",9.119
-1964,"3Ps","Roughhead Grenadier",0
-1964,"3Ps","Roundnose Grenadier",0
-1964,"3Ps","Silver Hake",0
-1964,"3Ps","Skate spp.",0.145
-1964,"3Ps","White Hake",0.124
-1964,"3Ps","Witch Flounder",1.011
-1964,"3Ps","Wolffish spp.",0.159
-1964,"3Ps","Yellowtail Flounder",0.1
-1965,"2J3K","American Plaice",4.893
-1965,"2J3K","Atlantic Cod",343.922
-1965,"2J3K","Atlantic Halibut",0.096
-1965,"2J3K","Greenland Halibut",3.38
-1965,"2J3K","Haddock",0.035
-1965,"2J3K","Monkfish",0
-1965,"2J3K","Red Hake",0
-1965,"2J3K","Redfish spp.",39.558
-1965,"2J3K","Roughhead Grenadier",0
-1965,"2J3K","Roundnose Grenadier",0
-1965,"2J3K","Silver Hake",0
-1965,"2J3K","Skate spp.",0.025
-1965,"2J3K","White Hake",0
-1965,"2J3K","Witch Flounder",3.596
-1965,"2J3K","Wolffish spp.",0.581
-1965,"2J3K","Yellowtail Flounder",0
-1965,"3LNO","American Plaice",53.261
-1965,"3LNO","Atlantic Cod",286.098
-1965,"3LNO","Atlantic Halibut",0.556
-1965,"3LNO","Greenland Halibut",6.162
-1965,"3LNO","Haddock",6.347
-1965,"3LNO","Monkfish",0
-1965,"3LNO","Red Hake",1.537
-1965,"3LNO","Redfish spp.",43.257
-1965,"3LNO","Roughhead Grenadier",0
-1965,"3LNO","Roundnose Grenadier",0
-1965,"3LNO","Silver Hake",0
-1965,"3LNO","Skate spp.",0.216
-1965,"3LNO","White Hake",0.176
-1965,"3LNO","Witch Flounder",2.641
-1965,"3LNO","Wolffish spp.",1.765
-1965,"3LNO","Yellowtail Flounder",3.13
-1965,"3Ps","American Plaice",2.022
-1965,"3Ps","Atlantic Cod",49.602
-1965,"3Ps","Atlantic Halibut",0.174
-1965,"3Ps","Greenland Halibut",0.041
-1965,"3Ps","Haddock",1.428
-1965,"3Ps","Monkfish",0.004
-1965,"3Ps","Red Hake",0.002
-1965,"3Ps","Redfish spp.",9.942
-1965,"3Ps","Roughhead Grenadier",0
-1965,"3Ps","Roundnose Grenadier",0
-1965,"3Ps","Silver Hake",0
-1965,"3Ps","Skate spp.",0.085
-1965,"3Ps","White Hake",0.131
-1965,"3Ps","Witch Flounder",0.57
-1965,"3Ps","Wolffish spp.",0.151
-1965,"3Ps","Yellowtail Flounder",0.055
-1966,"2J3K","American Plaice",2.845
-1966,"2J3K","Atlantic Cod",333.548
-1966,"2J3K","Atlantic Halibut",0.164
-1966,"2J3K","Greenland Halibut",5.937
-1966,"2J3K","Haddock",0.048
-1966,"2J3K","Monkfish",0
-1966,"2J3K","Red Hake",0
-1966,"2J3K","Redfish spp.",27.855
-1966,"2J3K","Roughhead Grenadier",0
-1966,"2J3K","Roundnose Grenadier",0
-1966,"2J3K","Silver Hake",0
-1966,"2J3K","Skate spp.",0.015
-1966,"2J3K","White Hake",0
-1966,"2J3K","Witch Flounder",3.268
-1966,"2J3K","Wolffish spp.",0.523
-1966,"2J3K","Yellowtail Flounder",0
-1966,"3LNO","American Plaice",65.011
-1966,"3LNO","Atlantic Cod",287.478
-1966,"3LNO","Atlantic Halibut",0.394
-1966,"3LNO","Greenland Halibut",12.612
-1966,"3LNO","Haddock",7.278
-1966,"3LNO","Monkfish",0.002
-1966,"3LNO","Red Hake",0
-1966,"3LNO","Redfish spp.",32.279
-1966,"3LNO","Roughhead Grenadier",0
-1966,"3LNO","Roundnose Grenadier",0
-1966,"3LNO","Silver Hake",0
-1966,"3LNO","Skate spp.",0.422
-1966,"3LNO","White Hake",0.176
-1966,"3LNO","Witch Flounder",7.951
-1966,"3LNO","Wolffish spp.",0.848
-1966,"3LNO","Yellowtail Flounder",7.026
-1966,"3Ps","American Plaice",3.406
-1966,"3Ps","Atlantic Cod",64.006
-1966,"3Ps","Atlantic Halibut",0.193
-1966,"3Ps","Greenland Halibut",0.026
-1966,"3Ps","Haddock",1.999
-1966,"3Ps","Monkfish",0.001
-1966,"3Ps","Red Hake",0
-1966,"3Ps","Redfish spp.",16.543
-1966,"3Ps","Roughhead Grenadier",0
-1966,"3Ps","Roundnose Grenadier",0
-1966,"3Ps","Silver Hake",0
-1966,"3Ps","Skate spp.",0.126
-1966,"3Ps","White Hake",0.084
-1966,"3Ps","Witch Flounder",1.444
-1966,"3Ps","Wolffish spp.",0.217
-1966,"3Ps","Yellowtail Flounder",0.26
-1967,"2J3K","American Plaice",3.15
-1967,"2J3K","Atlantic Cod",341.995
-1967,"2J3K","Atlantic Halibut",0.103
-1967,"2J3K","Greenland Halibut",10.419
-1967,"2J3K","Haddock",0.173
-1967,"2J3K","Monkfish",0
-1967,"2J3K","Red Hake",0
-1967,"2J3K","Redfish spp.",22.811
-1967,"2J3K","Roughhead Grenadier",0
-1967,"2J3K","Roundnose Grenadier",16.226
-1967,"2J3K","Silver Hake",0
-1967,"2J3K","Skate spp.",0.011
-1967,"2J3K","White Hake",0.107
-1967,"2J3K","Witch Flounder",2.679
-1967,"2J3K","Wolffish spp.",0.434
-1967,"2J3K","Yellowtail Flounder",0
-1967,"3LNO","American Plaice",94.413
-1967,"3LNO","Atlantic Cod",480.02
-1967,"3LNO","Atlantic Halibut",0.688
-1967,"3LNO","Greenland Halibut",14.821
-1967,"3LNO","Haddock",8.858
-1967,"3LNO","Monkfish",0
-1967,"3LNO","Red Hake",0
-1967,"3LNO","Redfish spp.",46.225
-1967,"3LNO","Roughhead Grenadier",0
-1967,"3LNO","Roundnose Grenadier",0.02
-1967,"3LNO","Silver Hake",0
-1967,"3LNO","Skate spp.",0.4
-1967,"3LNO","White Hake",1.578
-1967,"3LNO","Witch Flounder",12.925
-1967,"3LNO","Wolffish spp.",1.422
-1967,"3LNO","Yellowtail Flounder",8.878
-1967,"3Ps","American Plaice",4.494
-1967,"3Ps","Atlantic Cod",61.019
-1967,"3Ps","Atlantic Halibut",0.33
-1967,"3Ps","Greenland Halibut",0.035
-1967,"3Ps","Haddock",2.362
-1967,"3Ps","Monkfish",0
-1967,"3Ps","Red Hake",0
-1967,"3Ps","Redfish spp.",28.465
-1967,"3Ps","Roughhead Grenadier",0
-1967,"3Ps","Roundnose Grenadier",0
-1967,"3Ps","Silver Hake",0
-1967,"3Ps","Skate spp.",0.162
-1967,"3Ps","White Hake",0.11
-1967,"3Ps","Witch Flounder",4.805
-1967,"3Ps","Wolffish spp.",0.179
-1967,"3Ps","Yellowtail Flounder",0.869
-1968,"2J3K","American Plaice",5.919
-1968,"2J3K","Atlantic Cod",517.244
-1968,"2J3K","Atlantic Halibut",0.086
-1968,"2J3K","Greenland Halibut",16.61
-1968,"2J3K","Haddock",0.008
-1968,"2J3K","Monkfish",0
-1968,"2J3K","Red Hake",0
-1968,"2J3K","Redfish spp.",15.042
-1968,"2J3K","Roughhead Grenadier",0
-1968,"2J3K","Roundnose Grenadier",24.032
-1968,"2J3K","Silver Hake",0
-1968,"2J3K","Skate spp.",0.015
-1968,"2J3K","White Hake",0
-1968,"2J3K","Witch Flounder",9.835
-1968,"2J3K","Wolffish spp.",0.325
-1968,"2J3K","Yellowtail Flounder",0
-1968,"3LNO","American Plaice",73.167
-1968,"3LNO","Atlantic Cod",426.116
-1968,"3LNO","Atlantic Halibut",0.45
-1968,"3LNO","Greenland Halibut",10.133
-1968,"3LNO","Haddock",3.734
-1968,"3LNO","Monkfish",0
-1968,"3LNO","Red Hake",0
-1968,"3LNO","Redfish spp.",24.088
-1968,"3LNO","Roughhead Grenadier",0
-1968,"3LNO","Roundnose Grenadier",0.523
-1968,"3LNO","Silver Hake",0
-1968,"3LNO","Skate spp.",0.159
-1968,"3LNO","White Hake",0.116
-1968,"3LNO","Witch Flounder",11.43
-1968,"3LNO","Wolffish spp.",1.971
-1968,"3LNO","Yellowtail Flounder",13.34
-1968,"3Ps","American Plaice",14.28
-1968,"3Ps","Atlantic Cod",74.458
-1968,"3Ps","Atlantic Halibut",0.298
-1968,"3Ps","Greenland Halibut",0.109
-1968,"3Ps","Haddock",2.769
-1968,"3Ps","Monkfish",0.002
-1968,"3Ps","Red Hake",0
-1968,"3Ps","Redfish spp.",11.764
-1968,"3Ps","Roughhead Grenadier",0
-1968,"3Ps","Roundnose Grenadier",0.069
-1968,"3Ps","Silver Hake",0
-1968,"3Ps","Skate spp.",0.153
-1968,"3Ps","White Hake",0.423
-1968,"3Ps","Witch Flounder",4.131
-1968,"3Ps","Wolffish spp.",0.301
-1968,"3Ps","Yellowtail Flounder",2.105
-1969,"2J3K","American Plaice",6.743
-1969,"2J3K","Atlantic Cod",490.902
-1969,"2J3K","Atlantic Halibut",0.069
-1969,"2J3K","Greenland Halibut",28.24
-1969,"2J3K","Haddock",0.012
-1969,"2J3K","Monkfish",0.857
-1969,"2J3K","Red Hake",0
-1969,"2J3K","Redfish spp.",23.535
-1969,"2J3K","Roughhead Grenadier",0
-1969,"2J3K","Roundnose Grenadier",12.057
-1969,"2J3K","Silver Hake",0
-1969,"2J3K","Skate spp.",1.246
-1969,"2J3K","White Hake",0.005
-1969,"2J3K","Witch Flounder",11.309
-1969,"2J3K","Wolffish spp.",0.812
-1969,"2J3K","Yellowtail Flounder",0
-1969,"3LNO","American Plaice",79.437
-1969,"3LNO","Atlantic Cod",339.348
-1969,"3LNO","Atlantic Halibut",0.442
-1969,"3LNO","Greenland Halibut",5.284
-1969,"3LNO","Haddock",1.727
-1969,"3LNO","Monkfish",0.744
-1969,"3LNO","Red Hake",0
-1969,"3LNO","Redfish spp.",40.578
-1969,"3LNO","Roughhead Grenadier",0
-1969,"3LNO","Roundnose Grenadier",0
-1969,"3LNO","Silver Hake",0
-1969,"3LNO","Skate spp.",1.191
-1969,"3LNO","White Hake",0.075
-1969,"3LNO","Witch Flounder",5.984
-1969,"3LNO","Wolffish spp.",1.826
-1969,"3LNO","Yellowtail Flounder",15.708
-1969,"3Ps","American Plaice",6.491
-1969,"3Ps","Atlantic Cod",58.859
-1969,"3Ps","Atlantic Halibut",0.28
-1969,"3Ps","Greenland Halibut",0.133
-1969,"3Ps","Haddock",3.499
-1969,"3Ps","Monkfish",0.144
-1969,"3Ps","Red Hake",0
-1969,"3Ps","Redfish spp.",29.46
-1969,"3Ps","Roughhead Grenadier",0
-1969,"3Ps","Roundnose Grenadier",0
-1969,"3Ps","Silver Hake",0
-1969,"3Ps","Skate spp.",0.353
-1969,"3Ps","White Hake",0.381
-1969,"3Ps","Witch Flounder",4.096
-1969,"3Ps","Wolffish spp.",0.237
-1969,"3Ps","Yellowtail Flounder",0.566
-1970,"2J3K","American Plaice",12.572
-1970,"2J3K","Atlantic Cod",297.845
-1970,"2J3K","Atlantic Halibut",0.037
-1970,"2J3K","Greenland Halibut",28.719
-1970,"2J3K","Haddock",0.045
-1970,"2J3K","Monkfish",0.394
-1970,"2J3K","Red Hake",0
-1970,"2J3K","Redfish spp.",21.206
-1970,"2J3K","Roughhead Grenadier",0
-1970,"2J3K","Roundnose Grenadier",23.346
-1970,"2J3K","Silver Hake",0
-1970,"2J3K","Skate spp.",0.519
-1970,"2J3K","White Hake",0
-1970,"2J3K","Witch Flounder",15.565
-1970,"2J3K","Wolffish spp.",1.111
-1970,"2J3K","Yellowtail Flounder",0.001
-1970,"3LNO","American Plaice",66.653
-1970,"3LNO","Atlantic Cod",300.319
-1970,"3LNO","Atlantic Halibut",0.405
-1970,"3LNO","Greenland Halibut",5.438
-1970,"3LNO","Haddock",2.634
-1970,"3LNO","Monkfish",0.329
-1970,"3LNO","Red Hake",0
-1970,"3LNO","Redfish spp.",27.58
-1970,"3LNO","Roughhead Grenadier",0
-1970,"3LNO","Roundnose Grenadier",0.129
-1970,"3LNO","Silver Hake",0
-1970,"3LNO","Skate spp.",0.638
-1970,"3LNO","White Hake",0.209
-1970,"3LNO","Witch Flounder",9.228
-1970,"3LNO","Wolffish spp.",1.149
-1970,"3LNO","Yellowtail Flounder",26.426
-1970,"3Ps","American Plaice",12.328
-1970,"3Ps","Atlantic Cod",70.818
-1970,"3Ps","Atlantic Halibut",0.31
-1970,"3Ps","Greenland Halibut",0.149
-1970,"3Ps","Haddock",4.333
-1970,"3Ps","Monkfish",0.135
-1970,"3Ps","Red Hake",0
-1970,"3Ps","Redfish spp.",33.581
-1970,"3Ps","Roughhead Grenadier",0
-1970,"3Ps","Roundnose Grenadier",0
-1970,"3Ps","Silver Hake",0
-1970,"3Ps","Skate spp.",0.264
-1970,"3Ps","White Hake",0.624
-1970,"3Ps","Witch Flounder",2.702
-1970,"3Ps","Wolffish spp.",0.354
-1970,"3Ps","Yellowtail Flounder",0.462
-1971,"2J3K","American Plaice",4.525
-1971,"2J3K","Atlantic Cod",229.762
-1971,"2J3K","Atlantic Halibut",0.036
-1971,"2J3K","Greenland Halibut",11.424
-1971,"2J3K","Haddock",0.143
-1971,"2J3K","Monkfish",0.03
-1971,"2J3K","Red Hake",0
-1971,"2J3K","Redfish spp.",17.756
-1971,"2J3K","Roughhead Grenadier",0
-1971,"2J3K","Roundnose Grenadier",18.473
-1971,"2J3K","Silver Hake",0
-1971,"2J3K","Skate spp.",0.054
-1971,"2J3K","White Hake",0
-1971,"2J3K","Witch Flounder",10.44
-1971,"2J3K","Wolffish spp.",0.911
-1971,"2J3K","Yellowtail Flounder",0.005
-1971,"3LNO","American Plaice",67.888
-1971,"3LNO","Atlantic Cod",309.143
-1971,"3LNO","Atlantic Halibut",0.433
-1971,"3LNO","Greenland Halibut",5.536
-1971,"3LNO","Haddock",3.407
-1971,"3LNO","Monkfish",0.001
-1971,"3LNO","Red Hake",0
-1971,"3LNO","Redfish spp.",54.145
-1971,"3LNO","Roughhead Grenadier",0
-1971,"3LNO","Roundnose Grenadier",0.055
-1971,"3LNO","Silver Hake",0
-1971,"3LNO","Skate spp.",0.202
-1971,"3LNO","White Hake",7.225
-1971,"3LNO","Witch Flounder",20.578
-1971,"3LNO","Wolffish spp.",4.017
-1971,"3LNO","Yellowtail Flounder",37.342
-1971,"3Ps","American Plaice",7.182
-1971,"3Ps","Atlantic Cod",59.942
-1971,"3Ps","Atlantic Halibut",0.176
-1971,"3Ps","Greenland Halibut",0.045
-1971,"3Ps","Haddock",1.477
-1971,"3Ps","Monkfish",0.006
-1971,"3Ps","Red Hake",0
-1971,"3Ps","Redfish spp.",26.534
-1971,"3Ps","Roughhead Grenadier",0
-1971,"3Ps","Roundnose Grenadier",0
-1971,"3Ps","Silver Hake",0.025
-1971,"3Ps","Skate spp.",0.516
-1971,"3Ps","White Hake",1.664
-1971,"3Ps","Witch Flounder",2.25
-1971,"3Ps","Wolffish spp.",0.445
-1971,"3Ps","Yellowtail Flounder",0.34
-1972,"2J3K","American Plaice",8.924
-1972,"2J3K","Atlantic Cod",295.946
-1972,"2J3K","Atlantic Halibut",0.071
-1972,"2J3K","Greenland Halibut",21.029
-1972,"2J3K","Haddock",0.034
-1972,"2J3K","Monkfish",0
-1972,"2J3K","Red Hake",0
-1972,"2J3K","Redfish spp.",19.374
-1972,"2J3K","Roughhead Grenadier",0
-1972,"2J3K","Roundnose Grenadier",21.415
-1972,"2J3K","Silver Hake",0
-1972,"2J3K","Skate spp.",0.009
-1972,"2J3K","White Hake",0.019
-1972,"2J3K","Witch Flounder",13.354
-1972,"2J3K","Wolffish spp.",3.094
-1972,"2J3K","Yellowtail Flounder",0.01
-1972,"3LNO","American Plaice",59.361
-1972,"3LNO","Atlantic Cod",260.811
-1972,"3LNO","Atlantic Halibut",0.395
-1972,"3LNO","Greenland Halibut",4.716
-1972,"3LNO","Haddock",2.434
-1972,"3LNO","Monkfish",0.001
-1972,"3LNO","Red Hake",0
-1972,"3LNO","Redfish spp.",45.05
-1972,"3LNO","Roughhead Grenadier",0
-1972,"3LNO","Roundnose Grenadier",0.139
-1972,"3LNO","Silver Hake",0
-1972,"3LNO","Skate spp.",0.551
-1972,"3LNO","White Hake",3.91
-1972,"3LNO","Witch Flounder",13.251
-1972,"3LNO","Wolffish spp.",2.18
-1972,"3LNO","Yellowtail Flounder",39.259
-1972,"3Ps","American Plaice",6.538
-1972,"3Ps","Atlantic Cod",43.709
-1972,"3Ps","Atlantic Halibut",0.133
-1972,"3Ps","Greenland Halibut",0.159
-1972,"3Ps","Haddock",0.901
-1972,"3Ps","Monkfish",0.005
-1972,"3Ps","Red Hake",0
-1972,"3Ps","Redfish spp.",25.398
-1972,"3Ps","Roughhead Grenadier",0
-1972,"3Ps","Roundnose Grenadier",0.007
-1972,"3Ps","Silver Hake",0.014
-1972,"3Ps","Skate spp.",0.192
-1972,"3Ps","White Hake",2.177
-1972,"3Ps","Witch Flounder",1.594
-1972,"3Ps","Wolffish spp.",0.284
-1972,"3Ps","Yellowtail Flounder",0.407
-1973,"2J3K","American Plaice",5.114
-1973,"2J3K","Atlantic Cod",230.678
-1973,"2J3K","Atlantic Halibut",0.138
-1973,"2J3K","Greenland Halibut",16.907
-1973,"2J3K","Haddock",0.44
-1973,"2J3K","Monkfish",0
-1973,"2J3K","Red Hake",0
-1973,"2J3K","Redfish spp.",38.031
-1973,"2J3K","Roughhead Grenadier",0
-1973,"2J3K","Roundnose Grenadier",11.287
-1973,"2J3K","Silver Hake",0
-1973,"2J3K","Skate spp.",0.404
-1973,"2J3K","White Hake",0.033
-1973,"2J3K","Witch Flounder",18.672
-1973,"2J3K","Wolffish spp.",3.12
-1973,"2J3K","Yellowtail Flounder",0.549
-1973,"3LNO","American Plaice",52.843
-1973,"3LNO","Atlantic Cod",204.26
-1973,"3LNO","Atlantic Halibut",0.371
-1973,"3LNO","Greenland Halibut",3.622
-1973,"3LNO","Haddock",1.143
-1973,"3LNO","Monkfish",0.001
-1973,"3LNO","Red Hake",0
-1973,"3LNO","Redfish spp.",42.094
-1973,"3LNO","Roughhead Grenadier",0
-1973,"3LNO","Roundnose Grenadier",0.15
-1973,"3LNO","Silver Hake",0
-1973,"3LNO","Skate spp.",0.423
-1973,"3LNO","White Hake",3.051
-1973,"3LNO","Witch Flounder",11.64
-1973,"3LNO","Wolffish spp.",1.769
-1973,"3LNO","Yellowtail Flounder",32.815
-1973,"3Ps","American Plaice",14.769
-1973,"3Ps","Atlantic Cod",52.641
-1973,"3Ps","Atlantic Halibut",0.187
-1973,"3Ps","Greenland Halibut",0.151
-1973,"3Ps","Haddock",0.65
-1973,"3Ps","Monkfish",0.003
-1973,"3Ps","Red Hake",0
-1973,"3Ps","Redfish spp.",14.714
-1973,"3Ps","Roughhead Grenadier",0
-1973,"3Ps","Roundnose Grenadier",0
-1973,"3Ps","Silver Hake",0
-1973,"3Ps","Skate spp.",0.238
-1973,"3Ps","White Hake",1.414
-1973,"3Ps","Witch Flounder",2.907
-1973,"3Ps","Wolffish spp.",0.293
-1973,"3Ps","Yellowtail Flounder",0.904
-1974,"2J3K","American Plaice",5.609
-1974,"2J3K","Atlantic Cod",281.222
-1974,"2J3K","Atlantic Halibut",0.117
-1974,"2J3K","Greenland Halibut",16.491
-1974,"2J3K","Haddock",0.3
-1974,"2J3K","Monkfish",0
-1974,"2J3K","Red Hake",0
-1974,"2J3K","Redfish spp.",29.631
-1974,"2J3K","Roughhead Grenadier",0
-1974,"2J3K","Roundnose Grenadier",23.149
-1974,"2J3K","Silver Hake",0
-1974,"2J3K","Skate spp.",0.285
-1974,"2J3K","White Hake",0
-1974,"2J3K","Witch Flounder",14.047
-1974,"2J3K","Wolffish spp.",2.377
-1974,"2J3K","Yellowtail Flounder",0.006
-1974,"3LNO","American Plaice",46.297
-1974,"3LNO","Atlantic Cod",164.817
-1974,"3LNO","Atlantic Halibut",0.428
-1974,"3LNO","Greenland Halibut",3.216
-1974,"3LNO","Haddock",1.444
-1974,"3LNO","Monkfish",0.001
-1974,"3LNO","Red Hake",0
-1974,"3LNO","Redfish spp.",35.41
-1974,"3LNO","Roughhead Grenadier",0
-1974,"3LNO","Roundnose Grenadier",0.04
-1974,"3LNO","Silver Hake",0.059
-1974,"3LNO","Skate spp.",2.328
-1974,"3LNO","White Hake",3.112
-1974,"3LNO","Witch Flounder",9.961
-1974,"3LNO","Wolffish spp.",2.35
-1974,"3LNO","Yellowtail Flounder",24.313
-1974,"3Ps","American Plaice",6.598
-1974,"3Ps","Atlantic Cod",46.712
-1974,"3Ps","Atlantic Halibut",0.194
-1974,"3Ps","Greenland Halibut",0.163
-1974,"3Ps","Haddock",0.388
-1974,"3Ps","Monkfish",0
-1974,"3Ps","Red Hake",0
-1974,"3Ps","Redfish spp.",17.894
-1974,"3Ps","Roughhead Grenadier",0
-1974,"3Ps","Roundnose Grenadier",0
-1974,"3Ps","Silver Hake",0.197
-1974,"3Ps","Skate spp.",0.763
-1974,"3Ps","White Hake",1.323
-1974,"3Ps","Witch Flounder",1.786
-1974,"3Ps","Wolffish spp.",0.851
-1974,"3Ps","Yellowtail Flounder",0.469
-1975,"2J3K","American Plaice",5.674
-1975,"2J3K","Atlantic Cod",210.373
-1975,"2J3K","Atlantic Halibut",0.086
-1975,"2J3K","Greenland Halibut",20.095
-1975,"2J3K","Haddock",0.04
-1975,"2J3K","Monkfish",0
-1975,"2J3K","Red Hake",0
-1975,"2J3K","Redfish spp.",25.109
-1975,"2J3K","Roughhead Grenadier",0
-1975,"2J3K","Roundnose Grenadier",17.142
-1975,"2J3K","Silver Hake",0
-1975,"2J3K","Skate spp.",0.249
-1975,"2J3K","White Hake",0.034
-1975,"2J3K","Witch Flounder",10.806
-1975,"2J3K","Wolffish spp.",4.707
-1975,"2J3K","Yellowtail Flounder",0.002
-1975,"3LNO","American Plaice",43.221
-1975,"3LNO","Atlantic Cod",121.309
-1975,"3LNO","Atlantic Halibut",0.29
-1975,"3LNO","Greenland Halibut",4.766
-1975,"3LNO","Haddock",1.298
-1975,"3LNO","Monkfish",0
-1975,"3LNO","Red Hake",0
-1975,"3LNO","Redfish spp.",32.981
-1975,"3LNO","Roughhead Grenadier",0
-1975,"3LNO","Roundnose Grenadier",0.245
-1975,"3LNO","Silver Hake",0
-1975,"3LNO","Skate spp.",2.715
-1975,"3LNO","White Hake",5.629
-1975,"3LNO","Witch Flounder",7.567
-1975,"3LNO","Wolffish spp.",1.633
-1975,"3LNO","Yellowtail Flounder",22.894
-1975,"3Ps","American Plaice",4.211
-1975,"3Ps","Atlantic Cod",35.373
-1975,"3Ps","Atlantic Halibut",0.157
-1975,"3Ps","Greenland Halibut",0.117
-1975,"3Ps","Haddock",0.147
-1975,"3Ps","Monkfish",0.01
-1975,"3Ps","Red Hake",0
-1975,"3Ps","Redfish spp.",20.345
-1975,"3Ps","Roughhead Grenadier",0
-1975,"3Ps","Roundnose Grenadier",0
-1975,"3Ps","Silver Hake",3.495
-1975,"3Ps","Skate spp.",0.499
-1975,"3Ps","White Hake",2.197
-1975,"3Ps","Witch Flounder",1.428
-1975,"3Ps","Wolffish spp.",0.187
-1975,"3Ps","Yellowtail Flounder",0.3
-1976,"2J3K","American Plaice",6.04
-1976,"2J3K","Atlantic Cod",135.826
-1976,"2J3K","Atlantic Halibut",0.132
-1976,"2J3K","Greenland Halibut",14.74
-1976,"2J3K","Haddock",0.018
-1976,"2J3K","Monkfish",0
-1976,"2J3K","Red Hake",0
-1976,"2J3K","Redfish spp.",24.27
-1976,"2J3K","Roughhead Grenadier",0
-1976,"2J3K","Roundnose Grenadier",15.017
-1976,"2J3K","Silver Hake",0
-1976,"2J3K","Skate spp.",0.069
-1976,"2J3K","White Hake",0.001
-1976,"2J3K","Witch Flounder",8.216
-1976,"2J3K","Wolffish spp.",1.157
-1976,"2J3K","Yellowtail Flounder",0.012
-1976,"3LNO","American Plaice",51.825
-1976,"3LNO","Atlantic Cod",102.677
-1976,"3LNO","Atlantic Halibut",0.286
-1976,"3LNO","Greenland Halibut",4.317
-1976,"3LNO","Haddock",0.138
-1976,"3LNO","Monkfish",0.001
-1976,"3LNO","Red Hake",0
-1976,"3LNO","Redfish spp.",35.86
-1976,"3LNO","Roughhead Grenadier",0
-1976,"3LNO","Roundnose Grenadier",0.181
-1976,"3LNO","Silver Hake",0.003
-1976,"3LNO","Skate spp.",1.266
-1976,"3LNO","White Hake",3.874
-1976,"3LNO","Witch Flounder",8.444
-1976,"3LNO","Wolffish spp.",2.463
-1976,"3LNO","Yellowtail Flounder",8.057
-1976,"3Ps","American Plaice",5.458
-1976,"3Ps","Atlantic Cod",37.133
-1976,"3Ps","Atlantic Halibut",0.087
-1976,"3Ps","Greenland Halibut",0.077
-1976,"3Ps","Haddock",0.245
-1976,"3Ps","Monkfish",0.005
-1976,"3Ps","Red Hake",0
-1976,"3Ps","Redfish spp.",13.235
-1976,"3Ps","Roughhead Grenadier",0
-1976,"3Ps","Roundnose Grenadier",0
-1976,"3Ps","Silver Hake",0
-1976,"3Ps","Skate spp.",0.321
-1976,"3Ps","White Hake",1.354
-1976,"3Ps","Witch Flounder",0.903
-1976,"3Ps","Wolffish spp.",0.16
-1976,"3Ps","Yellowtail Flounder",2.27
-1977,"2J3K","American Plaice",7.525
-1977,"2J3K","Atlantic Cod",100.277
-1977,"2J3K","Atlantic Halibut",0.096
-1977,"2J3K","Greenland Halibut",21.683
-1977,"2J3K","Haddock",0.002
-1977,"2J3K","Monkfish",0.384
-1977,"2J3K","Red Hake",0
-1977,"2J3K","Redfish spp.",16.67
-1977,"2J3K","Roughhead Grenadier",0
-1977,"2J3K","Roundnose Grenadier",12.141
-1977,"2J3K","Silver Hake",0
-1977,"2J3K","Skate spp.",0.454
-1977,"2J3K","White Hake",0.005
-1977,"2J3K","Witch Flounder",7.358
-1977,"2J3K","Wolffish spp.",1.103
-1977,"2J3K","Yellowtail Flounder",0.001
-1977,"3LNO","American Plaice",43.981
-1977,"3LNO","Atlantic Cod",90.047
-1977,"3LNO","Atlantic Halibut",0.264
-1977,"3LNO","Greenland Halibut",7.021
-1977,"3LNO","Haddock",0.137
-1977,"3LNO","Monkfish",1.738
-1977,"3LNO","Red Hake",0
-1977,"3LNO","Redfish spp.",27.366
-1977,"3LNO","Roughhead Grenadier",0
-1977,"3LNO","Roundnose Grenadier",0.123
-1977,"3LNO","Silver Hake",0.03
-1977,"3LNO","Skate spp.",1.817
-1977,"3LNO","White Hake",3.142
-1977,"3LNO","Witch Flounder",6.719
-1977,"3LNO","Wolffish spp.",1.655
-1977,"3LNO","Yellowtail Flounder",11.638
-1977,"3Ps","American Plaice",4.605
-1977,"3Ps","Atlantic Cod",32.245
-1977,"3Ps","Atlantic Halibut",0.389
-1977,"3Ps","Greenland Halibut",0.115
-1977,"3Ps","Haddock",0.793
-1977,"3Ps","Monkfish",0.005
-1977,"3Ps","Red Hake",0
-1977,"3Ps","Redfish spp.",14.678
-1977,"3Ps","Roughhead Grenadier",0
-1977,"3Ps","Roundnose Grenadier",0
-1977,"3Ps","Silver Hake",0.032
-1977,"3Ps","Skate spp.",0.881
-1977,"3Ps","White Hake",1.683
-1977,"3Ps","Witch Flounder",4.247
-1977,"3Ps","Wolffish spp.",0.346
-1977,"3Ps","Yellowtail Flounder",0.365
-1978,"2J3K","American Plaice",3.472
-1978,"2J3K","Atlantic Cod",71.889
-1978,"2J3K","Atlantic Halibut",0.039
-1978,"2J3K","Greenland Halibut",27.83
-1978,"2J3K","Haddock",0.002
-1978,"2J3K","Monkfish",0.026
-1978,"2J3K","Red Hake",0
-1978,"2J3K","Redfish spp.",28.563
-1978,"2J3K","Roughhead Grenadier",0
-1978,"2J3K","Roundnose Grenadier",16.163
-1978,"2J3K","Silver Hake",0
-1978,"2J3K","Skate spp.",0.147
-1978,"2J3K","White Hake",0.002
-1978,"2J3K","Witch Flounder",6.401
-1978,"2J3K","Wolffish spp.",0.617
-1978,"2J3K","Yellowtail Flounder",0.004
-1978,"3LNO","American Plaice",50.028
-1978,"3LNO","Atlantic Cod",81.388
-1978,"3LNO","Atlantic Halibut",0.196
-1978,"3LNO","Greenland Halibut",7.606
-1978,"3LNO","Haddock",0.484
-1978,"3LNO","Monkfish",0.228
-1978,"3LNO","Red Hake",0
-1978,"3LNO","Redfish spp.",18.903
-1978,"3LNO","Roughhead Grenadier",0
-1978,"3LNO","Roundnose Grenadier",0.015
-1978,"3LNO","Silver Hake",0.154
-1978,"3LNO","Skate spp.",1.831
-1978,"3LNO","White Hake",2.602
-1978,"3LNO","Witch Flounder",3.976
-1978,"3LNO","Wolffish spp.",1.113
-1978,"3LNO","Yellowtail Flounder",15.466
-1978,"3Ps","American Plaice",3.658
-1978,"3Ps","Atlantic Cod",27.221
-1978,"3Ps","Atlantic Halibut",0.165
-1978,"3Ps","Greenland Halibut",0.101
-1978,"3Ps","Haddock",0.603
-1978,"3Ps","Monkfish",0.001
-1978,"3Ps","Red Hake",0
-1978,"3Ps","Redfish spp.",12.203
-1978,"3Ps","Roughhead Grenadier",0
-1978,"3Ps","Roundnose Grenadier",0
-1978,"3Ps","Silver Hake",0
-1978,"3Ps","Skate spp.",0.71
-1978,"3Ps","White Hake",1.051
-1978,"3Ps","Witch Flounder",1.007
-1978,"3Ps","Wolffish spp.",0.231
-1978,"3Ps","Yellowtail Flounder",1.139
-1979,"2J3K","American Plaice",2.954
-1979,"2J3K","Atlantic Cod",89.658
-1979,"2J3K","Atlantic Halibut",0.067
-1979,"2J3K","Greenland Halibut",23.258
-1979,"2J3K","Haddock",0.006
-1979,"2J3K","Monkfish",0
-1979,"2J3K","Red Hake",0
-1979,"2J3K","Redfish spp.",30.46
-1979,"2J3K","Roughhead Grenadier",0
-1979,"2J3K","Roundnose Grenadier",3.638
-1979,"2J3K","Silver Hake",0
-1979,"2J3K","Skate spp.",0.122
-1979,"2J3K","White Hake",0.006
-1979,"2J3K","Witch Flounder",3.215
-1979,"2J3K","Wolffish spp.",0.573
-1979,"2J3K","Yellowtail Flounder",0
-1979,"3LNO","American Plaice",48.569
-1979,"3LNO","Atlantic Cod",105.173
-1979,"3LNO","Atlantic Halibut",0.293
-1979,"3LNO","Greenland Halibut",8.634
-1979,"3LNO","Haddock",0.855
-1979,"3LNO","Monkfish",0.003
-1979,"3LNO","Red Hake",0
-1979,"3LNO","Redfish spp.",31.804
-1979,"3LNO","Roughhead Grenadier",0
-1979,"3LNO","Roundnose Grenadier",0.018
-1979,"3LNO","Silver Hake",0.043
-1979,"3LNO","Skate spp.",1.039
-1979,"3LNO","White Hake",1.586
-1979,"3LNO","Witch Flounder",3.959
-1979,"3LNO","Wolffish spp.",1.339
-1979,"3LNO","Yellowtail Flounder",18.351
-1979,"3Ps","American Plaice",3.666
-1979,"3Ps","Atlantic Cod",33.006
-1979,"3Ps","Atlantic Halibut",0.161
-1979,"3Ps","Greenland Halibut",0.161
-1979,"3Ps","Haddock",0.251
-1979,"3Ps","Monkfish",0.01
-1979,"3Ps","Red Hake",0
-1979,"3Ps","Redfish spp.",6.459
-1979,"3Ps","Roughhead Grenadier",0
-1979,"3Ps","Roundnose Grenadier",0
-1979,"3Ps","Silver Hake",0
-1979,"3Ps","Skate spp.",0.666
-1979,"3Ps","White Hake",0.66
-1979,"3Ps","Witch Flounder",0.854
-1979,"3Ps","Wolffish spp.",0.255
-1979,"3Ps","Yellowtail Flounder",0.907
-1980,"2J3K","American Plaice",5.004
-1980,"2J3K","Atlantic Cod",104
-1980,"2J3K","Atlantic Halibut",0.052
-1980,"2J3K","Greenland Halibut",19.389
-1980,"2J3K","Haddock",0.003
-1980,"2J3K","Monkfish",0
-1980,"2J3K","Red Hake",0
-1980,"2J3K","Redfish spp.",14.47
-1980,"2J3K","Roughhead Grenadier",0
-1980,"2J3K","Roundnose Grenadier",1.177
-1980,"2J3K","Silver Hake",0.004
-1980,"2J3K","Skate spp.",0.191
-1980,"2J3K","White Hake",0.006
-1980,"2J3K","Witch Flounder",2.537
-1980,"2J3K","Wolffish spp.",0.695
-1980,"2J3K","Yellowtail Flounder",0.001
-1980,"3LNO","American Plaice",49.086
-1980,"3LNO","Atlantic Cod",91.772
-1980,"3LNO","Atlantic Halibut",0.209
-1980,"3LNO","Greenland Halibut",12.857
-1980,"3LNO","Haddock",0.18
-1980,"3LNO","Monkfish",0
-1980,"3LNO","Red Hake",0.011
-1980,"3LNO","Redfish spp.",33.336
-1980,"3LNO","Roughhead Grenadier",0
-1980,"3LNO","Roundnose Grenadier",0.072
-1980,"3LNO","Silver Hake",0.044
-1980,"3LNO","Skate spp.",1.378
-1980,"3LNO","White Hake",2.633
-1980,"3LNO","Witch Flounder",2.706
-1980,"3LNO","Wolffish spp.",1.041
-1980,"3LNO","Yellowtail Flounder",12.377
-1980,"3Ps","American Plaice",2.935
-1980,"3Ps","Atlantic Cod",37.568
-1980,"3Ps","Atlantic Halibut",0.145
-1980,"3Ps","Greenland Halibut",0.294
-1980,"3Ps","Haddock",0.448
-1980,"3Ps","Monkfish",0
-1980,"3Ps","Red Hake",0
-1980,"3Ps","Redfish spp.",5.192
-1980,"3Ps","Roughhead Grenadier",0
-1980,"3Ps","Roundnose Grenadier",0
-1980,"3Ps","Silver Hake",0
-1980,"3Ps","Skate spp.",1.163
-1980,"3Ps","White Hake",0.546
-1980,"3Ps","Witch Flounder",0.841
-1980,"3Ps","Wolffish spp.",0.347
-1980,"3Ps","Yellowtail Flounder",0.599
-1981,"2J3K","American Plaice",7.507
-1981,"2J3K","Atlantic Cod",91.097
-1981,"2J3K","Atlantic Halibut",0.045
-1981,"2J3K","Greenland Halibut",17.83
-1981,"2J3K","Haddock",0.001
-1981,"2J3K","Monkfish",0
-1981,"2J3K","Red Hake",0
-1981,"2J3K","Redfish spp.",17.415
-1981,"2J3K","Roughhead Grenadier",0
-1981,"2J3K","Roundnose Grenadier",4.383
-1981,"2J3K","Silver Hake",0
-1981,"2J3K","Skate spp.",0.146
-1981,"2J3K","White Hake",0.004
-1981,"2J3K","Witch Flounder",3.546
-1981,"2J3K","Wolffish spp.",0.616
-1981,"2J3K","Yellowtail Flounder",0.003
-1981,"3LNO","American Plaice",50.158
-1981,"3LNO","Atlantic Cod",103.995
-1981,"3LNO","Atlantic Halibut",0.171
-1981,"3LNO","Greenland Halibut",8.981
-1981,"3LNO","Haddock",0.124
-1981,"3LNO","Monkfish",0.091
-1981,"3LNO","Red Hake",0
-1981,"3LNO","Redfish spp.",36.884
-1981,"3LNO","Roughhead Grenadier",0
-1981,"3LNO","Roundnose Grenadier",0.042
-1981,"3LNO","Silver Hake",0.101
-1981,"3LNO","Skate spp.",1.711
-1981,"3LNO","White Hake",1.714
-1981,"3LNO","Witch Flounder",3.073
-1981,"3LNO","Wolffish spp.",1.688
-1981,"3LNO","Yellowtail Flounder",14.68
-1981,"3Ps","American Plaice",3.217
-1981,"3Ps","Atlantic Cod",38.892
-1981,"3Ps","Atlantic Halibut",0.138
-1981,"3Ps","Greenland Halibut",0.287
-1981,"3Ps","Haddock",0.445
-1981,"3Ps","Monkfish",0
-1981,"3Ps","Red Hake",0
-1981,"3Ps","Redfish spp.",4.685
-1981,"3Ps","Roughhead Grenadier",0
-1981,"3Ps","Roundnose Grenadier",0
-1981,"3Ps","Silver Hake",0
-1981,"3Ps","Skate spp.",1.078
-1981,"3Ps","White Hake",1.03
-1981,"3Ps","Witch Flounder",0.469
-1981,"3Ps","Wolffish spp.",0.385
-1981,"3Ps","Yellowtail Flounder",0.433
-1982,"2J3K","American Plaice",1.792
-1982,"2J3K","Atlantic Cod",136.832
-1982,"2J3K","Atlantic Halibut",0.051
-1982,"2J3K","Greenland Halibut",12.725
-1982,"2J3K","Haddock",0.003
-1982,"2J3K","Monkfish",0
-1982,"2J3K","Red Hake",0.003
-1982,"2J3K","Redfish spp.",17.4
-1982,"2J3K","Roughhead Grenadier",0
-1982,"2J3K","Roundnose Grenadier",2.891
-1982,"2J3K","Silver Hake",0
-1982,"2J3K","Skate spp.",0.045
-1982,"2J3K","White Hake",0.009
-1982,"2J3K","Witch Flounder",2.347
-1982,"2J3K","Wolffish spp.",0.356
-1982,"2J3K","Yellowtail Flounder",0.003
-1982,"3LNO","American Plaice",50.337
-1982,"3LNO","Atlantic Cod",124.547
-1982,"3LNO","Atlantic Halibut",0.442
-1982,"3LNO","Greenland Halibut",4.197
-1982,"3LNO","Haddock",0.964
-1982,"3LNO","Monkfish",0.058
-1982,"3LNO","Red Hake",0
-1982,"3LNO","Redfish spp.",32.907
-1982,"3LNO","Roughhead Grenadier",0
-1982,"3LNO","Roundnose Grenadier",0
-1982,"3LNO","Silver Hake",0.013
-1982,"3LNO","Skate spp.",0.808
-1982,"3LNO","White Hake",1.953
-1982,"3LNO","Witch Flounder",4.366
-1982,"3LNO","Wolffish spp.",2.279
-1982,"3LNO","Yellowtail Flounder",12.246
-1982,"3Ps","American Plaice",2.186
-1982,"3Ps","Atlantic Cod",33.902
-1982,"3Ps","Atlantic Halibut",0.171
-1982,"3Ps","Greenland Halibut",0.157
-1982,"3Ps","Haddock",0.309
-1982,"3Ps","Monkfish",0
-1982,"3Ps","Red Hake",0
-1982,"3Ps","Redfish spp.",2.09
-1982,"3Ps","Roughhead Grenadier",0
-1982,"3Ps","Roundnose Grenadier",0
-1982,"3Ps","Silver Hake",0
-1982,"3Ps","Skate spp.",0.512
-1982,"3Ps","White Hake",0.773
-1982,"3Ps","Witch Flounder",0.489
-1982,"3Ps","Wolffish spp.",0.253
-1982,"3Ps","Yellowtail Flounder",0.446
-1983,"2J3K","American Plaice",1.509
-1983,"2J3K","Atlantic Cod",127.298
-1983,"2J3K","Atlantic Halibut",0.046
-1983,"2J3K","Greenland Halibut",17.402
-1983,"2J3K","Haddock",0.001
-1983,"2J3K","Monkfish",0
-1983,"2J3K","Red Hake",0.01
-1983,"2J3K","Redfish spp.",15.153
-1983,"2J3K","Roughhead Grenadier",0
-1983,"2J3K","Roundnose Grenadier",1.952
-1983,"2J3K","Silver Hake",0
-1983,"2J3K","Skate spp.",0.297
-1983,"2J3K","White Hake",0.002
-1983,"2J3K","Witch Flounder",2.612
-1983,"2J3K","Wolffish spp.",0.46
-1983,"2J3K","Yellowtail Flounder",0.004
-1983,"3LNO","American Plaice",37.72
-1983,"3LNO","Atlantic Cod",133.86
-1983,"3LNO","Atlantic Halibut",0.359
-1983,"3LNO","Greenland Halibut",4.67
-1983,"3LNO","Haddock",0.552
-1983,"3LNO","Monkfish",0.005
-1983,"3LNO","Red Hake",0.001
-1983,"3LNO","Redfish spp.",26.887
-1983,"3LNO","Roughhead Grenadier",0
-1983,"3LNO","Roundnose Grenadier",0.085
-1983,"3LNO","Silver Hake",0
-1983,"3LNO","Skate spp.",1.281
-1983,"3LNO","White Hake",2.921
-1983,"3LNO","Witch Flounder",4.097
-1983,"3LNO","Wolffish spp.",2.593
-1983,"3LNO","Yellowtail Flounder",9.25
-1983,"3Ps","American Plaice",1.726
-1983,"3Ps","Atlantic Cod",38.451
-1983,"3Ps","Atlantic Halibut",0.156
-1983,"3Ps","Greenland Halibut",0.045
-1983,"3Ps","Haddock",0.473
-1983,"3Ps","Monkfish",0
-1983,"3Ps","Red Hake",0
-1983,"3Ps","Redfish spp.",2.996
-1983,"3Ps","Roughhead Grenadier",0
-1983,"3Ps","Roundnose Grenadier",0
-1983,"3Ps","Silver Hake",0
-1983,"3Ps","Skate spp.",0.516
-1983,"3Ps","White Hake",0.425
-1983,"3Ps","Witch Flounder",0.387
-1983,"3Ps","Wolffish spp.",0.215
-1983,"3Ps","Yellowtail Flounder",0.219
-1984,"2J3K","American Plaice",1.121
-1984,"2J3K","Atlantic Cod",119.479
-1984,"2J3K","Atlantic Halibut",0.071
-1984,"2J3K","Greenland Halibut",14.8
-1984,"2J3K","Haddock",0
-1984,"2J3K","Monkfish",0
-1984,"2J3K","Red Hake",0
-1984,"2J3K","Redfish spp.",23.559
-1984,"2J3K","Roughhead Grenadier",0
-1984,"2J3K","Roundnose Grenadier",3.365
-1984,"2J3K","Silver Hake",0
-1984,"2J3K","Skate spp.",0.122
-1984,"2J3K","White Hake",0.002
-1984,"2J3K","Witch Flounder",4.155
-1984,"2J3K","Wolffish spp.",0.339
-1984,"2J3K","Yellowtail Flounder",0.004
-1984,"3LNO","American Plaice",36.063
-1984,"3LNO","Atlantic Cod",140.095
-1984,"3LNO","Atlantic Halibut",0.826
-1984,"3LNO","Greenland Halibut",5.153
-1984,"3LNO","Haddock",2.855
-1984,"3LNO","Monkfish",0.074
-1984,"3LNO","Red Hake",0.015
-1984,"3LNO","Redfish spp.",24.789
-1984,"3LNO","Roughhead Grenadier",0
-1984,"3LNO","Roundnose Grenadier",0.089
-1984,"3LNO","Silver Hake",0.247
-1984,"3LNO","Skate spp.",2.013
-1984,"3LNO","White Hake",4.341
-1984,"3LNO","Witch Flounder",3.467
-1984,"3LNO","Wolffish spp.",1.13
-1984,"3LNO","Yellowtail Flounder",12.562
-1984,"3Ps","American Plaice",2.963
-1984,"3Ps","Atlantic Cod",36.95
-1984,"3Ps","Atlantic Halibut",0.311
-1984,"3Ps","Greenland Halibut",0.051
-1984,"3Ps","Haddock",2.748
-1984,"3Ps","Monkfish",0.01
-1984,"3Ps","Red Hake",0
-1984,"3Ps","Redfish spp.",2.005
-1984,"3Ps","Roughhead Grenadier",0
-1984,"3Ps","Roundnose Grenadier",0
-1984,"3Ps","Silver Hake",0
-1984,"3Ps","Skate spp.",0.623
-1984,"3Ps","White Hake",0.683
-1984,"3Ps","Witch Flounder",0.478
-1984,"3Ps","Wolffish spp.",0.132
-1984,"3Ps","Yellowtail Flounder",0.199
-1985,"2J3K","American Plaice",0.742
-1985,"2J3K","Atlantic Cod",123.948
-1985,"2J3K","Atlantic Halibut",0.041
-1985,"2J3K","Greenland Halibut",12.499
-1985,"2J3K","Haddock",0.001
-1985,"2J3K","Monkfish",0
-1985,"2J3K","Red Hake",0
-1985,"2J3K","Redfish spp.",29.092
-1985,"2J3K","Roughhead Grenadier",0
-1985,"2J3K","Roundnose Grenadier",4.655
-1985,"2J3K","Silver Hake",0
-1985,"2J3K","Skate spp.",0.189
-1985,"2J3K","White Hake",0.02
-1985,"2J3K","Witch Flounder",2.158
-1985,"2J3K","Wolffish spp.",0.184
-1985,"2J3K","Yellowtail Flounder",0.004
-1985,"3LNO","American Plaice",48.081
-1985,"3LNO","Atlantic Cod",144.244
-1985,"3LNO","Atlantic Halibut",1.652
-1985,"3LNO","Greenland Halibut",3.596
-1985,"3LNO","Haddock",4.013
-1985,"3LNO","Monkfish",0.111
-1985,"3LNO","Red Hake",0.024
-1985,"3LNO","Redfish spp.",28.767
-1985,"3LNO","Roughhead Grenadier",0
-1985,"3LNO","Roundnose Grenadier",0.195
-1985,"3LNO","Silver Hake",1.78
-1985,"3LNO","Skate spp.",10.399
-1985,"3LNO","White Hake",6.2
-1985,"3LNO","Witch Flounder",9.616
-1985,"3LNO","Wolffish spp.",1.315
-1985,"3LNO","Yellowtail Flounder",21.468
-1985,"3Ps","American Plaice",4.22
-1985,"3Ps","Atlantic Cod",51.367
-1985,"3Ps","Atlantic Halibut",0.515
-1985,"3Ps","Greenland Halibut",0.046
-1985,"3Ps","Haddock",7.498
-1985,"3Ps","Monkfish",0.017
-1985,"3Ps","Red Hake",0
-1985,"3Ps","Redfish spp.",1.854
-1985,"3Ps","Roughhead Grenadier",0
-1985,"3Ps","Roundnose Grenadier",0
-1985,"3Ps","Silver Hake",0
-1985,"3Ps","Skate spp.",0.965
-1985,"3Ps","White Hake",1.156
-1985,"3Ps","Witch Flounder",0.597
-1985,"3Ps","Wolffish spp.",0.178
-1985,"3Ps","Yellowtail Flounder",0.145
-1986,"2J3K","American Plaice",3.014
-1986,"2J3K","Atlantic Cod",122.76
-1986,"2J3K","Atlantic Halibut",0.112
-1986,"2J3K","Greenland Halibut",11.06
-1986,"2J3K","Haddock",0.002
-1986,"2J3K","Monkfish",0
-1986,"2J3K","Red Hake",0
-1986,"2J3K","Redfish spp.",26.95
-1986,"2J3K","Roughhead Grenadier",0.003
-1986,"2J3K","Roundnose Grenadier",7.275
-1986,"2J3K","Silver Hake",0
-1986,"2J3K","Skate spp.",0.116
-1986,"2J3K","White Hake",0.001
-1986,"2J3K","Witch Flounder",0.732
-1986,"2J3K","Wolffish spp.",0.387
-1986,"2J3K","Yellowtail Flounder",0
-1986,"3LNO","American Plaice",57.449
-1986,"3LNO","Atlantic Cod",194.598
-1986,"3LNO","Atlantic Halibut",1.391
-1986,"3LNO","Greenland Halibut",2.811
-1986,"3LNO","Haddock",7.339
-1986,"3LNO","Monkfish",0.55
-1986,"3LNO","Red Hake",0.006
-1986,"3LNO","Redfish spp.",53.26
-1986,"3LNO","Roughhead Grenadier",0
-1986,"3LNO","Roundnose Grenadier",0.024
-1986,"3LNO","Silver Hake",0.759
-1986,"3LNO","Skate spp.",14.329
-1986,"3LNO","White Hake",4.743
-1986,"3LNO","Witch Flounder",12.315
-1986,"3LNO","Wolffish spp.",1.338
-1986,"3LNO","Yellowtail Flounder",22.957
-1986,"3Ps","American Plaice",5.13
-1986,"3Ps","Atlantic Cod",57.99
-1986,"3Ps","Atlantic Halibut",0.412
-1986,"3Ps","Greenland Halibut",0.108
-1986,"3Ps","Haddock",5.413
-1986,"3Ps","Monkfish",0.034
-1986,"3Ps","Red Hake",0
-1986,"3Ps","Redfish spp.",3.651
-1986,"3Ps","Roughhead Grenadier",0
-1986,"3Ps","Roundnose Grenadier",0
-1986,"3Ps","Silver Hake",0.002
-1986,"3Ps","Skate spp.",1.583
-1986,"3Ps","White Hake",1.242
-1986,"3Ps","Witch Flounder",1.329
-1986,"3Ps","Wolffish spp.",0.203
-1986,"3Ps","Yellowtail Flounder",0.245
-1987,"2J3K","American Plaice",1.062
-1987,"2J3K","Atlantic Cod",132.653
-1987,"2J3K","Atlantic Halibut",0.113
-1987,"2J3K","Greenland Halibut",19.324
-1987,"2J3K","Haddock",0
-1987,"2J3K","Monkfish",0
-1987,"2J3K","Red Hake",0
-1987,"2J3K","Redfish spp.",18.495
-1987,"2J3K","Roughhead Grenadier",0
-1987,"2J3K","Roundnose Grenadier",6.895
-1987,"2J3K","Silver Hake",0
-1987,"2J3K","Skate spp.",1.01
-1987,"2J3K","White Hake",0.092
-1987,"2J3K","Witch Flounder",2.241
-1987,"2J3K","Wolffish spp.",0.53
-1987,"2J3K","Yellowtail Flounder",0
-1987,"3LNO","American Plaice",53.457
-1987,"3LNO","Atlantic Cod",148.89
-1987,"3LNO","Atlantic Halibut",1.412
-1987,"3LNO","Greenland Halibut",6.456
-1987,"3LNO","Haddock",5.66
-1987,"3LNO","Monkfish",1.821
-1987,"3LNO","Red Hake",0
-1987,"3LNO","Redfish spp.",84.311
-1987,"3LNO","Roughhead Grenadier",0.994
-1987,"3LNO","Roundnose Grenadier",0.067
-1987,"3LNO","Silver Hake",0.397
-1987,"3LNO","Skate spp.",18.496
-1987,"3LNO","White Hake",8.146
-1987,"3LNO","Witch Flounder",9.83
-1987,"3LNO","Wolffish spp.",1.676
-1987,"3LNO","Yellowtail Flounder",16.234
-1987,"3Ps","American Plaice",5.331
-1987,"3Ps","Atlantic Cod",59.204
-1987,"3Ps","Atlantic Halibut",0.183
-1987,"3Ps","Greenland Halibut",0.09
-1987,"3Ps","Haddock",2.687
-1987,"3Ps","Monkfish",0.05
-1987,"3Ps","Red Hake",0
-1987,"3Ps","Redfish spp.",2.169
-1987,"3Ps","Roughhead Grenadier",0
-1987,"3Ps","Roundnose Grenadier",0
-1987,"3Ps","Silver Hake",0
-1987,"3Ps","Skate spp.",0.839
-1987,"3Ps","White Hake",1.318
-1987,"3Ps","Witch Flounder",1.273
-1987,"3Ps","Wolffish spp.",0.183
-1987,"3Ps","Yellowtail Flounder",0.485
-1988,"2J3K","American Plaice",0.903
-1988,"2J3K","Atlantic Cod",132.719
-1988,"2J3K","Atlantic Halibut",0.033
-1988,"2J3K","Greenland Halibut",8.36
-1988,"2J3K","Haddock",0
-1988,"2J3K","Monkfish",0
-1988,"2J3K","Red Hake",0
-1988,"2J3K","Redfish spp.",6.906
-1988,"2J3K","Roughhead Grenadier",0
-1988,"2J3K","Roundnose Grenadier",4.667
-1988,"2J3K","Silver Hake",0
-1988,"2J3K","Skate spp.",0.377
-1988,"2J3K","White Hake",0.035
-1988,"2J3K","Witch Flounder",3.197
-1988,"2J3K","Wolffish spp.",0.134
-1988,"2J3K","Yellowtail Flounder",0.001
-1988,"3LNO","American Plaice",38.928
-1988,"3LNO","Atlantic Cod",179.108
-1988,"3LNO","Atlantic Halibut",1.14
-1988,"3LNO","Greenland Halibut",6.276
-1988,"3LNO","Haddock",8.247
-1988,"3LNO","Monkfish",0.445
-1988,"3LNO","Red Hake",0.006
-1988,"3LNO","Redfish spp.",56.658
-1988,"3LNO","Roughhead Grenadier",0.959
-1988,"3LNO","Roundnose Grenadier",0.121
-1988,"3LNO","Silver Hake",0.19
-1988,"3LNO","Skate spp.",18.766
-1988,"3LNO","White Hake",2.899
-1988,"3LNO","Witch Flounder",7.495
-1988,"3LNO","Wolffish spp.",1.079
-1988,"3LNO","Yellowtail Flounder",15.054
-1988,"3Ps","American Plaice",4.406
-1988,"3Ps","Atlantic Cod",43.377
-1988,"3Ps","Atlantic Halibut",0.141
-1988,"3Ps","Greenland Halibut",0.105
-1988,"3Ps","Haddock",2.387
-1988,"3Ps","Monkfish",0.054
-1988,"3Ps","Red Hake",0
-1988,"3Ps","Redfish spp.",2.386
-1988,"3Ps","Roughhead Grenadier",0
-1988,"3Ps","Roundnose Grenadier",0
-1988,"3Ps","Silver Hake",0
-1988,"3Ps","Skate spp.",0.783
-1988,"3Ps","White Hake",0.695
-1988,"3Ps","Witch Flounder",0.636
-1988,"3Ps","Wolffish spp.",0.144
-1988,"3Ps","Yellowtail Flounder",0.258
-1989,"2J3K","American Plaice",4.239
-1989,"2J3K","Atlantic Cod",115.079
-1989,"2J3K","Atlantic Halibut",0.023
-1989,"2J3K","Greenland Halibut",10.792
-1989,"2J3K","Haddock",0
-1989,"2J3K","Monkfish",0.015
-1989,"2J3K","Red Hake",0
-1989,"2J3K","Redfish spp.",3.163
-1989,"2J3K","Roughhead Grenadier",0.003
-1989,"2J3K","Roundnose Grenadier",4.408
-1989,"2J3K","Silver Hake",0
-1989,"2J3K","Skate spp.",0.595
-1989,"2J3K","White Hake",0.001
-1989,"2J3K","Witch Flounder",3.992
-1989,"2J3K","Wolffish spp.",0.235
-1989,"2J3K","Yellowtail Flounder",0
-1989,"3LNO","American Plaice",41.206
-1989,"3LNO","Atlantic Cod",169.079
-1989,"3LNO","Atlantic Halibut",0.668
-1989,"3LNO","Greenland Halibut",6.093
-1989,"3LNO","Haddock",6.7
-1989,"3LNO","Monkfish",0.222
-1989,"3LNO","Red Hake",0.334
-1989,"3LNO","Redfish spp.",42.904
-1989,"3LNO","Roughhead Grenadier",0.3
-1989,"3LNO","Roundnose Grenadier",0.015
-1989,"3LNO","Silver Hake",0.041
-1989,"3LNO","Skate spp.",14.243
-1989,"3LNO","White Hake",2.11
-1989,"3LNO","Witch Flounder",4.602
-1989,"3LNO","Wolffish spp.",0.957
-1989,"3LNO","Yellowtail Flounder",9.166
-1989,"3Ps","American Plaice",3.957
-1989,"3Ps","Atlantic Cod",38.648
-1989,"3Ps","Atlantic Halibut",0.223
-1989,"3Ps","Greenland Halibut",0.121
-1989,"3Ps","Haddock",2.92
-1989,"3Ps","Monkfish",0.036
-1989,"3Ps","Red Hake",0
-1989,"3Ps","Redfish spp.",2.874
-1989,"3Ps","Roughhead Grenadier",0
-1989,"3Ps","Roundnose Grenadier",0
-1989,"3Ps","Silver Hake",0
-1989,"3Ps","Skate spp.",1.685
-1989,"3Ps","White Hake",0.709
-1989,"3Ps","Witch Flounder",0.927
-1989,"3Ps","Wolffish spp.",0.15
-1989,"3Ps","Yellowtail Flounder",0.668
-1990,"2J3K","American Plaice",1.808
-1990,"2J3K","Atlantic Cod",87.511
-1990,"2J3K","Atlantic Halibut",0.019
-1990,"2J3K","Greenland Halibut",7.425
-1990,"2J3K","Haddock",0
-1990,"2J3K","Monkfish",0
-1990,"2J3K","Red Hake",0
-1990,"2J3K","Redfish spp.",2.42
-1990,"2J3K","Roughhead Grenadier",0.032
-1990,"2J3K","Roundnose Grenadier",0.608
-1990,"2J3K","Silver Hake",0
-1990,"2J3K","Skate spp.",0.046
-1990,"2J3K","White Hake",0.001
-1990,"2J3K","Witch Flounder",2.556
-1990,"2J3K","Wolffish spp.",0.118
-1990,"2J3K","Yellowtail Flounder",0
-1990,"3LNO","American Plaice",24.006
-1990,"3LNO","Atlantic Cod",150.492
-1990,"3LNO","Atlantic Halibut",1.02
-1990,"3LNO","Greenland Halibut",12.083
-1990,"3LNO","Haddock",3.173
-1990,"3LNO","Monkfish",0.198
-1990,"3LNO","Red Hake",0.254
-1990,"3LNO","Redfish spp.",33.797
-1990,"3LNO","Roughhead Grenadier",2.523
-1990,"3LNO","Roundnose Grenadier",0.047
-1990,"3LNO","Silver Hake",0.847
-1990,"3LNO","Skate spp.",14.77
-1990,"3LNO","White Hake",2.202
-1990,"3LNO","Witch Flounder",5.621
-1990,"3LNO","Wolffish spp.",1.565
-1990,"3LNO","Yellowtail Flounder",8.762
-1990,"3Ps","American Plaice",4.203
-1990,"3Ps","Atlantic Cod",41.403
-1990,"3Ps","Atlantic Halibut",0.273
-1990,"3Ps","Greenland Halibut",0.32
-1990,"3Ps","Haddock",1.857
-1990,"3Ps","Monkfish",0.06
-1990,"3Ps","Red Hake",0
-1990,"3Ps","Redfish spp.",5.557
-1990,"3Ps","Roughhead Grenadier",0
-1990,"3Ps","Roundnose Grenadier",0
-1990,"3Ps","Silver Hake",0
-1990,"3Ps","Skate spp.",0.554
-1990,"3Ps","White Hake",1.441
-1990,"3Ps","Witch Flounder",1.044
-1990,"3Ps","Wolffish spp.",0.122
-1990,"3Ps","Yellowtail Flounder",0.307
-1991,"2J3K","American Plaice",0.497
-1991,"2J3K","Atlantic Cod",46.672
-1991,"2J3K","Atlantic Halibut",0.031
-1991,"2J3K","Greenland Halibut",5.289
-1991,"2J3K","Haddock",0
-1991,"2J3K","Monkfish",0
-1991,"2J3K","Red Hake",0
-1991,"2J3K","Redfish spp.",0.279
-1991,"2J3K","Roughhead Grenadier",0.125
-1991,"2J3K","Roundnose Grenadier",0.139
-1991,"2J3K","Silver Hake",0
-1991,"2J3K","Skate spp.",0.013
-1991,"2J3K","White Hake",0
-1991,"2J3K","Witch Flounder",2.457
-1991,"2J3K","Wolffish spp.",0.061
-1991,"2J3K","Yellowtail Flounder",0
-1991,"3LNO","American Plaice",25.503
-1991,"3LNO","Atlantic Cod",118.289
-1991,"3LNO","Atlantic Halibut",1.431
-1991,"3LNO","Greenland Halibut",19.859
-1991,"3LNO","Haddock",1.267
-1991,"3LNO","Monkfish",0.43
-1991,"3LNO","Red Hake",0.408
-1991,"3LNO","Redfish spp.",29.176
-1991,"3LNO","Roughhead Grenadier",3.646
-1991,"3LNO","Roundnose Grenadier",0.056
-1991,"3LNO","Silver Hake",0.033
-1991,"3LNO","Skate spp.",28.408
-1991,"3LNO","White Hake",2.533
-1991,"3LNO","Witch Flounder",5.335
-1991,"3LNO","Wolffish spp.",2.773
-1991,"3LNO","Yellowtail Flounder",11.015
-1991,"3Ps","American Plaice",4.403
-1991,"3Ps","Atlantic Cod",43.587
-1991,"3Ps","Atlantic Halibut",0.208
-1991,"3Ps","Greenland Halibut",0.212
-1991,"3Ps","Haddock",0.8
-1991,"3Ps","Monkfish",0.09
-1991,"3Ps","Red Hake",0
-1991,"3Ps","Redfish spp.",4.509
-1991,"3Ps","Roughhead Grenadier",0
-1991,"3Ps","Roundnose Grenadier",0
-1991,"3Ps","Silver Hake",0
-1991,"3Ps","Skate spp.",0.64
-1991,"3Ps","White Hake",1.48
-1991,"3Ps","Witch Flounder",1.331
-1991,"3Ps","Wolffish spp.",0.14
-1991,"3Ps","Yellowtail Flounder",0.982
-1992,"2J3K","American Plaice",0.102
-1992,"2J3K","Atlantic Cod",1.486
-1992,"2J3K","Atlantic Halibut",0
-1992,"2J3K","Greenland Halibut",4.447
-1992,"2J3K","Haddock",0.001
-1992,"2J3K","Monkfish",0.003
-1992,"2J3K","Red Hake",0
-1992,"2J3K","Redfish spp.",0.015
-1992,"2J3K","Roughhead Grenadier",0.297
-1992,"2J3K","Roundnose Grenadier",0.273
-1992,"2J3K","Silver Hake",0
-1992,"2J3K","Skate spp.",0.022
-1992,"2J3K","White Hake",0
-1992,"2J3K","Witch Flounder",1.26
-1992,"2J3K","Wolffish spp.",0.022
-1992,"2J3K","Yellowtail Flounder",0
-1992,"3LNO","American Plaice",10.87
-1992,"3LNO","Atlantic Cod",38.069
-1992,"3LNO","Atlantic Halibut",0.381
-1992,"3LNO","Greenland Halibut",36.865
-1992,"3LNO","Haddock",1.003
-1992,"3LNO","Monkfish",0.291
-1992,"3LNO","Red Hake",0.458
-1992,"3LNO","Redfish spp.",29.87
-1992,"3LNO","Roughhead Grenadier",1.28
-1992,"3LNO","Roundnose Grenadier",2.627
-1992,"3LNO","Silver Hake",0.016
-1992,"3LNO","Skate spp.",5.137
-1992,"3LNO","White Hake",1.7
-1992,"3LNO","Witch Flounder",6.403
-1992,"3LNO","Wolffish spp.",0.442
-1992,"3LNO","Yellowtail Flounder",10.796
-1992,"3Ps","American Plaice",2.42
-1992,"3Ps","Atlantic Cod",35.899
-1992,"3Ps","Atlantic Halibut",0.128
-1992,"3Ps","Greenland Halibut",0.124
-1992,"3Ps","Haddock",0.618
-1992,"3Ps","Monkfish",0.096
-1992,"3Ps","Red Hake",0
-1992,"3Ps","Redfish spp.",6.961
-1992,"3Ps","Roughhead Grenadier",0
-1992,"3Ps","Roundnose Grenadier",0
-1992,"3Ps","Silver Hake",0
-1992,"3Ps","Skate spp.",0.059
-1992,"3Ps","White Hake",1.244
-1992,"3Ps","Witch Flounder",1.13
-1992,"3Ps","Wolffish spp.",0.127
-1992,"3Ps","Yellowtail Flounder",0.322
-1993,"2J3K","American Plaice",0.077
-1993,"2J3K","Atlantic Cod",0.554
-1993,"2J3K","Atlantic Halibut",0
-1993,"2J3K","Greenland Halibut",2.612
-1993,"2J3K","Haddock",0
-1993,"2J3K","Monkfish",0
-1993,"2J3K","Red Hake",0
-1993,"2J3K","Redfish spp.",0.002
-1993,"2J3K","Roughhead Grenadier",0.203
-1993,"2J3K","Roundnose Grenadier",0.159
-1993,"2J3K","Silver Hake",0
-1993,"2J3K","Skate spp.",0.012
-1993,"2J3K","White Hake",0
-1993,"2J3K","Witch Flounder",0.208
-1993,"2J3K","Wolffish spp.",0.015
-1993,"2J3K","Yellowtail Flounder",0.002
-1993,"3LNO","American Plaice",7.916
-1993,"3LNO","Atlantic Cod",13.473
-1993,"3LNO","Atlantic Halibut",0.326
-1993,"3LNO","Greenland Halibut",40.429
-1993,"3LNO","Haddock",0.867
-1993,"3LNO","Monkfish",0.438
-1993,"3LNO","Red Hake",0.365
-1993,"3LNO","Redfish spp.",28.194
-1993,"3LNO","Roughhead Grenadier",1.299
-1993,"3LNO","Roundnose Grenadier",2.155
-1993,"3LNO","Silver Hake",0
-1993,"3LNO","Skate spp.",6.07
-1993,"3LNO","White Hake",1.022
-1993,"3LNO","Witch Flounder",4.798
-1993,"3LNO","Wolffish spp.",0.342
-1993,"3LNO","Yellowtail Flounder",6.85
-1993,"3Ps","American Plaice",0.723
-1993,"3Ps","Atlantic Cod",15.319
-1993,"3Ps","Atlantic Halibut",0.065
-1993,"3Ps","Greenland Halibut",0.395
-1993,"3Ps","Haddock",0.15
-1993,"3Ps","Monkfish",0.051
-1993,"3Ps","Red Hake",0
-1993,"3Ps","Redfish spp.",7.314
-1993,"3Ps","Roughhead Grenadier",0.027
-1993,"3Ps","Roundnose Grenadier",0.005
-1993,"3Ps","Silver Hake",0.001
-1993,"3Ps","Skate spp.",0.033
-1993,"3Ps","White Hake",0.741
-1993,"3Ps","Witch Flounder",0.973
-1993,"3Ps","Wolffish spp.",0.066
-1993,"3Ps","Yellowtail Flounder",0.02
-1994,"2J3K","American Plaice",0.016
-1994,"2J3K","Atlantic Cod",0.377
-1994,"2J3K","Atlantic Halibut",0
-1994,"2J3K","Greenland Halibut",1.235
-1994,"2J3K","Haddock",0
-1994,"2J3K","Monkfish",0
-1994,"2J3K","Red Hake",0
-1994,"2J3K","Redfish spp.",0
-1994,"2J3K","Roughhead Grenadier",0.037
-1994,"2J3K","Roundnose Grenadier",0.028
-1994,"2J3K","Silver Hake",0
-1994,"2J3K","Skate spp.",0.091
-1994,"2J3K","White Hake",0
-1994,"2J3K","Witch Flounder",0.008
-1994,"2J3K","Wolffish spp.",0.013
-1994,"2J3K","Yellowtail Flounder",0
-1994,"3LNO","American Plaice",0.56
-1994,"3LNO","Atlantic Cod",2.817
-1994,"3LNO","Atlantic Halibut",0.19
-1994,"3LNO","Greenland Halibut",35.801
-1994,"3LNO","Haddock",0.018
-1994,"3LNO","Monkfish",0.151
-1994,"3LNO","Red Hake",0.312
-1994,"3LNO","Redfish spp.",7.31
-1994,"3LNO","Roughhead Grenadier",0.316
-1994,"3LNO","Roundnose Grenadier",1.428
-1994,"3LNO","Silver Hake",0
-1994,"3LNO","Skate spp.",8.155
-1994,"3LNO","White Hake",0.297
-1994,"3LNO","Witch Flounder",0.395
-1994,"3LNO","Wolffish spp.",0.235
-1994,"3LNO","Yellowtail Flounder",0.231
-1994,"3Ps","American Plaice",0.12
-1994,"3Ps","Atlantic Cod",0.746
-1994,"3Ps","Atlantic Halibut",0.068
-1994,"3Ps","Greenland Halibut",0.131
-1994,"3Ps","Haddock",0.022
-1994,"3Ps","Monkfish",0.359
-1994,"3Ps","Red Hake",0.002
-1994,"3Ps","Redfish spp.",8.111
-1994,"3Ps","Roughhead Grenadier",0.009
-1994,"3Ps","Roundnose Grenadier",0.003
-1994,"3Ps","Silver Hake",0.003
-1994,"3Ps","Skate spp.",1.569
-1994,"3Ps","White Hake",0.382
-1994,"3Ps","Witch Flounder",0.431
-1994,"3Ps","Wolffish spp.",0.014
-1994,"3Ps","Yellowtail Flounder",0.023
-1995,"2J3K","American Plaice",0.028
-1995,"2J3K","Atlantic Cod",0.062
-1995,"2J3K","Atlantic Halibut",0.002
-1995,"2J3K","Greenland Halibut",1.463
-1995,"2J3K","Haddock",0
-1995,"2J3K","Monkfish",0
-1995,"2J3K","Red Hake",0
-1995,"2J3K","Redfish spp.",0
-1995,"2J3K","Roughhead Grenadier",0.032
-1995,"2J3K","Roundnose Grenadier",0.019
-1995,"2J3K","Silver Hake",0
-1995,"2J3K","Skate spp.",0.071
-1995,"2J3K","White Hake",0
-1995,"2J3K","Witch Flounder",0.01
-1995,"2J3K","Wolffish spp.",0.006
-1995,"2J3K","Yellowtail Flounder",0
-1995,"3LNO","American Plaice",0.548
-1995,"3LNO","Atlantic Cod",0.297
-1995,"3LNO","Atlantic Halibut",0.169
-1995,"3LNO","Greenland Halibut",9.295
-1995,"3LNO","Haddock",0.027
-1995,"3LNO","Monkfish",0.103
-1995,"3LNO","Red Hake",0.321
-1995,"3LNO","Redfish spp.",4.803
-1995,"3LNO","Roughhead Grenadier",0.427
-1995,"3LNO","Roundnose Grenadier",1.912
-1995,"3LNO","Silver Hake",0
-1995,"3LNO","Skate spp.",7.324
-1995,"3LNO","White Hake",0.3
-1995,"3LNO","Witch Flounder",1.047
-1995,"3LNO","Wolffish spp.",0.316
-1995,"3LNO","Yellowtail Flounder",0.066
-1995,"3Ps","American Plaice",0.085
-1995,"3Ps","Atlantic Cod",0.569
-1995,"3Ps","Atlantic Halibut",0.101
-1995,"3Ps","Greenland Halibut",0.087
-1995,"3Ps","Haddock",0.067
-1995,"3Ps","Monkfish",0.188
-1995,"3Ps","Red Hake",0
-1995,"3Ps","Redfish spp.",2.744
-1995,"3Ps","Roughhead Grenadier",0.004
-1995,"3Ps","Roundnose Grenadier",0
-1995,"3Ps","Silver Hake",0
-1995,"3Ps","Skate spp.",1.87
-1995,"3Ps","White Hake",0.42
-1995,"3Ps","Witch Flounder",0.274
-1995,"3Ps","Wolffish spp.",0.013
-1995,"3Ps","Yellowtail Flounder",0.004
-1996,"2J3K","American Plaice",0.016
-1996,"2J3K","Atlantic Cod",0.174
-1996,"2J3K","Atlantic Halibut",0.001
-1996,"2J3K","Greenland Halibut",3.625
-1996,"2J3K","Haddock",0
-1996,"2J3K","Monkfish",0
-1996,"2J3K","Red Hake",0
-1996,"2J3K","Redfish spp.",0.002
-1996,"2J3K","Roughhead Grenadier",0.125
-1996,"2J3K","Roundnose Grenadier",0.013
-1996,"2J3K","Silver Hake",0
-1996,"2J3K","Skate spp.",0.062
-1996,"2J3K","White Hake",0
-1996,"2J3K","Witch Flounder",0.004
-1996,"2J3K","Wolffish spp.",0.009
-1996,"2J3K","Yellowtail Flounder",0
-1996,"3LNO","American Plaice",0.875
-1996,"3LNO","Atlantic Cod",0.392
-1996,"3LNO","Atlantic Halibut",0.183
-1996,"3LNO","Greenland Halibut",11.112
-1996,"3LNO","Haddock",0.069
-1996,"3LNO","Monkfish",0.146
-1996,"3LNO","Red Hake",0.703
-1996,"3LNO","Redfish spp.",10.096
-1996,"3LNO","Roughhead Grenadier",2.939
-1996,"3LNO","Roundnose Grenadier",0.241
-1996,"3LNO","Silver Hake",0
-1996,"3LNO","Skate spp.",6.118
-1996,"3LNO","White Hake",0.444
-1996,"3LNO","Witch Flounder",1.677
-1996,"3LNO","Wolffish spp.",0.645
-1996,"3LNO","Yellowtail Flounder",0.233
-1996,"3Ps","American Plaice",0.114
-1996,"3Ps","Atlantic Cod",0.684
-1996,"3Ps","Atlantic Halibut",0.06
-1996,"3Ps","Greenland Halibut",0.155
-1996,"3Ps","Haddock",0.142
-1996,"3Ps","Monkfish",0.111
-1996,"3Ps","Red Hake",0
-1996,"3Ps","Redfish spp.",5.879
-1996,"3Ps","Roughhead Grenadier",0.004
-1996,"3Ps","Roundnose Grenadier",0
-1996,"3Ps","Silver Hake",0
-1996,"3Ps","Skate spp.",0.605
-1996,"3Ps","White Hake",0.362
-1996,"3Ps","Witch Flounder",0.256
-1996,"3Ps","Wolffish spp.",0.008
-1996,"3Ps","Yellowtail Flounder",0.007
-1997,"2J3K","American Plaice",0.009
-1997,"2J3K","Atlantic Cod",0.164
-1997,"2J3K","Atlantic Halibut",0
-1997,"2J3K","Greenland Halibut",4.401
-1997,"2J3K","Haddock",0
-1997,"2J3K","Monkfish",0
-1997,"2J3K","Red Hake",0
-1997,"2J3K","Redfish spp.",0.004
-1997,"2J3K","Roughhead Grenadier",0.163
-1997,"2J3K","Roundnose Grenadier",0.005
-1997,"2J3K","Silver Hake",0
-1997,"2J3K","Skate spp.",0.043
-1997,"2J3K","White Hake",0
-1997,"2J3K","Witch Flounder",0.008
-1997,"2J3K","Wolffish spp.",0.014
-1997,"2J3K","Yellowtail Flounder",0
-1997,"3LNO","American Plaice",1.365
-1997,"3LNO","Atlantic Cod",0.816
-1997,"3LNO","Atlantic Halibut",0.271
-1997,"3LNO","Greenland Halibut",12.524
-1997,"3LNO","Haddock",0.336
-1997,"3LNO","Monkfish",0.001
-1997,"3LNO","Red Hake",0.636
-1997,"3LNO","Redfish spp.",5.742
-1997,"3LNO","Roughhead Grenadier",3.619
-1997,"3LNO","Roundnose Grenadier",0.043
-1997,"3LNO","Silver Hake",0
-1997,"3LNO","Skate spp.",12.068
-1997,"3LNO","White Hake",0.555
-1997,"3LNO","Witch Flounder",1.361
-1997,"3LNO","Wolffish spp.",0.595
-1997,"3LNO","Yellowtail Flounder",0.657
-1997,"3Ps","American Plaice",0.243
-1997,"3Ps","Atlantic Cod",9.142
-1997,"3Ps","Atlantic Halibut",0.099
-1997,"3Ps","Greenland Halibut",0.35
-1997,"3Ps","Haddock",0.084
-1997,"3Ps","Monkfish",0
-1997,"3Ps","Red Hake",0
-1997,"3Ps","Redfish spp.",5.588
-1997,"3Ps","Roughhead Grenadier",0.012
-1997,"3Ps","Roundnose Grenadier",0
-1997,"3Ps","Silver Hake",0
-1997,"3Ps","Skate spp.",0.832
-1997,"3Ps","White Hake",0.315
-1997,"3Ps","Witch Flounder",0.296
-1997,"3Ps","Wolffish spp.",0.047
-1997,"3Ps","Yellowtail Flounder",0.023
-1998,"2J3K","American Plaice",0.002
-1998,"2J3K","Atlantic Cod",1.77
-1998,"2J3K","Atlantic Halibut",0
-1998,"2J3K","Greenland Halibut",3.189
-1998,"2J3K","Haddock",0
-1998,"2J3K","Monkfish",0
-1998,"2J3K","Red Hake",0
-1998,"2J3K","Redfish spp.",0.003
-1998,"2J3K","Roughhead Grenadier",0.048
-1998,"2J3K","Roundnose Grenadier",0
-1998,"2J3K","Silver Hake",0
-1998,"2J3K","Skate spp.",0.018
-1998,"2J3K","White Hake",0
-1998,"2J3K","Witch Flounder",0.002
-1998,"2J3K","Wolffish spp.",0.001
-1998,"2J3K","Yellowtail Flounder",0
-1998,"3LNO","American Plaice",1.56
-1998,"3LNO","Atlantic Cod",2.568
-1998,"3LNO","Atlantic Halibut",0.251
-1998,"3LNO","Greenland Halibut",12.628
-1998,"3LNO","Haddock",0.099
-1998,"3LNO","Monkfish",0.273
-1998,"3LNO","Red Hake",0.697
-1998,"3LNO","Redfish spp.",14.251
-1998,"3LNO","Roughhead Grenadier",5.002
-1998,"3LNO","Roundnose Grenadier",0.113
-1998,"3LNO","Silver Hake",0
-1998,"3LNO","Skate spp.",9.514
-1998,"3LNO","White Hake",0.532
-1998,"3LNO","Witch Flounder",1.052
-1998,"3LNO","Wolffish spp.",0.49
-1998,"3LNO","Yellowtail Flounder",4.386
-1998,"3Ps","American Plaice",0.408
-1998,"3Ps","Atlantic Cod",19.842
-1998,"3Ps","Atlantic Halibut",0.162
-1998,"3Ps","Greenland Halibut",0.265
-1998,"3Ps","Haddock",0.267
-1998,"3Ps","Monkfish",0.164
-1998,"3Ps","Red Hake",0
-1998,"3Ps","Redfish spp.",8.349
-1998,"3Ps","Roughhead Grenadier",0.002
-1998,"3Ps","Roundnose Grenadier",0
-1998,"3Ps","Silver Hake",0
-1998,"3Ps","Skate spp.",1.257
-1998,"3Ps","White Hake",0.562
-1998,"3Ps","Witch Flounder",0.499
-1998,"3Ps","Wolffish spp.",0.09
-1998,"3Ps","Yellowtail Flounder",0.113
-1999,"2J3K","American Plaice",0.006
-1999,"2J3K","Atlantic Cod",3.515
-1999,"2J3K","Atlantic Halibut",0.001
-1999,"2J3K","Greenland Halibut",3.328
-1999,"2J3K","Haddock",0
-1999,"2J3K","Monkfish",0
-1999,"2J3K","Red Hake",0
-1999,"2J3K","Redfish spp.",0.002
-1999,"2J3K","Roughhead Grenadier",0.101
-1999,"2J3K","Roundnose Grenadier",0
-1999,"2J3K","Silver Hake",0
-1999,"2J3K","Skate spp.",0.016
-1999,"2J3K","White Hake",0
-1999,"2J3K","Witch Flounder",0.001
-1999,"2J3K","Wolffish spp.",0.004
-1999,"2J3K","Yellowtail Flounder",0
-1999,"3LNO","American Plaice",2.436
-1999,"3LNO","Atlantic Cod",5.675
-1999,"3LNO","Atlantic Halibut",0.283
-1999,"3LNO","Greenland Halibut",16.569
-1999,"3LNO","Haddock",0.075
-1999,"3LNO","Monkfish",0.112
-1999,"3LNO","Red Hake",0.657
-1999,"3LNO","Redfish spp.",14.429
-1999,"3LNO","Roughhead Grenadier",3.934
-1999,"3LNO","Roundnose Grenadier",0.084
-1999,"3LNO","Silver Hake",0
-1999,"3LNO","Skate spp.",11.945
-1999,"3LNO","White Hake",0.6
-1999,"3LNO","Witch Flounder",1.219
-1999,"3LNO","Wolffish spp.",0.811
-1999,"3LNO","Yellowtail Flounder",7.024
-1999,"3Ps","American Plaice",0.645
-1999,"3Ps","Atlantic Cod",27.908
-1999,"3Ps","Atlantic Halibut",0.131
-1999,"3Ps","Greenland Halibut",0.248
-1999,"3Ps","Haddock",0.117
-1999,"3Ps","Monkfish",0.066
-1999,"3Ps","Red Hake",0
-1999,"3Ps","Redfish spp.",7.045
-1999,"3Ps","Roughhead Grenadier",0
-1999,"3Ps","Roundnose Grenadier",0
-1999,"3Ps","Silver Hake",0
-1999,"3Ps","Skate spp.",1.106
-1999,"3Ps","White Hake",0.575
-1999,"3Ps","Witch Flounder",0.56
-1999,"3Ps","Wolffish spp.",0.232
-1999,"3Ps","Yellowtail Flounder",0.069
-2000,"2J3K","American Plaice",0.067
-2000,"2J3K","Atlantic Cod",1.353
-2000,"2J3K","Atlantic Halibut",0
-2000,"2J3K","Greenland Halibut",7.077
-2000,"2J3K","Haddock",0
-2000,"2J3K","Monkfish",0
-2000,"2J3K","Red Hake",0
-2000,"2J3K","Redfish spp.",0.029
-2000,"2J3K","Roughhead Grenadier",0.163
-2000,"2J3K","Roundnose Grenadier",0
-2000,"2J3K","Silver Hake",0
-2000,"2J3K","Skate spp.",0.037
-2000,"2J3K","White Hake",0
-2000,"2J3K","Witch Flounder",0.027
-2000,"2J3K","Wolffish spp.",0.014
-2000,"2J3K","Yellowtail Flounder",0.001
-2000,"3LNO","American Plaice",2.694
-2000,"3LNO","Atlantic Cod",3.974
-2000,"3LNO","Atlantic Halibut",0.276
-2000,"3LNO","Greenland Halibut",21.31
-2000,"3LNO","Haddock",0.087
-2000,"3LNO","Monkfish",0.097
-2000,"3LNO","Red Hake",0.905
-2000,"3LNO","Redfish spp.",14.266
-2000,"3LNO","Roughhead Grenadier",5.046
-2000,"3LNO","Roundnose Grenadier",0.056
-2000,"3LNO","Silver Hake",0.006
-2000,"3LNO","Skate spp.",18.277
-2000,"3LNO","White Hake",0.862
-2000,"3LNO","Witch Flounder",1.168
-2000,"3LNO","Wolffish spp.",0.464
-2000,"3LNO","Yellowtail Flounder",10.659
-2000,"3Ps","American Plaice",0.65
-2000,"3Ps","Atlantic Cod",25.07
-2000,"3Ps","Atlantic Halibut",0.141
-2000,"3Ps","Greenland Halibut",0.371
-2000,"3Ps","Haddock",0.181
-2000,"3Ps","Monkfish",0.034
-2000,"3Ps","Red Hake",0
-2000,"3Ps","Redfish spp.",8.649
-2000,"3Ps","Roughhead Grenadier",0
-2000,"3Ps","Roundnose Grenadier",0
-2000,"3Ps","Silver Hake",0
-2000,"3Ps","Skate spp.",0.956
-2000,"3Ps","White Hake",1.11
-2000,"3Ps","Witch Flounder",0.346
-2000,"3Ps","Wolffish spp.",0.276
-2000,"3Ps","Yellowtail Flounder",0.15
-2001,"2J3K","American Plaice",0.137
-2001,"2J3K","Atlantic Cod",1.304
-2001,"2J3K","Atlantic Halibut",0.001
-2001,"2J3K","Greenland Halibut",5.029
-2001,"2J3K","Haddock",0
-2001,"2J3K","Monkfish",0
-2001,"2J3K","Red Hake",0
-2001,"2J3K","Redfish spp.",1.786
-2001,"2J3K","Roughhead Grenadier",0.14
-2001,"2J3K","Roundnose Grenadier",0.001
-2001,"2J3K","Silver Hake",0
-2001,"2J3K","Skate spp.",0.056
-2001,"2J3K","White Hake",0
-2001,"2J3K","Witch Flounder",0.058
-2001,"2J3K","Wolffish spp.",0.034
-2001,"2J3K","Yellowtail Flounder",0.001
-2001,"3LNO","American Plaice",3.467
-2001,"3LNO","Atlantic Cod",4.751
-2001,"3LNO","Atlantic Halibut",0.462
-2001,"3LNO","Greenland Halibut",23.5
-2001,"3LNO","Haddock",0.152
-2001,"3LNO","Monkfish",0.53
-2001,"3LNO","Red Hake",1.484
-2001,"3LNO","Redfish spp.",23.706
-2001,"3LNO","Roughhead Grenadier",1.397
-2001,"3LNO","Roundnose Grenadier",3.84
-2001,"3LNO","Silver Hake",0.033
-2001,"3LNO","Skate spp.",14.861
-2001,"3LNO","White Hake",0.885
-2001,"3LNO","Witch Flounder",1.252
-2001,"3LNO","Wolffish spp.",0.912
-2001,"3LNO","Yellowtail Flounder",13.272
-2001,"3Ps","American Plaice",1.024
-2001,"3Ps","Atlantic Cod",16.165
-2001,"3Ps","Atlantic Halibut",0.268
-2001,"3Ps","Greenland Halibut",0.215
-2001,"3Ps","Haddock",0.221
-2001,"3Ps","Monkfish",0.274
-2001,"3Ps","Red Hake",0
-2001,"3Ps","Redfish spp.",4.217
-2001,"3Ps","Roughhead Grenadier",0.001
-2001,"3Ps","Roundnose Grenadier",0
-2001,"3Ps","Silver Hake",0
-2001,"3Ps","Skate spp.",1.808
-2001,"3Ps","White Hake",0.93
-2001,"3Ps","Witch Flounder",0.568
-2001,"3Ps","Wolffish spp.",0.127
-2001,"3Ps","Yellowtail Flounder",0.346
-2002,"2J3K","American Plaice",0.1
-2002,"2J3K","Atlantic Cod",0.529
-2002,"2J3K","Atlantic Halibut",0.001
-2002,"2J3K","Greenland Halibut",3.941
-2002,"2J3K","Haddock",0
-2002,"2J3K","Monkfish",0
-2002,"2J3K","Red Hake",0
-2002,"2J3K","Redfish spp.",3.172
-2002,"2J3K","Roughhead Grenadier",0.171
-2002,"2J3K","Roundnose Grenadier",0.002
-2002,"2J3K","Silver Hake",0
-2002,"2J3K","Skate spp.",0.048
-2002,"2J3K","White Hake",0
-2002,"2J3K","Witch Flounder",0.083
-2002,"2J3K","Wolffish spp.",0.026
-2002,"2J3K","Yellowtail Flounder",0.001
-2002,"3LNO","American Plaice",3.169
-2002,"3LNO","Atlantic Cod",4.225
-2002,"3LNO","Atlantic Halibut",0.436
-2002,"3LNO","Greenland Halibut",22.508
-2002,"3LNO","Haddock",0.32
-2002,"3LNO","Monkfish",1.853
-2002,"3LNO","Red Hake",3.896
-2002,"3LNO","Redfish spp.",20.431
-2002,"3LNO","Roughhead Grenadier",1.181
-2002,"3LNO","Roundnose Grenadier",3.086
-2002,"3LNO","Silver Hake",0.042
-2002,"3LNO","Skate spp.",11.755
-2002,"3LNO","White Hake",5.648
-2002,"3LNO","Witch Flounder",1.18
-2002,"3LNO","Wolffish spp.",0.805
-2002,"3LNO","Yellowtail Flounder",10.381
-2002,"3Ps","American Plaice",1.134
-2002,"3Ps","Atlantic Cod",14.451
-2002,"3Ps","Atlantic Halibut",0.3
-2002,"3Ps","Greenland Halibut",0.287
-2002,"3Ps","Haddock",0.349
-2002,"3Ps","Monkfish",0.66
-2002,"3Ps","Red Hake",0
-2002,"3Ps","Redfish spp.",4.205
-2002,"3Ps","Roughhead Grenadier",0
-2002,"3Ps","Roundnose Grenadier",0
-2002,"3Ps","Silver Hake",0
-2002,"3Ps","Skate spp.",1.651
-2002,"3Ps","White Hake",0.918
-2002,"3Ps","Witch Flounder",0.556
-2002,"3Ps","Wolffish spp.",0.12
-2002,"3Ps","Yellowtail Flounder",0.179
-2003,"2J3K","American Plaice",0.033
-2003,"2J3K","Atlantic Cod",0.033
-2003,"2J3K","Atlantic Halibut",0
-2003,"2J3K","Greenland Halibut",3.559
-2003,"2J3K","Haddock",0
-2003,"2J3K","Monkfish",0
-2003,"2J3K","Red Hake",0
-2003,"2J3K","Redfish spp.",5.088
-2003,"2J3K","Roughhead Grenadier",0.107
-2003,"2J3K","Roundnose Grenadier",0
-2003,"2J3K","Silver Hake",0
-2003,"2J3K","Skate spp.",0.04
-2003,"2J3K","White Hake",0
-2003,"2J3K","Witch Flounder",0.053
-2003,"2J3K","Wolffish spp.",0.005
-2003,"2J3K","Yellowtail Flounder",0
-2003,"3LNO","American Plaice",3.669
-2003,"3LNO","Atlantic Cod",2.552
-2003,"3LNO","Atlantic Halibut",0.665
-2003,"3LNO","Greenland Halibut",21.541
-2003,"3LNO","Haddock",0.275
-2003,"3LNO","Monkfish",2.445
-2003,"3LNO","Red Hake",1.613
-2003,"3LNO","Redfish spp.",22.616
-2003,"3LNO","Roughhead Grenadier",1.314
-2003,"3LNO","Roundnose Grenadier",2.425
-2003,"3LNO","Silver Hake",0.014
-2003,"3LNO","Skate spp.",14.263
-2003,"3LNO","White Hake",6.356
-2003,"3LNO","Witch Flounder",1.344
-2003,"3LNO","Wolffish spp.",0.725
-2003,"3LNO","Yellowtail Flounder",13.303
-2003,"3Ps","American Plaice",1.034
-2003,"3Ps","Atlantic Cod",15.348
-2003,"3Ps","Atlantic Halibut",0.387
-2003,"3Ps","Greenland Halibut",0.353
-2003,"3Ps","Haddock",0.4
-2003,"3Ps","Monkfish",0.631
-2003,"3Ps","Red Hake",0
-2003,"3Ps","Redfish spp.",4.332
-2003,"3Ps","Roughhead Grenadier",0.001
-2003,"3Ps","Roundnose Grenadier",0
-2003,"3Ps","Silver Hake",0
-2003,"3Ps","Skate spp.",1.787
-2003,"3Ps","White Hake",1.108
-2003,"3Ps","Witch Flounder",0.541
-2003,"3Ps","Wolffish spp.",0.069
-2003,"3Ps","Yellowtail Flounder",0.322
-2004,"2J3K","American Plaice",0.016
-2004,"2J3K","Atlantic Cod",0.143
-2004,"2J3K","Atlantic Halibut",0
-2004,"2J3K","Greenland Halibut",2.628
-2004,"2J3K","Haddock",0
-2004,"2J3K","Monkfish",0
-2004,"2J3K","Red Hake",0
-2004,"2J3K","Redfish spp.",4.906
-2004,"2J3K","Roughhead Grenadier",0.075
-2004,"2J3K","Roundnose Grenadier",0
-2004,"2J3K","Silver Hake",0
-2004,"2J3K","Skate spp.",0.029
-2004,"2J3K","White Hake",0
-2004,"2J3K","Witch Flounder",0.011
-2004,"2J3K","Wolffish spp.",0
-2004,"2J3K","Yellowtail Flounder",0
-2004,"3LNO","American Plaice",2.658
-2004,"3LNO","Atlantic Cod",1.318
-2004,"3LNO","Atlantic Halibut",0.262
-2004,"3LNO","Greenland Halibut",10.56
-2004,"3LNO","Haddock",0.067
-2004,"3LNO","Monkfish",0.802
-2004,"3LNO","Red Hake",0.531
-2004,"3LNO","Redfish spp.",7.144
-2004,"3LNO","Roughhead Grenadier",1.418
-2004,"3LNO","Roundnose Grenadier",1.722
-2004,"3LNO","Silver Hake",0.008
-2004,"3LNO","Skate spp.",11.828
-2004,"3LNO","White Hake",2.108
-2004,"3LNO","Witch Flounder",0.837
-2004,"3LNO","Wolffish spp.",0.384
-2004,"3LNO","Yellowtail Flounder",13.124
-2004,"3Ps","American Plaice",0.812
-2004,"3Ps","Atlantic Cod",13.961
-2004,"3Ps","Atlantic Halibut",0.324
-2004,"3Ps","Greenland Halibut",0.233
-2004,"3Ps","Haddock",0.33
-2004,"3Ps","Monkfish",0.327
-2004,"3Ps","Red Hake",0
-2004,"3Ps","Redfish spp.",4.109
-2004,"3Ps","Roughhead Grenadier",0
-2004,"3Ps","Roundnose Grenadier",0
-2004,"3Ps","Silver Hake",0
-2004,"3Ps","Skate spp.",1.277
-2004,"3Ps","White Hake",1.383
-2004,"3Ps","Witch Flounder",0.577
-2004,"3Ps","Wolffish spp.",0.035
-2004,"3Ps","Yellowtail Flounder",0.156
-2005,"2J3K","American Plaice",0.029
-2005,"2J3K","Atlantic Cod",0.495
-2005,"2J3K","Atlantic Halibut",0.001
-2005,"2J3K","Greenland Halibut",4.709
-2005,"2J3K","Haddock",0.001
-2005,"2J3K","Monkfish",0.003
-2005,"2J3K","Red Hake",0
-2005,"2J3K","Redfish spp.",5.362
-2005,"2J3K","Roughhead Grenadier",0.106
-2005,"2J3K","Roundnose Grenadier",0
-2005,"2J3K","Silver Hake",0
-2005,"2J3K","Skate spp.",0.026
-2005,"2J3K","White Hake",0.002
-2005,"2J3K","Witch Flounder",0.037
-2005,"2J3K","Wolffish spp.",0
-2005,"2J3K","Yellowtail Flounder",0.002
-2005,"3LNO","American Plaice",2.355
-2005,"3LNO","Atlantic Cod",1.314
-2005,"3LNO","Atlantic Halibut",0.241
-2005,"3LNO","Greenland Halibut",10.748
-2005,"3LNO","Haddock",0.051
-2005,"3LNO","Monkfish",0.624
-2005,"3LNO","Red Hake",0.459
-2005,"3LNO","Redfish spp.",12.334
-2005,"3LNO","Roughhead Grenadier",1.01
-2005,"3LNO","Roundnose Grenadier",1.382
-2005,"3LNO","Silver Hake",0.04
-2005,"3LNO","Skate spp.",3.538
-2005,"3LNO","White Hake",1.053
-2005,"3LNO","Witch Flounder",0.455
-2005,"3LNO","Wolffish spp.",0.247
-2005,"3LNO","Yellowtail Flounder",13.911
-2005,"3Ps","American Plaice",0.797
-2005,"3Ps","Atlantic Cod",14.565
-2005,"3Ps","Atlantic Halibut",0.262
-2005,"3Ps","Greenland Halibut",0.197
-2005,"3Ps","Haddock",0.337
-2005,"3Ps","Monkfish",0.566
-2005,"3Ps","Red Hake",0
-2005,"3Ps","Redfish spp.",3.372
-2005,"3Ps","Roughhead Grenadier",0
-2005,"3Ps","Roundnose Grenadier",0
-2005,"3Ps","Silver Hake",0
-2005,"3Ps","Skate spp.",0.982
-2005,"3Ps","White Hake",1.638
-2005,"3Ps","Witch Flounder",0.499
-2005,"3Ps","Wolffish spp.",0.027
-2005,"3Ps","Yellowtail Flounder",0.015
-2006,"2J3K","American Plaice",0.059
-2006,"2J3K","Atlantic Cod",0.941
-2006,"2J3K","Atlantic Halibut",0.002
-2006,"2J3K","Greenland Halibut",4.382
-2006,"2J3K","Haddock",0
-2006,"2J3K","Monkfish",0
-2006,"2J3K","Red Hake",0
-2006,"2J3K","Redfish spp.",0.814
-2006,"2J3K","Roughhead Grenadier",0.075
-2006,"2J3K","Roundnose Grenadier",0
-2006,"2J3K","Silver Hake",0
-2006,"2J3K","Skate spp.",0.025
-2006,"2J3K","White Hake",0
-2006,"2J3K","Witch Flounder",0.053
-2006,"2J3K","Wolffish spp.",0
-2006,"2J3K","Yellowtail Flounder",0
-2006,"3LNO","American Plaice",0.889
-2006,"3LNO","Atlantic Cod",1.568
-2006,"3LNO","Atlantic Halibut",0.19
-2006,"3LNO","Greenland Halibut",10.924
-2006,"3LNO","Haddock",0.032
-2006,"3LNO","Monkfish",0.601
-2006,"3LNO","Red Hake",0.037
-2006,"3LNO","Redfish spp.",11.249
-2006,"3LNO","Roughhead Grenadier",0.397
-2006,"3LNO","Roundnose Grenadier",0.695
-2006,"3LNO","Silver Hake",0
-2006,"3LNO","Skate spp.",5.504
-2006,"3LNO","White Hake",1.274
-2006,"3LNO","Witch Flounder",0.252
-2006,"3LNO","Wolffish spp.",0.029
-2006,"3LNO","Yellowtail Flounder",0.587
-2006,"3Ps","American Plaice",0.532
-2006,"3Ps","Atlantic Cod",13.258
-2006,"3Ps","Atlantic Halibut",0.276
-2006,"3Ps","Greenland Halibut",0.146
-2006,"3Ps","Haddock",0.196
-2006,"3Ps","Monkfish",0.67
-2006,"3Ps","Red Hake",0
-2006,"3Ps","Redfish spp.",2.393
-2006,"3Ps","Roughhead Grenadier",0
-2006,"3Ps","Roundnose Grenadier",0
-2006,"3Ps","Silver Hake",0
-2006,"3Ps","Skate spp.",0.988
-2006,"3Ps","White Hake",1.485
-2006,"3Ps","Witch Flounder",0.213
-2006,"3Ps","Wolffish spp.",0.015
-2006,"3Ps","Yellowtail Flounder",0.083
-2007,"2J3K","American Plaice",0.026
-2007,"2J3K","Atlantic Cod",1.037
-2007,"2J3K","Atlantic Halibut",0.001
-2007,"2J3K","Greenland Halibut",4.226
-2007,"2J3K","Haddock",0
-2007,"2J3K","Monkfish",0
-2007,"2J3K","Red Hake",0
-2007,"2J3K","Redfish spp.",2.914
-2007,"2J3K","Roughhead Grenadier",0.032
-2007,"2J3K","Roundnose Grenadier",0
-2007,"2J3K","Silver Hake",0
-2007,"2J3K","Skate spp.",0.006
-2007,"2J3K","White Hake",0
-2007,"2J3K","Witch Flounder",0.022
-2007,"2J3K","Wolffish spp.",0
-2007,"2J3K","Yellowtail Flounder",0
-2007,"3LNO","American Plaice",1.45
-2007,"3LNO","Atlantic Cod",2.072
-2007,"3LNO","Atlantic Halibut",0.362
-2007,"3LNO","Greenland Halibut",9.11
-2007,"3LNO","Haddock",0.047
-2007,"3LNO","Monkfish",0.154
-2007,"3LNO","Red Hake",0.067
-2007,"3LNO","Redfish spp.",7.796
-2007,"3LNO","Roughhead Grenadier",0.328
-2007,"3LNO","Roundnose Grenadier",0.216
-2007,"3LNO","Silver Hake",0
-2007,"3LNO","Skate spp.",6.211
-2007,"3LNO","White Hake",0.759
-2007,"3LNO","Witch Flounder",0.28
-2007,"3LNO","Wolffish spp.",0.094
-2007,"3LNO","Yellowtail Flounder",4.428
-2007,"3Ps","American Plaice",0.543
-2007,"3Ps","Atlantic Cod",12.95
-2007,"3Ps","Atlantic Halibut",0.201
-2007,"3Ps","Greenland Halibut",0.257
-2007,"3Ps","Haddock",0.417
-2007,"3Ps","Monkfish",0.167
-2007,"3Ps","Red Hake",0
-2007,"3Ps","Redfish spp.",2.027
-2007,"3Ps","Roughhead Grenadier",0
-2007,"3Ps","Roundnose Grenadier",0
-2007,"3Ps","Silver Hake",0
-2007,"3Ps","Skate spp.",1.838
-2007,"3Ps","White Hake",1.255
-2007,"3Ps","Witch Flounder",0.125
-2007,"3Ps","Wolffish spp.",0.013
-2007,"3Ps","Yellowtail Flounder",0.329
-2008,"2J3K","American Plaice",0.013
-2008,"2J3K","Atlantic Cod",1.469
-2008,"2J3K","Atlantic Halibut",0
-2008,"2J3K","Greenland Halibut",4.146
-2008,"2J3K","Haddock",0
-2008,"2J3K","Monkfish",0
-2008,"2J3K","Red Hake",0
-2008,"2J3K","Redfish spp.",0.029
-2008,"2J3K","Roughhead Grenadier",0.004
-2008,"2J3K","Roundnose Grenadier",0
-2008,"2J3K","Silver Hake",0
-2008,"2J3K","Skate spp.",0.002
-2008,"2J3K","White Hake",0
-2008,"2J3K","Witch Flounder",0.007
-2008,"2J3K","Wolffish spp.",0
-2008,"2J3K","Yellowtail Flounder",0
-2008,"3LNO","American Plaice",1.892
-2008,"3LNO","Atlantic Cod",2.398
-2008,"3LNO","Atlantic Halibut",0.263
-2008,"3LNO","Greenland Halibut",8.751
-2008,"3LNO","Haddock",0.064
-2008,"3LNO","Monkfish",0.24
-2008,"3LNO","Red Hake",0.045
-2008,"3LNO","Redfish spp.",5.531
-2008,"3LNO","Roughhead Grenadier",0.382
-2008,"3LNO","Roundnose Grenadier",0.225
-2008,"3LNO","Silver Hake",0
-2008,"3LNO","Skate spp.",7.11
-2008,"3LNO","White Hake",0.933
-2008,"3LNO","Witch Flounder",0.32
-2008,"3LNO","Wolffish spp.",0.198
-2008,"3LNO","Yellowtail Flounder",11.307
-2008,"3Ps","American Plaice",0.521
-2008,"3Ps","Atlantic Cod",11.87
-2008,"3Ps","Atlantic Halibut",0.21
-2008,"3Ps","Greenland Halibut",0.107
-2008,"3Ps","Haddock",0.312
-2008,"3Ps","Monkfish",0.037
-2008,"3Ps","Red Hake",0
-2008,"3Ps","Redfish spp.",1.204
-2008,"3Ps","Roughhead Grenadier",0
-2008,"3Ps","Roundnose Grenadier",0
-2008,"3Ps","Silver Hake",0
-2008,"3Ps","Skate spp.",1.395
-2008,"3Ps","White Hake",0.665
-2008,"3Ps","Witch Flounder",0.309
-2008,"3Ps","Wolffish spp.",0.014
-2008,"3Ps","Yellowtail Flounder",0.602
-2009,"2J3K","American Plaice",0.009
-2009,"2J3K","Atlantic Cod",1.148
-2009,"2J3K","Atlantic Halibut",0
-2009,"2J3K","Greenland Halibut",4.593
-2009,"2J3K","Haddock",0
-2009,"2J3K","Monkfish",0
-2009,"2J3K","Red Hake",0
-2009,"2J3K","Redfish spp.",0.027
-2009,"2J3K","Roughhead Grenadier",0.006
-2009,"2J3K","Roundnose Grenadier",0
-2009,"2J3K","Silver Hake",0
-2009,"2J3K","Skate spp.",0.005
-2009,"2J3K","White Hake",0
-2009,"2J3K","Witch Flounder",0.036
-2009,"2J3K","Wolffish spp.",0
-2009,"2J3K","Yellowtail Flounder",0.005
-2009,"3LNO","American Plaice",1.77
-2009,"3LNO","Atlantic Cod",2.334
-2009,"3LNO","Atlantic Halibut",0.649
-2009,"3LNO","Greenland Halibut",8.153
-2009,"3LNO","Haddock",0.106
-2009,"3LNO","Monkfish",0.216
-2009,"3LNO","Red Hake",0.092
-2009,"3LNO","Redfish spp.",6.736
-2009,"3LNO","Roughhead Grenadier",0.558
-2009,"3LNO","Roundnose Grenadier",0.368
-2009,"3LNO","Silver Hake",0
-2009,"3LNO","Skate spp.",5.721
-2009,"3LNO","White Hake",0.494
-2009,"3LNO","Witch Flounder",0.344
-2009,"3LNO","Wolffish spp.",0.115
-2009,"3LNO","Yellowtail Flounder",5.864
-2009,"3Ps","American Plaice",0.556
-2009,"3Ps","Atlantic Cod",9.706
-2009,"3Ps","Atlantic Halibut",0.268
-2009,"3Ps","Greenland Halibut",0.196
-2009,"3Ps","Haddock",0.22
-2009,"3Ps","Monkfish",0.085
-2009,"3Ps","Red Hake",0
-2009,"3Ps","Redfish spp.",1.209
-2009,"3Ps","Roughhead Grenadier",0
-2009,"3Ps","Roundnose Grenadier",0
-2009,"3Ps","Silver Hake",0
-2009,"3Ps","Skate spp.",0.999
-2009,"3Ps","White Hake",0.365
-2009,"3Ps","Witch Flounder",0.461
-2009,"3Ps","Wolffish spp.",0.013
-2009,"3Ps","Yellowtail Flounder",0.261
-2010,"2J3K","American Plaice",0.021
-2010,"2J3K","Atlantic Cod",1.133
-2010,"2J3K","Atlantic Halibut",0
-2010,"2J3K","Greenland Halibut",5.282
-2010,"2J3K","Haddock",0
-2010,"2J3K","Monkfish",0
-2010,"2J3K","Red Hake",0
-2010,"2J3K","Redfish spp.",0.061
-2010,"2J3K","Roughhead Grenadier",0.029
-2010,"2J3K","Roundnose Grenadier",0
-2010,"2J3K","Silver Hake",0
-2010,"2J3K","Skate spp.",0.003
-2010,"2J3K","White Hake",0
-2010,"2J3K","Witch Flounder",0.125
-2010,"2J3K","Wolffish spp.",0
-2010,"2J3K","Yellowtail Flounder",0
-2010,"3LNO","American Plaice",1.977
-2010,"3LNO","Atlantic Cod",2.432
-2010,"3LNO","Atlantic Halibut",0.276
-2010,"3LNO","Greenland Halibut",8.144
-2010,"3LNO","Haddock",0.033
-2010,"3LNO","Monkfish",0.21
-2010,"3LNO","Red Hake",0.105
-2010,"3LNO","Redfish spp.",9.614
-2010,"3LNO","Roughhead Grenadier",0.455
-2010,"3LNO","Roundnose Grenadier",0.252
-2010,"3LNO","Silver Hake",0
-2010,"3LNO","Skate spp.",5.364
-2010,"3LNO","White Hake",0.286
-2010,"3LNO","Witch Flounder",0.496
-2010,"3LNO","Wolffish spp.",0.154
-2010,"3LNO","Yellowtail Flounder",9.291
-2010,"3Ps","American Plaice",0.625
-2010,"3Ps","Atlantic Cod",8.365
-2010,"3Ps","Atlantic Halibut",0.328
-2010,"3Ps","Greenland Halibut",0.261
-2010,"3Ps","Haddock",0.179
-2010,"3Ps","Monkfish",0.058
-2010,"3Ps","Red Hake",0.002
-2010,"3Ps","Redfish spp.",1.641
-2010,"3Ps","Roughhead Grenadier",0
-2010,"3Ps","Roundnose Grenadier",0
-2010,"3Ps","Silver Hake",0
-2010,"3Ps","Skate spp.",0.871
-2010,"3Ps","White Hake",0.378
-2010,"3Ps","Witch Flounder",0.478
-2010,"3Ps","Wolffish spp.",0.009
-2010,"3Ps","Yellowtail Flounder",0.687
-2011,"2J3K","American Plaice",0.016
-2011,"2J3K","Atlantic Cod",1.318
-2011,"2J3K","Atlantic Halibut",0
-2011,"2J3K","Greenland Halibut",4.551
-2011,"2J3K","Haddock",0
-2011,"2J3K","Monkfish",0
-2011,"2J3K","Red Hake",0
-2011,"2J3K","Redfish spp.",0.147
-2011,"2J3K","Roughhead Grenadier",0.062
-2011,"2J3K","Roundnose Grenadier",0.01
-2011,"2J3K","Silver Hake",0
-2011,"2J3K","Skate spp.",0.003
-2011,"2J3K","White Hake",0
-2011,"2J3K","Witch Flounder",0.084
-2011,"2J3K","Wolffish spp.",0
-2011,"2J3K","Yellowtail Flounder",0
-2011,"3LNO","American Plaice",1.243
-2011,"3LNO","Atlantic Cod",2.772
-2011,"3LNO","Atlantic Halibut",0.242
-2011,"3LNO","Greenland Halibut",9.261
-2011,"3LNO","Haddock",0.104
-2011,"3LNO","Monkfish",0.284
-2011,"3LNO","Red Hake",0.092
-2011,"3LNO","Redfish spp.",11.909
-2011,"3LNO","Roughhead Grenadier",0.657
-2011,"3LNO","Roundnose Grenadier",0.253
-2011,"3LNO","Silver Hake",0.008
-2011,"3LNO","Skate spp.",5.548
-2011,"3LNO","White Hake",0.175
-2011,"3LNO","Witch Flounder",0.486
-2011,"3LNO","Wolffish spp.",0.189
-2011,"3LNO","Yellowtail Flounder",5.23
-2011,"3Ps","American Plaice",0.297
-2011,"3Ps","Atlantic Cod",6.856
-2011,"3Ps","Atlantic Halibut",0.368
-2011,"3Ps","Greenland Halibut",0.152
-2011,"3Ps","Haddock",0.113
-2011,"3Ps","Monkfish",0.057
-2011,"3Ps","Red Hake",0
-2011,"3Ps","Redfish spp.",1.267
-2011,"3Ps","Roughhead Grenadier",0
-2011,"3Ps","Roundnose Grenadier",0
-2011,"3Ps","Silver Hake",0
-2011,"3Ps","Skate spp.",0.741
-2011,"3Ps","White Hake",0.2
-2011,"3Ps","Witch Flounder",0.18
-2011,"3Ps","Wolffish spp.",0.003
-2011,"3Ps","Yellowtail Flounder",0.128
-2012,"2J3K","American Plaice",0.01
-2012,"2J3K","Atlantic Cod",1.649
-2012,"2J3K","Atlantic Halibut",0.001
-2012,"2J3K","Greenland Halibut",4.861
-2012,"2J3K","Haddock",0
-2012,"2J3K","Monkfish",0
-2012,"2J3K","Red Hake",0
-2012,"2J3K","Redfish spp.",0.136
-2012,"2J3K","Roughhead Grenadier",0.017
-2012,"2J3K","Roundnose Grenadier",0.004
-2012,"2J3K","Silver Hake",0
-2012,"2J3K","Skate spp.",0.011
-2012,"2J3K","White Hake",0
-2012,"2J3K","Witch Flounder",0.083
-2012,"2J3K","Wolffish spp.",0
-2012,"2J3K","Yellowtail Flounder",0
-2012,"3LNO","American Plaice",1.331
-2012,"3LNO","Atlantic Cod",2.416
-2012,"3LNO","Atlantic Halibut",0.355
-2012,"3LNO","Greenland Halibut",8.53
-2012,"3LNO","Haddock",0.031
-2012,"3LNO","Monkfish",0.157
-2012,"3LNO","Red Hake",0.073
-2012,"3LNO","Redfish spp.",11.47
-2012,"3LNO","Roughhead Grenadier",0.78
-2012,"3LNO","Roundnose Grenadier",0.494
-2012,"3LNO","Silver Hake",0.117
-2012,"3LNO","Skate spp.",4.329
-2012,"3LNO","White Hake",0.151
-2012,"3LNO","Witch Flounder",0.434
-2012,"3LNO","Wolffish spp.",0.202
-2012,"3LNO","Yellowtail Flounder",3.214
-2012,"3Ps","American Plaice",0.149
-2012,"3Ps","Atlantic Cod",5.082
-2012,"3Ps","Atlantic Halibut",0.404
-2012,"3Ps","Greenland Halibut",0.084
-2012,"3Ps","Haddock",0.158
-2012,"3Ps","Monkfish",0.059
-2012,"3Ps","Red Hake",0
-2012,"3Ps","Redfish spp.",1.089
-2012,"3Ps","Roughhead Grenadier",0
-2012,"3Ps","Roundnose Grenadier",0
-2012,"3Ps","Silver Hake",0
-2012,"3Ps","Skate spp.",0.578
-2012,"3Ps","White Hake",0.213
-2012,"3Ps","Witch Flounder",0.253
-2012,"3Ps","Wolffish spp.",0.002
-2012,"3Ps","Yellowtail Flounder",0.051
-2013,"2J3K","American Plaice",0.098
-2013,"2J3K","Atlantic Cod",2.156
-2013,"2J3K","Atlantic Halibut",0.002
-2013,"2J3K","Greenland Halibut",4.597
-2013,"2J3K","Haddock",0
-2013,"2J3K","Monkfish",0
-2013,"2J3K","Red Hake",0
-2013,"2J3K","Redfish spp.",0.066
-2013,"2J3K","Roughhead Grenadier",0.001
-2013,"2J3K","Roundnose Grenadier",0
-2013,"2J3K","Silver Hake",0
-2013,"2J3K","Skate spp.",0
-2013,"2J3K","White Hake",0
-2013,"2J3K","Witch Flounder",0.093
-2013,"2J3K","Wolffish spp.",0
-2013,"2J3K","Yellowtail Flounder",0
-2013,"3LNO","American Plaice",2.209
-2013,"3LNO","Atlantic Cod",3.156
-2013,"3LNO","Atlantic Halibut",0.477
-2013,"3LNO","Greenland Halibut",8.941
-2013,"3LNO","Haddock",0.192
-2013,"3LNO","Monkfish",0.083
-2013,"3LNO","Red Hake",0.017
-2013,"3LNO","Redfish spp.",14.139
-2013,"3LNO","Roughhead Grenadier",0.245
-2013,"3LNO","Roundnose Grenadier",0.074
-2013,"3LNO","Silver Hake",0.071
-2013,"3LNO","Skate spp.",4.344
-2013,"3LNO","White Hake",0.234
-2013,"3LNO","Witch Flounder",0.45
-2013,"3LNO","Wolffish spp.",0.043
-2013,"3LNO","Yellowtail Flounder",10.537
-2013,"3Ps","American Plaice",0.102
-2013,"3Ps","Atlantic Cod",4.358
-2013,"3Ps","Atlantic Halibut",0.35
-2013,"3Ps","Greenland Halibut",0.015
-2013,"3Ps","Haddock",0.16
-2013,"3Ps","Monkfish",0.019
-2013,"3Ps","Red Hake",0
-2013,"3Ps","Redfish spp.",0.433
-2013,"3Ps","Roughhead Grenadier",0
-2013,"3Ps","Roundnose Grenadier",0
-2013,"3Ps","Silver Hake",0
-2013,"3Ps","Skate spp.",0.557
-2013,"3Ps","White Hake",0.191
-2013,"3Ps","Witch Flounder",0.244
-2013,"3Ps","Wolffish spp.",0.002
-2013,"3Ps","Yellowtail Flounder",0.035
-2014,"2J3K","American Plaice",0.008
-2014,"2J3K","Atlantic Cod",2.268
-2014,"2J3K","Atlantic Halibut",0.001
-2014,"2J3K","Greenland Halibut",4.467
-2014,"2J3K","Haddock",0
-2014,"2J3K","Monkfish",0
-2014,"2J3K","Red Hake",0
-2014,"2J3K","Redfish spp.",0.051
-2014,"2J3K","Roughhead Grenadier",0.001
-2014,"2J3K","Roundnose Grenadier",0
-2014,"2J3K","Silver Hake",0
-2014,"2J3K","Skate spp.",0
-2014,"2J3K","White Hake",0
-2014,"2J3K","Witch Flounder",0.089
-2014,"2J3K","Wolffish spp.",0
-2014,"2J3K","Yellowtail Flounder",0
-2014,"3LNO","American Plaice",1.389
-2014,"3LNO","Atlantic Cod",3.004
-2014,"3LNO","Atlantic Halibut",0.804
-2014,"3LNO","Greenland Halibut",9.536
-2014,"3LNO","Haddock",0.225
-2014,"3LNO","Monkfish",0.212
-2014,"3LNO","Red Hake",0.012
-2014,"3LNO","Redfish spp.",13.219
-2014,"3LNO","Roughhead Grenadier",0.231
-2014,"3LNO","Roundnose Grenadier",0.077
-2014,"3LNO","Silver Hake",0.716
-2014,"3LNO","Skate spp.",4.474
-2014,"3LNO","White Hake",0.316
-2014,"3LNO","Witch Flounder",0.453
-2014,"3LNO","Wolffish spp.",0.092
-2014,"3LNO","Yellowtail Flounder",7.97
-2014,"3Ps","American Plaice",0.08
-2014,"3Ps","Atlantic Cod",6.596
-2014,"3Ps","Atlantic Halibut",0.426
-2014,"3Ps","Greenland Halibut",0.02
-2014,"3Ps","Haddock",0.305
-2014,"3Ps","Monkfish",0.005
-2014,"3Ps","Red Hake",0
-2014,"3Ps","Redfish spp.",0.413
-2014,"3Ps","Roughhead Grenadier",0
-2014,"3Ps","Roundnose Grenadier",0
-2014,"3Ps","Silver Hake",0
-2014,"3Ps","Skate spp.",0.346
-2014,"3Ps","White Hake",0.385
-2014,"3Ps","Witch Flounder",0.19
-2014,"3Ps","Wolffish spp.",0.011
-2014,"3Ps","Yellowtail Flounder",0.064
-2015,"2J3K","American Plaice",0.004
-2015,"2J3K","Atlantic Cod",2.379
-2015,"2J3K","Atlantic Halibut",0.002
-2015,"2J3K","Greenland Halibut",4.379
-2015,"2J3K","Haddock",0
-2015,"2J3K","Monkfish",0
-2015,"2J3K","Red Hake",0
-2015,"2J3K","Redfish spp.",0.038
-2015,"2J3K","Roughhead Grenadier",0
-2015,"2J3K","Roundnose Grenadier",0
-2015,"2J3K","Silver Hake",0
-2015,"2J3K","Skate spp.",0.001
-2015,"2J3K","White Hake",0
-2015,"2J3K","Witch Flounder",0.022
-2015,"2J3K","Wolffish spp.",0
-2015,"2J3K","Yellowtail Flounder",0
-2015,"3LNO","American Plaice",1.113
-2015,"3LNO","Atlantic Cod",2.665
-2015,"3LNO","Atlantic Halibut",0.767
-2015,"3LNO","Greenland Halibut",7.937
-2015,"3LNO","Haddock",0.223
-2015,"3LNO","Monkfish",0.147
-2015,"3LNO","Red Hake",0.008
-2015,"3LNO","Redfish spp.",17.859
-2015,"3LNO","Roughhead Grenadier",0.128
-2015,"3LNO","Roundnose Grenadier",0.026
-2015,"3LNO","Silver Hake",0.937
-2015,"3LNO","Skate spp.",3.326
-2015,"3LNO","White Hake",0.411
-2015,"3LNO","Witch Flounder",0.554
-2015,"3LNO","Wolffish spp.",0.023
-2015,"3LNO","Yellowtail Flounder",6.894
-2015,"3Ps","American Plaice",0.099
-2015,"3Ps","Atlantic Cod",6.45
-2015,"3Ps","Atlantic Halibut",0.427
-2015,"3Ps","Greenland Halibut",0.017
-2015,"3Ps","Haddock",0.284
-2015,"3Ps","Monkfish",0.013
-2015,"3Ps","Red Hake",0
-2015,"3Ps","Redfish spp.",0.211
-2015,"3Ps","Roughhead Grenadier",0
-2015,"3Ps","Roundnose Grenadier",0
-2015,"3Ps","Silver Hake",0
-2015,"3Ps","Skate spp.",0.243
-2015,"3Ps","White Hake",0.331
-2015,"3Ps","Witch Flounder",0.412
-2015,"3Ps","Wolffish spp.",0
-2015,"3Ps","Yellowtail Flounder",0.045
-2016,"2J3K","American Plaice",0.002
-2016,"2J3K","Atlantic Cod",3.612
-2016,"2J3K","Atlantic Halibut",0.001
-2016,"2J3K","Greenland Halibut",3.999
-2016,"2J3K","Haddock",0
-2016,"2J3K","Monkfish",0
-2016,"2J3K","Red Hake",0
-2016,"2J3K","Redfish spp.",0.014
-2016,"2J3K","Roughhead Grenadier",0
-2016,"2J3K","Roundnose Grenadier",0
-2016,"2J3K","Silver Hake",0
-2016,"2J3K","Skate spp.",0.001
-2016,"2J3K","White Hake",0
-2016,"2J3K","Witch Flounder",0.07
-2016,"2J3K","Wolffish spp.",0
-2016,"2J3K","Yellowtail Flounder",0.002
-2016,"3LNO","American Plaice",1.019
-2016,"3LNO","Atlantic Cod",1.135
-2016,"3LNO","Atlantic Halibut",0.659
-2016,"3LNO","Greenland Halibut",7.623
-2016,"3LNO","Haddock",0.342
-2016,"3LNO","Monkfish",0.089
-2016,"3LNO","Red Hake",0.003
-2016,"3LNO","Redfish spp.",17.312
-2016,"3LNO","Roughhead Grenadier",0.08
-2016,"3LNO","Roundnose Grenadier",0.043
-2016,"3LNO","Silver Hake",0.87
-2016,"3LNO","Skate spp.",3.481
-2016,"3LNO","White Hake",0.447
-2016,"3LNO","Witch Flounder",0.637
-2016,"3LNO","Wolffish spp.",0.019
-2016,"3LNO","Yellowtail Flounder",6.826
-2016,"3Ps","American Plaice",0.19
-2016,"3Ps","Atlantic Cod",5.109
-2016,"3Ps","Atlantic Halibut",0.448
-2016,"3Ps","Greenland Halibut",0.025
-2016,"3Ps","Haddock",0.453
-2016,"3Ps","Monkfish",0.022
-2016,"3Ps","Red Hake",0
-2016,"3Ps","Redfish spp.",0.471
-2016,"3Ps","Roughhead Grenadier",0
-2016,"3Ps","Roundnose Grenadier",0
-2016,"3Ps","Silver Hake",0
-2016,"3Ps","Skate spp.",0.654
-2016,"3Ps","White Hake",0.302
-2016,"3Ps","Witch Flounder",0.417
-2016,"3Ps","Wolffish spp.",0
-2016,"3Ps","Yellowtail Flounder",0.013
-2017,"2J3K","American Plaice",0.002
-2017,"2J3K","Atlantic Cod",6.68
-2017,"2J3K","Atlantic Halibut",0.002
-2017,"2J3K","Greenland Halibut",4.053
-2017,"2J3K","Haddock",0
-2017,"2J3K","Monkfish",0
-2017,"2J3K","Red Hake",0
-2017,"2J3K","Redfish spp.",0.104
-2017,"2J3K","Roughhead Grenadier",0
-2017,"2J3K","Roundnose Grenadier",0
-2017,"2J3K","Silver Hake",0
-2017,"2J3K","Skate spp.",0
-2017,"2J3K","White Hake",0
-2017,"2J3K","Witch Flounder",0.07
-2017,"2J3K","Wolffish spp.",0
-2017,"2J3K","Yellowtail Flounder",0
-2017,"3LNO","American Plaice",1.147
-2017,"3LNO","Atlantic Cod",6.8
-2017,"3LNO","Atlantic Halibut",0.83
-2017,"3LNO","Greenland Halibut",8.914
-2017,"3LNO","Haddock",0.479
-2017,"3LNO","Monkfish",0.044
-2017,"3LNO","Red Hake",0.007
-2017,"3LNO","Redfish spp.",19.158
-2017,"3LNO","Roughhead Grenadier",0.092
-2017,"3LNO","Roundnose Grenadier",0.028
-2017,"3LNO","Silver Hake",0.249
-2017,"3LNO","Skate spp.",4.162
-2017,"3LNO","White Hake",0.499
-2017,"3LNO","Witch Flounder",0.699
-2017,"3LNO","Wolffish spp.",0.012
-2017,"3LNO","Yellowtail Flounder",9.145
-2017,"3Ps","American Plaice",0.234
-2017,"3Ps","Atlantic Cod",6.525
-2017,"3Ps","Atlantic Halibut",0.49
-2017,"3Ps","Greenland Halibut",0.036
-2017,"3Ps","Haddock",0.573
-2017,"3Ps","Monkfish",0.029
-2017,"3Ps","Red Hake",0
-2017,"3Ps","Redfish spp.",0.507
-2017,"3Ps","Roughhead Grenadier",0
-2017,"3Ps","Roundnose Grenadier",0
-2017,"3Ps","Silver Hake",0
-2017,"3Ps","Skate spp.",0.605
-2017,"3Ps","White Hake",0.308
-2017,"3Ps","Witch Flounder",0.41
-2017,"3Ps","Wolffish spp.",0
-2017,"3Ps","Yellowtail Flounder",0.031
-2018,"2J3K","American Plaice",0.01
-2018,"2J3K","Atlantic Cod",4.725
-2018,"2J3K","Atlantic Halibut",0.019
-2018,"2J3K","Greenland Halibut",4.565
-2018,"2J3K","Haddock",0
-2018,"2J3K","Monkfish",0
-2018,"2J3K","Red Hake",0
-2018,"2J3K","Redfish spp.",0.034
-2018,"2J3K","Roughhead Grenadier",0
-2018,"2J3K","Roundnose Grenadier",0
-2018,"2J3K","Silver Hake",0
-2018,"2J3K","Skate spp.",0
-2018,"2J3K","White Hake",0
-2018,"2J3K","Witch Flounder",0.096
-2018,"2J3K","Wolffish spp.",0
-2018,"2J3K","Yellowtail Flounder",0
-2018,"3LNO","American Plaice",0.949
-2018,"3LNO","Atlantic Cod",5.156
-2018,"3LNO","Atlantic Halibut",0.73
-2018,"3LNO","Greenland Halibut",9.624
-2018,"3LNO","Haddock",0.041
-2018,"3LNO","Monkfish",0.025
-2018,"3LNO","Red Hake",0.007
-2018,"3LNO","Redfish spp.",17.561
-2018,"3LNO","Roughhead Grenadier",0.112
-2018,"3LNO","Roundnose Grenadier",0.037
-2018,"3LNO","Silver Hake",0.908
-2018,"3LNO","Skate spp.",1.519
-2018,"3LNO","White Hake",0.367
-2018,"3LNO","Witch Flounder",0.737
-2018,"3LNO","Wolffish spp.",0.039
-2018,"3LNO","Yellowtail Flounder",8.648
-2018,"3Ps","American Plaice",0.145
-2018,"3Ps","Atlantic Cod",4.801
-2018,"3Ps","Atlantic Halibut",0.426
-2018,"3Ps","Greenland Halibut",0.078
-2018,"3Ps","Haddock",0.217
-2018,"3Ps","Monkfish",0.018
-2018,"3Ps","Red Hake",0
-2018,"3Ps","Redfish spp.",0.855
-2018,"3Ps","Roughhead Grenadier",0
-2018,"3Ps","Roundnose Grenadier",0
-2018,"3Ps","Silver Hake",0.006
-2018,"3Ps","Skate spp.",1.059
-2018,"3Ps","White Hake",0.328
-2018,"3Ps","Witch Flounder",0.283
-2018,"3Ps","Wolffish spp.",0
-2018,"3Ps","Yellowtail Flounder",0.022
-2019,"2J3K","American Plaice",0
-2019,"2J3K","Atlantic Cod",5.254
-2019,"2J3K","Atlantic Halibut",0.013
-2019,"2J3K","Greenland Halibut",4.631
-2019,"2J3K","Haddock",0
-2019,"2J3K","Monkfish",0
-2019,"2J3K","Red Hake",0
-2019,"2J3K","Redfish spp.",0.004
-2019,"2J3K","Roughhead Grenadier",0
-2019,"2J3K","Roundnose Grenadier",0
-2019,"2J3K","Silver Hake",0
-2019,"2J3K","Skate spp.",0.003
-2019,"2J3K","White Hake",0
-2019,"2J3K","Witch Flounder",0.017
-2019,"2J3K","Wolffish spp.",0
-2019,"2J3K","Yellowtail Flounder",0
-2019,"3LNO","American Plaice",1.186
-2019,"3LNO","Atlantic Cod",5.735
-2019,"3LNO","Atlantic Halibut",0.839
-2019,"3LNO","Greenland Halibut",10.181
-2019,"3LNO","Haddock",0.079
-2019,"3LNO","Monkfish",0.023
-2019,"3LNO","Red Hake",0.026
-2019,"3LNO","Redfish spp.",19.559
-2019,"3LNO","Roughhead Grenadier",0.205
-2019,"3LNO","Roundnose Grenadier",0.031
-2019,"3LNO","Silver Hake",0.514
-2019,"3LNO","Skate spp.",3.274
-2019,"3LNO","White Hake",0.302
-2019,"3LNO","Witch Flounder",0.897
-2019,"3LNO","Wolffish spp.",0.023
-2019,"3LNO","Yellowtail Flounder",12.27
-2019,"3Ps","American Plaice",0.103
-2019,"3Ps","Atlantic Cod",3.621
-2019,"3Ps","Atlantic Halibut",0.599
-2019,"3Ps","Greenland Halibut",0.024
-2019,"3Ps","Haddock",0.212
-2019,"3Ps","Monkfish",0.033
-2019,"3Ps","Red Hake",0
-2019,"3Ps","Redfish spp.",2.23
-2019,"3Ps","Roughhead Grenadier",0
-2019,"3Ps","Roundnose Grenadier",0
-2019,"3Ps","Silver Hake",0.011
-2019,"3Ps","Skate spp.",0.969
-2019,"3Ps","White Hake",0.274
-2019,"3Ps","Witch Flounder",0.164
-2019,"3Ps","Wolffish spp.",0
-2019,"3Ps","Yellowtail Flounder",0.036
-2020,"2J3K","American Plaice",0.001
-2020,"2J3K","Atlantic Cod",4.901
-2020,"2J3K","Atlantic Halibut",0.014
-2020,"2J3K","Greenland Halibut",4.456
-2020,"2J3K","Haddock",0
-2020,"2J3K","Monkfish",0
-2020,"2J3K","Red Hake",0
-2020,"2J3K","Redfish spp.",0.003
-2020,"2J3K","Roughhead Grenadier",0.003
-2020,"2J3K","Roundnose Grenadier",0
-2020,"2J3K","Silver Hake",0
-2020,"2J3K","Skate spp.",0.006
-2020,"2J3K","White Hake",0
-2020,"2J3K","Witch Flounder",0.073
-2020,"2J3K","Wolffish spp.",0
-2020,"2J3K","Yellowtail Flounder",0
-2020,"3LNO","American Plaice",1.052
-2020,"3LNO","Atlantic Cod",5.615
-2020,"3LNO","Atlantic Halibut",0.913
-2020,"3LNO","Greenland Halibut",9.634
-2020,"3LNO","Haddock",0.022
-2020,"3LNO","Monkfish",0.011
-2020,"3LNO","Red Hake",0
-2020,"3LNO","Redfish spp.",19.028
-2020,"3LNO","Roughhead Grenadier",0.131
-2020,"3LNO","Roundnose Grenadier",0.021
-2020,"3LNO","Silver Hake",1.789
-2020,"3LNO","Skate spp.",4.04
-2020,"3LNO","White Hake",0.344
-2020,"3LNO","Witch Flounder",0.673
-2020,"3LNO","Wolffish spp.",0.024
-2020,"3LNO","Yellowtail Flounder",14.032
-2020,"3Ps","American Plaice",0.062
-2020,"3Ps","Atlantic Cod",2.055
-2020,"3Ps","Atlantic Halibut",0.791
-2020,"3Ps","Greenland Halibut",0.002
-2020,"3Ps","Haddock",0.07
-2020,"3Ps","Monkfish",0.024
-2020,"3Ps","Red Hake",0
-2020,"3Ps","Redfish spp.",1.99
-2020,"3Ps","Roughhead Grenadier",0
-2020,"3Ps","Roundnose Grenadier",0
-2020,"3Ps","Silver Hake",0.025
-2020,"3Ps","Skate spp.",0.486
-2020,"3Ps","White Hake",0.223
-2020,"3Ps","Witch Flounder",0.092
-2020,"3Ps","Wolffish spp.",0
-2020,"3Ps","Yellowtail Flounder",0
+1960,"2HJ3KLNO","American Plaice",21.389
+1960,"2HJ3KLNO","Atlantic Cod",547.868
+1960,"2HJ3KLNO","Atlantic Halibut",1.567
+1960,"2HJ3KLNO","Greenland Halibut",0.938
+1960,"2HJ3KLNO","Haddock",59.319
+1960,"2HJ3KLNO","Monkfish",0.001
+1960,"2HJ3KLNO","Red Hake",0
+1960,"2HJ3KLNO","Redfish spp.",157.638
+1960,"2HJ3KLNO","Roughhead Grenadier",0
+1960,"2HJ3KLNO","Roundnose Grenadier",0
+1960,"2HJ3KLNO","Silver Hake",0
+1960,"2HJ3KLNO","Skate spp.",0.075
+1960,"2HJ3KLNO","White Hake",0.627
+1960,"2HJ3KLNO","Witch Flounder",6.153
+1960,"2HJ3KLNO","Wolffish spp.",0.721
+1960,"2HJ3KLNO","Yellowtail Flounder",0.008
+1961,"2HJ3KLNO","American Plaice",16.44
+1961,"2HJ3KLNO","Atlantic Cod",573.819
+1961,"2HJ3KLNO","Atlantic Halibut",1.503
+1961,"2HJ3KLNO","Greenland Halibut",0.741
+1961,"2HJ3KLNO","Haddock",76.658
+1961,"2HJ3KLNO","Monkfish",0
+1961,"2HJ3KLNO","Red Hake",0
+1961,"2HJ3KLNO","Redfish spp.",90.024
+1961,"2HJ3KLNO","Roughhead Grenadier",0
+1961,"2HJ3KLNO","Roundnose Grenadier",0
+1961,"2HJ3KLNO","Silver Hake",0
+1961,"2HJ3KLNO","Skate spp.",0.121
+1961,"2HJ3KLNO","White Hake",0.204
+1961,"2HJ3KLNO","Witch Flounder",4.766
+1961,"2HJ3KLNO","Wolffish spp.",0.719
+1961,"2HJ3KLNO","Yellowtail Flounder",0.1
+1962,"2HJ3KLNO","American Plaice",16.256
+1962,"2HJ3KLNO","Atlantic Cod",541.991
+1962,"2HJ3KLNO","Atlantic Halibut",1.368
+1962,"2HJ3KLNO","Greenland Halibut",0.588
+1962,"2HJ3KLNO","Haddock",33.496
+1962,"2HJ3KLNO","Monkfish",0.004
+1962,"2HJ3KLNO","Red Hake",0
+1962,"2HJ3KLNO","Redfish spp.",48.647
+1962,"2HJ3KLNO","Roughhead Grenadier",0
+1962,"2HJ3KLNO","Roundnose Grenadier",0
+1962,"2HJ3KLNO","Silver Hake",0
+1962,"2HJ3KLNO","Skate spp.",0.101
+1962,"2HJ3KLNO","White Hake",2.704
+1962,"2HJ3KLNO","Witch Flounder",4.836
+1962,"2HJ3KLNO","Wolffish spp.",0.361
+1962,"2HJ3KLNO","Yellowtail Flounder",0.067
+1963,"2HJ3KLNO","American Plaice",27.14
+1963,"2HJ3KLNO","Atlantic Cod",561.234
+1963,"2HJ3KLNO","Atlantic Halibut",0.801
+1963,"2HJ3KLNO","Greenland Halibut",1.602
+1963,"2HJ3KLNO","Haddock",12.411
+1963,"2HJ3KLNO","Monkfish",0.002
+1963,"2HJ3KLNO","Red Hake",0
+1963,"2HJ3KLNO","Redfish spp.",53.676
+1963,"2HJ3KLNO","Roughhead Grenadier",0
+1963,"2HJ3KLNO","Roundnose Grenadier",0
+1963,"2HJ3KLNO","Silver Hake",0
+1963,"2HJ3KLNO","Skate spp.",0.066
+1963,"2HJ3KLNO","White Hake",0.148
+1963,"2HJ3KLNO","Witch Flounder",3.128
+1963,"2HJ3KLNO","Wolffish spp.",0.969
+1963,"2HJ3KLNO","Yellowtail Flounder",0.518
+1964,"2HJ3KLNO","American Plaice",41.636
+1964,"2HJ3KLNO","Atlantic Cod",632.13
+1964,"2HJ3KLNO","Atlantic Halibut",0.68
+1964,"2HJ3KLNO","Greenland Halibut",3.973
+1964,"2HJ3KLNO","Haddock",8.677
+1964,"2HJ3KLNO","Monkfish",0.001
+1964,"2HJ3KLNO","Red Hake",0.939
+1964,"2HJ3KLNO","Redfish spp.",64.131
+1964,"2HJ3KLNO","Roughhead Grenadier",0
+1964,"2HJ3KLNO","Roundnose Grenadier",0
+1964,"2HJ3KLNO","Silver Hake",0
+1964,"2HJ3KLNO","Skate spp.",0.148
+1964,"2HJ3KLNO","White Hake",0.137
+1964,"2HJ3KLNO","Witch Flounder",2.11
+1964,"2HJ3KLNO","Wolffish spp.",1.195
+1964,"2HJ3KLNO","Yellowtail Flounder",0.147
+1965,"2HJ3KLNO","American Plaice",58.848
+1965,"2HJ3KLNO","Atlantic Cod",681.989
+1965,"2HJ3KLNO","Atlantic Halibut",0.683
+1965,"2HJ3KLNO","Greenland Halibut",9.557
+1965,"2HJ3KLNO","Haddock",6.382
+1965,"2HJ3KLNO","Monkfish",0
+1965,"2HJ3KLNO","Red Hake",1.537
+1965,"2HJ3KLNO","Redfish spp.",85.693
+1965,"2HJ3KLNO","Roughhead Grenadier",0
+1965,"2HJ3KLNO","Roundnose Grenadier",0
+1965,"2HJ3KLNO","Silver Hake",0
+1965,"2HJ3KLNO","Skate spp.",0.243
+1965,"2HJ3KLNO","White Hake",0.176
+1965,"2HJ3KLNO","Witch Flounder",6.481
+1965,"2HJ3KLNO","Wolffish spp.",2.392
+1965,"2HJ3KLNO","Yellowtail Flounder",3.13
+1966,"2HJ3KLNO","American Plaice",67.958
+1966,"2HJ3KLNO","Atlantic Cod",700.176
+1966,"2HJ3KLNO","Atlantic Halibut",0.689
+1966,"2HJ3KLNO","Greenland Halibut",19.186
+1966,"2HJ3KLNO","Haddock",7.326
+1966,"2HJ3KLNO","Monkfish",0.002
+1966,"2HJ3KLNO","Red Hake",0
+1966,"2HJ3KLNO","Redfish spp.",64.812
+1966,"2HJ3KLNO","Roughhead Grenadier",0
+1966,"2HJ3KLNO","Roundnose Grenadier",0
+1966,"2HJ3KLNO","Silver Hake",0
+1966,"2HJ3KLNO","Skate spp.",0.441
+1966,"2HJ3KLNO","White Hake",0.176
+1966,"2HJ3KLNO","Witch Flounder",11.558
+1966,"2HJ3KLNO","Wolffish spp.",1.705
+1966,"2HJ3KLNO","Yellowtail Flounder",7.026
+1967,"2HJ3KLNO","American Plaice",98.003
+1967,"2HJ3KLNO","Atlantic Cod",876.111
+1967,"2HJ3KLNO","Atlantic Halibut",0.815
+1967,"2HJ3KLNO","Greenland Halibut",26.414
+1967,"2HJ3KLNO","Haddock",9.048
+1967,"2HJ3KLNO","Monkfish",0
+1967,"2HJ3KLNO","Red Hake",0
+1967,"2HJ3KLNO","Redfish spp.",72.363
+1967,"2HJ3KLNO","Roughhead Grenadier",0
+1967,"2HJ3KLNO","Roundnose Grenadier",17.114
+1967,"2HJ3KLNO","Silver Hake",0
+1967,"2HJ3KLNO","Skate spp.",0.411
+1967,"2HJ3KLNO","White Hake",1.685
+1967,"2HJ3KLNO","Witch Flounder",16.008
+1967,"2HJ3KLNO","Wolffish spp.",2.029
+1967,"2HJ3KLNO","Yellowtail Flounder",8.878
+1968,"2HJ3KLNO","American Plaice",79.118
+1968,"2HJ3KLNO","Atlantic Cod",1015.26
+1968,"2HJ3KLNO","Atlantic Halibut",0.592
+1968,"2HJ3KLNO","Greenland Halibut",30.796
+1968,"2HJ3KLNO","Haddock",3.743
+1968,"2HJ3KLNO","Monkfish",0
+1968,"2HJ3KLNO","Red Hake",0
+1968,"2HJ3KLNO","Redfish spp.",42.286
+1968,"2HJ3KLNO","Roughhead Grenadier",0
+1968,"2HJ3KLNO","Roundnose Grenadier",28.644
+1968,"2HJ3KLNO","Silver Hake",0
+1968,"2HJ3KLNO","Skate spp.",0.197
+1968,"2HJ3KLNO","White Hake",0.116
+1968,"2HJ3KLNO","Witch Flounder",21.469
+1968,"2HJ3KLNO","Wolffish spp.",2.384
+1968,"2HJ3KLNO","Yellowtail Flounder",13.34
+1969,"2HJ3KLNO","American Plaice",86.344
+1969,"2HJ3KLNO","Atlantic Cod",887.163
+1969,"2HJ3KLNO","Atlantic Halibut",0.514
+1969,"2HJ3KLNO","Greenland Halibut",36.699
+1969,"2HJ3KLNO","Haddock",1.739
+1969,"2HJ3KLNO","Monkfish",1.601
+1969,"2HJ3KLNO","Red Hake",0
+1969,"2HJ3KLNO","Redfish spp.",64.982
+1969,"2HJ3KLNO","Roughhead Grenadier",0
+1969,"2HJ3KLNO","Roundnose Grenadier",12.339
+1969,"2HJ3KLNO","Silver Hake",0
+1969,"2HJ3KLNO","Skate spp.",2.437
+1969,"2HJ3KLNO","White Hake",0.08
+1969,"2HJ3KLNO","Witch Flounder",17.796
+1969,"2HJ3KLNO","Wolffish spp.",2.782
+1969,"2HJ3KLNO","Yellowtail Flounder",15.708
+1970,"2HJ3KLNO","American Plaice",79.327
+1970,"2HJ3KLNO","Atlantic Cod",614.171
+1970,"2HJ3KLNO","Atlantic Halibut",0.442
+1970,"2HJ3KLNO","Greenland Halibut",35.999
+1970,"2HJ3KLNO","Haddock",2.679
+1970,"2HJ3KLNO","Monkfish",0.723
+1970,"2HJ3KLNO","Red Hake",0
+1970,"2HJ3KLNO","Redfish spp.",49.287
+1970,"2HJ3KLNO","Roughhead Grenadier",0
+1970,"2HJ3KLNO","Roundnose Grenadier",24.403
+1970,"2HJ3KLNO","Silver Hake",0
+1970,"2HJ3KLNO","Skate spp.",1.157
+1970,"2HJ3KLNO","White Hake",0.209
+1970,"2HJ3KLNO","Witch Flounder",24.939
+1970,"2HJ3KLNO","Wolffish spp.",2.269
+1970,"2HJ3KLNO","Yellowtail Flounder",26.427
+1971,"2HJ3KLNO","American Plaice",72.49
+1971,"2HJ3KLNO","Atlantic Cod",550.94
+1971,"2HJ3KLNO","Atlantic Halibut",0.469
+1971,"2HJ3KLNO","Greenland Halibut",20.924
+1971,"2HJ3KLNO","Haddock",3.55
+1971,"2HJ3KLNO","Monkfish",0.031
+1971,"2HJ3KLNO","Red Hake",0
+1971,"2HJ3KLNO","Redfish spp.",72.98
+1971,"2HJ3KLNO","Roughhead Grenadier",0
+1971,"2HJ3KLNO","Roundnose Grenadier",21.266
+1971,"2HJ3KLNO","Silver Hake",0
+1971,"2HJ3KLNO","Skate spp.",0.256
+1971,"2HJ3KLNO","White Hake",7.225
+1971,"2HJ3KLNO","Witch Flounder",31.026
+1971,"2HJ3KLNO","Wolffish spp.",4.973
+1971,"2HJ3KLNO","Yellowtail Flounder",37.347
+1972,"2HJ3KLNO","American Plaice",68.481
+1972,"2HJ3KLNO","Atlantic Cod",570.359
+1972,"2HJ3KLNO","Atlantic Halibut",0.467
+1972,"2HJ3KLNO","Greenland Halibut",27.424
+1972,"2HJ3KLNO","Haddock",2.468
+1972,"2HJ3KLNO","Monkfish",0.001
+1972,"2HJ3KLNO","Red Hake",0
+1972,"2HJ3KLNO","Redfish spp.",65.061
+1972,"2HJ3KLNO","Roughhead Grenadier",0
+1972,"2HJ3KLNO","Roundnose Grenadier",22.209
+1972,"2HJ3KLNO","Silver Hake",0
+1972,"2HJ3KLNO","Skate spp.",0.56
+1972,"2HJ3KLNO","White Hake",3.929
+1972,"2HJ3KLNO","Witch Flounder",26.619
+1972,"2HJ3KLNO","Wolffish spp.",5.548
+1972,"2HJ3KLNO","Yellowtail Flounder",39.269
+1973,"2HJ3KLNO","American Plaice",57.983
+1973,"2HJ3KLNO","Atlantic Cod",435.22
+1973,"2HJ3KLNO","Atlantic Halibut",0.512
+1973,"2HJ3KLNO","Greenland Halibut",27.438
+1973,"2HJ3KLNO","Haddock",1.584
+1973,"2HJ3KLNO","Monkfish",0.001
+1973,"2HJ3KLNO","Red Hake",0
+1973,"2HJ3KLNO","Redfish spp.",80.867
+1973,"2HJ3KLNO","Roughhead Grenadier",0
+1973,"2HJ3KLNO","Roundnose Grenadier",11.669
+1973,"2HJ3KLNO","Silver Hake",0
+1973,"2HJ3KLNO","Skate spp.",0.83
+1973,"2HJ3KLNO","White Hake",3.084
+1973,"2HJ3KLNO","Witch Flounder",30.313
+1973,"2HJ3KLNO","Wolffish spp.",4.89
+1973,"2HJ3KLNO","Yellowtail Flounder",33.364
+1974,"2HJ3KLNO","American Plaice",51.917
+1974,"2HJ3KLNO","Atlantic Cod",450.109
+1974,"2HJ3KLNO","Atlantic Halibut",0.546
+1974,"2HJ3KLNO","Greenland Halibut",22.609
+1974,"2HJ3KLNO","Haddock",1.744
+1974,"2HJ3KLNO","Monkfish",0.001
+1974,"2HJ3KLNO","Red Hake",0
+1974,"2HJ3KLNO","Redfish spp.",65.47
+1974,"2HJ3KLNO","Roughhead Grenadier",0
+1974,"2HJ3KLNO","Roundnose Grenadier",25.196
+1974,"2HJ3KLNO","Silver Hake",0.059
+1974,"2HJ3KLNO","Skate spp.",2.613
+1974,"2HJ3KLNO","White Hake",3.112
+1974,"2HJ3KLNO","Witch Flounder",24.95
+1974,"2HJ3KLNO","Wolffish spp.",4.728
+1974,"2HJ3KLNO","Yellowtail Flounder",24.319
+1975,"2HJ3KLNO","American Plaice",48.895
+1975,"2HJ3KLNO","Atlantic Cod",337.507
+1975,"2HJ3KLNO","Atlantic Halibut",0.384
+1975,"2HJ3KLNO","Greenland Halibut",26.568
+1975,"2HJ3KLNO","Haddock",1.338
+1975,"2HJ3KLNO","Monkfish",0
+1975,"2HJ3KLNO","Red Hake",0
+1975,"2HJ3KLNO","Redfish spp.",58.473
+1975,"2HJ3KLNO","Roughhead Grenadier",0
+1975,"2HJ3KLNO","Roundnose Grenadier",20.923
+1975,"2HJ3KLNO","Silver Hake",0
+1975,"2HJ3KLNO","Skate spp.",2.964
+1975,"2HJ3KLNO","White Hake",5.663
+1975,"2HJ3KLNO","Witch Flounder",18.803
+1975,"2HJ3KLNO","Wolffish spp.",6.361
+1975,"2HJ3KLNO","Yellowtail Flounder",22.896
+1976,"2HJ3KLNO","American Plaice",57.908
+1976,"2HJ3KLNO","Atlantic Cod",244.213
+1976,"2HJ3KLNO","Atlantic Halibut",0.42
+1976,"2HJ3KLNO","Greenland Halibut",22.234
+1976,"2HJ3KLNO","Haddock",0.156
+1976,"2HJ3KLNO","Monkfish",0.001
+1976,"2HJ3KLNO","Red Hake",0
+1976,"2HJ3KLNO","Redfish spp.",61.736
+1976,"2HJ3KLNO","Roughhead Grenadier",0
+1976,"2HJ3KLNO","Roundnose Grenadier",16.658
+1976,"2HJ3KLNO","Silver Hake",0.003
+1976,"2HJ3KLNO","Skate spp.",1.335
+1976,"2HJ3KLNO","White Hake",3.876
+1976,"2HJ3KLNO","Witch Flounder",17.37
+1976,"2HJ3KLNO","Wolffish spp.",3.702
+1976,"2HJ3KLNO","Yellowtail Flounder",8.069
+1977,"2HJ3KLNO","American Plaice",51.506
+1977,"2HJ3KLNO","Atlantic Cod",193.966
+1977,"2HJ3KLNO","Atlantic Halibut",0.361
+1977,"2HJ3KLNO","Greenland Halibut",30.228
+1977,"2HJ3KLNO","Haddock",0.139
+1977,"2HJ3KLNO","Monkfish",2.122
+1977,"2HJ3KLNO","Red Hake",0
+1977,"2HJ3KLNO","Redfish spp.",44.806
+1977,"2HJ3KLNO","Roughhead Grenadier",0
+1977,"2HJ3KLNO","Roundnose Grenadier",12.789
+1977,"2HJ3KLNO","Silver Hake",0.03
+1977,"2HJ3KLNO","Skate spp.",2.279
+1977,"2HJ3KLNO","White Hake",3.147
+1977,"2HJ3KLNO","Witch Flounder",14.145
+1977,"2HJ3KLNO","Wolffish spp.",2.788
+1977,"2HJ3KLNO","Yellowtail Flounder",11.639
+1978,"2HJ3KLNO","American Plaice",53.549
+1978,"2HJ3KLNO","Atlantic Cod",158.131
+1978,"2HJ3KLNO","Atlantic Halibut",0.243
+1978,"2HJ3KLNO","Greenland Halibut",36.643
+1978,"2HJ3KLNO","Haddock",0.486
+1978,"2HJ3KLNO","Monkfish",0.254
+1978,"2HJ3KLNO","Red Hake",0
+1978,"2HJ3KLNO","Redfish spp.",48.02
+1978,"2HJ3KLNO","Roughhead Grenadier",0
+1978,"2HJ3KLNO","Roundnose Grenadier",17.59
+1978,"2HJ3KLNO","Silver Hake",0.154
+1978,"2HJ3KLNO","Skate spp.",2.007
+1978,"2HJ3KLNO","White Hake",2.604
+1978,"2HJ3KLNO","Witch Flounder",10.38
+1978,"2HJ3KLNO","Wolffish spp.",1.837
+1978,"2HJ3KLNO","Yellowtail Flounder",15.47
+1979,"2HJ3KLNO","American Plaice",51.534
+1979,"2HJ3KLNO","Atlantic Cod",197.004
+1979,"2HJ3KLNO","Atlantic Halibut",0.36
+1979,"2HJ3KLNO","Greenland Halibut",33.515
+1979,"2HJ3KLNO","Haddock",0.861
+1979,"2HJ3KLNO","Monkfish",0.003
+1979,"2HJ3KLNO","Red Hake",0
+1979,"2HJ3KLNO","Redfish spp.",62.52
+1979,"2HJ3KLNO","Roughhead Grenadier",0
+1979,"2HJ3KLNO","Roundnose Grenadier",6.746
+1979,"2HJ3KLNO","Silver Hake",0.043
+1979,"2HJ3KLNO","Skate spp.",1.164
+1979,"2HJ3KLNO","White Hake",1.592
+1979,"2HJ3KLNO","Witch Flounder",7.177
+1979,"2HJ3KLNO","Wolffish spp.",1.936
+1979,"2HJ3KLNO","Yellowtail Flounder",18.351
+1980,"2HJ3KLNO","American Plaice",54.126
+1980,"2HJ3KLNO","Atlantic Cod",198.389
+1980,"2HJ3KLNO","Atlantic Halibut",0.308
+1980,"2HJ3KLNO","Greenland Halibut",32.69
+1980,"2HJ3KLNO","Haddock",0.183
+1980,"2HJ3KLNO","Monkfish",0
+1980,"2HJ3KLNO","Red Hake",0.011
+1980,"2HJ3KLNO","Redfish spp.",47.853
+1980,"2HJ3KLNO","Roughhead Grenadier",0
+1980,"2HJ3KLNO","Roundnose Grenadier",1.742
+1980,"2HJ3KLNO","Silver Hake",0.048
+1980,"2HJ3KLNO","Skate spp.",1.569
+1980,"2HJ3KLNO","White Hake",2.639
+1980,"2HJ3KLNO","Witch Flounder",5.243
+1980,"2HJ3KLNO","Wolffish spp.",1.769
+1980,"2HJ3KLNO","Yellowtail Flounder",12.378
+1981,"2HJ3KLNO","American Plaice",57.703
+1981,"2HJ3KLNO","Atlantic Cod",198.736
+1981,"2HJ3KLNO","Atlantic Halibut",0.219
+1981,"2HJ3KLNO","Greenland Halibut",28.952
+1981,"2HJ3KLNO","Haddock",0.125
+1981,"2HJ3KLNO","Monkfish",0.091
+1981,"2HJ3KLNO","Red Hake",0
+1981,"2HJ3KLNO","Redfish spp.",54.502
+1981,"2HJ3KLNO","Roughhead Grenadier",0
+1981,"2HJ3KLNO","Roundnose Grenadier",6.118
+1981,"2HJ3KLNO","Silver Hake",0.101
+1981,"2HJ3KLNO","Skate spp.",1.875
+1981,"2HJ3KLNO","White Hake",1.718
+1981,"2HJ3KLNO","Witch Flounder",6.624
+1981,"2HJ3KLNO","Wolffish spp.",2.347
+1981,"2HJ3KLNO","Yellowtail Flounder",14.683
+1982,"2HJ3KLNO","American Plaice",52.237
+1982,"2HJ3KLNO","Atlantic Cod",274.887
+1982,"2HJ3KLNO","Atlantic Halibut",0.501
+1982,"2HJ3KLNO","Greenland Halibut",25.907
+1982,"2HJ3KLNO","Haddock",0.967
+1982,"2HJ3KLNO","Monkfish",0.058
+1982,"2HJ3KLNO","Red Hake",0.003
+1982,"2HJ3KLNO","Redfish spp.",50.89
+1982,"2HJ3KLNO","Roughhead Grenadier",0
+1982,"2HJ3KLNO","Roundnose Grenadier",3.625
+1982,"2HJ3KLNO","Silver Hake",0.013
+1982,"2HJ3KLNO","Skate spp.",0.949
+1982,"2HJ3KLNO","White Hake",1.962
+1982,"2HJ3KLNO","Witch Flounder",6.714
+1982,"2HJ3KLNO","Wolffish spp.",2.732
+1982,"2HJ3KLNO","Yellowtail Flounder",12.249
+1983,"2HJ3KLNO","American Plaice",39.353
+1983,"2HJ3KLNO","Atlantic Cod",263.539
+1983,"2HJ3KLNO","Atlantic Halibut",0.409
+1983,"2HJ3KLNO","Greenland Halibut",27.743
+1983,"2HJ3KLNO","Haddock",0.553
+1983,"2HJ3KLNO","Monkfish",0.005
+1983,"2HJ3KLNO","Red Hake",0.021
+1983,"2HJ3KLNO","Redfish spp.",42.198
+1983,"2HJ3KLNO","Roughhead Grenadier",0
+1983,"2HJ3KLNO","Roundnose Grenadier",3.427
+1983,"2HJ3KLNO","Silver Hake",0
+1983,"2HJ3KLNO","Skate spp.",1.711
+1983,"2HJ3KLNO","White Hake",2.923
+1983,"2HJ3KLNO","Witch Flounder",6.709
+1983,"2HJ3KLNO","Wolffish spp.",3.129
+1983,"2HJ3KLNO","Yellowtail Flounder",9.254
+1984,"2HJ3KLNO","American Plaice",37.238
+1984,"2HJ3KLNO","Atlantic Cod",261.064
+1984,"2HJ3KLNO","Atlantic Halibut",0.899
+1984,"2HJ3KLNO","Greenland Halibut",24.616
+1984,"2HJ3KLNO","Haddock",2.855
+1984,"2HJ3KLNO","Monkfish",0.074
+1984,"2HJ3KLNO","Red Hake",0.015
+1984,"2HJ3KLNO","Redfish spp.",48.429
+1984,"2HJ3KLNO","Roughhead Grenadier",0
+1984,"2HJ3KLNO","Roundnose Grenadier",3.743
+1984,"2HJ3KLNO","Silver Hake",0.247
+1984,"2HJ3KLNO","Skate spp.",2.315
+1984,"2HJ3KLNO","White Hake",4.343
+1984,"2HJ3KLNO","Witch Flounder",7.63
+1984,"2HJ3KLNO","Wolffish spp.",1.481
+1984,"2HJ3KLNO","Yellowtail Flounder",12.566
+1985,"2HJ3KLNO","American Plaice",48.834
+1985,"2HJ3KLNO","Atlantic Cod",268.737
+1985,"2HJ3KLNO","Atlantic Halibut",1.695
+1985,"2HJ3KLNO","Greenland Halibut",18.453
+1985,"2HJ3KLNO","Haddock",4.014
+1985,"2HJ3KLNO","Monkfish",0.111
+1985,"2HJ3KLNO","Red Hake",0.024
+1985,"2HJ3KLNO","Redfish spp.",57.992
+1985,"2HJ3KLNO","Roughhead Grenadier",0
+1985,"2HJ3KLNO","Roundnose Grenadier",4.93
+1985,"2HJ3KLNO","Silver Hake",1.78
+1985,"2HJ3KLNO","Skate spp.",10.63
+1985,"2HJ3KLNO","White Hake",6.22
+1985,"2HJ3KLNO","Witch Flounder",11.778
+1985,"2HJ3KLNO","Wolffish spp.",1.507
+1985,"2HJ3KLNO","Yellowtail Flounder",21.472
+1986,"2HJ3KLNO","American Plaice",60.467
+1986,"2HJ3KLNO","Atlantic Cod",317.852
+1986,"2HJ3KLNO","Atlantic Halibut",1.503
+1986,"2HJ3KLNO","Greenland Halibut",15.435
+1986,"2HJ3KLNO","Haddock",7.341
+1986,"2HJ3KLNO","Monkfish",0.55
+1986,"2HJ3KLNO","Red Hake",0.006
+1986,"2HJ3KLNO","Redfish spp.",80.279
+1986,"2HJ3KLNO","Roughhead Grenadier",0.003
+1986,"2HJ3KLNO","Roundnose Grenadier",7.416
+1986,"2HJ3KLNO","Silver Hake",0.759
+1986,"2HJ3KLNO","Skate spp.",14.499
+1986,"2HJ3KLNO","White Hake",4.744
+1986,"2HJ3KLNO","Witch Flounder",13.049
+1986,"2HJ3KLNO","Wolffish spp.",1.725
+1986,"2HJ3KLNO","Yellowtail Flounder",22.957
+1987,"2HJ3KLNO","American Plaice",54.52
+1987,"2HJ3KLNO","Atlantic Cod",281.662
+1987,"2HJ3KLNO","Atlantic Halibut",1.535
+1987,"2HJ3KLNO","Greenland Halibut",28.411
+1987,"2HJ3KLNO","Haddock",5.66
+1987,"2HJ3KLNO","Monkfish",1.821
+1987,"2HJ3KLNO","Red Hake",0
+1987,"2HJ3KLNO","Redfish spp.",102.822
+1987,"2HJ3KLNO","Roughhead Grenadier",0.994
+1987,"2HJ3KLNO","Roundnose Grenadier",7.216
+1987,"2HJ3KLNO","Silver Hake",0.397
+1987,"2HJ3KLNO","Skate spp.",19.543
+1987,"2HJ3KLNO","White Hake",8.238
+1987,"2HJ3KLNO","Witch Flounder",12.071
+1987,"2HJ3KLNO","Wolffish spp.",2.211
+1987,"2HJ3KLNO","Yellowtail Flounder",16.234
+1988,"2HJ3KLNO","American Plaice",39.881
+1988,"2HJ3KLNO","Atlantic Cod",312.323
+1988,"2HJ3KLNO","Atlantic Halibut",1.173
+1988,"2HJ3KLNO","Greenland Halibut",17.099
+1988,"2HJ3KLNO","Haddock",8.247
+1988,"2HJ3KLNO","Monkfish",0.445
+1988,"2HJ3KLNO","Red Hake",0.006
+1988,"2HJ3KLNO","Redfish spp.",63.592
+1988,"2HJ3KLNO","Roughhead Grenadier",0.96
+1988,"2HJ3KLNO","Roundnose Grenadier",5.014
+1988,"2HJ3KLNO","Silver Hake",0.19
+1988,"2HJ3KLNO","Skate spp.",19.158
+1988,"2HJ3KLNO","White Hake",2.934
+1988,"2HJ3KLNO","Witch Flounder",10.692
+1988,"2HJ3KLNO","Wolffish spp.",1.222
+1988,"2HJ3KLNO","Yellowtail Flounder",15.055
+1989,"2HJ3KLNO","American Plaice",45.454
+1989,"2HJ3KLNO","Atlantic Cod",284.626
+1989,"2HJ3KLNO","Atlantic Halibut",0.691
+1989,"2HJ3KLNO","Greenland Halibut",18.706
+1989,"2HJ3KLNO","Haddock",6.7
+1989,"2HJ3KLNO","Monkfish",0.237
+1989,"2HJ3KLNO","Red Hake",0.334
+1989,"2HJ3KLNO","Redfish spp.",46.07
+1989,"2HJ3KLNO","Roughhead Grenadier",0.305
+1989,"2HJ3KLNO","Roundnose Grenadier",4.625
+1989,"2HJ3KLNO","Silver Hake",0.041
+1989,"2HJ3KLNO","Skate spp.",14.846
+1989,"2HJ3KLNO","White Hake",2.111
+1989,"2HJ3KLNO","Witch Flounder",8.594
+1989,"2HJ3KLNO","Wolffish spp.",1.192
+1989,"2HJ3KLNO","Yellowtail Flounder",9.166
+1990,"2HJ3KLNO","American Plaice",25.815
+1990,"2HJ3KLNO","Atlantic Cod",238.228
+1990,"2HJ3KLNO","Atlantic Halibut",1.039
+1990,"2HJ3KLNO","Greenland Halibut",20.733
+1990,"2HJ3KLNO","Haddock",3.173
+1990,"2HJ3KLNO","Monkfish",0.198
+1990,"2HJ3KLNO","Red Hake",0.254
+1990,"2HJ3KLNO","Redfish spp.",36.217
+1990,"2HJ3KLNO","Roughhead Grenadier",2.556
+1990,"2HJ3KLNO","Roundnose Grenadier",0.707
+1990,"2HJ3KLNO","Silver Hake",0.847
+1990,"2HJ3KLNO","Skate spp.",14.816
+1990,"2HJ3KLNO","White Hake",2.211
+1990,"2HJ3KLNO","Witch Flounder",8.177
+1990,"2HJ3KLNO","Wolffish spp.",1.683
+1990,"2HJ3KLNO","Yellowtail Flounder",8.762
+1991,"2HJ3KLNO","American Plaice",26.001
+1991,"2HJ3KLNO","Atlantic Cod",164.961
+1991,"2HJ3KLNO","Atlantic Halibut",1.462
+1991,"2HJ3KLNO","Greenland Halibut",27.4
+1991,"2HJ3KLNO","Haddock",1.267
+1991,"2HJ3KLNO","Monkfish",0.43
+1991,"2HJ3KLNO","Red Hake",0.408
+1991,"2HJ3KLNO","Redfish spp.",29.456
+1991,"2HJ3KLNO","Roughhead Grenadier",3.771
+1991,"2HJ3KLNO","Roundnose Grenadier",0.279
+1991,"2HJ3KLNO","Silver Hake",0.033
+1991,"2HJ3KLNO","Skate spp.",28.421
+1991,"2HJ3KLNO","White Hake",2.533
+1991,"2HJ3KLNO","Witch Flounder",7.792
+1991,"2HJ3KLNO","Wolffish spp.",2.857
+1991,"2HJ3KLNO","Yellowtail Flounder",11.015
+1992,"2HJ3KLNO","American Plaice",10.973
+1992,"2HJ3KLNO","Atlantic Cod",39.555
+1992,"2HJ3KLNO","Atlantic Halibut",0.381
+1992,"2HJ3KLNO","Greenland Halibut",41.547
+1992,"2HJ3KLNO","Haddock",1.004
+1992,"2HJ3KLNO","Monkfish",0.294
+1992,"2HJ3KLNO","Red Hake",0.458
+1992,"2HJ3KLNO","Redfish spp.",29.885
+1992,"2HJ3KLNO","Roughhead Grenadier",1.577
+1992,"2HJ3KLNO","Roundnose Grenadier",2.911
+1992,"2HJ3KLNO","Silver Hake",0.016
+1992,"2HJ3KLNO","Skate spp.",5.159
+1992,"2HJ3KLNO","White Hake",1.7
+1992,"2HJ3KLNO","Witch Flounder",7.663
+1992,"2HJ3KLNO","Wolffish spp.",0.464
+1992,"2HJ3KLNO","Yellowtail Flounder",10.796
+1993,"2HJ3KLNO","American Plaice",7.993
+1993,"2HJ3KLNO","Atlantic Cod",14.027
+1993,"2HJ3KLNO","Atlantic Halibut",0.326
+1993,"2HJ3KLNO","Greenland Halibut",43.446
+1993,"2HJ3KLNO","Haddock",0.867
+1993,"2HJ3KLNO","Monkfish",0.438
+1993,"2HJ3KLNO","Red Hake",0.365
+1993,"2HJ3KLNO","Redfish spp.",28.196
+1993,"2HJ3KLNO","Roughhead Grenadier",1.502
+1993,"2HJ3KLNO","Roundnose Grenadier",2.322
+1993,"2HJ3KLNO","Silver Hake",0
+1993,"2HJ3KLNO","Skate spp.",6.082
+1993,"2HJ3KLNO","White Hake",1.022
+1993,"2HJ3KLNO","Witch Flounder",5.006
+1993,"2HJ3KLNO","Wolffish spp.",0.357
+1993,"2HJ3KLNO","Yellowtail Flounder",6.852
+1994,"2HJ3KLNO","American Plaice",0.576
+1994,"2HJ3KLNO","Atlantic Cod",3.194
+1994,"2HJ3KLNO","Atlantic Halibut",0.19
+1994,"2HJ3KLNO","Greenland Halibut",37.246
+1994,"2HJ3KLNO","Haddock",0.018
+1994,"2HJ3KLNO","Monkfish",0.154
+1994,"2HJ3KLNO","Red Hake",0.312
+1994,"2HJ3KLNO","Redfish spp.",7.31
+1994,"2HJ3KLNO","Roughhead Grenadier",0.353
+1994,"2HJ3KLNO","Roundnose Grenadier",1.466
+1994,"2HJ3KLNO","Silver Hake",0
+1994,"2HJ3KLNO","Skate spp.",8.246
+1994,"2HJ3KLNO","White Hake",0.297
+1994,"2HJ3KLNO","Witch Flounder",0.403
+1994,"2HJ3KLNO","Wolffish spp.",0.248
+1994,"2HJ3KLNO","Yellowtail Flounder",0.231
+1995,"2HJ3KLNO","American Plaice",0.576
+1995,"2HJ3KLNO","Atlantic Cod",0.359
+1995,"2HJ3KLNO","Atlantic Halibut",0.171
+1995,"2HJ3KLNO","Greenland Halibut",11.211
+1995,"2HJ3KLNO","Haddock",0.027
+1995,"2HJ3KLNO","Monkfish",0.103
+1995,"2HJ3KLNO","Red Hake",0.321
+1995,"2HJ3KLNO","Redfish spp.",4.803
+1995,"2HJ3KLNO","Roughhead Grenadier",0.465
+1995,"2HJ3KLNO","Roundnose Grenadier",1.941
+1995,"2HJ3KLNO","Silver Hake",0
+1995,"2HJ3KLNO","Skate spp.",7.395
+1995,"2HJ3KLNO","White Hake",0.3
+1995,"2HJ3KLNO","Witch Flounder",1.057
+1995,"2HJ3KLNO","Wolffish spp.",0.322
+1995,"2HJ3KLNO","Yellowtail Flounder",0.066
+1996,"2HJ3KLNO","American Plaice",0.891
+1996,"2HJ3KLNO","Atlantic Cod",0.566
+1996,"2HJ3KLNO","Atlantic Halibut",0.184
+1996,"2HJ3KLNO","Greenland Halibut",15.386
+1996,"2HJ3KLNO","Haddock",0.069
+1996,"2HJ3KLNO","Monkfish",0.146
+1996,"2HJ3KLNO","Red Hake",0.703
+1996,"2HJ3KLNO","Redfish spp.",10.098
+1996,"2HJ3KLNO","Roughhead Grenadier",3.064
+1996,"2HJ3KLNO","Roundnose Grenadier",0.256
+1996,"2HJ3KLNO","Silver Hake",0
+1996,"2HJ3KLNO","Skate spp.",6.18
+1996,"2HJ3KLNO","White Hake",0.444
+1996,"2HJ3KLNO","Witch Flounder",1.681
+1996,"2HJ3KLNO","Wolffish spp.",0.654
+1996,"2HJ3KLNO","Yellowtail Flounder",0.233
+1997,"2HJ3KLNO","American Plaice",1.374
+1997,"2HJ3KLNO","Atlantic Cod",0.98
+1997,"2HJ3KLNO","Atlantic Halibut",0.271
+1997,"2HJ3KLNO","Greenland Halibut",17.544
+1997,"2HJ3KLNO","Haddock",0.336
+1997,"2HJ3KLNO","Monkfish",0.001
+1997,"2HJ3KLNO","Red Hake",0.636
+1997,"2HJ3KLNO","Redfish spp.",5.746
+1997,"2HJ3KLNO","Roughhead Grenadier",3.782
+1997,"2HJ3KLNO","Roundnose Grenadier",0.048
+1997,"2HJ3KLNO","Silver Hake",0
+1997,"2HJ3KLNO","Skate spp.",12.111
+1997,"2HJ3KLNO","White Hake",0.555
+1997,"2HJ3KLNO","Witch Flounder",1.369
+1997,"2HJ3KLNO","Wolffish spp.",0.609
+1997,"2HJ3KLNO","Yellowtail Flounder",0.657
+1998,"2HJ3KLNO","American Plaice",1.562
+1998,"2HJ3KLNO","Atlantic Cod",4.338
+1998,"2HJ3KLNO","Atlantic Halibut",0.251
+1998,"2HJ3KLNO","Greenland Halibut",16.235
+1998,"2HJ3KLNO","Haddock",0.099
+1998,"2HJ3KLNO","Monkfish",0.273
+1998,"2HJ3KLNO","Red Hake",0.697
+1998,"2HJ3KLNO","Redfish spp.",14.254
+1998,"2HJ3KLNO","Roughhead Grenadier",5.05
+1998,"2HJ3KLNO","Roundnose Grenadier",0.113
+1998,"2HJ3KLNO","Silver Hake",0
+1998,"2HJ3KLNO","Skate spp.",9.532
+1998,"2HJ3KLNO","White Hake",0.532
+1998,"2HJ3KLNO","Witch Flounder",1.054
+1998,"2HJ3KLNO","Wolffish spp.",0.491
+1998,"2HJ3KLNO","Yellowtail Flounder",4.386
+1999,"2HJ3KLNO","American Plaice",2.442
+1999,"2HJ3KLNO","Atlantic Cod",9.19
+1999,"2HJ3KLNO","Atlantic Halibut",0.284
+1999,"2HJ3KLNO","Greenland Halibut",20.012
+1999,"2HJ3KLNO","Haddock",0.075
+1999,"2HJ3KLNO","Monkfish",0.112
+1999,"2HJ3KLNO","Red Hake",0.657
+1999,"2HJ3KLNO","Redfish spp.",14.433
+1999,"2HJ3KLNO","Roughhead Grenadier",4.035
+1999,"2HJ3KLNO","Roundnose Grenadier",0.084
+1999,"2HJ3KLNO","Silver Hake",0
+1999,"2HJ3KLNO","Skate spp.",11.961
+1999,"2HJ3KLNO","White Hake",0.6
+1999,"2HJ3KLNO","Witch Flounder",1.22
+1999,"2HJ3KLNO","Wolffish spp.",0.815
+1999,"2HJ3KLNO","Yellowtail Flounder",7.024
+2000,"2HJ3KLNO","American Plaice",2.761
+2000,"2HJ3KLNO","Atlantic Cod",5.327
+2000,"2HJ3KLNO","Atlantic Halibut",0.276
+2000,"2HJ3KLNO","Greenland Halibut",28.484
+2000,"2HJ3KLNO","Haddock",0.087
+2000,"2HJ3KLNO","Monkfish",0.097
+2000,"2HJ3KLNO","Red Hake",0.905
+2000,"2HJ3KLNO","Redfish spp.",14.295
+2000,"2HJ3KLNO","Roughhead Grenadier",5.209
+2000,"2HJ3KLNO","Roundnose Grenadier",0.056
+2000,"2HJ3KLNO","Silver Hake",0.006
+2000,"2HJ3KLNO","Skate spp.",18.314
+2000,"2HJ3KLNO","White Hake",0.862
+2000,"2HJ3KLNO","Witch Flounder",1.195
+2000,"2HJ3KLNO","Wolffish spp.",0.478
+2000,"2HJ3KLNO","Yellowtail Flounder",10.66
+2001,"2HJ3KLNO","American Plaice",3.604
+2001,"2HJ3KLNO","Atlantic Cod",6.055
+2001,"2HJ3KLNO","Atlantic Halibut",0.463
+2001,"2HJ3KLNO","Greenland Halibut",28.781
+2001,"2HJ3KLNO","Haddock",0.152
+2001,"2HJ3KLNO","Monkfish",0.53
+2001,"2HJ3KLNO","Red Hake",1.484
+2001,"2HJ3KLNO","Redfish spp.",25.5
+2001,"2HJ3KLNO","Roughhead Grenadier",1.539
+2001,"2HJ3KLNO","Roundnose Grenadier",3.841
+2001,"2HJ3KLNO","Silver Hake",0.033
+2001,"2HJ3KLNO","Skate spp.",14.917
+2001,"2HJ3KLNO","White Hake",0.885
+2001,"2HJ3KLNO","Witch Flounder",1.31
+2001,"2HJ3KLNO","Wolffish spp.",0.946
+2001,"2HJ3KLNO","Yellowtail Flounder",13.273
+2002,"2HJ3KLNO","American Plaice",3.269
+2002,"2HJ3KLNO","Atlantic Cod",4.754
+2002,"2HJ3KLNO","Atlantic Halibut",0.437
+2002,"2HJ3KLNO","Greenland Halibut",26.832
+2002,"2HJ3KLNO","Haddock",0.32
+2002,"2HJ3KLNO","Monkfish",1.853
+2002,"2HJ3KLNO","Red Hake",3.896
+2002,"2HJ3KLNO","Redfish spp.",23.603
+2002,"2HJ3KLNO","Roughhead Grenadier",1.353
+2002,"2HJ3KLNO","Roundnose Grenadier",3.088
+2002,"2HJ3KLNO","Silver Hake",0.042
+2002,"2HJ3KLNO","Skate spp.",11.803
+2002,"2HJ3KLNO","White Hake",5.648
+2002,"2HJ3KLNO","Witch Flounder",1.263
+2002,"2HJ3KLNO","Wolffish spp.",0.831
+2002,"2HJ3KLNO","Yellowtail Flounder",10.382
+2003,"2HJ3KLNO","American Plaice",3.702
+2003,"2HJ3KLNO","Atlantic Cod",2.585
+2003,"2HJ3KLNO","Atlantic Halibut",0.665
+2003,"2HJ3KLNO","Greenland Halibut",26.701
+2003,"2HJ3KLNO","Haddock",0.275
+2003,"2HJ3KLNO","Monkfish",2.445
+2003,"2HJ3KLNO","Red Hake",1.613
+2003,"2HJ3KLNO","Redfish spp.",28.029
+2003,"2HJ3KLNO","Roughhead Grenadier",1.425
+2003,"2HJ3KLNO","Roundnose Grenadier",2.425
+2003,"2HJ3KLNO","Silver Hake",0.014
+2003,"2HJ3KLNO","Skate spp.",14.303
+2003,"2HJ3KLNO","White Hake",6.356
+2003,"2HJ3KLNO","Witch Flounder",1.397
+2003,"2HJ3KLNO","Wolffish spp.",0.73
+2003,"2HJ3KLNO","Yellowtail Flounder",13.303
+2004,"2HJ3KLNO","American Plaice",2.674
+2004,"2HJ3KLNO","Atlantic Cod",1.461
+2004,"2HJ3KLNO","Atlantic Halibut",0.262
+2004,"2HJ3KLNO","Greenland Halibut",14.342
+2004,"2HJ3KLNO","Haddock",0.067
+2004,"2HJ3KLNO","Monkfish",0.802
+2004,"2HJ3KLNO","Red Hake",0.531
+2004,"2HJ3KLNO","Redfish spp.",12.05
+2004,"2HJ3KLNO","Roughhead Grenadier",1.504
+2004,"2HJ3KLNO","Roundnose Grenadier",1.722
+2004,"2HJ3KLNO","Silver Hake",0.008
+2004,"2HJ3KLNO","Skate spp.",11.858
+2004,"2HJ3KLNO","White Hake",2.108
+2004,"2HJ3KLNO","Witch Flounder",0.848
+2004,"2HJ3KLNO","Wolffish spp.",0.384
+2004,"2HJ3KLNO","Yellowtail Flounder",13.124
+2005,"2HJ3KLNO","American Plaice",2.384
+2005,"2HJ3KLNO","Atlantic Cod",1.809
+2005,"2HJ3KLNO","Atlantic Halibut",0.242
+2005,"2HJ3KLNO","Greenland Halibut",15.857
+2005,"2HJ3KLNO","Haddock",0.052
+2005,"2HJ3KLNO","Monkfish",0.627
+2005,"2HJ3KLNO","Red Hake",0.459
+2005,"2HJ3KLNO","Redfish spp.",17.84
+2005,"2HJ3KLNO","Roughhead Grenadier",1.117
+2005,"2HJ3KLNO","Roundnose Grenadier",1.382
+2005,"2HJ3KLNO","Silver Hake",0.04
+2005,"2HJ3KLNO","Skate spp.",3.567
+2005,"2HJ3KLNO","White Hake",1.055
+2005,"2HJ3KLNO","Witch Flounder",0.492
+2005,"2HJ3KLNO","Wolffish spp.",0.247
+2005,"2HJ3KLNO","Yellowtail Flounder",13.913
+2006,"2HJ3KLNO","American Plaice",0.948
+2006,"2HJ3KLNO","Atlantic Cod",2.509
+2006,"2HJ3KLNO","Atlantic Halibut",0.192
+2006,"2HJ3KLNO","Greenland Halibut",15.728
+2006,"2HJ3KLNO","Haddock",0.032
+2006,"2HJ3KLNO","Monkfish",0.601
+2006,"2HJ3KLNO","Red Hake",0.037
+2006,"2HJ3KLNO","Redfish spp.",12.324
+2006,"2HJ3KLNO","Roughhead Grenadier",0.473
+2006,"2HJ3KLNO","Roundnose Grenadier",0.695
+2006,"2HJ3KLNO","Silver Hake",0
+2006,"2HJ3KLNO","Skate spp.",5.53
+2006,"2HJ3KLNO","White Hake",1.274
+2006,"2HJ3KLNO","Witch Flounder",0.305
+2006,"2HJ3KLNO","Wolffish spp.",0.029
+2006,"2HJ3KLNO","Yellowtail Flounder",0.587
+2007,"2HJ3KLNO","American Plaice",1.476
+2007,"2HJ3KLNO","Atlantic Cod",3.109
+2007,"2HJ3KLNO","Atlantic Halibut",0.363
+2007,"2HJ3KLNO","Greenland Halibut",13.457
+2007,"2HJ3KLNO","Haddock",0.047
+2007,"2HJ3KLNO","Monkfish",0.154
+2007,"2HJ3KLNO","Red Hake",0.067
+2007,"2HJ3KLNO","Redfish spp.",10.884
+2007,"2HJ3KLNO","Roughhead Grenadier",0.36
+2007,"2HJ3KLNO","Roundnose Grenadier",0.216
+2007,"2HJ3KLNO","Silver Hake",0
+2007,"2HJ3KLNO","Skate spp.",6.217
+2007,"2HJ3KLNO","White Hake",0.759
+2007,"2HJ3KLNO","Witch Flounder",0.302
+2007,"2HJ3KLNO","Wolffish spp.",0.094
+2007,"2HJ3KLNO","Yellowtail Flounder",4.428
+2008,"2HJ3KLNO","American Plaice",1.905
+2008,"2HJ3KLNO","Atlantic Cod",3.867
+2008,"2HJ3KLNO","Atlantic Halibut",0.263
+2008,"2HJ3KLNO","Greenland Halibut",13.056
+2008,"2HJ3KLNO","Haddock",0.064
+2008,"2HJ3KLNO","Monkfish",0.24
+2008,"2HJ3KLNO","Red Hake",0.045
+2008,"2HJ3KLNO","Redfish spp.",5.56
+2008,"2HJ3KLNO","Roughhead Grenadier",0.386
+2008,"2HJ3KLNO","Roundnose Grenadier",0.225
+2008,"2HJ3KLNO","Silver Hake",0
+2008,"2HJ3KLNO","Skate spp.",7.112
+2008,"2HJ3KLNO","White Hake",0.933
+2008,"2HJ3KLNO","Witch Flounder",0.327
+2008,"2HJ3KLNO","Wolffish spp.",0.198
+2008,"2HJ3KLNO","Yellowtail Flounder",11.307
+2009,"2HJ3KLNO","American Plaice",1.779
+2009,"2HJ3KLNO","Atlantic Cod",3.482
+2009,"2HJ3KLNO","Atlantic Halibut",0.649
+2009,"2HJ3KLNO","Greenland Halibut",12.845
+2009,"2HJ3KLNO","Haddock",0.106
+2009,"2HJ3KLNO","Monkfish",0.216
+2009,"2HJ3KLNO","Red Hake",0.092
+2009,"2HJ3KLNO","Redfish spp.",6.763
+2009,"2HJ3KLNO","Roughhead Grenadier",0.564
+2009,"2HJ3KLNO","Roundnose Grenadier",0.368
+2009,"2HJ3KLNO","Silver Hake",0
+2009,"2HJ3KLNO","Skate spp.",5.726
+2009,"2HJ3KLNO","White Hake",0.494
+2009,"2HJ3KLNO","Witch Flounder",0.38
+2009,"2HJ3KLNO","Wolffish spp.",0.115
+2009,"2HJ3KLNO","Yellowtail Flounder",5.869
+2010,"2HJ3KLNO","American Plaice",1.998
+2010,"2HJ3KLNO","Atlantic Cod",3.565
+2010,"2HJ3KLNO","Atlantic Halibut",0.276
+2010,"2HJ3KLNO","Greenland Halibut",13.455
+2010,"2HJ3KLNO","Haddock",0.033
+2010,"2HJ3KLNO","Monkfish",0.21
+2010,"2HJ3KLNO","Red Hake",0.105
+2010,"2HJ3KLNO","Redfish spp.",9.675
+2010,"2HJ3KLNO","Roughhead Grenadier",0.484
+2010,"2HJ3KLNO","Roundnose Grenadier",0.252
+2010,"2HJ3KLNO","Silver Hake",0
+2010,"2HJ3KLNO","Skate spp.",5.367
+2010,"2HJ3KLNO","White Hake",0.286
+2010,"2HJ3KLNO","Witch Flounder",0.621
+2010,"2HJ3KLNO","Wolffish spp.",0.154
+2010,"2HJ3KLNO","Yellowtail Flounder",9.291
+2011,"2HJ3KLNO","American Plaice",1.259
+2011,"2HJ3KLNO","Atlantic Cod",4.09
+2011,"2HJ3KLNO","Atlantic Halibut",0.242
+2011,"2HJ3KLNO","Greenland Halibut",13.899
+2011,"2HJ3KLNO","Haddock",0.104
+2011,"2HJ3KLNO","Monkfish",0.284
+2011,"2HJ3KLNO","Red Hake",0.092
+2011,"2HJ3KLNO","Redfish spp.",12.056
+2011,"2HJ3KLNO","Roughhead Grenadier",0.719
+2011,"2HJ3KLNO","Roundnose Grenadier",0.263
+2011,"2HJ3KLNO","Silver Hake",0.008
+2011,"2HJ3KLNO","Skate spp.",5.551
+2011,"2HJ3KLNO","White Hake",0.175
+2011,"2HJ3KLNO","Witch Flounder",0.57
+2011,"2HJ3KLNO","Wolffish spp.",0.189
+2011,"2HJ3KLNO","Yellowtail Flounder",5.23
+2012,"2HJ3KLNO","American Plaice",1.341
+2012,"2HJ3KLNO","Atlantic Cod",4.065
+2012,"2HJ3KLNO","Atlantic Halibut",0.356
+2012,"2HJ3KLNO","Greenland Halibut",13.55
+2012,"2HJ3KLNO","Haddock",0.031
+2012,"2HJ3KLNO","Monkfish",0.157
+2012,"2HJ3KLNO","Red Hake",0.073
+2012,"2HJ3KLNO","Redfish spp.",11.606
+2012,"2HJ3KLNO","Roughhead Grenadier",0.797
+2012,"2HJ3KLNO","Roundnose Grenadier",0.498
+2012,"2HJ3KLNO","Silver Hake",0.117
+2012,"2HJ3KLNO","Skate spp.",4.34
+2012,"2HJ3KLNO","White Hake",0.151
+2012,"2HJ3KLNO","Witch Flounder",0.517
+2012,"2HJ3KLNO","Wolffish spp.",0.202
+2012,"2HJ3KLNO","Yellowtail Flounder",3.214
+2013,"2HJ3KLNO","American Plaice",2.307
+2013,"2HJ3KLNO","Atlantic Cod",5.312
+2013,"2HJ3KLNO","Atlantic Halibut",0.479
+2013,"2HJ3KLNO","Greenland Halibut",13.801
+2013,"2HJ3KLNO","Haddock",0.192
+2013,"2HJ3KLNO","Monkfish",0.083
+2013,"2HJ3KLNO","Red Hake",0.017
+2013,"2HJ3KLNO","Redfish spp.",14.205
+2013,"2HJ3KLNO","Roughhead Grenadier",0.246
+2013,"2HJ3KLNO","Roundnose Grenadier",0.074
+2013,"2HJ3KLNO","Silver Hake",0.071
+2013,"2HJ3KLNO","Skate spp.",4.344
+2013,"2HJ3KLNO","White Hake",0.234
+2013,"2HJ3KLNO","Witch Flounder",0.543
+2013,"2HJ3KLNO","Wolffish spp.",0.043
+2013,"2HJ3KLNO","Yellowtail Flounder",10.537
+2014,"2HJ3KLNO","American Plaice",1.397
+2014,"2HJ3KLNO","Atlantic Cod",5.272
+2014,"2HJ3KLNO","Atlantic Halibut",0.805
+2014,"2HJ3KLNO","Greenland Halibut",14.176
+2014,"2HJ3KLNO","Haddock",0.225
+2014,"2HJ3KLNO","Monkfish",0.212
+2014,"2HJ3KLNO","Red Hake",0.012
+2014,"2HJ3KLNO","Redfish spp.",13.27
+2014,"2HJ3KLNO","Roughhead Grenadier",0.232
+2014,"2HJ3KLNO","Roundnose Grenadier",0.077
+2014,"2HJ3KLNO","Silver Hake",0.716
+2014,"2HJ3KLNO","Skate spp.",4.474
+2014,"2HJ3KLNO","White Hake",0.316
+2014,"2HJ3KLNO","Witch Flounder",0.542
+2014,"2HJ3KLNO","Wolffish spp.",0.092
+2014,"2HJ3KLNO","Yellowtail Flounder",7.97
+2015,"2HJ3KLNO","American Plaice",1.117
+2015,"2HJ3KLNO","Atlantic Cod",5.044
+2015,"2HJ3KLNO","Atlantic Halibut",0.769
+2015,"2HJ3KLNO","Greenland Halibut",12.444
+2015,"2HJ3KLNO","Haddock",0.223
+2015,"2HJ3KLNO","Monkfish",0.147
+2015,"2HJ3KLNO","Red Hake",0.008
+2015,"2HJ3KLNO","Redfish spp.",17.897
+2015,"2HJ3KLNO","Roughhead Grenadier",0.128
+2015,"2HJ3KLNO","Roundnose Grenadier",0.026
+2015,"2HJ3KLNO","Silver Hake",0.937
+2015,"2HJ3KLNO","Skate spp.",3.327
+2015,"2HJ3KLNO","White Hake",0.411
+2015,"2HJ3KLNO","Witch Flounder",0.576
+2015,"2HJ3KLNO","Wolffish spp.",0.023
+2015,"2HJ3KLNO","Yellowtail Flounder",6.894
+2016,"2HJ3KLNO","American Plaice",1.021
+2016,"2HJ3KLNO","Atlantic Cod",4.747
+2016,"2HJ3KLNO","Atlantic Halibut",0.66
+2016,"2HJ3KLNO","Greenland Halibut",11.634
+2016,"2HJ3KLNO","Haddock",0.342
+2016,"2HJ3KLNO","Monkfish",0.089
+2016,"2HJ3KLNO","Red Hake",0.003
+2016,"2HJ3KLNO","Redfish spp.",17.326
+2016,"2HJ3KLNO","Roughhead Grenadier",0.08
+2016,"2HJ3KLNO","Roundnose Grenadier",0.043
+2016,"2HJ3KLNO","Silver Hake",0.87
+2016,"2HJ3KLNO","Skate spp.",3.482
+2016,"2HJ3KLNO","White Hake",0.447
+2016,"2HJ3KLNO","Witch Flounder",0.707
+2016,"2HJ3KLNO","Wolffish spp.",0.019
+2016,"2HJ3KLNO","Yellowtail Flounder",6.828
+2017,"2HJ3KLNO","American Plaice",1.149
+2017,"2HJ3KLNO","Atlantic Cod",13.48
+2017,"2HJ3KLNO","Atlantic Halibut",0.832
+2017,"2HJ3KLNO","Greenland Halibut",13.284
+2017,"2HJ3KLNO","Haddock",0.479
+2017,"2HJ3KLNO","Monkfish",0.044
+2017,"2HJ3KLNO","Red Hake",0.007
+2017,"2HJ3KLNO","Redfish spp.",19.262
+2017,"2HJ3KLNO","Roughhead Grenadier",0.092
+2017,"2HJ3KLNO","Roundnose Grenadier",0.028
+2017,"2HJ3KLNO","Silver Hake",0.249
+2017,"2HJ3KLNO","Skate spp.",4.162
+2017,"2HJ3KLNO","White Hake",0.499
+2017,"2HJ3KLNO","Witch Flounder",0.769
+2017,"2HJ3KLNO","Wolffish spp.",0.012
+2017,"2HJ3KLNO","Yellowtail Flounder",9.145
+2018,"2HJ3KLNO","American Plaice",0.959
+2018,"2HJ3KLNO","Atlantic Cod",9.881
+2018,"2HJ3KLNO","Atlantic Halibut",0.749
+2018,"2HJ3KLNO","Greenland Halibut",14.382
+2018,"2HJ3KLNO","Haddock",0.041
+2018,"2HJ3KLNO","Monkfish",0.025
+2018,"2HJ3KLNO","Red Hake",0.007
+2018,"2HJ3KLNO","Redfish spp.",17.595
+2018,"2HJ3KLNO","Roughhead Grenadier",0.112
+2018,"2HJ3KLNO","Roundnose Grenadier",0.037
+2018,"2HJ3KLNO","Silver Hake",0.908
+2018,"2HJ3KLNO","Skate spp.",1.519
+2018,"2HJ3KLNO","White Hake",0.367
+2018,"2HJ3KLNO","Witch Flounder",0.833
+2018,"2HJ3KLNO","Wolffish spp.",0.039
+2018,"2HJ3KLNO","Yellowtail Flounder",8.648
+2019,"2HJ3KLNO","American Plaice",1.186
+2019,"2HJ3KLNO","Atlantic Cod",10.989
+2019,"2HJ3KLNO","Atlantic Halibut",0.852
+2019,"2HJ3KLNO","Greenland Halibut",15.085
+2019,"2HJ3KLNO","Haddock",0.079
+2019,"2HJ3KLNO","Monkfish",0.023
+2019,"2HJ3KLNO","Red Hake",0.026
+2019,"2HJ3KLNO","Redfish spp.",19.563
+2019,"2HJ3KLNO","Roughhead Grenadier",0.205
+2019,"2HJ3KLNO","Roundnose Grenadier",0.031
+2019,"2HJ3KLNO","Silver Hake",0.514
+2019,"2HJ3KLNO","Skate spp.",3.277
+2019,"2HJ3KLNO","White Hake",0.302
+2019,"2HJ3KLNO","Witch Flounder",0.914
+2019,"2HJ3KLNO","Wolffish spp.",0.023
+2019,"2HJ3KLNO","Yellowtail Flounder",12.27
+2020,"2HJ3KLNO","American Plaice",1.053
+2020,"2HJ3KLNO","Atlantic Cod",10.516
+2020,"2HJ3KLNO","Atlantic Halibut",0.927
+2020,"2HJ3KLNO","Greenland Halibut",14.272
+2020,"2HJ3KLNO","Haddock",0.022
+2020,"2HJ3KLNO","Monkfish",0.011
+2020,"2HJ3KLNO","Red Hake",0
+2020,"2HJ3KLNO","Redfish spp.",19.031
+2020,"2HJ3KLNO","Roughhead Grenadier",0.134
+2020,"2HJ3KLNO","Roundnose Grenadier",0.021
+2020,"2HJ3KLNO","Silver Hake",1.789
+2020,"2HJ3KLNO","Skate spp.",4.046
+2020,"2HJ3KLNO","White Hake",0.344
+2020,"2HJ3KLNO","Witch Flounder",0.746
+2020,"2HJ3KLNO","Wolffish spp.",0.024
+2020,"2HJ3KLNO","Yellowtail Flounder",14.032

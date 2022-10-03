@@ -75,6 +75,8 @@ region_data <- function(divisions) {
 
 one_strat <- function(setdet, season, series, NAFOdiv, species, species_name, region) {
 
+    browser()
+
     ## Identify years with data across all divisions
     ind <- setdet$which.survey == "multispecies" & setdet$rec == 5 &
         setdet$NAFOdiv %in% NAFOdiv & setdet$data.series %in% series & setdet$season == season

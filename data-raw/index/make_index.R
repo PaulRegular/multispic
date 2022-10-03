@@ -13,10 +13,7 @@ sa <- vroom::vroom_fwf("data-raw/index/stratum_areas.pc4",
                        col_types = cols(strat = "i", area = "i", max_depth = "c", div = "c"))
 sa$div[sa$div == "3PS"] <- "3P"
 
-
-regions <- list("2J3K" = c("2J", "3K"),
-                "3LNO" = c("3L", "3N", "3O"),
-                "3Ps" = c("3P"))
+regions <- list("2J3KLNO" = c("2H", "2J", "3K", "3L", "3N", "3O"))
 
 lindex <- lapply(seq_along(regions), function(i) {
 
@@ -47,9 +44,9 @@ index <- do.call(rbind, lindex)
 
 gindex <- index |> group_by(gear, season)
 p <- plot_ly(x = ~year, y = ~index, color = ~species, colors = viridis::viridis(100),
-             text = ~paste(gear, season), hoverinfo = "x+y+text")
-p |> add_trace(data = gindex |> filter(region == "2J3K"), mode = "markers+lines") |>
-    layout(title = "2J3K")
+             text = ~paste(gear, season), hoverinfo = "x+y+text") |>
+    add_trace(data = gindex, mode = "markers+lines") |>
+    layout(title = "2HJ3KLNO")
 p |> add_trace(data = gindex |> filter(region == "3LNO"), mode = "markers+lines") |>
     layout(title = "3LNO")
 p |> add_trace(data = gindex |> filter(region == "3Ps"), mode = "markers+lines") |>
