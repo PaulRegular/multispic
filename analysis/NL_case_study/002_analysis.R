@@ -87,9 +87,8 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     list2env(nl_inputs_and_priors(region = r, species = spp), envir = globalenv())
 
-    ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
-    ##             by climate, and residual variation is temporally correlated with
-    ##             unstructured species by species correlations.
+    ## Hypothesis: energy flow was affected by the 1991 shift and residual variation is
+    ##             temporally correlated with unstructured species by species correlations.
     full <- multispic(inputs, species_cor = "all", temporal_cor = "ar1",
                       log_K_option = par_option(option = "prior",
                                                 mean = mean_log_K, sd = sd_log_K),
@@ -112,26 +111,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
                       pe_betas_option = par_option(option = "prior",
                                                    mean = mean_pe_betas, sd = sd_pe_betas),
                       n_forecast = 1, K_groups = ~1, survey_groups = ~species_survey,
-                      pe_covariates = ~nlci, K_covariates = ~shift, silent = TRUE, nlminb_loops = 0)
+                      pe_covariates = ~0, K_covariates = ~shift, silent = TRUE, nlminb_loops = 0)
     # full$sd_rep
     # vis_multispic(full)
-
-    ## Hypothesis: energy flow was affected by the 1991 shift, process error is affected
-    ##             by climate, and residual variation is simple noise. (i.e., temporal
-    ##             and species correlations are explained by the shift and climate)
-    just_covar <- update(full, species_cor = "none", temporal_cor = "none")
-    # just_covar$sd_rep
 
     ## Hypothesis: energy flow was affected by the 1991 shift and process error is
     ##             simple noise. (i.e., temporal and species correlations are explained by
     ##             the shift)
-    just_shift <- update(just_covar, pe_covariates = ~0)
+    just_shift <- update(full, species_cor = "none", temporal_cor = "none")
     # just_shift$sd_rep
-
-    ## Hypothesis: process errors are affected by climate. (i.e., temporal and species
-    ##             correlations are explained by climate)
-    just_nlci <- update(just_covar, K_covariates = ~0)
-    # just_nlci$sd_rep
 
     ## Hypothesis: population dynamics are affected by a common carrying capacity
     ##             and process error is temporally correlated with unstructured
@@ -171,9 +159,7 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     null$loo <- run_loo(null)
     full$loo <- run_loo(full)
-    just_covar$loo<- run_loo(just_covar)
     just_shift$loo <- run_loo(just_shift)
-    just_nlci$loo  <- run_loo(just_nlci)
     just_cor$loo  <- run_loo(just_cor)
     shared_cor$loo  <- run_loo(shared_cor)
     just_species_cor$loo  <- run_loo(just_species_cor)
@@ -182,17 +168,15 @@ for (r in c("2J3K", "3LNO", "3Ps")) {
 
     null$retro <- run_retro(null, folds = 20)
     full$retro <- run_retro(full, folds = 20)
-    just_covar$retro<- run_retro(just_covar, folds = 20)
     just_shift$retro <- run_retro(just_shift, folds = 20)
-    just_nlci$retro  <- run_retro(just_nlci, folds = 20)
     just_cor$retro  <- run_retro(just_cor, folds = 20)
     shared_cor$retro  <- run_retro(shared_cor, folds = 20)
     just_species_cor$retro  <- run_retro(just_species_cor, folds = 20)
     just_temporal_cor$retro  <- run_retro(just_temporal_cor, folds = 20)
     no_cor$retro  <- run_retro(no_cor, folds = 20)
 
-    fits <- mget(c("full", "just_covar", "just_shift", "just_nlci", "just_cor",
-                   "shared_cor", "just_species_cor", "just_temporal_cor", "no_cor", "null"))
+    fits <- mget(c("full", "just_shift", "just_cor", "shared_cor", "just_species_cor",
+                   "just_temporal_cor", "no_cor", "null"))
 
     saveRDS(fits, file = paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
 

@@ -148,6 +148,7 @@ p <- subplot(a, b, c, nrows = 1, shareY = TRUE, titleX = TRUE,
     layout(legend = list(orientation = "h", x = 0.3, y = 0.01))
 p
 
+reticulate::py_run_string("import sys") # https://github.com/plotly/plotly.R/issues/2179#issuecomment-1246812339
 save_image(p, file = "analysis/NL_case_study/exports/plots/scores.svg", width = 750, height = 350)
 save_html(p, file = "analysis/NL_case_study/exports/plots/scores.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/scores.rds")

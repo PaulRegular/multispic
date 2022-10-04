@@ -9,9 +9,9 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     fits <- readRDS(paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
     models <- names(fits)
-    names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
-                       "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation", "No correlation", "Single-species")
+    names(models) <- c("Full", "Just shift", "Just correlation", "Shared correlation",
+                       "Just species correlation", "Just temporal correlation", "No correlation",
+                       "Single-species")
 
     loo_dat <- lapply(models, function (m) {
         fit <- fits[[m]]
@@ -73,9 +73,9 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
 
     fits <- readRDS(paste0("analysis/NL_case_study/exports/fits_", r, ".rds"))
     models <- names(fits)
-    names(models) <- c("Full", "Just covariates", "Just shift", "Just climate",
-                       "Just correlation", "Shared correlation", "Just species correlation",
-                       "Just temporal correlation", "No correlation", "Single-species")
+    names(models) <- c("Full", "Just shift", "Just correlation", "Shared correlation",
+                       "Just species correlation", "Just temporal correlation", "No correlation",
+                       "Single-species")
 
     hind_dat <- lapply(models, function (m) {
         missing_years <<- is.na(fits[[m]]$retro$retro_fits) |> which() |> names()
