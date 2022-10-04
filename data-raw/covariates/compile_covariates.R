@@ -30,6 +30,11 @@ names(nlci) <- c("year", "nlci")
 nlci$cumsum_nlci <- replace(nlci$nlci, is.na(nlci$nlci), 0) |> cumsum()
 plot(cumsum_nlci ~ year, data = nlci, type = "l")
 
+## Likewise, a moving average may capture a similar effect; select 3 years as recruitment to the
+## survey is belated by 3 years or more for several of the focal species
+nlci$ma_nlci <- zoo::rollmean(nlci$nlci, 3, na.pad = TRUE, align = "right")
+plot(ma_nlci ~ year, data = nlci, type = "l", xlim = c(1978, 2021))
+
 
 ## Merge and export --------------------------------------------------------------------------------
 
