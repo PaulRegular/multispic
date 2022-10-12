@@ -109,7 +109,27 @@ CV_{i,s,y} = \frac { \sqrt{Var(I_{i,s,y})} }{ I_{i,s,y} } & (\#eq:cv),
 where $I$ represents the design-based indices of biomass used in equation \@ref(eq:obs). These CVs were log transformed and survey, $i$, and species, $s$, specific means and standard deviations were used to inform the prior for $\tau_{i, s}^2$ in log-space. Rather than treat the estimates of survey CV as a perfect indicator of total observation error, the prior was widened by multiplying the standard deviation of log CV by two to account for observation variance introduced by distributional shifts outside of the survey domain. Another two times multiplier was applied for deep-water species as they have more scope for shifting outside the survey domain.
 
 
-TODO: Consider testing cumsum(NLCI)
+### Hypotheses {-}
+
+It is unknown whether density-dependence of the demersal fish community inhabiting the NL shelves is primarily driven by intra and interspecific competition, or the degree to which species interactions affect population dyanmics. It is, however, well known that the community has been fished for more than 500 years and this history was punctuated by a collapse of several stocks, most notably cod, in the early 1990s [@lear1998]. This collapse was not isolated to commercial stocks, as the biomass of several non-commercial species collapsed at the same time. This collapse was followed by a reorganization of the community, which implies that the system experienced a regime shift [@pedersen2017]. Given this context, and the structure of the multispecies surplus production model described above, a series of hypotheses were tested:
+
+**Full:** For this hypothesis, it is posited that population dynamics within regions are governed by an overarching carrying capacity that affects all focal species as the aggregate biomass approaches system limits (i.e., inter-specific density-dependent effects are assumed). For this hypothesis and all others, annual reported landings of each species are subtracted. Residual variations not explained by density-dependent effects or landings are described by process errors that are 1) correlated across species and said correlations are assumed to be unstructured, meaning relationships can be of differing strengths &mdash; positive, natural, or negative &mdash; for each species-to-species pair; and, 2) assumed to be temporally correlated, following an AR1 structure. Finally, a shift covariate was applied to the carrying capacity parameter to enable the estimation of different system limits before and after the community-wide collapse to assess support for a regime shift in each systems' capacity for the focal demersal species.
+
+**Just shift:** Model structure is the same as the **full** model, except the process errors are assumed to be independent and identically distributed random variables (*iid*) to assess the hypothesis that temporal and species correlations are explained by the shift.
+
+**Just correlation:** Model structure is the same as the **full** model, except population dynamics are assumed to be affected by a common and time-invariant carrying capacity. The shift covariate was not applied for this and subsequent hypotheses.
+
+**Shared correlation:** Model structure is the same as the **just correlation** model, except species by species correlations in the process errors are assumed to be the same across all pairs. This structure implies that there is a common but unknown environmental variable affecting the population dynamics of all species.
+
+**Just species correlation:** Model structure is the same as the **shared correlation** model, except the process errors at each time step are assumed to be *iid*. This structure implies that there is a common but unknown environmental process affecting all species, but the process is noisy with no temporal dependence.
+
+**Just temporal correlation:** Model structure is the same as the **shared correlation** model, except species by species correlations are assumed to be *iid*. This structure implies that environmental processes affect each species differently, however, there may be carry-over effects from one year to the next.
+
+**No correlation:** Model structure is the same as the **shared correlation** model, except both temporal and species correlations are assumed to be *iid*. That is, population dynamics are thought to be affected by a common time-invariant carrying capacity and residual variations not explained by landings or inter-specific density-dependent effects are noisy and independent across time and species.
+
+**Single-species:** Model structure is the same as the **no correlation** model, except population dynamics are assumed to be goverened by species-specific carrying capacities (i.e., intra-specific density-dependent effects are assumed). This formulation is analogous to standard state-space Schaefer production models.
+
+
 
 
 <!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
