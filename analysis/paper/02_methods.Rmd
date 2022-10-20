@@ -1,3 +1,4 @@
+
 # Methods {-}
 
 ## Model formulation {-}
@@ -109,11 +110,11 @@ CV_{i,s,y} = \frac { \sqrt{Var(I_{i,s,y})} }{ I_{i,s,y} } & (\#eq:cv),
 where $I$ represents the design-based indices of biomass used in equation \@ref(eq:obs). These CVs were log transformed and survey, $i$, and species, $s$, specific means and standard deviations were used to inform the prior for $\tau_{i, s}^2$ in log-space. Rather than treat the estimates of survey CV as a perfect indicator of total observation error, the prior was widened by multiplying the standard deviation of log CV by two to account for observation variance introduced by distributional shifts outside of the survey domain. Another two times multiplier was applied for deep-water species as they have more scope for shifting outside the survey domain.
 
 
-### Hypotheses {-}
+### Model selection {-}
 
 It is unknown whether density-dependence of the demersal fish community inhabiting the NL shelves is primarily driven by intra and interspecific competition, or the degree to which species interactions affect population dyanmics. It is, however, well known that the community has been fished for more than 500 years and this history was punctuated by a collapse of several stocks, most notably cod, in the early 1990s [@lear1998]. This collapse was not isolated to commercial stocks, as the biomass of several non-commercial species collapsed at the same time. This collapse was followed by a reorganization of the community, which implies that the system experienced a regime shift [@pedersen2017]. Given this context, and the structure of the multispecies surplus production model described above, a series of hypotheses were tested:
 
-**Full:** For this hypothesis, it is posited that population dynamics within regions are governed by an overarching carrying capacity that affects all focal species as the aggregate biomass approaches system limits (i.e., inter-specific density-dependent effects are assumed). For this hypothesis and all others, annual reported landings of each species are subtracted. Residual variations not explained by density-dependent effects or landings are described by process errors that are 1) correlated across species and said correlations are assumed to be unstructured, meaning relationships can be of differing strengths &mdash; positive, natural, or negative &mdash; for each species-to-species pair; and, 2) assumed to be temporally correlated, following an AR1 structure. Finally, a shift covariate was applied to the carrying capacity parameter to enable the estimation of different system limits before and after the community-wide collapse to assess support for a regime shift in each systems' capacity for the focal demersal species.
+**Full:** For this hypothesis, it is posited that population dynamics within regions are governed by an overarching carrying capacity that affects all focal species as the aggregate biomass approaches system limits (i.e., inter-specific density-dependent effects are assumed). For this hypothesis and all others, annual reported landings of each species are subtracted. Residual variations not explained by intrinsic growth, density-dependent effects or landings are described by process errors that are 1) correlated across species and said correlations are assumed to be unstructured, meaning relationships can be of differing strengths &mdash; positive, neutral, or negative &mdash; for each species-to-species pair; and, 2) assumed to be temporally correlated, following an AR1 structure. Finally, a shift covariate was applied to the carrying capacity parameter to enable the estimation of different system limits before and after the community-wide collapse to assess support for a regime shift in each systems' capacity for the focal demersal species.
 
 **Just shift:** Model structure is the same as the **full** model, except the process errors are assumed to be independent and identically distributed random variables (*iid*) to assess the hypothesis that temporal and species correlations are explained by the shift.
 
@@ -125,55 +126,17 @@ It is unknown whether density-dependence of the demersal fish community inhabiti
 
 **Just temporal correlation:** Model structure is the same as the **shared correlation** model, except species by species correlations are assumed to be *iid*. This structure implies that environmental processes affect each species differently, however, there may be carry-over effects from one year to the next.
 
-**No correlation:** Model structure is the same as the **shared correlation** model, except both temporal and species correlations are assumed to be *iid*. That is, population dynamics are thought to be affected by a common time-invariant carrying capacity and residual variations not explained by landings or inter-specific density-dependent effects are noisy and independent across time and species.
+**No correlation:** Model structure is the same as the **shared correlation** model, except both temporal and species correlations are assumed to be *iid*. That is, population dynamics are thought to be affected by a common time-invariant carrying capacity and residual variations not explained by intrinsic growth, inter-specific density-dependent effects or landings are noisy and independent across time and species.
 
-**Single-species:** Model structure is the same as the **no correlation** model, except population dynamics are assumed to be goverened by species-specific carrying capacities (i.e., intra-specific density-dependent effects are assumed). This formulation is analogous to standard state-space Schaefer production models.
+**Single-species:** Model structure is the same as the **no correlation** model, except population dynamics are assumed to be governed by species-specific carrying capacities (i.e., intra-specific density-dependent effects are assumed). This formulation is analogous to standard state-space Schaefer production models.
+
+The predictive ability of each of these models was tested using two cross-validation approaches: 1) leave-one-out cross-validation (LOO-CV), and 2) hindcast cross-validation (Hindcast-CV). LOO-CV is a form of exhaustive cross-validation where the model is repeatedly conditioned on a training set missing one observation until the number of model folds equal the number of observations in the data. The missing observations are predicted at each fold, permitting assessments of the models' ability to predict the actual value that was left out at each fold. The hindcast-CV approach is similar, however it focuses on the models' ability to predict the future. Under the this approach, the model is repeatedly conditioned on a training set missing observations from the terminal year such that each fold excludes an increasing number of years worth of data from the tail of the time series [@kell2016]. We folded back 20 years and, for each fold, predicted survey indices were compared to the observed survey indices (e.g., observed indices from 2020 were compared with predicted survey indices for 2020 from the model conditioned on data from 1978-2019). For both approaches, we denote predicted survey indices as $\hat{I_j}$ and the left out observations $I_j$, where $j$ represents all unique combinations of years, species, and survey indices present in the left out data. LOO-CV and Hindcast-CV prediction error scores for each model for each region were calculated by taking the mean squared error,  
+
+\begin{align}
+\text{CV Score} = \frac{1}{n} \sum_{j-1}^{n} \left (  log(I_j) - log(\hat{I}_j) \right ) ^ 2 & (\#eq:cv).
+\end{align}
+
+These scores were also averaged across methods (LOO-CV, Hindcast-CV) and region (Northeast NL Shelf, Grand Bank, Southern NL) to obtain an overall score of predictive ability of each model. A well-fitting model will result in predicted values that are close to the excluded values and, therefore, result in lower scores. Ultimately, these scores enable a model-comparison approach to hypothesis testing.
 
 
 
-
-<!-- Here I present initial results from of a Shaffer surplus production model which has been modified to fit to multiple species: -->
-
-<!-- $$B_{t, s} = \left (B_{t-1, s} + r_s B_{t-1, s} \left (1 - \left[ \frac{\sum_{s} B_{t-1, s}}{K} \right ] \right ) - L_{t-1, s} \right ) e^ {\beta X_t + {\delta_{t,s}}}$$ where -->
-
-<!-- $$ \delta_{t,s} \sim N(0, \Sigma_s)$$ and -->
-
-<!-- $$ \Sigma_s = \begin{bmatrix} -->
-<!-- \sigma^2_{\delta~1} &  \sigma_{\delta~1} \sigma_{\delta~2} \rho_{1,2}  & \dots &  \sigma_{\delta~1} \sigma_{\delta~s} \rho_{1,s} & \\  -->
-<!-- \sigma_{\delta~2} \sigma_{\delta~1} \rho_{2,1}       & \sigma^2_{\delta~2}     & \dots & \sigma_{\delta~2} \sigma_{\delta~s} \rho_{2,s}  & \\  -->
-<!-- \vdots & \vdots &  \ddots     &  \vdots & \\  -->
-<!-- \sigma_{\delta~s} \sigma_{\delta~1} \rho_{s,1} & \sigma_{\delta~s} \sigma_{\delta~2} \rho_{s,2} & \dots  &  \sigma^2_{\delta~s} &  -->
-<!-- \end{bmatrix} $$ -->
-
-<!-- The key difference here from a standard surplus production model is that biomass is indexed by species, $s$, and the ratio of biomass over carrying capacity is based on the total biomass of the species included in the model. Note that intrinsic growth rates, $r_s$, are species specific while only one carrying capacity $K$ parameter is estimated. Therefore, as the population in the system increases towards $K$, year-over-year growth of all species slows. The concept is that the species included in the model are limited by the finite amount of energy in the system. Another difference is the way the process error is modeled. Because multiple species are included, covariance between the species can be estimated. Here I model process error using the multivariate normal distribution and estimate standard deviation parameters ($\sigma^2_{\delta ~ s}$) for each species as well as the correlation in the errors across species ($\rho_{s,s}$). If these species are affected by similar drivers, then correlations will be positive. Alternatively, negative correlations may occur if there is competition or predator-prey interactions between two species. Finally, the formulation allows the fitting of covariates that may describe an underlying linear effect ($\beta X$). -->
-
-<!-- The observation portion of this state-space model is -->
-
-<!-- $$I_{t,s,g} = q_{s,g} ~ B_{t,s} ~ e^{\nu}$$ where -->
-
-<!-- $$\nu \sim N(0, \sigma^2_{\nu ~ s,g})$$ Here $g$ represents survey grouping (e.g. season, gear). This allows for the catachability and variability of surveys to be species and survey specific. This model was constructed using Template Model Builder. -->
-
-<!-- ### Data and priors -->
-
-<!-- As a first-cut exploration, I apply this model to several groundfish species on the Grand Bank (3LNO): Yellowtail, Witch, Cod, Plaice, Skate, Hake, Haddock, Redfish. Landings data were obtained from the STATLANT21A database maintained by NAFO (<https://www.nafo.int/Data/STATLANT>). Survey indices are from Canadian spring and fall multispecies surveys. Three gear changes have occurred throughout the survey time-series, from Yankee, Engel and Campelen gear. Coverage of the Grand Bank has been inconsistent and, as such, the data has been restricted to years where 90% of the core area (strata that have been sampled for more than 20 years) has been covered by the survey. Separate catchabilities are estimated by season and gear type. -->
-
-<!-- The same prior (mean = -1, sd = 1) was used on $log(r)$, $log(\sigma^2_{\delta ~ s})$, $log(q_{s,g})$ and $log(\sigma^2_{\nu ~ s,g})$, which corresponds to 95% interval of 0.05 and 2.61. These general priors stabilized convergence by penalizing large deviations into unrealistic parameter space \[i.e. growth ($r$), catchability ($q$) and variance ($\sigma^2$) parameters are not expected to move far outside the 0.05 - 2.61 range\]. -->
-
-<!-- ### Model selection -->
-
-<!-- A range of models have been tested and compared: -->
-
-<!-- 1.  null: assumes no correlation across species and no covariate effects. -->
-<!-- 2.  one: assumes one common correlation parameters across species and no covariate effects -->
-<!-- 3.  cil: assumes no correlation across species but adds core cold intermediate layer (CIL) temperature as a covariate -->
-<!-- 4.  cei: assumes no correlation across species but adds composite environmental index (CEI) as a covariate -->
-<!-- 5.  cil_one: assumes one correlation parameter and adds core CIL temperature as a covariate -->
-<!-- 6.  cei_one: assumes one correlation parameter and adds CEI as a covariate -->
-
-<!-- Models are compared using marginal AIC -->
-
-<!-- $$mAIC =  2k + 2log(\hat{L}),$$ -->
-
-<!-- where $k$ is the number of fixed parameters and $log(\hat{L})$ is the negative log likelihood, and leave-one-out cross-validation score -->
-
-<!-- $$LOOCV = \frac{1}{n} \sum_{i-1}^{n} \left (  log(I_i) - log(\hat{I}_i) \right ) ^ 2$$ LOOCV is the mean squared error of the log estimates of the survey indices $\hat{I}$, under consecutive model runs where each observation $i$ was left out. For both metrics, lower values indicate models with greater predictive ability. -->
