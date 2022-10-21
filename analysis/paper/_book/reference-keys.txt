@@ -10,3 +10,7 @@ eq:k-prior
 eq:b0-prior
 eq:cv
 fig:epu-map
+fig:scores
+fig:survey-trends
+fig:pop-trends
+fig:pe-cor

@@ -27,18 +27,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
   message = FALSE,
-  comment = "#>",
-  fig.path = "knitr-figs-docx/",
-  cache.path = "knitr-cache-docx/",
-  fig.height = 2.5,
-  fig.width = 4.5, 
-  fig.showtext = TRUE,
   echo = FALSE,
-  # autodep = TRUE,
-  # cache = TRUE,
-  cache.comments = FALSE,
-  dpi = 300,
-  dev = "png"
+  dpi = 600
 )
 ```
 
@@ -47,6 +37,5 @@ knitr::opts_chunk$set(
 library(here)
 library(knitr)
 library(dplyr)
-library(imager)
 ```
 
