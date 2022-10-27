@@ -6,7 +6,7 @@
 
 <!-- Figures below were copied from './analysis/NL_case_study/exports/plots' -->
 
-![(\#fig:scores) Scores.](`r  here("analysis/paper/figures/scores.svg")`)
+![(\#fig:scores) LOO-CV and Hindcast-CV scores from a series of production model formulations of increasing complexity, from a single-species production model ("Single-species") to a multispecies production model with a covariate effect and species and temporal correlations ("Full"), fit to seven species in three ecosystem production units (Northeast NL Shelf, Grand Bank, and Southern NL) off the east coast of Canada. Overall scores for each model across score type and ecosystem production unit are shown on the rightmost facet.](`r  here("analysis/paper/figures/scores.svg")`)
 
 ![(\#fig:survey-trends) Survey trends.](`r  here("analysis/paper/figures/survey_trends.svg")`)
 

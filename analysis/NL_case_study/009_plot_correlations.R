@@ -77,9 +77,9 @@ pe_plot <- function(fit, title, show_legend = TRUE) {
 }
 
 
-pe_2J3K <- pe_plot(fit_2J3K, "2J3K", TRUE)
-pe_3LNO <- pe_plot(fit_3LNO, "3LNO", FALSE)
-pe_3Ps <- pe_plot(fit_3Ps, "3Ps", FALSE)
+pe_2J3K <- pe_plot(fit_2J3K, "Northeast NL Shelf", TRUE)
+pe_3LNO <- pe_plot(fit_3LNO, "Grand Bank", FALSE)
+pe_3Ps <- pe_plot(fit_3Ps, "Southern NL", FALSE)
 
 pe_p <- subplot(pe_2J3K, pe_3LNO, pe_3Ps,
                 margin = c(0.12, 0.01, 0.12, 0.01),
@@ -96,6 +96,8 @@ p
 
 save_image(p, file = "analysis/NL_case_study/exports/plots/pe_cor.svg",
            width = 1300, height = 700)
+file.copy("analysis/NL_case_study/exports/plots/pe_cor.svg", "analysis/paper/figures/pe_cor.svg",
+          overwrite = TRUE)
 save_html(p, file = "analysis/NL_case_study/exports/plots/pe_cor.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/pe_cor.rds")
 

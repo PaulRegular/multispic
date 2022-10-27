@@ -79,15 +79,17 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
 }
 
 
-p_2J3K <- region_trends(fit_2J3K, "2J3K", TRUE, TRUE)
-p_3LNO <- region_trends(fit_3LNO, "3LNO", FALSE, FALSE)
-p_3Ps <- region_trends(fit_3Ps, "3Ps", FALSE, FALSE)
+p_2J3K <- region_trends(fit_2J3K, "Northeast NL Shelf", TRUE, TRUE)
+p_3LNO <- region_trends(fit_3LNO, "Grand Bank", FALSE, FALSE)
+p_3Ps <- region_trends(fit_3Ps, "Southern NL", FALSE, FALSE)
 
 p <- subplot(p_2J3K, p_3LNO, p_3Ps, titleY = TRUE)
 p
 
 save_image(p, file = "analysis/NL_case_study/exports/plots/pop_trends.svg",
            width = 1000, height = 700)
+file.copy("analysis/NL_case_study/exports/plots/pop_trends.svg", "analysis/paper/figures/pop_trends.svg",
+          overwrite = TRUE)
 save_html(p, file = "analysis/NL_case_study/exports/plots/pop_trends.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/pop_trends.rds")
 

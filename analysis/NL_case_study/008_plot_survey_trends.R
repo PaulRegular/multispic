@@ -46,9 +46,9 @@ region_trends <- function(fit, title, show_spp = TRUE) {
 
 }
 
-p_2J3K <- region_trends(fit_2J3K, "2J3K")
-p_3LNO <- region_trends(fit_3LNO, "3LNO")
-p_3Ps <- region_trends(fit_3Ps, "3Ps")
+p_2J3K <- region_trends(fit_2J3K, "Northeast NL Shelf")
+p_3LNO <- region_trends(fit_3LNO, "Grand Bank")
+p_3Ps <- region_trends(fit_3Ps, "Southern NL")
 
 ## Vertical annotations produced using the function did not align properly; hence manual approach below
 p <- subplot(p_2J3K, p_3LNO, p_3Ps) |>
@@ -65,6 +65,8 @@ p
 
 save_image(p, file = "analysis/NL_case_study/exports/plots/survey_trends.svg",
            width = 1000, height = 700)
+file.copy("analysis/NL_case_study/exports/plots/survey_trends.svg", "analysis/paper/figures/survey_trends.svg",
+          overwrite = TRUE)
 save_html(p, file = "analysis/NL_case_study/exports/plots/survey_trends.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/survey_trends.rds")
 

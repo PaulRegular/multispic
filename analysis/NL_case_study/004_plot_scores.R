@@ -145,11 +145,12 @@ c <- mean_score |>
 
 p <- subplot(a, b, c, nrows = 1, shareY = TRUE, titleX = TRUE,
              widths = c(0.4, 0.4, 0.2)) |>
-    layout(legend = list(orientation = "h", x = 0.3, y = 0.01))
+    layout(legend = list(orientation = "h", x = 0.05, y = 0.01))
 p
 
 reticulate::py_run_string("import sys") # https://github.com/plotly/plotly.R/issues/2179#issuecomment-1246812339
 save_image(p, file = "analysis/NL_case_study/exports/plots/scores.svg", width = 750, height = 350)
+file.copy("analysis/NL_case_study/exports/plots/scores.svg", "analysis/paper/figures/scores.svg", overwrite = TRUE)
 save_html(p, file = "analysis/NL_case_study/exports/plots/scores.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/scores.rds")
 

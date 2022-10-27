@@ -3,6 +3,10 @@ library(dplyr)
 
 normalize <- function(x) {(x - min(x)) / (max(x) - min(x)) }
 
+region_name <- c("2J3K" = "Northeast NL Shelf",
+                 "3LNO" = "Grand Bank",
+                 "3Ps" = "Southern NL")
+
 ## Leave-one-out results ---------------------------------------------------------------------------
 
 loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
@@ -25,6 +29,7 @@ loo_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     loo_dat <- do.call(rbind, loo_dat)
 
     loo_dat$model <- factor(loo_dat$model, levels = names(models))
+    loo_dat$region <- factor(unname(region_name[r]), levels = unname(region_name))
     loo_dat
 
 })
@@ -33,7 +38,7 @@ rownames(loo_dat) <- NULL
 
 sr <- do.call(rbind, strsplit(as.character(loo_dat$species), "-"))
 loo_dat$species <- sr[, 1]
-loo_dat$region <- sr[, 2]
+# loo_dat$region <- sr[, 2]
 
 ## Drop cases with convergence issues to ensure metrics are comparable across all cases
 ind <- is.na(loo_dat$log_pred_index)
@@ -87,6 +92,7 @@ hind_dat <- lapply(c("2J3K", "3LNO", "3Ps"), function(r) {
     hind_dat <- do.call(rbind, hind_dat)
 
     hind_dat$model <- factor(hind_dat$model, levels = names(models))
+    hind_dat$region <- factor(unname(region_name[r]), levels = unname(region_name))
     hind_dat
 
 })
@@ -95,7 +101,7 @@ rownames(hind_dat) <- NULL
 
 sr <- do.call(rbind, strsplit(as.character(hind_dat$species), "-"))
 hind_dat$species <- sr[, 1]
-hind_dat$region <- sr[, 2]
+# hind_dat$region <- sr[, 2]
 
 ## Drop cases with convergence issues to ensure metrics are comparable across all cases
 drop_years <- unique(drop_years)
