@@ -8,6 +8,7 @@
 *.png
 *.pdf
 *.svg
+*.zip
 /data-raw/excel_files/
 /data-raw/nafo_scr/
 .Rproj.user
