@@ -113,7 +113,7 @@ a <- scores |>
                             line = list(width = 2)),
               textfont = list(size = 10),
               showlegend = FALSE) |>
-    layout(yaxis = list(title = "", autorange = "reversed"),
+    layout(yaxis = list(title = ""),
            xaxis = list(title = "LOO-CV score", side ="top"))
 
 
@@ -128,7 +128,7 @@ b <- scores |>
               marker = list(color = "white", size = 20,
                             line = list(width = 2)),
               textfont = list(size = 10)) |>
-    layout(yaxis = list(title = "", autorange = "reversed"),
+    layout(yaxis = list(title = ""),
            xaxis = list(title = "Hindcast-CV score", side ="top"))
 
 c <- mean_score |>
@@ -140,7 +140,7 @@ c <- mean_score |>
               marker = list(color = "white", size = 20,
                             line = list(width = 2)),
               textfont = list(size = 10)) |>
-    layout(yaxis = list(title = "", autorange = "reversed"),
+    layout(yaxis = list(title = ""),
            xaxis = list(title = "Mean score", side ="top"))
 
 p <- subplot(a, b, c, nrows = 1, shareY = TRUE, titleX = TRUE,
