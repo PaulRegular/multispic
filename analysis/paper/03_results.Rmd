@@ -7,5 +7,23 @@ The multispecies production model with unstructured species-to-species correlati
 
 Isolating residual changes in biomass not explained by reported fisheries landings or the production function (equation \@ref(eq:ms-logistic)) reveals substantive subtractions in the early 1990s across all three ecosystem production units (Figure \@ref(fig:pop-trends)). These residual subtractions exceed the absolute scale of landings taken in the late 1980s from the Northeast NL Shelf and Grand Bank ecosystem production units. The scale of changes derived from the production function and other processes are of a scale similar to landings reported in the Southern NL ecosystem production unit. Focusing on estimates of biomass, total biomass exceeded the carrying capacity estimated for the Northeast NL Shelf through the 1980s and, in the early 1990s, all focal species displayed abrupt declines. Comparing community composition in the early 1980s to the 2010s, there are no clear shifts in the relative biomass of the focal species in the Northeast NL Shelf. Elsewhere, total biomass exceeded or approached system carrying capacity in the late 1980s, after which all species declined. Estimates of total biomass have gradually increased on the Grand Bank and off Southern NL since the mid 1990s, largely due to increasing Redfish spp. biomass estimates.
 
+```{r, cache = TRUE}
 
+regions <- c("2J3K", "3LNO", "3Ps")
+rhos <- vector("list", 3)
+names(rhos) <- regions
+for (r in regions) {
+    fits <- readRDS(here(paste0("analysis/NL_case_study/exports/fits_", r, ".rds")))
+    rho <- c(multispic::inv_logit(fits$shared_cor$par$logit_rho),
+             multispic::inv_logit(fits$shared_cor$par_lwr$logit_rho),
+             multispic::inv_logit(fits$shared_cor$par_upr$logit_rho))
+    rhos[[r]] <- paste0(formatC(rho[1], digits = 2, format = "f"), " (95% CI: ", 
+                  formatC(rho[2], digits = 2, format = "f"), ", ", 
+                  formatC(rho[3], digits = 2, format = "f"), ")")
+}
+
+```
+
+
+Further inspection of the process errors reveal common patterns across all focal species across three ecosystem production units (Figure \@ref(fig:pe-cor)). Like the exponentiated and unstandardized process errors ("residual change") shown in Figure \@ref(fig:pop-trends), the standardized process errors shown in Figure \@ref(fig:pe-cor) highlight substantive subtractions in the early 1990s, representing time-series lows for 19 out of 21 populations. The standardized values also reveal parallel and periodic increases and decreases within each region. The species-to-species correlations in the process errors estimated by the "just correlation" model indicate that only 10 out of 63 pairs were negatively correlated. Also note that the "shared correlation" model estimates of a common species-to-species correlation parameter were `r rhos[["2J3K"]]`, `r rhos[["3LNO"]]`, and `r rhos[["3Ps"]]` for the Northeast NL Shelf, Grand Bank, and Southern NL ecosystem production units, respectively. This model received similar cross-validation scores as the "just correlation" model which, taken together, further supports the inference that the process errors are primarily positively correlated across species within each production unit.
 

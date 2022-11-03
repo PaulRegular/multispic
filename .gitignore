@@ -15,3 +15,4 @@
 /analysis/multispecies_surplus_production_explorations_cache/
 !data/*.RData
 !analysis/paper/figures/*.png
+/analysis/paper/_bookdown_files/
