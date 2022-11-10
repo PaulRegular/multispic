@@ -1,3 +1,10 @@
 
 # Introduction {-}  
 
+Paragraph ideas:
+
+- Carrying capacity, the concept that a environment can only accommodate a finite number of specific species, is a foundational concept in applied population ecology (e.g., use of MSY in fisheries management).
+- Usefulness of this concept has been called into question (e.g., changing K in variable environments). Standard formulations also tend to focus on single-species and ignore species interactions. 
+- We propose an extension of single-species production model that assumes that inter and intra-specific competition contributes to density-dependent effects within ecosystem production units.
+- Apply the model to commercially important demersal fish species off the east coast of Canada.
+
