@@ -18,7 +18,7 @@ output:
 knit: bookdown::render_book
 link-citations: true
 bibliography: bib/refs.bib
-csl: csl/pnas.csl
+csl: csl/fish-and-fisheries.csl
 ---
 
 ```{r setup, echo=FALSE, cache=FALSE, message=FALSE, results='hide', warning=FALSE}
