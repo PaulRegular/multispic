@@ -9,7 +9,19 @@ date: |
     \
     `r format(Sys.time(), "%Y-%m-%d")` 
 abstract: |
-  **Abstract:** ...\
+  **Abstract:** \
+  \
+  **ChatGPT draft:**\
+  \
+  Introduction: Carrying capacity is a fundamental concept in population ecology, yet standard models tend to ignore species interactions and do not account for variable environments. Our study proposes an extension of the single-species production model to include inter- and intra-specific competition within ecosystem production units.\
+    \
+    Problem/Objective: However, the usefulness of the carrying capacity concept has been called into question in changing environments. We aim to apply the extended model to commercially important demersal fish species off the east coast of Canada to investigate the effects of competition on ecosystem production units.\
+    \
+    "Here we show": Our results indicate that accounting for ecological interactions increases the accuracy of biomass estimates for species within a community, as well as estimates of the carrying capacity of the ecosystem production unit. Additionally, we find that the dominant species in the demersal fish community may be influenced by observation errors and year effects.\
+    \
+    Main Results and Conclusions: Our multispecies production model improves upon standard single-species models by accounting for ecological interactions, yielding more accurate biomass estimates and carrying capacity estimates for ecosystem production units. However, the carrying capacity concept may need to be revised in the face of changing environmental conditions. The dominance of redfish in the demersal fish community may be an artifact of observation errors and year effects, highlighting the need for more accurate survey methods.\
+    \
+    Implications: Our study contributes to the advancement of population ecology and fisheries management by providing a more comprehensive understanding of the dynamics of ecosystem production units. This improved understanding may guide more sustainable fishing practices and inform policy decisions for the management of marine resources.\
   \
   **Keywords:** ...
 output: 

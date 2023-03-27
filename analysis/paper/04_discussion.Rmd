@@ -15,7 +15,7 @@ Main points in jot note form:
 
 
 
-## ChatGPT draft based on points:
+**ChatGPT draft based on points:**
 
 Paragraph 1:
 Our multispecies production model assumes that both intra and interspecific competition stunts growth as total biomass approaches the environment's maximal load, rather than assuming that populations are primarily regulated by species-specific carrying capacities. This assumption is rooted in the idea that ecological interactions play a crucial role in shaping population dynamics, and that neglecting these interactions can lead to oversimplified and inaccurate predictions of population trajectories. By explicitly accounting for competition among species, our model provides a more nuanced understanding of how populations respond to changes in their environment. This approach is especially relevant in situations where species are ecologically intertwined and subject to similar environmental stressors.
