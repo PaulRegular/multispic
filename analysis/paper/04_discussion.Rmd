@@ -1,6 +1,9 @@
 
 # Discussion  {-}
 
+Rather than assuming that populations are primarily regulated by species-specific carrying capacities, our multispecies production model assumes that both intra and interspecific competition stunts growth as total biomass approaches the environment's maximal load. This assumption is conceptually similar to aggregate production models [@mueter2006; @bundy2012; @fogarty2012] as it is rooted in the idea that total production, and consequently system-level maximum sustainable yield (MSY), is limited by the amount of resources available in a given ecosystem. In contrast to aggregate production models, we also attempt to capture the dynamics of species within a community. Within species, fisheries landings, competitive interactions, predation, and prey availability all affect production [@schaefer1954; @lotka1925; @volterra1926]. While our model explicitly accounts for landings, species interactions are implicitly accounted for by estimating species-to-species correlations [sensu @albertsen2018; see @gamble2009 for a more explicit approach]. Finally, by utilizing a state-space framework akin to single-species state-space production models [e.g., @millar2000; @winker2018], we attempt to differentiate population processes from noise and bias introduced by surveys of fish populations. The overall structure of the model allows species-specific dynamics to be captured while avoiding the assumption that the dynamics of each species is isolated and independent from sympatric species.
+
+
 Main points in jot note form:
 
 - Rather than assuming that populations are primarily regulated by species-specific carrying capacities, our multispecies production model assumes that both intra and interspecific competition stunts growth as total biomass approaches the environment's maximal load. 

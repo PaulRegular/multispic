@@ -1,6 +1,8 @@
 
 # Introduction {-}  
 
+K = cornerstone in population ecology
+
 Paragraph ideas:
 
 - Carrying capacity, the concept that a environment can only accommodate a finite number of specific species, is a foundational concept in applied population ecology (e.g., use of MSY in fisheries management).
@@ -15,3 +17,9 @@ The concept of carrying capacity is fundamental in applied population ecology an
 In this paper, we propose an extension of the single-species production model that incorporates the impact of inter and intra-specific competition on density-dependent effects within ecosystem production units. Our multispecies production model is designed to account for a greater number of ecological interactions than traditional single-species models, providing a more accurate representation of the complex ecological systems in which these species are found.
 
 We applied our model to commercially important demersal fish species off the east coast of Canada, specifically focusing on the Northeast Newfoundland Shelf, Grand Bank, and Southern Newfoundland. Our study aimed to assess the potential utility of multispecies production models in providing a more comprehensive understanding of the population dynamics of these species, as well as to identify potential limitations of the model. Through our study, we sought to contribute to a better understanding of how carrying capacity and other ecological concepts can be applied to complex, multispecies ecosystems.
+
+**ChatGPT text for discussion that may work in the intro**
+
+Carrying capacity, defined as the maximum number of individuals of a species that can be supported by a given environment, has traditionally been a cornerstone of population ecology. However, this concept is often oversimplified by assuming that species exist in isolation from one another and that the environment has a fixed capacity for each species.
+
+
