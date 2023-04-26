@@ -22,16 +22,16 @@ region_trends <- function(fit, title, show_spp = TRUE) {
                         alpha = 0.2, showlegend = FALSE, legendgroup = s) %>%
             add_lines(data = sub_pop, y = ~B,
                       color = I(sub_col), name = s,
-                      line = list(width = 1.5), legendgroup = s,
-                      showlegend = FALSE) |>
+                      line = list(width = 2), legendgroup = s,
+                      alpha = 0.5, showlegend = FALSE) |>
             add_lines(data = sub_index, y = ~pred, split = ~survey,
-                      color = I(sub_col), name = s,
-                      line = list(width = 1.5, dash = "dot"),
+                      color = I(sub_col), name = s, #
+                      line = list(width = 1),
                       showlegend = FALSE, legendgroup = s) |>
             add_markers(data = sub_index, y = ~index,
                         color = I(sub_col), name = s,
                         showlegend = FALSE, legendgroup = s,
-                        marker = list(size = 3)) |>
+                        marker = list(size = 2)) |>
             add_annotations(x = 0.5, y = 1, xref = "paper", yref = "paper", text = title,
                             font = list(size = 16), showarrow = FALSE,
                             xanchor = "center",  yanchor = "bottom",
@@ -63,11 +63,11 @@ p <- subplot(p_2J3K, p_3LNO, p_3Ps) |>
     layout(margin = list(r = 20))
 p
 
+reticulate::py_run_string("import sys")
 save_image(p, file = "analysis/NL_case_study/exports/plots/survey_trends.svg",
            width = 1000, height = 700)
 file.copy("analysis/NL_case_study/exports/plots/survey_trends.svg", "analysis/paper/figures/survey_trends.svg",
           overwrite = TRUE)
 save_html(p, file = "analysis/NL_case_study/exports/plots/survey_trends.html")
 saveRDS(p, file = "analysis/NL_case_study/exports/plots/survey_trends.rds")
-
 
