@@ -29,9 +29,9 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
                   showlegend = show_legend) |>
         add_lines(data = pop, x = ~year, y = ~B,
                   color = ~species, legendgroup = ~species, showlegend = FALSE,
-                  line = list(width = 1.2)) |>
+                  line = list(width = 2)) |>
         add_lines(data = dummy_data, x = ~year, y = ~x, color = ~species,
-                  legendgroup = ~species, line = list(width = 1.2),
+                  legendgroup = ~species, line = list(width = 2),
                   showlegend = show_legend) |>
         add_annotations(x = 0.5, y = 1, xref = "paper", yref = "paper", text = title,
                         xanchor = "center",  yanchor = "bottom",
@@ -46,7 +46,7 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
                   showlegend = FALSE) |>
         add_lines(data = pop, x = ~year, y = ~B_growth,
                   color = ~species, legendgroup = ~species,
-                  showlegend = FALSE, line = list(width = 1.2)) |>
+                  showlegend = FALSE, line = list(width = 2)) |>
         layout(xaxis = list(title = ifelse(show_axis_titles, "Year", "")),
                yaxis = list(title = ifelse(show_axis_titles, "Expected production", "")))
 
@@ -57,7 +57,7 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
                   showlegend = FALSE) |>
         add_lines(data = pop, x = ~year, y = ~-landings,
                   color = ~species, legendgroup = ~species,
-                  showlegend = FALSE, line = list(width = 1.2)) |>
+                  showlegend = FALSE, line = list(width = 2)) |>
         layout(xaxis = list(title = ifelse(show_axis_titles, "Year", "")),
                yaxis = list(title = ifelse(show_axis_titles, "Landings", "")))
 
@@ -68,7 +68,7 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
                   showlegend = FALSE) |>
         add_lines(data = pop, x = ~year, y = ~B_pe,
                   color = ~species, legendgroup = ~species,
-                  showlegend = FALSE, line = list(width = 1.2)) |>
+                  showlegend = FALSE, line = list(width = 2)) |>
         layout(xaxis = list(title = ifelse(show_axis_titles, "Year", "")),
                yaxis = list(title = ifelse(show_axis_titles, "Residual change", "")))
 
@@ -86,6 +86,8 @@ p_3Ps <- region_trends(fit_3Ps, "Southern NL", FALSE, FALSE)
 p <- subplot(p_2J3K, p_3LNO, p_3Ps, titleY = TRUE)
 p
 
+reticulate::use_miniconda('r-reticulate')
+reticulate::py_run_string("import sys")
 save_image(p, file = "analysis/NL_case_study/exports/plots/pop_trends.svg",
            width = 1000, height = 700)
 file.copy("analysis/NL_case_study/exports/plots/pop_trends.svg", "analysis/paper/figures/pop_trends.svg",
