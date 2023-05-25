@@ -13,8 +13,7 @@ Like all models, our multispecies production model is an imperfect abstraction o
 
 # Conclusion {-}
 
-There is a growing need to apply an ecosystem approach to fisheries management [ref?]. However, the data requirements of multispecies assessment models built to support ecosystem-informed decisions are often prohibitive. Our study documents a production model that can estimate the population dynamics of multiple stocks using commonly available landings and survey index data. This approach provides a relatively tractable method for informing management decisions for multiple sympatric and data-limited species. While our model has limitations, it represents a step forward in understanding the complex interactions among species in marine ecosystems and provides a framework for developing sustainable management practices.
-
+There is a growing need to apply an ecosystem based fisheries management [EBFM; @pikitch2004]. A robust understanding of the interactions of multiple species with each other and their environment is a critical prerequisite for advancing a EBFM. There are multiple analytically pathways to support such management, however, data requirements are often prohibitive [@latour2003]. Our study documents a production model that can estimate the population dynamics of multiple stocks using commonly available landings and survey index data. This approach provides a relatively tractable method for informing management decisions for multiple sympatric and data-limited species. While our model has limitations, it represents a step forward in understanding the complex interactions among species in marine ecosystems and provides a framework for supporting sustainable management decisions.
 
 
 It is important to bear in mind that our model is based on the best available data, and as more data becomes available, our understanding of the system's carrying capacity and dynamics may change.
