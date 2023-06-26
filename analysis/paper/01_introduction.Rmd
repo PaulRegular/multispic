@@ -1,6 +1,14 @@
 
 # Introduction {-}  
 
+The concept of carrying capacity has long been foundational in applied population ecology, being widely used in the management of renewable resources [@hilborn1995; @chapman2018]. The understanding that populations often produce more offspring than an environment can sustain led to the notion that the 'surplus' can be harvest sustainablly [@pauly2021]. These ideas are exemplified by the use of maximum sustainable yield (MSY) in the classic single-species surplus production modeling framework [@schaefer1954]. In one equation, this framework attempts to explain interannual changes in biomass using fisheries landings and estimates of intrinsic growth rate and carrying capacity. Given the theoretical elegance of the approach, it has been both widely adopted and criticized. Estimates of carrying capacity, and resultant derivations of MSY, are frequently criticized for being time-invariant, which is an over-simplification in variable environments [@del2004]. Moreover, traditional surplus production models tend to focus on single-species dynamics and often disregard the complexities arising from species interactions within ecosystems [@gamble2009].
+
+
+
+
+
+
+
 Content ideas / flow:
 
 - Carrying capacity, the concept that a environment can only accommodate a finite number of specific species, is a foundational concept in applied population ecology (e.g., use of MSY in fisheries management).
