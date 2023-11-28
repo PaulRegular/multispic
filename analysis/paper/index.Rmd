@@ -1,8 +1,8 @@
 ---
 title: "Summing the parts: Improving population estimates using a state-space multispecies production model"
-author: "Paul M. Regular^1^*, Mariano Koen-Alonso^1^, M. Joanne Morgan^1^, Pierre Pepin^1^, Rick M. Rideout^1^"
+author: "Paul M. Regular*, Mariano Koen-Alonso, M. Joanne Morgan, Pierre Pepin, Rick M. Rideout"
 date: | 
-    ^1^ Fisheries and Oceans Canada, Northwest Atlantic Fisheries Center, 80 East White Hills, St. John's, Newfoundland and Labrador, A1C 5X1, Canada\
+    Fisheries and Oceans Canada, Northwest Atlantic Fisheries Center, 80 East White Hills, St. John's, Newfoundland and Labrador, A1C 5X1, Canada\
     \
     *Corresponding author\
     E-mail: Paul.Regular@dfo-mpo.gc.ca\
@@ -10,10 +10,7 @@ date: |
     `r format(Sys.time(), "%Y-%m-%d")` 
 abstract: |
   **Abstract:** \
-  \
-  *<<PMR: this is a very rough first cut intended to get coarse ideas on the page>>*
-  \
-  Carrying capacity is a fundamental concept in population ecology, yet standard models tend to ignore species interactions and do not account for variable environments. Our study proposes an extension of the single-species production model to include inter- and intra-specific competition within a community. We apply our extended model to commercially important demersal fish species off the east coast of Canada to assess its ability to reveal species interactions and the relative impacts of fishing and environmental factors. Our results indicate that accounting for ecological interactions increases the accuracy of biomass estimates for species within a community. Strongly correlated estimates of process error also adds nuance to previous notions that fishing was the primary driver of collapses in the region since common trends imply a common environmental driver. Such inferences indicate that this may be a promicing avenue for producing more accurate assessments for multiple species with relatively minimal data requrements. Finaly, this approach may serve as a steping stone towards an ecosystem-based approach to fisheries management.
+  Carrying capacity is a fundamental concept in ecology that has inspired the development and application of a broad range of population models. In the context of fisheries science, production models have been employed globally to calculate carrying capacity and guide the sustainable use of fish populations. Production models have, however, been criticized for failing to account for species interactions and environmental effects. We aim to fill some of these gaps by introducing a novel state-space multispecies production model. We apply our extended model to commercially important demersal fish species off the east coast of Canada to assess its ability to reveal species interactions and the relative impacts of fishing and environmental effects. Our results indicate that accounting for species interactions increases the accuracy of biomass estimates for species within a community. The model also revealed strongly correlated process deviations, unrelated to fishing or density-dependent effects, which unexpectidly indicates that widespread collapses were primarily driven by a common environmental driver rather than fishing. Such inferences indicate that this may be a promising avenue for producing more holistic and accurate assessments for multiple species with relatively minimal data requirements (time-series of landings and fisheries-independent indices). Finally, this approach may serve as a stepping stone towards an ecosystem-based approach to fisheries management.
   \
 output: 
    bookdown::word_document2:
