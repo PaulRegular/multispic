@@ -63,7 +63,6 @@ p <- subplot(p_2J3K, p_3LNO, p_3Ps) |>
     layout(margin = list(r = 20))
 p
 
-reticulate::py_run_string("import sys")
 save_image(p, file = "analysis/NL_case_study/exports/plots/survey_trends.svg",
            width = 1000, height = 700)
 file.copy("analysis/NL_case_study/exports/plots/survey_trends.svg", "analysis/paper/figures/survey_trends.svg",

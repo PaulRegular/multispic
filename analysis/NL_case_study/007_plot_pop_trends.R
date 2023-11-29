@@ -25,8 +25,8 @@ region_trends <- function(fit, title, show_legend = TRUE, show_axis_titles = TRU
                   name = "Total", legendgroup = "Total", line = list(width = 0),
                   showlegend = show_legend) |>
         add_lines(data = tot_pop, x = ~year, y = ~K, color = I("black"),
-                  name = "K", legendgroup = "K",
-                  showlegend = show_legend) |>
+                  name = "Carrying capacity", legendgroup = "Carrying capacity",
+                  showlegend = show_legend, line = list(dash = "dot")) |>
         add_lines(data = pop, x = ~year, y = ~B,
                   color = ~species, legendgroup = ~species, showlegend = FALSE,
                   line = list(width = 2)) |>
@@ -87,7 +87,6 @@ p <- subplot(p_2J3K, p_3LNO, p_3Ps, titleY = TRUE)
 p
 
 reticulate::use_miniconda('r-reticulate')
-reticulate::py_run_string("import sys")
 save_image(p, file = "analysis/NL_case_study/exports/plots/pop_trends.svg",
            width = 1000, height = 700)
 file.copy("analysis/NL_case_study/exports/plots/pop_trends.svg", "analysis/paper/figures/pop_trends.svg",

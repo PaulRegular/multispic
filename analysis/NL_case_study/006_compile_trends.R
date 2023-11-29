@@ -51,15 +51,17 @@ core_spp <- c("Redfish spp.",
              "Yellowtail Flounder", "American Plaice", "Greenland Halibut",
              "Atlantic Cod",
              "Skate spp.")
-spp_cols <- viridis::viridis(length(core_spp))
-# see::material_colors()
-# spp_cols <- see::material_colors() |> head(length(core_spp))
-# spp_cols <- see::material_colors()[c("red", "pink",
-#                                      "yellow", "brown", "deep purple", "green",
-#                                      "purple", "teal", "blue",
-#                                      "amber")]
+# spp_cols <- viridis::viridis(length(core_spp))
+see::material_colors()
+spp_cols <- see::material_colors() |> head(length(core_spp))
+spp_cols <- see::material_colors()[c("red",
+                                     "amber", "brown", "green",
+                                     "blue",
+                                     "purple")]
 names(spp_cols) <- core_spp
 spp_cols
+
+
 
 ## Identify species included across all regions
 spp_tab <- table(c(spp_2J3K, spp_3LNO, spp_3Ps))[core_spp]
