@@ -1,4 +1,4 @@
 
 # Acknowledgements {-}
 
-We thank the many ship's crew and research staff involved in leading the surveys and collecting the data used in this study. These surveys were supported by Fisheries and Oceans Canada (DFO).  This work has benefited from valuable feedback from numerous colleagues, including ... . The abstract, introduction, and discussion sections were written with the assistance of ChatGPT (March 14, 2023 version).
+We thank the many ship's crew and research staff involved in leading the surveys and collecting the data used in this study. These surveys were supported by Fisheries and Oceans Canada (DFO).  This work has benefited from valuable feedback from numerous colleagues, including ____________. An earlier draft version of the abstract, introduction, and discussion sections were written with the assistance of ChatGPT (March 14, 2023 version).
