@@ -1,0 +1,3 @@
+\mathsf{B_{y, s} = \left ( B_{y-1, s} + r_s B_{y-1, s} \left (1 - \frac{\sum_{s} B_{y-1, s}}{K_{\Sigma}} \right ) - C_{y - 1, s} \right ) e^{\delta_{y, s}}}
+
+converted to svg here: http://viereck.ch/latex-to-svg/

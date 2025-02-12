@@ -2,7 +2,7 @@
 title: "Summing the parts: Improving population estimates using a state-space multispecies production model"
 author: "Paul M. Regular*, Mariano Koen-Alonso, M. Joanne Morgan, Pierre Pepin, Rick M. Rideout"
 date: | 
-    Fisheries and Oceans Canada, Northwest Atlantic Fisheries Center, 80 East White Hills, St. John's, Newfoundland and Labrador, A1C 5X1, Canada\
+    Fisheries and Oceans Canada, Northwest Atlantic Fisheries Centre, 80 East White Hills, St. John's, Newfoundland and Labrador, A1C 5X1, Canada\
     \
     *Corresponding author\
     E-mail: Paul.Regular@dfo-mpo.gc.ca\
