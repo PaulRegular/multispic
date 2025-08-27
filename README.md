@@ -33,3 +33,4 @@ remotes::install_github("PaulRegular/multispic")
 
 ![](analysis/poster/poster_v2.jpg)
 
+For more details, see the full manuscript: https://doi.org/10.1101/2025.02.20.639295
