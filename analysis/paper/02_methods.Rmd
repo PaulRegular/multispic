@@ -17,40 +17,46 @@ where $B_y$ is biomass at the start of year $y$, $C_y$ is the catch through year
 g(B) = rB \left( 1 - \frac{B}{K} \right), & (\#eq:logistic)
 \end{align}
 
-where $r$ is the maximum per-capita rate of change and $K$ is the carrying capacity. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$). While this formulation offers an elegant description of single-species population dynamics, it assumes that density-dependent effects are solely caused by intraspecific competition and ignores the potential effects of other species inhabiting the same ecological area, competing for the same resources. We present an extension of equation \@ref(eq:logistic) that attempts to account for intra and interspecific competition by assuming that density-dependent effects are incurred when the total biomass of multiple species, represented by $s$, exceeds the capacity of the system, $K_{\Sigma}$, 
+where $r$ is the maximum per-capita rate of change and $K$ is the carrying capacity. That is, a populations' intrinsic ability to grow ($rB$) is limited by the size of the current population relative to the maximum biomass the system can support ($1 - B/K$). While this formulation offers an elegant description of single-species population dynamics, it assumes that density-dependent effects are solely caused by intraspecific competition and ignores the potential effects of other species inhabiting the same ecological area, competing for the same resources. We present an extension of equation \@ref(eq:logistic) that models the growth of a focal species $s$ while accounting for intra- and interspecific competition. Here, density-dependent effects are incurred when the total biomass of all species, indexed by $s'$, exceeds the capacity of the system, $K_{\Sigma}$, 
 
 \begin{align}
-g(B_s) = r_s B_s \left (1 - \frac{\sum_{s} B_s}{K_{\Sigma}} \right ). & (\#eq:ms-logistic)
+g_s(B_s) = r_s B_s \left (1 - \frac{\sum_{s'=1}^{S} B_{s'}}{K_{\Sigma}} \right ). & (\#eq:ms-logistic)
 \end{align}
 
 While intrinsic rates of growth may vary across species, this formulation implies that the growth of all species is ultimately limited by the finite amount of energy in a region (i.e., as the total population of all species in the system increases towards $K_{\Sigma}$, year-over-year growth of all species slows). Combining equations \@ref(eq:pro), \@ref(eq:obs), and \@ref(eq:ms-logistic), our model becomes
 
 \begin{align}
-B_{y, s} =& \left ( B_{y-1, s} + r_s B_{y-1, s} \left (1 - \frac{\sum_{s} B_{y-1, s}}{K_{\Sigma}} \right ) - C_{y - 1, s} \right ) e^{\delta_{y, s}}, & (\#eq:ms-pro) \\
+B_{y, s} =& \left ( B_{y-1, s} + r_s B_{y-1, s} \left (1 - \frac{\sum_{s'=1}^{S} B_{y-1, s'}}{K_{\Sigma}} \right ) - C_{y - 1, s} \right ) e^{\delta_{y, s}}, & (\#eq:ms-pro) \\
 \\
 I_{y, i, s} =& q_{i, s} B_{y, s} e^{\varepsilon_{y, i, s}}. & (\#eq:ms-obs)
 \end{align}
 
-The inclusion of multiple species in the model permits the estimation of covariance. While covarying changes may be apparent in the observations, we assume that most covariance stems from ecosystem processes. We therefore treat observation errors as independent and normally distributed deviations such that $\varepsilon_{y, i, s} \sim N(0, \tau_{i, s})$, where the standard deviation parameter $\tau_{i, s}$ represents species and survey specific levels of observation error. A more flexible error structure is used to describe the process errors to account for temporal dependencies driven by as ecological processes. For instance, species interactions may drive positive or negative population responses resulting from direct or indirect associations. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change gradually over time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was therefore applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
+The inclusion of multiple species in the model permits the estimation of covariance. While covarying changes may arise from the observation process, we assume that most covariance stems from ecosystem processes. We therefore treat observation errors as independent and normally distributed deviations such that $\varepsilon_{y,i,s} \sim N(0, \tau_{i,s})$, where the standard deviation parameter $\tau_{i,s}$ represents species- and survey-specific levels of observation error. A more flexible error structure is used to describe the process errors to account for temporal dependencies driven by ecological processes. For instance, species interactions may drive positive or negative population responses resulting from direct or indirect associations. Deviations from expected production may also display temporal dependence if the factors contributing to the process errors change gradually over time. Such inertia may cause positive or negative process errors to persist across several years. A first-order autoregressive (AR1) process was therefore applied to account for temporal dependence. Both sources of dependence are modeled using a multivariate AR1 process where
 
 \begin{align}
-\delta_{1, s} \sim& N(0, \Sigma_s) & \\
-\delta_{2, s} =& \phi \delta_{1} + \sigma_s \varepsilon_{2}, \quad \varepsilon_{2} \sim N(0, \Sigma_s)  & (\#eq:ar1) \\
-\delta_{y, s} =& \phi \delta_{y - 1} + \sigma_s \varepsilon_{y}, \quad \varepsilon_{y} \sim N(0, \Sigma_s) & 
+\boldsymbol{\delta}_{1} \sim& \; N(\mathbf{0}, \boldsymbol{\Sigma}) & \\
+\boldsymbol{\delta}_{2} =& \; \phi \, \boldsymbol{\delta}_{1} + \boldsymbol{\varepsilon}_{2}, 
+\quad \boldsymbol{\varepsilon}_{2} \sim N(\mathbf{0}, \boldsymbol{\Sigma}) & (\#eq:ar1) \\
+\boldsymbol{\delta}_{y} =& \; \phi \, \boldsymbol{\delta}_{y-1} + \boldsymbol{\varepsilon}_{y}, 
+\quad \boldsymbol{\varepsilon}_{y} \sim N(\mathbf{0}, \boldsymbol{\Sigma}), 
+\quad y = 3,\dots,Y &
 \end{align}
 
-and
+Here $\boldsymbol{\delta}_y = (\delta_{y,1}, \dots, \delta_{y,S})^\top$ is the vector of process deviations across species. The parameter $\phi$ controls temporal autocorrelation, where values near $0$ indicate weak persistence and values near $1$ indicate strong persistence. Although different species may in reality exhibit different levels of temporal correlation, a single $\phi$ is assumed to avoid over-parameterization. Nevertheless, effective differences in temporal correlation among species can still emerge through the covariance matrix $\boldsymbol{\Sigma}$, which captures cross-species dependence:
 
 \begin{align}
-\Sigma_s = \begin{bmatrix}
-\sigma^2_{1} &  \sigma_{1} \sigma_{2} \rho_{1,2}  & \dots &  \sigma_{1} \sigma_{s} \rho_{1,s} & \\
-\sigma_{2} \sigma_{1} \rho_{2,1}       & \sigma^2_{2}     & \dots & \sigma_{2} \sigma_{s} \rho_{2,s}  & \\
-\vdots & \vdots &  \ddots     &  \vdots & \\
-\sigma_{s} \sigma_{1} \rho_{s,1} & \sigma_{s} \sigma_{2} \rho_{s,2} & \dots  &  \sigma^2_{s} &
+\boldsymbol{\Sigma} =
+\begin{bmatrix}
+\sigma^2_{1} & \sigma_{1}\sigma_{2}\rho_{1,2} & \dots & \sigma_{1}\sigma_{S}\rho_{1,S} \\
+\sigma_{2}\sigma_{1}\rho_{2,1} & \sigma^2_{2} & \dots & \sigma_{2}\sigma_{S}\rho_{2,S} \\
+\vdots & \vdots & \ddots & \vdots \\
+\sigma_{S}\sigma_{1}\rho_{S,1} & \sigma_{S}\sigma_{2}\rho_{S,2} & \dots & \sigma^2_{S}
 \end{bmatrix}. & (\#eq:sigma)
 \end{align}
 
-The degree of temporal correlation is controlled by $\phi$, where values between 0 to 1 represent low to high correlation, and species-to-species correlations are described by $\rho_{s, s}$, where values between -1 to 1 represent negative to positive correlation. This is a flexible structure that allows for the testing of alternate hypotheses that process errors are independent through time or across species (i.e, $\phi = 0$ or $\rho_{s, s} = 0$). The possibility that process errors are similarly correlated across all species may also be tested by estimating only one $\rho$ parameter. Finally, the magnitude of the process error deviations is controlled by the species-specific standard deviation parameters, $\sigma_s$.
+Species-to-species correlations are described by $\rho_{s,s'}$ ($s \ne s'$), with values between $-1$ and $1$ representing negative to positive association. This flexible structure allows the testing of alternative hypotheses that process errors are independent through time or across species ($\phi = 0$ or $\rho_{s,s'} = 0$). The possibility that process errors are similarly correlated across all species may also be tested by estimating only one $\rho$ parameter. Finally, the magnitude of the process error deviations is controlled by the species-specific standard deviation parameters, $\sigma_s$.
+
+In implementation, $\boldsymbol{\Sigma}$ is parameterized as $\mathbf{D}\,\mathbf{R}\,\mathbf{D}$, where $\mathbf{D} = \mathrm{diag}(\sigma_1, \ldots, \sigma_S)$ and $\mathbf{R} = \mathbf{L}\mathbf{L}^\top$ is a correlation matrix obtained from a Cholesky factor $\mathbf{L}$ constructed from unconstrained parameters. This formulation ensures that $\boldsymbol{\Sigma}$ is positive definite.
 
 Minor extensions of the formulation also permit the fitting of covariates which may describe an underlying linear effect. Two options were implemented, one that affects the process errors by substituting $e^{\delta{y,s}}$ in equation \@ref(eq:ms-pro) with $e^{\beta_{\delta} X^{\delta}_{y,s} + \delta_{y, s}}$, and another that affects the carrying capacity by substituting $K_{\Sigma}$ in equation \@ref(eq:ms-pro) with $K_{\Sigma} e^{\beta_K X^K_{y}}$, where $\beta$ parameters capture linear effects of covariates included in design matrices, $X$. The idea is that some factors may affect positive or negative changes in the populations while others may affect change in the total carrying capacity of the system. A covariate option for intrinsic rates of increase was not implemented since one goal of this model is to obtain estimates of this vital rate, which is not expected to change rapidly as it is shaped by natural selection [@hutchings2021]. The formulation was also modified to fit the single-species Schaefer production function by dropping the summation of biomass in equation \@ref(eq:ms-pro) and estimating species-specific carrying capacities, $K_s$, rather than a system level carrying capacity, $K_{\Sigma}$ (i.e., apply equation \@ref(eq:logistic) indexed by species).
 
@@ -77,27 +83,27 @@ Catch data were extracted from NAFO's STATLANT 21A database (https://www.nafo.in
 
 ### Priors {-}
 
-For simplicity, all priors were normally distributed and, in most cases, upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. Upper and lower values were based on previous research or knowledge to impose fairly generic and vaguely informative priors.
+For simplicity, all priors were normally distributed and, in most cases, upper and lower inflection points ($\mu \pm \sigma$; ~68% of the total area under the curve) of each normal prior were defined using values in log or logit space. Upper and lower values were based on previous research or knowledge to impose fairly generic and vaguely informative priors. Interactive dashboards accompanying this paper provide visualizations of the priors and posteriors for core parameters (Supplement 1); here we summarize their parameterization and report the ranges used to define each prior.
 
 #### *Intrinsic growth rate, $r_s$, and carrying capacity, $K$* {-}
 
 To capture a broad range of intrinsic growth rates [@thorson2020], 0.01 and 1 were chosen as the lower, $r_l$, and upper, $r_u$, values; this translates to a normal prior with a mean of -1.15 and a standard deviation of 1.15 on the log-scale. The log-scale $K_{\Sigma}$ prior was informed by total levels of catch and $r_l$ and $r_u$,
 
 \begin{align}
-K_{\Sigma, l} = \frac{\max(\Sigma_s C_{y,s})}{r_u}, K_{\Sigma, u} = \frac{4 \max(\Sigma_s C_{y,s})}{r_l}, & (\#eq:k-prior)
+K_{\Sigma, l} = \frac{\max(\Sigma_s C_{y,s})}{r_u}, \quad K_{\Sigma, u} = \frac{4 \max(\Sigma_s C_{y,s})}{r_l}, & (\#eq:k-prior)
 \end{align}
 
 where $K_{\Sigma, l}$ and $K_{\Sigma, u}$ are the lower and upper values. On the lower end, this prior imposes the assumption that the fishery is unlikely to have caught the equivalent of $K_{\Sigma}$ and, on the upper end, it assumes that the maximum observed catch represents a portion of $K_{\Sigma}$ [*sensu* @froese2017]. The division by the lower and upper values for $r$ also accounts for the potential range of productivity. Note that the maximum time-series catches are species specific when estimating species-specific carrying capacities.
 
 #### *Starting biomass, $B_{1,s}$* {-}
 
-Like $K_{\Sigma}$, catch was used to constrain the plausible range of the biomass at the beginning of the time series, $B_{1,s}$, which we will denote as $B0$ to simplify notation. Specifically,  
+Like $K_{\Sigma}$, catch was used to constrain the plausible range of the biomass at the beginning of the time series, $B_{1,s}$, which we will denote as $B0_s$ to simplify notation. Specifically,  
 
 \begin{align}
-B0_l = \frac{C_{1,s}}{r_u}, B0_u = \frac{4 C_{1,s}}{r_l}, & (\#eq:b0-prior)
+B0_{l,s} = \frac{C_{1,s}}{r_u}, \quad B0_{u,s} = \frac{4 C_{1,s}}{r_l}, & (\#eq:b0-prior)
 \end{align}
 
-where $B0_l$ and $B0_u$ are the lower and upper values that are log transformed to define the normal prior for $\log(B0)$. Again, adjusting for the potential range of productivity from $r_l$ to $r_u$, this assumes that the fishery did not catch all of the biomass in the first year and it assumes that the catch represents a portion of the biomass in the first year. A potential flaw with the upper value for this prior is that a lack of market demand may contradict the assumption that landings are coarsely proportional to stock size. However, the upper range chosen was considered reasonable for this case study as there was an active fishery for each species examined here at the start of the time series.
+where $B0_{l,s}$ and $B0_{u,s}$ are the lower and upper values that are log transformed to define the normal prior for $\log(B0_s)$. Again, adjusting for the potential range of productivity from $r_l$ to $r_u$, this assumes that the fishery did not catch all of the biomass in the first year and it assumes that the catch represents a portion of the biomass in the first year. A potential flaw with the upper value for this prior is that a lack of market demand may contradict the assumption that landings are coarsely proportional to stock size. However, the upper range chosen was considered reasonable for this case study as there was an active fishery for each species examined here at the start of the time series.
 
 #### *Process error variance, $\sigma_s^2$, temporal correlation, $\phi$, and species-to-species correlation, $\rho_{s, s}$* {-}
 
@@ -134,7 +140,7 @@ The degree to which density-dependence of the demersal fish community inhabiting
 
 **Just temporal correlation:** Model structure is the same as the **shared correlation** model, except species by species correlations are assumed to be *iid*. This structure implies that environmental processes affect each species differently, however, there may be carry-over effects from one year to the next. The shift covariate was not applied.
 
-**No correlation:** Model structure is the same as the **shared correlation** model, except both temporal and species correlations are assumed to be *iid*. That is, population dynamics are thought to be affected by a common time-invariant carrying capacity and residual variations not explained by intrinsic growth, inter-specific density-dependent effects or landings are noisy and independent across time and species. The shift covariate was not applied.
+**No correlation:** Model structure is the same as the **shared correlation** model, except both temporal and species correlations are set to zero (i.e., process innovations are *iid* across time and species). That is, population dynamics are thought to be affected by a common time-invariant carrying capacity and residual variations not explained by intrinsic growth, inter-specific density-dependent effects or landings are noisy and independent across time and species. The shift covariate was not applied.
 
 **Single-species:** Model structure is the same as the **no correlation** model, except population dynamics are assumed to be governed by species-specific carrying capacities (i.e., intra-specific density-dependent effects are assumed). This formulation is analogous to standard state-space Schaefer production models. The shift covariate was not applied. 
 
