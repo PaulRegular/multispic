@@ -16,3 +16,4 @@
 !data/*.RData
 !analysis/paper/figures/*.png
 /analysis/paper/_bookdown_files/
+analysis/paper/ms_cache/docx/
