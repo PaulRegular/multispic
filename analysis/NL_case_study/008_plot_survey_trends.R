@@ -26,12 +26,12 @@ region_trends <- function(fit, title, show_spp = TRUE) {
                       alpha = 0.5, showlegend = FALSE) |>
             add_lines(data = sub_index, y = ~pred, split = ~survey,
                       color = I(sub_col), name = s, #
-                      line = list(width = 1),
+                      line = list(width = 1, dash = "dot"),
                       showlegend = FALSE, legendgroup = s) |>
             add_markers(data = sub_index, y = ~index,
                         color = I(sub_col), name = s,
                         showlegend = FALSE, legendgroup = s,
-                        marker = list(size = 2)) |>
+                        marker = list(size = 4, symbol = "circle-open", line = list(width = 0.5))) |>
             add_annotations(x = 0.5, y = 1, xref = "paper", yref = "paper", text = title,
                             font = list(size = 16), showarrow = FALSE,
                             xanchor = "center",  yanchor = "bottom",
